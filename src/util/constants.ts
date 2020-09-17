@@ -19,7 +19,9 @@ export const APP = {
   CLIENT_URL: isProduction
     ? process.env.APP_CLIENT_URL
     : 'http://localhost:3000',
-  DB_URL: isProduction ? process.env.DB_PROD : process.env.DB_LOCAL,
+  DB_URL: isProduction
+    ? process.env.DB_PROD
+    : 'postgresql://localhost:5432/bloom',
   PORT: process.env.PORT || 8080,
   SERVER_URL: isProduction
     ? process.env.APP_SERVER_URL
@@ -32,6 +34,8 @@ export const APP = {
  * placed in a .types.ts file living in the same folder as that service,
  * instead of in this globally accessible constants file.
  */
+
+export type LoggerLevel = 'INFO' | 'ERROR' | 'WARN';
 
 export type Route = {
   callback: (request: Request, response: Response) => any;
