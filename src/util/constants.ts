@@ -33,6 +33,8 @@ export const APP = {
  * instead of in this globally accessible constants file.
  */
 
+export type LoggerLevel = 'INFO' | 'ERROR' | 'WARN';
+
 export type Route = {
   callback: (request: Request, response: Response) => any;
   method: 'GET' | 'POST' | 'DELETE' | 'PUT';

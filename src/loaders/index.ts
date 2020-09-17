@@ -8,6 +8,7 @@
  */
 
 import { APP } from '@constants';
+import lg from '@lg';
 import { createConnection } from '@util/db/util';
 import startApollo from './apollo';
 import startExpress from './express';
@@ -16,7 +17,7 @@ const startServer = async () => {
   const app = startExpress();
   const [apolloServer] = await Promise.all([startApollo(), createConnection()]);
   apolloServer.applyMiddleware({ app, path: '/graphql' });
-  app.listen(APP.PORT);
+  app.listen(APP.PORT, () => lg.info('Server started.'));
 };
 
 startServer();
