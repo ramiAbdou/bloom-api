@@ -9,7 +9,7 @@ import deline from 'deline';
 import fs from 'fs';
 import moment from 'moment';
 
-import { now } from '@util/util';
+import { now, singleLineStringify } from '@util/util';
 import { LoggerLevel } from './constants';
 
 class Logger {
@@ -30,7 +30,7 @@ class Logger {
     const result = `${now()} | ${level} | ${deline(message)}`;
     return !data
       ? result
-      : `${result} | ${JSON.stringify(this.formatData(data), null, 2)}`;
+      : `${result} | ${singleLineStringify(this.formatData(data))}`;
   };
 
   /**
