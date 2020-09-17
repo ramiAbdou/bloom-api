@@ -14,20 +14,20 @@ import { LoggerLevel } from './constants';
 
 class Logger {
   error = (message: string, data?: Record<string, any>) =>
-    this.writeToFile(this.formatMessage('ERROR', message, data));
+    this.writeToFile(this.formatMessage('ERROR', message, data), true);
 
   info = (message: string, data?: Record<string, any>) =>
     this.writeToFile(this.formatMessage('INFO', message, data));
 
   warn = (message: string, data?: Record<string, any>) =>
-    this.writeToFile(this.formatMessage('WARN', message, data));
+    this.writeToFile(this.formatMessage('WARN', message, data), true);
 
   private formatMessage = (
     level: LoggerLevel,
     message: string,
     data?: Record<string, any>
   ) => {
-    const result = `${now} | ${level} | ${deline(message)}`;
+    const result = `${now()} | ${level} | ${deline(message)}`;
     return !data
       ? result
       : `${result} | ${JSON.stringify(this.formatData(data), null, 2)}`;
@@ -37,11 +37,13 @@ class Logger {
    * Writes the given message to a file in the ./logs/ folder based on the
    * current UTC date. Adds a newline character as well.
    */
-  private writeToFile = (message: string) => {
-    const date = moment.utc().format('MM-D-YY');
-    const stream = fs.createWriteStream(`./logs/${date}`);
-    stream.write(`${message}\n`);
-    stream.end();
+  private writeToFile = (message: string, writeToConsole = false) => {
+    if (!fs.existsSync('./logs')) fs.mkdirSync('./logs');
+    const filename = `./logs/${moment.utc().format('MM-D-YY')}.txt`;
+    fs.appendFileSync(filename, `${message}\n\n`);
+
+    // eslint-disable-next-line no-console
+    if (writeToConsole) console.log(`${message}\n\n`);
   };
 
   /**
