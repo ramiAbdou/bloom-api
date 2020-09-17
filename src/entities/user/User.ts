@@ -3,10 +3,19 @@
  * @author Rami Abdou
  */
 
-import { BeforeCreate, Entity, Enum, Property } from 'mikro-orm';
+import {
+  BeforeCreate,
+  Cascade,
+  Collection,
+  Entity,
+  Enum,
+  OneToMany,
+  Property
+} from 'mikro-orm';
 import { Field, ObjectType } from 'type-graphql';
 
 import BaseEntity from '@util/db/BaseEntity';
+import Membership from '../membership/Membership';
 
 @ObjectType()
 @Entity()
@@ -19,8 +28,8 @@ export default class User extends BaseEntity {
   */
 
   @Field(() => String, { nullable: true })
-  @Property({ type: 'text' })
-  bio = '';
+  @Property({ nullable: true, type: 'text' })
+  bio: string;
 
   @Field(() => String)
   @Property({ nullable: false, unique: true })
@@ -66,4 +75,15 @@ export default class User extends BaseEntity {
   get fullName(): string {
     return `${this.firstName} ${this.lastName}`;
   }
+
+  /* 
+  ___     _      _   _             _    _         
+ | _ \___| |__ _| |_(_)___ _ _  __| |_ (_)_ __ ___
+ |   / -_) / _` |  _| / _ \ ' \(_-< ' \| | '_ (_-<
+ |_|_\___|_\__,_|\__|_\___/_||_/__/_||_|_| .__/__/
+                                         |_|      
+  */
+
+  @OneToMany(() => Membership, ({ user }) => user, { cascade: [Cascade.ALL] })
+  memberships: Collection<Membership> = new Collection<Membership>(this);
 }

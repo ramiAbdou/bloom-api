@@ -34,7 +34,6 @@ export default abstract class Router {
   private bindRoutes() {
     this.routes.forEach(({ callback, method, route }: Route) => {
       const expressMethod = method.toLowerCase();
-      // @ts-ignore b/c we know that this is correct.
       this.router[expressMethod](route, callback.bind(this));
     });
   }

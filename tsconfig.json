@@ -13,6 +13,7 @@
       "@constants": ["./src/util/constants.ts"],
       "@core/*": ["./src/core/*"],
       "@entities": ["src/entities/index.ts"],
+      "@lg": ["src/util/logger.ts"],
       "@integrations/*": ["./src/integrations/*"],
       "@repos": ["src/entities/repos.ts"],
       "@util/*": ["./src/util/*"]
