@@ -12,11 +12,12 @@ import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
 import { GraphQLSchema } from 'graphql';
 import { buildSchema } from 'type-graphql';
 
+import CommunityResolver from '../entities/community/CommunityResolver';
 import UserResolver from '../entities/user/UserResolver';
 
 export default async () => {
   const schema: GraphQLSchema = await buildSchema({
-    resolvers: [UserResolver],
+    resolvers: [CommunityResolver, UserResolver],
     // Only set to false b/c we don't use the class-validator anywhere YET.
     validate: false
   });

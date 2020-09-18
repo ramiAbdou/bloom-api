@@ -5,9 +5,14 @@
 
 import { AnyEntity, EntityManager } from 'mikro-orm';
 
-import { User } from '@entities';
+import { Community, Membership, MembershipType, User } from '@entities';
 import lg from '@lg';
-import { UserRepo } from '@repos';
+import {
+  CommunityRepo,
+  MembershipRepo,
+  MembershipTypeRepo,
+  UserRepo
+} from '@repos';
 
 export class BloomManager {
   em: EntityManager;
@@ -28,14 +33,11 @@ export class BloomManager {
    * Tries to flush the managed entities to the database, but if it fails,
    * log the error.
    */
-  flush = async (message?: string, data?: any) => {
+  flush = async (message?: string, data?: Record<string, any>) => {
     try {
-      if (message && data) lg.info(message, data);
-      else if (message) lg.info(message);
+      if (message) lg.info(message, data);
       await this.em.flush();
-      lg.info('FLUSHED');
     } catch (e) {
-      lg.error('FAILED TO FLUSH');
       lg.error(e);
     }
   };
@@ -48,7 +50,7 @@ export class BloomManager {
       | AnyEntity<any, string | number | symbol>
       | AnyEntity<any, string | number | symbol>[],
     message?: string,
-    data?: any
+    data?: Record<string, any>
   ) => {
     try {
       await this.em.persistAndFlush(entities);
@@ -81,7 +83,7 @@ export class BloomManager {
       | AnyEntity<any, string | number | symbol>
       | AnyEntity<any, string | number | symbol>[],
     message?: string,
-    data?: any
+    data?: Record<string, any>
   ) => {
     try {
       this.remove(entities);
@@ -107,9 +109,9 @@ export class BloomManager {
   ) => {
     if (!Array.isArray(entities)) this.em.removeEntity(entities);
     else {
-      entities.forEach((entity: AnyEntity<any, string | number | symbol>) => {
-        this.em.removeEntity(entity);
-      });
+      entities.forEach((entity: AnyEntity<any, string | number | symbol>) =>
+        this.em.removeEntity(entity)
+      );
     }
   };
 
@@ -137,6 +139,13 @@ export class BloomManager {
  |_|_\___| .__/\___/__/_|\__\___/_| |_\___/__/
          |_|                                  
   */
+
+  communityRepo = () => this.em.getRepository(Community) as CommunityRepo;
+
+  membershipRepo = () => this.em.getRepository(Membership) as MembershipRepo;
+
+  membershipTypeRepo = () =>
+    this.em.getRepository(MembershipType) as MembershipTypeRepo;
 
   userRepo = () => this.em.getRepository(User) as UserRepo;
 }
