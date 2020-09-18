@@ -22,6 +22,16 @@ class Logger {
   warn = (message: string, data?: Record<string, any>) =>
     this.writeToFile(this.formatMessage('WARN', message, data), true);
 
+  /**
+   * Returns the formatted logger messsage that includes the UTC timestamp,
+   * level of the logged message as well optional data.
+   *
+   * @example formatMessage('INFO', 'Hello World') =>
+   *  '2020-08-31T23:17:20Z | INFO | Hello World'
+   *
+   * @example formatMessage('INFO', 'Hello World', { user: { id: 1 } }) =>
+   *  '2020-08-31T23:17:20Z | INFO | Hello World' | { "user": 1 }
+   */
   private formatMessage = (
     level: LoggerLevel,
     message: string,

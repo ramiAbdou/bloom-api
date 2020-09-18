@@ -19,7 +19,9 @@ export const APP = {
   CLIENT_URL: isProduction
     ? process.env.APP_CLIENT_URL
     : 'http://localhost:3000',
-  DB_URL: isProduction ? process.env.DB_PROD : process.env.DB_LOCAL,
+  DB_URL: isProduction
+    ? process.env.DB_PROD
+    : 'postgresql://localhost:5432/bloom',
   PORT: process.env.PORT || 8080,
   SERVER_URL: isProduction
     ? process.env.APP_SERVER_URL
