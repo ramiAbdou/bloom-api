@@ -7,7 +7,7 @@ import { MikroORM } from 'mikro-orm';
 import options from 'mikro-orm.config';
 
 import { isProduction } from '../util';
-import bm from './bm';
+import bloomManager from './bloomManager';
 
 /**
  * Establishes the database connection to the PostgreSQL database using the
@@ -15,7 +15,7 @@ import bm from './bm';
  */
 export const createConnection = async (): Promise<MikroORM> => {
   const orm = await MikroORM.init(options);
-  bm.em = orm.em;
+  bloomManager.em = orm.em;
   return orm;
 };
 

@@ -7,12 +7,10 @@
  */
 
 import bodyParser from 'body-parser';
-import express from 'express';
+import { Application } from 'express';
 import helmet from 'helmet';
 
-export default () => {
-  const app = express();
-
+export default (app: Application) => {
   // Limit urlencoded and json body sizes to 10 KB.
   app.use(bodyParser.urlencoded({ extended: true, limit: '10kb' }));
   app.use(bodyParser.json({ limit: '10kb' }));
