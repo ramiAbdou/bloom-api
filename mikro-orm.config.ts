@@ -4,13 +4,15 @@
  * @author Rami Abdou
  */
 
+import { Connection, IDatabaseDriver, Options } from 'mikro-orm';
+
 import { APP } from '@constants';
 import * as entities from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 import NamingStrategy from '@util/db/NamingStrategy';
 import { isProduction } from '@util/util';
 
-export default {
+const options: Options<IDatabaseDriver<Connection>> = {
   clientUrl: APP.DB_URL,
   // This option disallows the usage of entitiesDirs and caching, which we set
   // to true b/c we need since BaseEntity is in a different folder than the
@@ -22,3 +24,5 @@ export default {
   namingStrategy: NamingStrategy,
   type: 'postgresql'
 };
+
+export default options;

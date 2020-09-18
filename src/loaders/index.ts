@@ -7,6 +7,8 @@
  * @author Rami Abdou
  */
 
+import 'reflect-metadata'; // Needed for type-graphql compilation.
+
 import { APP } from '@constants';
 import lg from '@lg';
 import { createConnection } from '@util/db/util';

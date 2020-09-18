@@ -35,10 +35,10 @@ export class BloomManager {
    */
   flush = async (message?: string, data?: Record<string, any>) => {
     try {
-      if (message) lg.info(message, data);
       await this.em.flush();
+      if (message) lg.info(message, data);
     } catch (e) {
-      lg.error(e);
+      lg.error(JSON.stringify(e, null, 2));
     }
   };
 
@@ -46,20 +46,15 @@ export class BloomManager {
    * Persist and flush the given entities.
    */
   persistAndFlush = async (
-    entities:
-      | AnyEntity<any, string | number | symbol>
-      | AnyEntity<any, string | number | symbol>[],
+    entities: AnyEntity<any> | AnyEntity<any>[],
     message?: string,
     data?: Record<string, any>
   ) => {
     try {
       await this.em.persistAndFlush(entities);
-      if (message && data) lg.info(message, data);
-      else if (message) lg.info(message);
-      lg.info('FLUSHED');
+      if (message) lg.info(message, data);
     } catch (e) {
       lg.error(e);
-      lg.error('FAILED TO FLUSH');
     }
   };
 
@@ -67,34 +62,23 @@ export class BloomManager {
    * Persists the entity and pushes the log until the Entity Manager either
    * flushes the changes or clears the changes.
    */
-  persist = (
-    entities:
-      | AnyEntity<any, string | number | symbol>
-      | AnyEntity<any, string | number | symbol>[]
-  ) => {
+  persist = (entities: AnyEntity<any> | AnyEntity<any>[]) =>
     this.em.persist(entities);
-  };
 
   /**
    * Removes and flushes the given entities.
    */
   removeAndFlush = async (
-    entities:
-      | AnyEntity<any, string | number | symbol>
-      | AnyEntity<any, string | number | symbol>[],
+    entities: AnyEntity<any> | AnyEntity<any>[],
     message?: string,
     data?: Record<string, any>
   ) => {
     try {
       this.remove(entities);
       await this.em.flush();
-
-      if (message && data) lg.info(message, data);
-      else if (message) lg.info(message);
-      lg.info('FLUSHED');
+      if (message) lg.info(message, data);
     } catch (e) {
       lg.error(e);
-      lg.error('FAILED TO FLUSH');
     }
   };
 
@@ -102,27 +86,13 @@ export class BloomManager {
    * Removes the entity from the entity manager and pushes the appropriate
    * logs to the class.
    */
-  private remove = (
-    entities:
-      | AnyEntity<any, string | number | symbol>
-      | AnyEntity<any, string | number | symbol>[]
-  ) => {
-    if (!Array.isArray(entities)) this.em.removeEntity(entities);
-    else {
-      entities.forEach((entity: AnyEntity<any, string | number | symbol>) =>
-        this.em.removeEntity(entity)
-      );
-    }
-  };
+  private remove = (entities: AnyEntity<any> | AnyEntity<any>[]) =>
+    this.em.remove(entities);
 
   /**
    * Merges given entity to this EntityManager so it becomes managed.
    */
-  merge = (
-    entities:
-      | AnyEntity<any, string | number | symbol>
-      | AnyEntity<any, string | number | symbol>[]
-  ) => {
+  merge = (entities: AnyEntity<any> | AnyEntity<any>[]) => {
     if (!Array.isArray(entities)) this.em.merge(entities);
     else entities.forEach((entity) => this.em.merge(entity));
   };

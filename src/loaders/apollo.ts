@@ -6,8 +6,6 @@
  * @author Rami Abdou
  */
 
-import 'reflect-metadata'; // Needed for type-graphql compilation.
-
 import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
 import { GraphQLSchema } from 'graphql';
 import { buildSchema } from 'type-graphql';

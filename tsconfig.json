@@ -9,7 +9,7 @@
     "moduleResolution": "node",
     "outDir": "./dist/",
     "paths": {
-      "@bm": ["./src/util/db/bloomManager.ts"],
+      "@bloomManager": ["./src/util/db/bm.ts"],
       "@constants": ["./src/util/constants.ts"],
       "@core/*": ["./src/core/*"],
       "@entities": ["src/entities/index.ts"],

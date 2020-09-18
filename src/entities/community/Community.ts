@@ -3,9 +3,10 @@
  * @author Rami Abdou
  */
 
-import { Collection, Entity, OneToMany, Property } from 'mikro-orm';
+import { Collection, Entity, JsonType, OneToMany, Property } from 'mikro-orm';
 import { Field, ObjectType } from 'type-graphql';
 
+import { FormQuestion, GetFormQuestion } from '@constants';
 import BaseEntity from '@util/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
 import MembershipType from '../membership-type/MembershipType';
@@ -23,6 +24,10 @@ export default class Community extends BaseEntity {
   @Property({ nullable: true, unique: true })
   logo: string;
 
+  @Field(() => [GetFormQuestion], { nullable: true })
+  @Property({ nullable: true, type: JsonType })
+  membershipForm: FormQuestion[]; // Maps the title to the item.
+
   @Field(() => String)
   @Property({ unique: true })
   name: string;
@@ -38,6 +43,16 @@ export default class Community extends BaseEntity {
     return toLowerCaseDash(this.name);
   }
 
+  /**
+   * Returns the names of all of the data attributes, which are simply stored
+   * as the keys of the membershipForm record.
+   */
+  @Field(() => [String])
+  @Property({ persist: false })
+  get dataAttributes(): string[] {
+    return this.membershipForm ? Object.keys(this.membershipForm) : [];
+  }
+
   /* 
   ___     _      _   _             _    _         
  | _ \___| |__ _| |_(_)___ _ _  __| |_ (_)_ __ ___
@@ -46,6 +61,7 @@ export default class Community extends BaseEntity {
                                          |_|      
   */
 
+  @Field(() => [Membership])
   @OneToMany(() => Membership, ({ community }) => community)
   memberships: Collection<Membership> = new Collection<Membership>(this);
 
@@ -53,15 +69,4 @@ export default class Community extends BaseEntity {
   membershipTypes: Collection<MembershipType> = new Collection<MembershipType>(
     this
   );
-
-  /*
-  __  __     _   _            _    
- |  \/  |___| |_| |_  ___  __| |___
- | |\/| / -_)  _| ' \/ _ \/ _` (_-<
- |_|  |_\___|\__|_||_\___/\__,_/__/                                  
-  */
-
-  getPublicMembershipTypes(): MembershipType[] {
-    return this.membershipTypes.getItems().filter(({ isAdmin }) => !isAdmin);
-  }
 }

@@ -15,6 +15,7 @@
     "npm": "6.9.0"
   },
   "dependencies": {
+    "@mikro-orm/postgresql": "^4.0.3",
     "@sendgrid/mail": "^7.2.0",
     "@slack/web-api": "^5.11.0",
     "@types/bluebird": "^3.5.30",
@@ -44,7 +45,7 @@
     "googleapis": "^49.0.0",
     "graphql": "^15.3.0",
     "helmet": "^3.22.1",
-    "mikro-orm": "^3.6.13",
+    "mikro-orm": "^4.0.3",
     "mocha": "^7.1.1",
     "moment": "^2.25.3",
     "node-cache": "^5.1.2",
