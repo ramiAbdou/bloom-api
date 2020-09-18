@@ -9,10 +9,20 @@
 import 'reflect-metadata'; // Needed for type-graphql compilation.
 
 import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
+import { GraphQLSchema } from 'graphql';
+import { buildSchema } from 'type-graphql';
+
+import UserResolver from '../entities/user/UserResolver';
 
 export default async () => {
+  const schema: GraphQLSchema = await buildSchema({
+    resolvers: [UserResolver],
+    // Only set to false b/c we don't use the class-validator anywhere YET.
+    validate: false
+  });
+
   // Set the playground to false so that's it's not accessible to the outside
   // world. Also handles the request context.
-  const config: ApolloServerExpressConfig = { playground: false };
+  const config: ApolloServerExpressConfig = { playground: false, schema };
   return new ApolloServer(config);
 };

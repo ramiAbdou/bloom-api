@@ -19,8 +19,8 @@ export default class User extends BaseEntity {
   */
 
   @Field(() => String, { nullable: true })
-  @Property({ type: 'text' })
-  bio = '';
+  @Property({ nullable: true, type: 'text' })
+  bio: string;
 
   @Field(() => String)
   @Property({ nullable: false, unique: true })
