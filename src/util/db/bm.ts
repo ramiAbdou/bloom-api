@@ -38,7 +38,7 @@ export class BloomManager {
       await this.em.flush();
       if (message) lg.info(message, data);
     } catch (e) {
-      lg.error(JSON.stringify(e, null, 2));
+      lg.error(new Error(e));
     }
   };
 

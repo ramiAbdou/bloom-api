@@ -11,11 +11,12 @@ import { GraphQLSchema } from 'graphql';
 import { buildSchema } from 'type-graphql';
 
 import CommunityResolver from '../entities/community/CommunityResolver';
+import MembershipResolver from '../entities/membership/MembershipResolver';
 import UserResolver from '../entities/user/UserResolver';
 
 export default async () => {
   const schema: GraphQLSchema = await buildSchema({
-    resolvers: [CommunityResolver, UserResolver],
+    resolvers: [CommunityResolver, MembershipResolver, UserResolver],
     // Only set to false b/c we don't use the class-validator anywhere YET.
     validate: false
   });

@@ -10,7 +10,7 @@
 import dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import path from 'path'; // Before constants.
-import { Field, ObjectType } from 'type-graphql';
+import { Field, InputType, ObjectType } from 'type-graphql';
 
 import { isProduction } from './util';
 
@@ -38,16 +38,30 @@ export const APP = {
  * instead of in this globally accessible constants file.
  */
 
+export type LoggerLevel = 'INFO' | 'ERROR' | 'WARN';
+
+export type Route = {
+  callback: (request: Request, response: Response) => any;
+  method: 'GET' | 'POST' | 'DELETE' | 'PUT';
+  route: string;
+};
+
 // 0: Short Text
 // 1: Long Text
 // 2: Multiple Choice
 // 3: Dropdown
 // 4: Dropdown Multiple
 
+type FormQuestionCategory =
+  | 'FIRST_NAME'
+  | 'LAST_NAME'
+  | 'EMAIL'
+  | 'GENDER'
+  | 'MEMBERSHIP_TYPE';
+
 export type FormQuestion = {
-  category?: 'FIRST_NAME' | 'LAST_NAME' | 'EMAIL' | 'MEMBERSHIP_TYPE';
+  category?: FormQuestionCategory;
   description?: string;
-  index: number;
   required?: boolean;
   options?: string[];
   title: string;
@@ -57,13 +71,10 @@ export type FormQuestion = {
 @ObjectType()
 export class GetFormQuestion {
   @Field(() => String, { nullable: true })
-  category?: 'FIRST_NAME' | 'LAST_NAME' | 'EMAIL' | 'MEMBERSHIP_TYPE';
+  category?: FormQuestionCategory;
 
   @Field(() => String, { nullable: true })
   description?: string;
-
-  @Field(() => Number)
-  index: number;
 
   @Field(() => Boolean)
   required? = false;
@@ -78,10 +89,11 @@ export class GetFormQuestion {
   type: 0 | 1 | 2 | 3 | 4;
 }
 
-export type FormValue = { title: string; value: string };
-
 @ObjectType()
 export class GetFormValue {
+  @Field(() => String, { nullable: true })
+  category: FormQuestionCategory;
+
   @Field(() => String)
   title: string;
 
@@ -89,10 +101,14 @@ export class GetFormValue {
   value: string;
 }
 
-export type LoggerLevel = 'INFO' | 'ERROR' | 'WARN';
+@InputType()
+export class CreateFormValue {
+  @Field(() => String, { nullable: true })
+  category: FormQuestionCategory;
 
-export type Route = {
-  callback: (request: Request, response: Response) => any;
-  method: 'GET' | 'POST' | 'DELETE' | 'PUT';
-  route: string;
-};
+  @Field(() => String)
+  title: string;
+
+  @Field(() => String)
+  value: string;
+}

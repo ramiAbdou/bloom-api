@@ -43,8 +43,11 @@ export default class User extends BaseEntity {
   @Property()
   firstName: string;
 
-  @Field(() => String)
-  @Enum({ items: ['Male', 'Female', 'Non-Binary'] })
+  @Field(() => String, { nullable: true })
+  @Enum({
+    items: ['Male', 'Female', 'Non-Binary', 'Prefer Not to Say'],
+    nullable: true
+  })
   gender: string;
 
   @Field(() => String, { nullable: true })

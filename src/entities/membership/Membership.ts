@@ -13,7 +13,7 @@ import {
 } from 'mikro-orm';
 import { Field, ObjectType } from 'type-graphql';
 
-import { FormValue, GetFormValue } from '@constants';
+import { GetFormValue } from '@constants';
 import BaseEntity from '@util/db/BaseEntity';
 import Community from '../community/Community';
 import MembershipType from '../membership-type/MembershipType';
@@ -36,8 +36,7 @@ export default class Membership extends BaseEntity {
    * as the keys of the membershipForm record.
    */
   @Field(() => [GetFormValue])
-  @Property({ persist: false })
-  get fullData(): FormValue[] {
+  getFullData(): GetFormValue[] {
     if (!this.data) return [];
 
     const { membershipForm } = this.community;
@@ -53,7 +52,7 @@ export default class Membership extends BaseEntity {
       else if (category === 'MEMBERSHIP_TYPE') value = membershipName;
       else value = this.data[title];
 
-      return { title, value };
+      return { category, title, value };
     }, {});
   }
 
@@ -62,18 +61,17 @@ export default class Membership extends BaseEntity {
    * of the user's basic data like their name and email.
    */
   @Field(() => [GetFormValue])
-  @Property({ persist: false })
-  get basicMembershipData(): FormValue[] {
+  getBasicMembershipData(): GetFormValue[] {
     if (!this.data) return [];
 
     const { membershipForm } = this.community;
     const { name: membershipName } = this.type;
 
-    return membershipForm.reduce((acc: FormValue[], { category, title }) => {
+    return membershipForm.reduce((acc: GetFormValue[], { category, title }) => {
       if (['FIRST_NAME', 'LAST_NAME', 'EMAIL'].includes(category)) return acc;
       if (category === 'MEMBERSHIP_TYPE')
-        acc.push({ title, value: membershipName });
-      else acc.push({ title, value: this.data[title] });
+        acc.push({ category, title, value: membershipName });
+      else acc.push({ category, title, value: this.data[title] });
       return acc;
     }, []);
   }

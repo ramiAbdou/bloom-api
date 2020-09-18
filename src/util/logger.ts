@@ -13,7 +13,7 @@ import { now, singleLineStringify } from '@util/util';
 import { LoggerLevel } from './constants';
 
 class Logger {
-  error = (message: string, data?: Record<string, any>) =>
+  error = (message: string | Error, data?: Record<string, any>) =>
     this.writeToFile(this.formatMessage('ERROR', message, data), true);
 
   info = (message: string, data?: Record<string, any>) =>
@@ -34,10 +34,11 @@ class Logger {
    */
   private formatMessage = (
     level: LoggerLevel,
-    message: string,
+    message: string | Error,
     data?: Record<string, any>
   ) => {
-    const result = `${now()} | ${level} | ${deline(message)}`;
+    const msg = typeof message === 'string' ? deline(message) : message;
+    const result = `${now()} | ${level} | ${msg}`;
     return !data
       ? result
       : `${result} | ${singleLineStringify(this.formatData(data))}`;

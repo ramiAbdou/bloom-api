@@ -5,14 +5,14 @@
 
 import { Query, Resolver } from 'type-graphql';
 
+import bloomManager from '@bloomManager';
 import { Community } from '@entities';
-import bm from '@util/db/bm';
 
 @Resolver()
 export default class CommunityResolver {
   @Query(() => [Community])
   async communities() {
-    return bm
+    return bloomManager
       .fork()
       .communityRepo()
       .findAll({ populate: ['memberships.type', 'memberships.user'] });
