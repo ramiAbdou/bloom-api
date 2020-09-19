@@ -55,7 +55,7 @@ export default class MembershipResolver {
    * Updates the membership data that is specified, and leaves all other
    * membership data alone.
    */
-  @Mutation(() => Boolean)
+  @Mutation(() => Boolean, { nullable: true })
   async updateMembershipData(
     @Args() { communityId, data, userId }: UpdateMembershipArgs
   ) {
