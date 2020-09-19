@@ -3,7 +3,14 @@
  * @author Rami Abdou
  */
 
-import { Collection, Entity, JsonType, OneToMany, Property } from 'mikro-orm';
+import {
+  BeforeCreate,
+  Collection,
+  Entity,
+  JsonType,
+  OneToMany,
+  Property
+} from 'mikro-orm';
 import { Field, ObjectType } from 'type-graphql';
 
 import { FormQuestion, GetFormQuestion } from '@constants';
@@ -38,9 +45,12 @@ export default class Community extends BaseEntity {
   primaryColor: string;
 
   @Field(() => String)
-  @Property({ persist: false })
-  get lowercaseName(): string {
-    return toLowerCaseDash(this.name);
+  @Property()
+  encodedName: string;
+
+  @BeforeCreate()
+  beforeCreate() {
+    this.encodedName = toLowerCaseDash(this.name);
   }
 
   /* 

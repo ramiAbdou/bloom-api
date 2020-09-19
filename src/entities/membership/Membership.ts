@@ -13,7 +13,7 @@ import {
 } from 'mikro-orm';
 import { Field, ObjectType } from 'type-graphql';
 
-import { GetFormValue } from '@constants';
+import { FormQuestion, GetFormValue } from '@constants';
 import BaseEntity from '@util/db/BaseEntity';
 import Community from '../community/Community';
 import MembershipType from '../membership-type/MembershipType';
@@ -44,7 +44,7 @@ export default class Membership extends BaseEntity {
     const { firstName, lastName, email } = this.user;
     const { name: membershipName } = this.type;
 
-    return membershipForm.map(({ category, title }) => {
+    return membershipForm.map(({ category, title }: FormQuestion) => {
       let value: any;
 
       if (category === 'FIRST_NAME') value = firstName;

@@ -14,4 +14,7 @@ export default class CreateMembershipArgs {
 
   @Field(() => [CreateFormValue])
   data: CreateFormValue[];
+
+  @Field({ nullable: true })
+  userId: string;
 }

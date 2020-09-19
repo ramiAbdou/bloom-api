@@ -18,14 +18,19 @@ export default class MembershipResolver {
    * User with the basic information from the membership data.
    */
   @Mutation(() => Boolean, { nullable: true })
-  async createMembership(@Args() { communityId, data }: CreateMembershipArgs) {
+  async createMembership(
+    @Args() { communityId, data, userId }: CreateMembershipArgs
+  ) {
     const bm = bloomManager.fork();
 
     const community: Community = await bm
       .communityRepo()
       .findOne({ id: communityId });
 
-    const user: User = new User();
+    const user: User = userId
+      ? await bm.userRepo().findOne({ id: userId })
+      : new User();
+
     const membership: Membership = new Membership();
     const membershipData: Record<string, any> = {};
 

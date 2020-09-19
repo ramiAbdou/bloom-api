@@ -94,8 +94,8 @@ export class GetFormValue {
   @Field(() => String)
   title: string;
 
-  @Field(() => String)
-  value: string;
+  @Field(() => String, { nullable: true })
+  value?: string;
 }
 
 @InputType()

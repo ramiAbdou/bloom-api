@@ -3,18 +3,17 @@
  * @author Rami Abdou
  */
 
-import { Query, Resolver } from 'type-graphql';
+import { Arg, Query, Resolver } from 'type-graphql';
 
 import bloomManager from '@bloomManager';
 import { Community } from '@entities';
 
 @Resolver()
 export default class CommunityResolver {
-  @Query(() => [Community])
-  async communities() {
-    return bloomManager
-      .fork()
-      .communityRepo()
-      .findAll({ populate: ['memberships.type', 'memberships.user'] });
+  @Query(() => Community)
+  async community(@Arg('encodedName') encodedName: string) {
+    const bm = bloomManager.fork();
+    const populate = ['memberships.type', 'memberships.user'];
+    return bm.communityRepo().findOne({ encodedName }, populate);
   }
 }
