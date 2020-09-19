@@ -43,16 +43,6 @@ export default class Community extends BaseEntity {
     return toLowerCaseDash(this.name);
   }
 
-  /**
-   * Returns the names of all of the data attributes, which are simply stored
-   * as the keys of the membershipForm record.
-   */
-  @Field(() => [String])
-  @Property({ persist: false })
-  get dataAttributes(): string[] {
-    return this.membershipForm ? Object.keys(this.membershipForm) : [];
-  }
-
   /* 
   ___     _      _   _             _    _         
  | _ \___| |__ _| |_(_)___ _ _  __| |_ (_)_ __ ___

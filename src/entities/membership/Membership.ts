@@ -28,6 +28,7 @@ export default class Membership extends BaseEntity {
   // -1: Rejected
   // 0: Pending
   // 1: Accepted
+  @Field(() => Number)
   @Enum({ items: [-1, 0, 1] })
   status = 0;
 
@@ -52,7 +53,7 @@ export default class Membership extends BaseEntity {
       else if (category === 'MEMBERSHIP_TYPE') value = membershipName;
       else value = this.data[title];
 
-      return { category, title, value };
+      return { title, value };
     }, {});
   }
 
@@ -70,8 +71,8 @@ export default class Membership extends BaseEntity {
     return membershipForm.reduce((acc: GetFormValue[], { category, title }) => {
       if (['FIRST_NAME', 'LAST_NAME', 'EMAIL'].includes(category)) return acc;
       if (category === 'MEMBERSHIP_TYPE')
-        acc.push({ category, title, value: membershipName });
-      else acc.push({ category, title, value: this.data[title] });
+        acc.push({ title, value: membershipName });
+      else acc.push({ title, value: this.data[title] });
       return acc;
     }, []);
   }

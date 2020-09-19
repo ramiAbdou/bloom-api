@@ -91,9 +91,6 @@ export class GetFormQuestion {
 
 @ObjectType()
 export class GetFormValue {
-  @Field(() => String, { nullable: true })
-  category: FormQuestionCategory;
-
   @Field(() => String)
   title: string;
 

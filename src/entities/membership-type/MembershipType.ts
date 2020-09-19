@@ -5,10 +5,9 @@
  * @author Rami Abdou
  */
 
-import { Collection, Entity, ManyToOne, OneToMany, Property } from 'mikro-orm';
+import { Entity, ManyToOne, Property } from 'mikro-orm';
 import { Field, ObjectType } from 'type-graphql';
 
-import { Membership } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 import Community from '../community/Community';
 
@@ -33,7 +32,4 @@ export default class MembershipType extends BaseEntity {
 
   @ManyToOne(() => Community)
   community: Community;
-
-  @OneToMany(() => Membership, ({ type }) => type)
-  memberships: Collection<Membership> = new Collection<Membership>(this);
 }
