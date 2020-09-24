@@ -3,9 +3,17 @@
  * @author Rami Abdou
  */
 
-import { Collection, Entity, OneToMany, Property } from 'mikro-orm';
+import {
+  BeforeCreate,
+  Collection,
+  Entity,
+  JsonType,
+  OneToMany,
+  Property
+} from 'mikro-orm';
 import { Field, ObjectType } from 'type-graphql';
 
+import { FormQuestion } from '@constants';
 import BaseEntity from '@util/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
 import MembershipType from '../membership-type/MembershipType';
@@ -19,23 +27,29 @@ export default class Community extends BaseEntity {
   autoAccept = false;
 
   // URL to the Digital Ocean space.
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   @Property({ nullable: true, unique: true })
   logo: string;
 
-  @Field(() => String)
+  // Maps the title to the item. Represented as JSON. This doesn't automatically
+  // include the First Name, Last Name, Email, and Membership Types, so when
+  // creating the membership form, those need to be specified.
+  @Field(() => [FormQuestion])
+  @Property({ type: JsonType })
+  membershipForm: FormQuestion[];
+
+  @Field()
   @Property({ unique: true })
   name: string;
 
-  // A color is in the form of hex such as: #000000.
-  @Field(() => String, { nullable: true })
-  @Property({ nullable: true })
-  primaryColor: string;
+  // The URL encoded version of the community name: ColorStack => colorstack.
+  @Field()
+  @Property({ unique: true })
+  encodedURLName: string;
 
-  @Field(() => String)
-  @Property({ persist: false })
-  get lowercaseName(): string {
-    return toLowerCaseDash(this.name);
+  @BeforeCreate()
+  beforeCreate() {
+    this.encodedURLName = toLowerCaseDash(this.name);
   }
 
   /* 
@@ -46,6 +60,7 @@ export default class Community extends BaseEntity {
                                          |_|      
   */
 
+  @Field(() => [Membership])
   @OneToMany(() => Membership, ({ community }) => community)
   memberships: Collection<Membership> = new Collection<Membership>(this);
 
@@ -53,15 +68,4 @@ export default class Community extends BaseEntity {
   membershipTypes: Collection<MembershipType> = new Collection<MembershipType>(
     this
   );
-
-  /*
-  __  __     _   _            _    
- |  \/  |___| |_| |_  ___  __| |___
- | |\/| / -_)  _| ' \/ _ \/ _` (_-<
- |_|  |_\___|\__|_||_\___/\__,_/__/                                  
-  */
-
-  getPublicMembershipTypes(): MembershipType[] {
-    return this.membershipTypes.getItems().filter(({ isAdmin }) => !isAdmin);
-  }
 }

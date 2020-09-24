@@ -6,26 +6,29 @@
  */
 
 import { Entity, ManyToOne, Property } from 'mikro-orm';
-import { Field, ObjectType } from 'type-graphql';
+import { Field, InputType, ObjectType } from 'type-graphql';
 
 import BaseEntity from '@util/db/BaseEntity';
 import Community from '../community/Community';
 
+@InputType()
 @ObjectType()
 @Entity()
 export default class MembershipType extends BaseEntity {
   // If the membership type is one that has admin priveleges, then mark as
   // true.
+  @Field(() => Boolean)
   @Property({ type: Boolean })
-  isAdmin = false;
+  isAdmin? = false;
 
   /**
    * @example "Youth Member"
    * @example "General Member"
    * @example "Leader"
    * @example "Alumni"
+   * @example "Admin"
    */
-  @Field(() => String)
+  @Field()
   @Property()
   name: string;
 

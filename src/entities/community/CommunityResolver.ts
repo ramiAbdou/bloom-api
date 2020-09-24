@@ -3,46 +3,59 @@
  * @author Rami Abdou
  */
 
-import { Arg, Query, Resolver } from 'type-graphql';
+import { Args, Mutation, Query, Resolver } from 'type-graphql';
 
 import bloomManager from '@bloomManager';
-import { Community, FormItem } from '@entities';
-import GetSignupFormObject from './GetSignupFormObject';
+import { Community } from '@entities';
+import {
+  CommunityPopulation,
+  CreateCommunityArgs,
+  GetCommunityArgs
+} from './CommunityArgs';
 
 @Resolver()
 export default class CommunityResolver {
   /**
-   * Returns the community's signup form data.
+   * Creates a new community when Bloom has a new customer. Omits the addition
+   * of a logo. For now, the community should send Bloom a square logo that
+   * we will manually add to the Digital Ocean space.
    */
-  @Query(() => GetSignupFormObject)
-  async getSignupForm(@Arg('communityName') communityName: string) {
+  @Mutation(() => Community, { nullable: true })
+  async createCommunity(
+    @Args()
+    { autoAccept, name, membershipForm, membershipTypes }: CreateCommunityArgs
+  ) {
+    const bm = bloomManager.fork();
+    const community = bm
+      .communityRepo()
+      .create({ autoAccept, membershipForm, membershipTypes, name });
+
+    await bm.persistAndFlush(
+      community,
+      `The ${name} community has been created!`,
+      { community }
+    );
+
+    return community;
+  }
+
+  /**
+   * Fetches a community either by the ID or by the encodedURLName. The only
+   * time the encodedURLName will be used is when the membershipForm is needed
+   * in the GraphQL request.
+   */
+  @Query(() => Community)
+  async getCommunity(
+    @Args() { encodedURLName, id, population }: GetCommunityArgs
+  ) {
     const bm = bloomManager.fork();
 
-    const populate = [
-      'membershipForm.items.options',
-      'membershipForm.items.type',
-      'membershipTypes'
-    ];
+    const populate =
+      population === CommunityPopulation.GET_MEMBERSHIPS
+        ? ['memberships.type', 'memberships.user']
+        : [];
 
-    // Fetch the community by the lowercase name.
-    const community: Community = await bm
-      .communityRepo()
-      .findOne({ lowercaseName: communityName }, { populate });
-
-    // Construct the result object to have the membership form's name, the form
-    // items included in the form, as well as the membership types.
-    const result = Object.create(null);
-
-    const { membershipForm } = community;
-    const { description, items, name: membershipFormName } = membershipForm;
-
-    result.description = description;
-    result.name = membershipFormName;
-    result.membershipTypes = community.getPublicMembershipTypes();
-    result.items = items
-      .getItems()
-      .map((item: FormItem) => item.serializeFormItem());
-
-    return result;
+    const queryBy = id ? { id } : { encodedURLName };
+    return bm.communityRepo().findOne({ ...queryBy }, { populate });
   }
 }

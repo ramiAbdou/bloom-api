@@ -3,6 +3,8 @@
  * @author Rami Abdou
  */
 
+import { IsUrl } from 'class-validator';
+
 import {
   BeforeCreate,
   Cascade,
@@ -27,40 +29,48 @@ export default class User extends BaseEntity {
  |_| |_\___|_\__,_/__/
   */
 
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   @Property({ nullable: true, type: 'text' })
   bio: string;
 
-  @Field(() => String)
-  @Property({ nullable: false, unique: true })
+  @Field()
+  @Property({ unique: true })
   email: string;
 
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   @Property({ nullable: true })
+  @IsUrl()
   facebookUrl: string;
 
-  @Field(() => String)
+  @Field()
   @Property()
   firstName: string;
 
-  @Field(() => String)
-  @Enum({ items: ['Male', 'Female', 'Non-Binary'] })
+  @Field({ nullable: true })
+  @Enum({
+    items: ['Male', 'Female', 'Non-Binary', 'Prefer Not to Say'],
+    nullable: true,
+    type: String
+  })
   gender: string;
 
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   @Property({ nullable: true, unique: true })
+  @IsUrl()
   igUrl: string;
 
-  @Field(() => String)
+  @Field()
   @Property()
   lastName: string;
 
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   @Property({ nullable: true })
+  @IsUrl()
   linkedInUrl: string;
 
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   @Property({ nullable: true })
+  @IsUrl()
   twitterUrl: string;
 
   @BeforeCreate()
@@ -70,7 +80,7 @@ export default class User extends BaseEntity {
     this.lastName = this.lastName.trim();
   }
 
-  @Field(() => String)
+  @Field()
   @Property({ persist: false })
   get fullName(): string {
     return `${this.firstName} ${this.lastName}`;

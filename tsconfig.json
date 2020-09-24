@@ -3,13 +3,14 @@
     "baseUrl": ".", // Just used for the paths.
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
-    "experimentalDecorators": true,
+    "experimentalDecorators": true, // Allows the @ decorators used by MikroORM.
     "lib": ["es2018", "esnext.asynciterable"],
     "module": "commonjs",
     "moduleResolution": "node",
-    "outDir": "./dist/",
+    "outDir": "./dist/", // Outputs the compiled JS to the /dist folder.
     "paths": {
-      "@bm": ["./src/util/db/bloomManager.ts"],
+      // Used for path aliases.
+      "@bloomManager": ["./src/util/db/bm.ts"],
       "@constants": ["./src/util/constants.ts"],
       "@core/*": ["./src/core/*"],
       "@entities": ["src/entities/index.ts"],
@@ -18,7 +19,7 @@
       "@repos": ["src/entities/repos.ts"],
       "@util/*": ["./src/util/*"]
     },
-    "resolveJsonModule": true,
+    "resolveJsonModule": true, // Allows JSON files to be resolved.
     "sourceMap": true,
     "strictPropertyInitialization": false,
     "target": "es2018",

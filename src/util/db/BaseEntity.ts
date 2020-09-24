@@ -15,13 +15,13 @@ import { now } from '@util/util';
 export default abstract class BaseEntity {
   @Field(() => ID)
   @PrimaryKey()
-  id: string = shortid();
+  id: string = shortid().toLowerCase();
 
-  @Field(() => String)
+  @Field()
   @Property()
   createdAt: string = now();
 
-  @Field(() => String)
+  @Field()
   @Property({ onUpdate: () => now() })
   updatedAt: string = now();
 }
