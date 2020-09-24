@@ -29,7 +29,7 @@ export default class CommunityResolver {
       .create({ autoAccept, membershipForm, name });
 
     membershipTypes.forEach((type: MembershipType) =>
-      bm.membershipTypeRepo().create(type)
+      bm.membershipTypeRepo().create({ ...type, community })
     );
 
     await bm.persistAndFlush(
