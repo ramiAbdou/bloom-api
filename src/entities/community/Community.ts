@@ -27,7 +27,7 @@ export default class Community extends BaseEntity {
   autoAccept = false;
 
   // URL to the Digital Ocean space.
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   @Property({ nullable: true, unique: true })
   logo: string;
 
@@ -38,12 +38,12 @@ export default class Community extends BaseEntity {
   @Property({ type: JsonType })
   membershipForm: FormQuestion[];
 
-  @Field(() => String)
+  @Field()
   @Property({ unique: true })
   name: string;
 
   // The URL encoded version of the community name: ColorStack => colorstack.
-  @Field(() => String)
+  @Field()
   @Property({ unique: true })
   encodedURLName: string;
 

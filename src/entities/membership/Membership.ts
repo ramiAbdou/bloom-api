@@ -23,8 +23,6 @@ import Community from '../community/Community';
 import MembershipType from '../membership-type/MembershipType';
 import User from '../user/User';
 
-// const { FIRST_NAME, LAST_NAME, EMAIL, GENDER, MEMBERSHIP_TYPE } = Category;
-
 @ObjectType()
 @Entity()
 export default class Membership extends BaseEntity {
@@ -62,7 +60,7 @@ export default class Membership extends BaseEntity {
       else value = this.data[title];
 
       return { title, value };
-    }, {});
+    });
   }
 
   /**
@@ -77,22 +75,11 @@ export default class Membership extends BaseEntity {
     const { name: membershipName } = this.type;
 
     return membershipForm.reduce((acc: FormValue[], { category, title }) => {
-      // If the category is one of the following, just return the accumulator.
-      if (
-        [
-          Category.FIRST_NAME,
-          Category.LAST_NAME,
-          Category.EMAIL,
-          Category.GENDER
-        ].includes(category)
-      )
-        return acc;
-
       // If it's the membership type, push that value from the entity.
       if (category === Category.MEMBERSHIP_TYPE)
         acc.push({ title, value: membershipName });
       // Otherwise, get the value from the data that lives on the Membership.
-      else acc.push({ title, value: this.data[title] });
+      else if (!category) acc.push({ title, value: this.data[title] });
       return acc;
     }, []);
   }

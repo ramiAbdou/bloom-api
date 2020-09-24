@@ -17,11 +17,11 @@ export default abstract class BaseEntity {
   @PrimaryKey()
   id: string = shortid().toLowerCase();
 
-  @Field(() => String)
+  @Field()
   @Property()
   createdAt: string = now();
 
-  @Field(() => String)
+  @Field()
   @Property({ onUpdate: () => now() })
   updatedAt: string = now();
 }

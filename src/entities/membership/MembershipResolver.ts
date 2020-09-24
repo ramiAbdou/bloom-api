@@ -102,9 +102,8 @@ export default class MembershipResolver {
     membership.status = response;
 
     await bm.flush(
-      `${admin.fullName} ${response === 1 ? 'approved' : 'rejected'} ${
-        membership.user.fullName
-      }'s membership application.`,
+      `${admin.fullName} responded to ${membership.user.fullName}'s membership
+      application.`,
       { admin, membership }
     );
   }

@@ -28,7 +28,7 @@ export default class MembershipType extends BaseEntity {
    * @example "Alumni"
    * @example "Admin"
    */
-  @Field(() => String)
+  @Field()
   @Property()
   name: string;
 

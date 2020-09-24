@@ -70,7 +70,7 @@ export class FormQuestion {
   @Field(() => FormQuestionCategory, { nullable: true })
   category?: FormQuestionCategory;
 
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   description?: string;
 
   @Field(() => Boolean)
@@ -79,7 +79,7 @@ export class FormQuestion {
   @Field(() => [String], { nullable: true })
   options?: string[];
 
-  @Field(() => String)
+  @Field()
   title: string;
 
   @Field(() => FormQuestionType)
@@ -91,7 +91,7 @@ export class FormQuestionInput {
   @Field(() => FormQuestionCategory, { nullable: true })
   category?: FormQuestionCategory;
 
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   description?: string;
 
   @Field(() => Boolean)
@@ -100,7 +100,7 @@ export class FormQuestionInput {
   @Field(() => [String], { nullable: true })
   options?: string[];
 
-  @Field(() => String)
+  @Field()
   title: string;
 
   @Field(() => FormQuestionType)
@@ -109,10 +109,10 @@ export class FormQuestionInput {
 
 @ObjectType()
 export class FormValue {
-  @Field(() => String)
+  @Field()
   title: string;
 
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   value?: string;
 }
 
@@ -123,9 +123,9 @@ export class FormValueInput {
   @Field(() => FormQuestionCategory, { nullable: true })
   category: FormQuestionCategory;
 
-  @Field(() => String)
+  @Field()
   title: string;
 
-  @Field(() => String)
+  @Field()
   value: string;
 }
