@@ -6,7 +6,7 @@
 import { Args, Mutation, Resolver } from 'type-graphql';
 
 import bloomManager from '@bloomManager';
-import { CreateFormValue } from '@constants';
+import { FormValueInput } from '@constants';
 import { Community, Membership, User } from '@entities';
 import {
   CreateMembershipArgs,
@@ -46,7 +46,7 @@ export default class MembershipResolver {
     // We only use a Promise for the Membership Type case since we need to
     // fetch the type from the DB.
     await Promise.all(
-      data.map(async ({ category, title, value }: CreateFormValue) => {
+      data.map(async ({ category, title, value }: FormValueInput) => {
         if (category === 'FIRST_NAME') user.firstName = value;
         else if (category === 'LAST_NAME') user.lastName = value;
         else if (category === 'EMAIL') user.email = value;
@@ -68,17 +68,15 @@ export default class MembershipResolver {
    */
   @Mutation(() => Boolean, { nullable: true })
   async updateMembershipData(
-    @Args() { communityId, data, userId }: UpdateMembershipArgs
+    @Args() { data, membershipId }: UpdateMembershipArgs
   ) {
     const bm = bloomManager.fork();
 
     const membership: Membership = await bm
       .membershipRepo()
-      .findOne({ community: { id: communityId }, user: { id: userId } }, [
-        'user'
-      ]);
+      .findOne({ id: membershipId }, ['user']);
 
-    data.forEach(({ title, value }: CreateFormValue) => {
+    data.forEach(({ title, value }: FormValueInput) => {
       membership.data[title] = value;
     });
 

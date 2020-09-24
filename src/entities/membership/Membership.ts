@@ -13,11 +13,17 @@ import {
 } from 'mikro-orm';
 import { Field, ObjectType } from 'type-graphql';
 
-import { FormQuestion, GetFormValue } from '@constants';
+import {
+  FormQuestion,
+  FormQuestionCategory as Category,
+  FormValue
+} from '@constants';
 import BaseEntity from '@util/db/BaseEntity';
 import Community from '../community/Community';
 import MembershipType from '../membership-type/MembershipType';
 import User from '../user/User';
+
+// const { FIRST_NAME, LAST_NAME, EMAIL, GENDER, MEMBERSHIP_TYPE } = Category;
 
 @ObjectType()
 @Entity()
@@ -37,8 +43,8 @@ export default class Membership extends BaseEntity {
    * Returns the full data of the membership including the user's basic
    * information like First Name, Last Name, etc.
    */
-  @Field(() => [GetFormValue])
-  getFullData(): GetFormValue[] {
+  @Field(() => [FormValue])
+  getFullData(): FormValue[] {
     if (!this.data) return [];
 
     const { membershipForm } = this.community;
@@ -48,11 +54,11 @@ export default class Membership extends BaseEntity {
     return membershipForm.map(({ category, title }: FormQuestion) => {
       let value: any;
 
-      if (category === 'FIRST_NAME') value = firstName;
-      else if (category === 'LAST_NAME') value = lastName;
-      else if (category === 'EMAIL') value = email;
-      else if (category === 'GENDER') value = gender;
-      else if (category === 'MEMBERSHIP_TYPE') value = membershipName;
+      if (category === Category.FIRST_NAME) value = firstName;
+      else if (category === Category.LAST_NAME) value = lastName;
+      else if (category === Category.EMAIL) value = email;
+      else if (category === Category.GENDER) value = gender;
+      else if (category === Category.MEMBERSHIP_TYPE) value = membershipName;
       else value = this.data[title];
 
       return { title, value };
@@ -63,20 +69,27 @@ export default class Membership extends BaseEntity {
    * Returns the only the data that is associated with this membership, and none
    * of the data that lives on the User entity.
    */
-  @Field(() => [GetFormValue])
-  getBasicMembershipData(): GetFormValue[] {
+  @Field(() => [FormValue])
+  getBasicMembershipData(): FormValue[] {
     if (!this.data) return [];
 
     const { membershipForm } = this.community;
     const { name: membershipName } = this.type;
 
-    return membershipForm.reduce((acc: GetFormValue[], { category, title }) => {
+    return membershipForm.reduce((acc: FormValue[], { category, title }) => {
       // If the category is one of the following, just return the accumulator.
-      if (['FIRST_NAME', 'LAST_NAME', 'EMAIL', 'GENDER'].includes(category))
+      if (
+        [
+          Category.FIRST_NAME,
+          Category.LAST_NAME,
+          Category.EMAIL,
+          Category.GENDER
+        ].includes(category)
+      )
         return acc;
 
       // If it's the membership type, push that value from the entity.
-      if (category === 'MEMBERSHIP_TYPE')
+      if (category === Category.MEMBERSHIP_TYPE)
         acc.push({ title, value: membershipName });
       // Otherwise, get the value from the data that lives on the Membership.
       else acc.push({ title, value: this.data[title] });

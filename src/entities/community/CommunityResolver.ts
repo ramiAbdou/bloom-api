@@ -20,7 +20,7 @@ export default class CommunityResolver {
    * of a logo. For now, the community should send Bloom a square logo that
    * we will manually add to the Digital Ocean space.
    */
-  @Mutation(() => Boolean, { nullable: true })
+  @Mutation(() => Community, { nullable: true })
   async createCommunity(
     @Args()
     { autoAccept, name, membershipForm, membershipTypes }: CreateCommunityArgs
@@ -39,6 +39,8 @@ export default class CommunityResolver {
       `The ${name} community has been created!`,
       { community }
     );
+
+    return community;
   }
 
   /**

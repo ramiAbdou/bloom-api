@@ -19,7 +19,7 @@ export default class MembershipType extends BaseEntity {
   // true.
   @Field(() => Boolean)
   @Property({ type: Boolean })
-  isAdmin = false;
+  isAdmin? = false;
 
   /**
    * @example "Youth Member"

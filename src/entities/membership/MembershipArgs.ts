@@ -5,15 +5,15 @@
 
 import { ArgsType, Field } from 'type-graphql';
 
-import { CreateFormValue } from '@constants';
+import { FormValueInput } from '@constants';
 
 @ArgsType()
 export class CreateMembershipArgs {
   @Field()
   communityId: string;
 
-  @Field(() => [CreateFormValue])
-  data: CreateFormValue[];
+  @Field(() => [FormValueInput])
+  data: FormValueInput[];
 
   // This will only be non-null if the User already exists.
   @Field({ nullable: true })
@@ -35,12 +35,9 @@ export class MembershipResponseArgs {
 
 @ArgsType()
 export class UpdateMembershipArgs {
-  @Field()
-  communityId: string;
-
-  @Field(() => [CreateFormValue])
-  data: CreateFormValue[];
+  @Field(() => [FormValueInput])
+  data: FormValueInput[];
 
   @Field()
-  userId: string;
+  membershipId: string;
 }

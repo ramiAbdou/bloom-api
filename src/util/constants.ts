@@ -10,7 +10,7 @@
 import dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import path from 'path'; // Before constants.
-import { Field, InputType, ObjectType } from 'type-graphql';
+import { Field, InputType, ObjectType, registerEnumType } from 'type-graphql';
 
 import { isProduction } from './util';
 
@@ -46,30 +46,35 @@ export type Route = {
   route: string;
 };
 
-type FormQuestionCategory =
-  | 'FIRST_NAME'
-  | 'LAST_NAME'
-  | 'EMAIL'
-  | 'GENDER'
-  | 'MEMBERSHIP_TYPE';
+export enum FormQuestionCategory {
+  FIRST_NAME = 'FIRST_NAME',
+  LAST_NAME = 'LAST_NAME',
+  EMAIL = 'EMAIL',
+  GENDER = 'GENDER',
+  MEMBERSHIP_TYPE = 'MEMBERSHIP_TYPE'
+}
 
-type FormQuestionType =
-  | 'SHORT_TEXT'
-  | 'LONG_TEXT'
-  | 'MULTIPLE_CHOICE'
-  | 'DROPDOWN'
-  | 'DROPDOWN_MULTIPLE';
+export enum FormQuestionType {
+  SHORT_TEXT = 'SHORT_TEXT',
+  LONG_TEXT = 'LONG_TEXT',
+  MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
+  DROPDOWN = 'DROPDOWN',
+  DROPDOWN_MULTIPLE = 'DROPDOWN_MULTIPLE'
+}
+
+registerEnumType(FormQuestionCategory, { name: 'FormQuestionCategory' });
+registerEnumType(FormQuestionType, { name: 'FormQuestionType' });
 
 @ObjectType()
 export class FormQuestion {
-  @Field(() => String, { nullable: true })
+  @Field(() => FormQuestionCategory, { nullable: true })
   category?: FormQuestionCategory;
 
   @Field(() => String, { nullable: true })
   description?: string;
 
   @Field(() => Boolean)
-  required? = false;
+  required = false;
 
   @Field(() => [String], { nullable: true })
   options?: string[];
@@ -77,20 +82,20 @@ export class FormQuestion {
   @Field(() => String)
   title: string;
 
-  @Field(() => String)
+  @Field(() => FormQuestionType)
   type: FormQuestionType;
 }
 
 @InputType()
-export class CreateFormQuestion {
-  @Field(() => String, { nullable: true })
+export class FormQuestionInput {
+  @Field(() => FormQuestionCategory, { nullable: true })
   category?: FormQuestionCategory;
 
   @Field(() => String, { nullable: true })
   description?: string;
 
   @Field(() => Boolean)
-  required? = false;
+  required = false;
 
   @Field(() => [String], { nullable: true })
   options?: string[];
@@ -98,12 +103,12 @@ export class CreateFormQuestion {
   @Field(() => String)
   title: string;
 
-  @Field(() => String)
+  @Field(() => FormQuestionType)
   type: FormQuestionType;
 }
 
 @ObjectType()
-export class GetFormValue {
+export class FormValue {
   @Field(() => String)
   title: string;
 
@@ -112,10 +117,10 @@ export class GetFormValue {
 }
 
 @InputType()
-export class CreateFormValue {
+export class FormValueInput {
   // This will only be populated when there is a special form question, in which
   // case it will be added to the User entity.
-  @Field(() => String, { nullable: true })
+  @Field(() => FormQuestionCategory, { nullable: true })
   category: FormQuestionCategory;
 
   @Field(() => String)

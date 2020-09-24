@@ -3,7 +3,36 @@
  * @author Rami Abdou
  */
 
+import { graphql, GraphQLSchema } from 'graphql';
+import { Maybe } from 'graphql/jsutils/Maybe';
 import moment from 'moment';
+import { buildSchema } from 'type-graphql';
+
+import CommunityResolver from '../entities/community/CommunityResolver';
+import MembershipResolver from '../entities/membership/MembershipResolver';
+import UserResolver from '../entities/user/UserResolver';
+
+interface Options {
+  source: string;
+  variables?: Maybe<{ [key: string]: any }>;
+}
+
+/**
+ * Creates the GraphQL Schema based on the resolvers.
+ */
+export const createSchema = async (): Promise<GraphQLSchema> =>
+  buildSchema({
+    resolvers: [CommunityResolver, MembershipResolver, UserResolver],
+    // Only set to false b/c we don't use the class-validator anywhere YET.
+    validate: false
+  });
+
+export const callGQL = async ({ source, variables }: Options) =>
+  graphql({
+    schema: await createSchema(),
+    source,
+    variableValues: variables
+  });
 
 /**
  * Returns the string as lowercase with spaces replaced by dashes.

@@ -44,7 +44,7 @@ export default class Community extends BaseEntity {
 
   // The URL encoded version of the community name: ColorStack => colorstack.
   @Field(() => String)
-  @Property()
+  @Property({ unique: true })
   encodedURLName: string;
 
   @BeforeCreate()
