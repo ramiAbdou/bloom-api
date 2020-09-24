@@ -3,6 +3,7 @@
  * @author Rami Abdou
  */
 
+import { IsUrl } from 'class-validator';
 import {
   BeforeCreate,
   Cascade,
@@ -37,6 +38,7 @@ export default class User extends BaseEntity {
 
   @Field({ nullable: true })
   @Property({ nullable: true })
+  @IsUrl()
   facebookUrl: string;
 
   @Field()
@@ -53,6 +55,7 @@ export default class User extends BaseEntity {
 
   @Field({ nullable: true })
   @Property({ nullable: true, unique: true })
+  @IsUrl()
   igUrl: string;
 
   @Field()
@@ -61,10 +64,12 @@ export default class User extends BaseEntity {
 
   @Field({ nullable: true })
   @Property({ nullable: true })
+  @IsUrl()
   linkedInUrl: string;
 
   @Field({ nullable: true })
   @Property({ nullable: true })
+  @IsUrl()
   twitterUrl: string;
 
   @BeforeCreate()

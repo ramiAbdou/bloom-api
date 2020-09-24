@@ -22,9 +22,7 @@ interface Options {
  */
 export const createSchema = async (): Promise<GraphQLSchema> =>
   buildSchema({
-    resolvers: [CommunityResolver, MembershipResolver, UserResolver],
-    // Only set to false b/c we don't use the class-validator anywhere YET.
-    validate: false
+    resolvers: [CommunityResolver, MembershipResolver, UserResolver]
   });
 
 export const callGQL = async ({ source, variables }: Options) =>
