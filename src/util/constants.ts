@@ -80,6 +80,27 @@ export class FormQuestion {
   type: 0 | 1 | 2 | 3 | 4;
 }
 
+@InputType()
+export class CreateFormQuestion {
+  @Field(() => String, { nullable: true })
+  category?: FormQuestionCategory;
+
+  @Field(() => String, { nullable: true })
+  description?: string;
+
+  @Field(() => Boolean)
+  required? = false;
+
+  @Field(() => [String], { nullable: true })
+  options?: string[];
+
+  @Field(() => String)
+  title: string;
+
+  @Field(() => Number)
+  type: 0 | 1 | 2 | 3 | 4;
+}
+
 @ObjectType()
 export class GetFormValue {
   @Field(() => String)

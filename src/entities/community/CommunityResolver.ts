@@ -6,7 +6,7 @@
 import { Args, Mutation, Query, Resolver } from 'type-graphql';
 
 import bloomManager from '@bloomManager';
-import { Community } from '@entities';
+import { Community, MembershipType } from '@entities';
 import CommunityPopulation from './CommunityPopulation';
 import CreateCommunityArgs from './CreateCommunityArgs';
 import GetCommunityArgs from './GetCommunityArgs';
@@ -19,9 +19,19 @@ export default class CommunityResolver {
    * we will manually add to the Digital Ocean space.
    */
   @Mutation(() => Boolean, { nullable: true })
-  async createCommunity(@Args() { name, membershipForm }: CreateCommunityArgs) {
+  async createCommunity(
+    @Args()
+    { autoAccept, name, membershipForm, membershipTypes }: CreateCommunityArgs
+  ) {
     const bm = bloomManager.fork();
-    const community = bm.communityRepo().create({ membershipForm, name });
+    const community = bm
+      .communityRepo()
+      .create({ autoAccept, membershipForm, name });
+
+    membershipTypes.forEach((type: MembershipType) =>
+      bm.membershipTypeRepo().create(type)
+    );
+
     await bm.persistAndFlush(
       community,
       `The ${name} community has been created!`,
