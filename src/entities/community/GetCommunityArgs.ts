@@ -5,6 +5,8 @@
 
 import { ArgsType, Field } from 'type-graphql';
 
+import CommunityPopulation from './CommunityPopulation';
+
 @ArgsType()
 export default class GetCommunityArgs {
   @Field({ nullable: true })
@@ -12,4 +14,7 @@ export default class GetCommunityArgs {
 
   @Field({ nullable: true })
   encodedURLName?: string;
+
+  @Field(() => CommunityPopulation, { nullable: true })
+  population?: CommunityPopulation;
 }

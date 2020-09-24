@@ -7,6 +7,7 @@ import { Args, Mutation, Query, Resolver } from 'type-graphql';
 
 import bloomManager from '@bloomManager';
 import { Community } from '@entities';
+import CommunityPopulation from './CommunityPopulation';
 import GetCommunityArgs from './GetCommunityArgs';
 
 @Resolver()
@@ -20,9 +21,17 @@ export default class CommunityResolver {
   async createCommunity() {}
 
   @Query(() => Community)
-  async getCommunity(@Args() { encodedURLName, id }: GetCommunityArgs) {
+  async getCommunity(
+    @Args() { encodedURLName, id, population }: GetCommunityArgs
+  ) {
     const bm = bloomManager.fork();
+
+    const populate =
+      population === CommunityPopulation.GET_MEMBERSHIPS
+        ? ['memberships.type', 'memberships.user']
+        : [];
+
     const queryBy = id ? { id } : { encodedURLName };
-    return bm.communityRepo().findOne({ ...queryBy });
+    return bm.communityRepo().findOne({ ...queryBy }, { populate });
   }
 }

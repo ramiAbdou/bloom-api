@@ -31,7 +31,9 @@ export default class Community extends BaseEntity {
   @Property({ nullable: true, unique: true })
   logo: string;
 
-  // Maps the title to the item.
+  // Maps the title to the item. Represented as JSON. This doesn't automatically
+  // include the First Name, Last Name, Email, and Membership Types, so when
+  // creating the membership form, those need to be specified.
   @Field(() => [FormQuestion], { nullable: true })
   @Property({ nullable: true, type: JsonType })
   membershipForm: FormQuestion[];
