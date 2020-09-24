@@ -22,6 +22,7 @@ module.exports = {
   ],
   rules: {
     '@typescript-eslint/ban-ts-ignore': 0, // Allow @ts-ignore to be used.
+    '@typescript-eslint/no-empty-function': 0, // This will likely never happen.
     '@typescript-eslint/no-explicit-any': 0, // Allow type "any" to be used.
     '@typescript-eslint/no-unused-vars': [
       2,

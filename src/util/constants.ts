@@ -59,17 +59,8 @@ type FormQuestionCategory =
   | 'GENDER'
   | 'MEMBERSHIP_TYPE';
 
-export type FormQuestion = {
-  category?: FormQuestionCategory;
-  description?: string;
-  required?: boolean;
-  options?: string[];
-  title: string;
-  type: 0 | 1 | 2 | 3 | 4;
-};
-
 @ObjectType()
-export class GetFormQuestion {
+export class FormQuestion {
   @Field(() => String, { nullable: true })
   category?: FormQuestionCategory;
 

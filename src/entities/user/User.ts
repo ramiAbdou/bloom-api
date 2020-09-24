@@ -32,7 +32,7 @@ export default class User extends BaseEntity {
   bio: string;
 
   @Field(() => String)
-  @Property({ nullable: false, unique: true })
+  @Property({ unique: true })
   email: string;
 
   @Field(() => String, { nullable: true })

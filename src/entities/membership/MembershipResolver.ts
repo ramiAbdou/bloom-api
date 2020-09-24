@@ -3,7 +3,7 @@
  * @author Rami Abdou
  */
 
-import { Args, Mutation, Resolver } from 'type-graphql';
+import { Arg, Args, Mutation, Query, Resolver } from 'type-graphql';
 
 import bloomManager from '@bloomManager';
 import { CreateFormValue } from '@constants';
@@ -13,6 +13,19 @@ import UpdateMembershipArgs from './UpdateMembershipArgs';
 
 @Resolver()
 export default class MembershipResolver {
+  @Query(() => [Membership])
+  async membersByCommunity(@Arg('communityId') communityId: string) {
+    const bm = bloomManager.fork();
+
+    // Fetch all the memberships in the community and return members in
+    // ascending order by the first names.
+    return bm
+      .membershipRepo()
+      .find({ community: { id: communityId } }, ['community', 'type', 'user'], {
+        'user.firstName': 'ASC'
+      });
+  }
+
   /**
    * Creates a Membership is for the given Community ID, and also creates a
    * User with the basic information from the membership data.

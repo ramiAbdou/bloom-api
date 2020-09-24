@@ -85,11 +85,11 @@ export default class Membership extends BaseEntity {
                                          |_|      
   */
 
-  @ManyToOne(() => MembershipType)
-  type: MembershipType;
-
   @ManyToOne(() => Community)
   community: Community;
+
+  @ManyToOne(() => MembershipType)
+  type: MembershipType;
 
   @ManyToOne(() => User)
   user: User;

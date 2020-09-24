@@ -1,5 +1,5 @@
 /**
- * @fileoverview Resolver Argument: CreateMembership
+ * @fileoverview Resolver Argument: CreateMember
  * @author Rami Abdou
  */
 
@@ -8,7 +8,7 @@ import { ArgsType, Field } from 'type-graphql';
 import { CreateFormValue } from '@constants';
 
 @ArgsType()
-export default class CreateMembershipArgs {
+export default class CreateMemberArgs {
   @Field()
   communityId: string;
 

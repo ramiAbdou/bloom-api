@@ -13,7 +13,7 @@ import {
 } from 'mikro-orm';
 import { Field, ObjectType } from 'type-graphql';
 
-import { FormQuestion, GetFormQuestion } from '@constants';
+import { FormQuestion } from '@constants';
 import BaseEntity from '@util/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
 import MembershipType from '../membership-type/MembershipType';
@@ -31,26 +31,23 @@ export default class Community extends BaseEntity {
   @Property({ nullable: true, unique: true })
   logo: string;
 
-  @Field(() => [GetFormQuestion], { nullable: true })
+  // Maps the title to the item.
+  @Field(() => [FormQuestion], { nullable: true })
   @Property({ nullable: true, type: JsonType })
-  membershipForm: FormQuestion[]; // Maps the title to the item.
+  membershipForm: FormQuestion[];
 
   @Field(() => String)
   @Property({ unique: true })
   name: string;
 
-  // A color is in the form of hex such as: #000000.
-  @Field(() => String, { nullable: true })
-  @Property({ nullable: true })
-  primaryColor: string;
-
+  // The URL encoded version of the community name: ColorStack => colorstack.
   @Field(() => String)
   @Property()
-  encodedName: string;
+  encodedURLName: string;
 
   @BeforeCreate()
   beforeCreate() {
-    this.encodedName = toLowerCaseDash(this.name);
+    this.encodedURLName = toLowerCaseDash(this.name);
   }
 
   /* 
