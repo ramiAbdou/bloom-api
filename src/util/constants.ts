@@ -121,10 +121,10 @@ export class FormValueInput {
   // This will only be populated when there is a special form question, in which
   // case it will be added to the User entity.
   @Field(() => FormQuestionCategory, { nullable: true })
-  category: FormQuestionCategory;
+  category?: FormQuestionCategory;
 
-  @Field()
-  title: string;
+  @Field({ nullable: true })
+  title?: string;
 
   @Field()
   value: string;

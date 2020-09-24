@@ -20,7 +20,7 @@ export default class MembershipResolver {
    * Creates a Membership is for the given Community ID, and also creates a
    * User with the basic information from the membership data.
    */
-  @Mutation(() => Boolean, { nullable: true })
+  @Mutation(() => Membership)
   async createMembership(
     @Args() { communityId, data, email }: CreateMembershipArgs
   ) {
@@ -58,15 +58,20 @@ export default class MembershipResolver {
       })
     );
 
-    bm.persist([membership, user]);
-    await bm.flush(`Membership created for ${user.fullName}.`, { user });
+    await bm.persistAndFlush(
+      membership,
+      `Membership created for ${user.fullName}.`,
+      { user }
+    );
+
+    return membership;
   }
 
   /**
    * Updates the membership data that is specified, and leaves all other
    * membership data alone.
    */
-  @Mutation(() => Boolean, { nullable: true })
+  @Mutation(() => Membership)
   async updateMembershipData(
     @Args() { data, membershipId }: UpdateMembershipArgs
   ) {
@@ -74,7 +79,7 @@ export default class MembershipResolver {
 
     const membership: Membership = await bm
       .membershipRepo()
-      .findOne({ id: membershipId }, ['user']);
+      .findOne({ id: membershipId }, ['community', 'type', 'user']);
 
     data.forEach(({ title, value }: FormValueInput) => {
       membership.data[title] = value;
@@ -82,13 +87,15 @@ export default class MembershipResolver {
 
     const { user } = membership;
     await bm.flush(`Membership data updated for ${user.fullName}.`, { user });
+
+    return membership;
   }
 
   /**
    * An admin has the option to either accept or reject a Membership when they
    * apply to the organization.
    */
-  @Mutation(() => Boolean, { nullable: true })
+  @Mutation(() => Membership)
   async respondToMembership(
     @Args() { adminId, membershipId, response }: MembershipResponseArgs
   ) {
@@ -106,5 +113,7 @@ export default class MembershipResolver {
       application.`,
       { admin, membership }
     );
+
+    return membership;
   }
 }

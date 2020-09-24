@@ -3,7 +3,7 @@
  * @author Rami Abdou
  */
 
-import { ArgsType, Field } from 'type-graphql';
+import { ArgsType, Field, Int } from 'type-graphql';
 
 import { FormValueInput } from '@constants';
 
@@ -29,7 +29,7 @@ export class MembershipResponseArgs {
   @Field()
   membershipId: string;
 
-  @Field(() => Number)
+  @Field(() => Int)
   response: number;
 }
 

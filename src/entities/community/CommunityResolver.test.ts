@@ -16,12 +16,26 @@ import { callGQL } from '@util/util';
 import { CommunityPopulation } from './CommunityArgs';
 
 describe('Community Resolver', () => {
+  /* 
+  ___       __             
+ | _ ) ___ / _|___ _ _ ___ 
+ | _ \/ -_)  _/ _ \ '_/ -_)
+ |___/\___|_| \___/_| \___|
+  */
+
   before(async () => {
     await cleanDBForTesting();
     await createConnection();
   });
 
-  it('Create a community.', async () => {
+  /* 
+  _____       _   
+ |_   _|__ __| |_ 
+   | |/ -_|_-<  _|
+   |_|\___/__/\__|
+  */
+
+  it('createCommunity', async () => {
     const source = `
       mutation Community (
         $name: String!,
@@ -68,7 +82,14 @@ describe('Community Resolver', () => {
     expect(community.membershipTypes.length).to.equal(membershipTypes.length);
   });
 
-  it('Get a community (no memberships).', async () => {
+  /* 
+  _____       _   
+ |_   _|__ __| |_ 
+   | |/ -_|_-<  _|
+   |_|\___/__/\__|
+  */
+
+  it('getCommunity - without population.', async () => {
     const bm = bloomManager.fork();
     const community = bm.communityRepo().create({
       membershipForm: [
@@ -98,7 +119,14 @@ describe('Community Resolver', () => {
     expect(response.data.getCommunity.name).to.equal(community.name);
   });
 
-  it('Get a community (with memberships).', async () => {
+  /* 
+  _____       _   
+ |_   _|__ __| |_ 
+   | |/ -_|_-<  _|
+   |_|\___/__/\__|
+  */
+
+  it('getCommunity - with population.', async () => {
     const bm = bloomManager.fork();
     const community = bm.communityRepo().create({
       membershipForm: [
@@ -153,6 +181,13 @@ describe('Community Resolver', () => {
     expect(result.name).to.equal(community.name);
     expect(result.memberships[0].user.firstName).to.eql(user.firstName);
   });
+
+  /* 
+    _    __ _           
+   /_\  / _| |_ ___ _ _ 
+  / _ \|  _|  _/ -_) '_|
+ /_/ \_\_|  \__\___|_|  
+  */
 
   after(async () => cleanDBForTesting());
 });

@@ -11,7 +11,7 @@ import {
   ManyToOne,
   Property
 } from 'mikro-orm';
-import { Field, ObjectType } from 'type-graphql';
+import { Field, Int, ObjectType } from 'type-graphql';
 
 import {
   FormQuestion,
@@ -33,7 +33,7 @@ export default class Membership extends BaseEntity {
   // -1: Rejected
   // 0: Pending
   // 1: Accepted
-  @Field(() => Number)
+  @Field(() => Int)
   @Enum({ items: [-1, 0, 1], type: Number })
   status = 0;
 
