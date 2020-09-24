@@ -7,9 +7,11 @@ import { Args, Mutation, Query, Resolver } from 'type-graphql';
 
 import bloomManager from '@bloomManager';
 import { Community, MembershipType } from '@entities';
-import CommunityPopulation from './CommunityPopulation';
-import CreateCommunityArgs from './CreateCommunityArgs';
-import GetCommunityArgs from './GetCommunityArgs';
+import {
+  CommunityPopulation,
+  CreateCommunityArgs,
+  GetCommunityArgs
+} from './CommunityArgs';
 
 @Resolver()
 export default class CommunityResolver {

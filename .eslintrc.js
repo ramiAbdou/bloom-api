@@ -18,7 +18,7 @@ module.exports = {
       files: ['index.ts', 'repos.ts'],
       rules: { 'import/prefer-default-export': 0 }
     },
-    { files: ['*.types.ts'], rules: { 'max-classes-per-file': 0 } }
+    { files: ['*Args.ts', '*.types.ts'], rules: { 'max-classes-per-file': 0 } }
   ],
   rules: {
     '@typescript-eslint/ban-ts-ignore': 0, // Allow @ts-ignore to be used.

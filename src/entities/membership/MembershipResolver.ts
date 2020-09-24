@@ -8,8 +8,11 @@ import { Args, Mutation, Resolver } from 'type-graphql';
 import bloomManager from '@bloomManager';
 import { CreateFormValue } from '@constants';
 import { Community, Membership, User } from '@entities';
-import CreateMembershipArgs from './CreateMembershipArgs';
-import UpdateMembershipArgs from './UpdateMembershipArgs';
+import {
+  CreateMembershipArgs,
+  MembershipResponseArgs,
+  UpdateMembershipArgs
+} from './MembershipArgs';
 
 @Resolver()
 export default class MembershipResolver {
@@ -81,5 +84,30 @@ export default class MembershipResolver {
 
     const { user } = membership;
     await bm.flush(`Membership data updated for ${user.fullName}.`, { user });
+  }
+
+  /**
+   * An admin has the option to either accept or reject a Membership when they
+   * apply to the organization.
+   */
+  @Mutation(() => Boolean, { nullable: true })
+  async respondToMembership(
+    @Args() { adminId, membershipId, response }: MembershipResponseArgs
+  ) {
+    const bm = bloomManager.fork();
+
+    const [membership, admin]: [Membership, User] = await Promise.all([
+      bm.membershipRepo().findOne({ id: membershipId }, ['user']),
+      bm.userRepo().findOne({ id: adminId })
+    ]);
+
+    membership.status = response;
+
+    await bm.flush(
+      `${admin.fullName} ${response === 1 ? 'approved' : 'rejected'} ${
+        membership.user.fullName
+      }'s membership application.`,
+      { admin, membership }
+    );
   }
 }
