@@ -18,6 +18,7 @@ import {
   FormQuestionCategory as Category,
   FormValue
 } from '@constants';
+
 import BaseEntity from '@util/db/BaseEntity';
 import Community from '../community/Community';
 import MembershipType from '../membership-type/MembershipType';

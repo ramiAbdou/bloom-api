@@ -39,6 +39,7 @@ class Logger {
   ) => {
     const msg = typeof message === 'string' ? deline(message) : message;
     const result = `${now()} | ${level} | ${msg}`;
+    
     return !data
       ? result
       : `${result} | ${singleLineStringify(this.formatData(data))}`;
