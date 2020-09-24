@@ -14,7 +14,7 @@ import {
 import { cleanDBForTesting, createConnection } from '@util/db/util';
 import { callGQL } from '@util/util';
 
-describe.only('Community Resolver', () => {
+describe('Community Resolver', () => {
   before(async () => {
     await cleanDBForTesting();
     await createConnection();
@@ -31,7 +31,7 @@ describe.only('Community Resolver', () => {
           name: $name,
           membershipForm: $membershipForm,
           membershipTypes: $membershipTypes
-        ) { id name }
+        ) { id }
       }
      `;
 
@@ -57,9 +57,15 @@ describe.only('Community Resolver', () => {
     });
 
     const bm = bloomManager.fork();
-    const community = await bm.communityRepo().findOne({ name });
+    const community = await bm
+      .communityRepo()
+      .findOne({ name }, ['membershipTypes']);
 
     should().exist(community);
     expect(community.name).to.equal(name);
+    expect(community.membershipForm).to.eql(membershipForm);
+    expect(community.membershipTypes.length).to.equal(membershipTypes.length);
   });
+
+  after(async () => cleanDBForTesting());
 });
