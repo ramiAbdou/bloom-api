@@ -6,7 +6,7 @@
 import { Args, Mutation, Query, Resolver } from 'type-graphql';
 
 import bloomManager from '@bloomManager';
-import { Community, MembershipType } from '@entities';
+import { Community } from '@entities';
 import {
   CommunityPopulation,
   CreateCommunityArgs,
@@ -28,11 +28,7 @@ export default class CommunityResolver {
     const bm = bloomManager.fork();
     const community = bm
       .communityRepo()
-      .create({ autoAccept, membershipForm, name });
-
-    membershipTypes.forEach((type: MembershipType) =>
-      bm.membershipTypeRepo().create({ ...type, community })
-    );
+      .create({ autoAccept, membershipForm, membershipTypes, name });
 
     await bm.persistAndFlush(
       community,

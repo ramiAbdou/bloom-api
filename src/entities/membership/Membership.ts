@@ -111,6 +111,7 @@ export default class Membership extends BaseEntity {
   @ManyToOne(() => MembershipType)
   type: MembershipType;
 
+  @Field(() => User)
   @ManyToOne(() => User)
   user: User;
 
