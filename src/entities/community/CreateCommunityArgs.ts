@@ -13,7 +13,7 @@ export default class CreateCommunityArgs {
   @Field()
   name: string;
 
-  @Field(() => Boolean, { nullable: true })
+  @Field(() => Boolean)
   autoAccept? = false;
 
   @Field(() => [CreateFormQuestion])

@@ -15,6 +15,7 @@ export default class CreateMemberArgs {
   @Field(() => [CreateFormValue])
   data: CreateFormValue[];
 
+  // This will only be non-null if the User already exists.
   @Field({ nullable: true })
-  userId: string;
+  email: string;
 }

@@ -22,26 +22,27 @@ import User from '../user/User';
 @ObjectType()
 @Entity()
 export default class Membership extends BaseEntity {
+  // Maps the title to the value.
   @Property({ nullable: true, type: JsonType })
-  data: Record<string, any>; // Maps the title to the item.
+  data: Record<string, any>;
 
   // -1: Rejected
   // 0: Pending
   // 1: Accepted
   @Field(() => Number)
-  @Enum({ items: [-1, 0, 1] })
+  @Enum({ items: [-1, 0, 1], type: Number })
   status = 0;
 
   /**
-   * Returns the names of all of the data attributes, which are simply stored
-   * as the keys of the membershipForm record.
+   * Returns the full data of the membership including the user's basic
+   * information like First Name, Last Name, etc.
    */
   @Field(() => [GetFormValue])
   getFullData(): GetFormValue[] {
     if (!this.data) return [];
 
     const { membershipForm } = this.community;
-    const { firstName, lastName, email } = this.user;
+    const { gender, firstName, lastName, email } = this.user;
     const { name: membershipName } = this.type;
 
     return membershipForm.map(({ category, title }: FormQuestion) => {
@@ -50,6 +51,7 @@ export default class Membership extends BaseEntity {
       if (category === 'FIRST_NAME') value = firstName;
       else if (category === 'LAST_NAME') value = lastName;
       else if (category === 'EMAIL') value = email;
+      else if (category === 'GENDER') value = gender;
       else if (category === 'MEMBERSHIP_TYPE') value = membershipName;
       else value = this.data[title];
 
@@ -59,7 +61,7 @@ export default class Membership extends BaseEntity {
 
   /**
    * Returns the only the data that is associated with this membership, and none
-   * of the user's basic data like their name and email.
+   * of the data that lives on the User entity.
    */
   @Field(() => [GetFormValue])
   getBasicMembershipData(): GetFormValue[] {
@@ -69,9 +71,14 @@ export default class Membership extends BaseEntity {
     const { name: membershipName } = this.type;
 
     return membershipForm.reduce((acc: GetFormValue[], { category, title }) => {
-      if (['FIRST_NAME', 'LAST_NAME', 'EMAIL'].includes(category)) return acc;
+      // If the category is one of the following, just return the accumulator.
+      if (['FIRST_NAME', 'LAST_NAME', 'EMAIL', 'GENDER'].includes(category))
+        return acc;
+
+      // If it's the membership type, push that value from the entity.
       if (category === 'MEMBERSHIP_TYPE')
         acc.push({ title, value: membershipName });
+      // Otherwise, get the value from the data that lives on the Membership.
       else acc.push({ title, value: this.data[title] });
       return acc;
     }, []);

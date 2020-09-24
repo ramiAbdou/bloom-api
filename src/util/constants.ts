@@ -46,18 +46,19 @@ export type Route = {
   route: string;
 };
 
-// 0: Short Text
-// 1: Long Text
-// 2: Multiple Choice
-// 3: Dropdown
-// 4: Dropdown Multiple
-
 type FormQuestionCategory =
   | 'FIRST_NAME'
   | 'LAST_NAME'
   | 'EMAIL'
   | 'GENDER'
   | 'MEMBERSHIP_TYPE';
+
+type FormQuestionType =
+  | 'SHORT_TEXT'
+  | 'LONG_TEXT'
+  | 'MULTIPLE_CHOICE'
+  | 'DROPDOWN'
+  | 'DROPDOWN_MULTIPLE';
 
 @ObjectType()
 export class FormQuestion {
@@ -76,8 +77,8 @@ export class FormQuestion {
   @Field(() => String)
   title: string;
 
-  @Field(() => Number)
-  type: 0 | 1 | 2 | 3 | 4;
+  @Field(() => String)
+  type: FormQuestionType;
 }
 
 @InputType()
@@ -97,8 +98,8 @@ export class CreateFormQuestion {
   @Field(() => String)
   title: string;
 
-  @Field(() => Number)
-  type: 0 | 1 | 2 | 3 | 4;
+  @Field(() => String)
+  type: FormQuestionType;
 }
 
 @ObjectType()
@@ -112,6 +113,8 @@ export class GetFormValue {
 
 @InputType()
 export class CreateFormValue {
+  // This will only be populated when there is a special form question, in which
+  // case it will be added to the User entity.
   @Field(() => String, { nullable: true })
   category: FormQuestionCategory;
 
