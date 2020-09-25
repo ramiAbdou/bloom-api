@@ -52,7 +52,9 @@ export default class MembershipResolver {
         else if (category === 'EMAIL') user.email = value;
         else if (category === 'GENDER') user.gender = value;
         else if (category === 'MEMBERSHIP_TYPE') {
-          const type = await bm.membershipTypeRepo().findOne({ name: value });
+          const type = await bm
+            .membershipTypeRepo()
+            .findOne({ community, name: value });
           membership.type = type;
         } else membershipData[title] = value;
       })

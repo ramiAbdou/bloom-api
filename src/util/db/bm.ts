@@ -69,7 +69,7 @@ export class BloomManager {
    * Removes and flushes the given entities.
    */
   removeAndFlush = async (
-    entities: AnyEntity<any> | AnyEntity<any>[]
+    entities: AnyEntity<any> | AnyEntity<any>[],
     message?: string,
     data?: Record<string, any>
   ) => {
