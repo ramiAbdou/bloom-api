@@ -3,6 +3,7 @@
  * @author Rami Abdou
  */
 
+import { IsUrl } from 'class-validator';
 import {
   BeforeCreate,
   Collection,
@@ -29,6 +30,7 @@ export default class Community extends BaseEntity {
   // URL to the Digital Ocean space.
   @Field({ nullable: true })
   @Property({ nullable: true, unique: true })
+  @IsUrl()
   logo: string;
 
   // Maps the title to the item. Represented as JSON. This doesn't automatically

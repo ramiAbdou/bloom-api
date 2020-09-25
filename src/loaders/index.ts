@@ -24,7 +24,7 @@ const startServer = async () => {
     lg.info(`Server up and running at: ${APP.SERVER_URL}.`)
   );
 
-  processMembershipCSV('ColorStack.csv');
+  await processMembershipCSV('ColorStack');
 };
 
 startServer();

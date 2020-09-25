@@ -5,28 +5,33 @@
  * @author Rami Abdou
  */
 
-import csv from 'csv-parser';
-import fs from 'fs';
+import csv from 'csvtojson';
 
 import bloomManager from '@bloomManager';
 import { Membership, User } from '@entities';
 import { FormQuestionCategory } from './constants';
 
-export default async (communityName: string) => {
+/**
+ * Precondition: A CSV file has to exist for the community in the
+ * /membership-csv/ folder to process.
+ *
+ * @param name Name of the community we are processing membership for.
+ */
+export default async (name: string) => {
   const bm = bloomManager.fork();
-  const community = await bm.communityRepo().findOne({ name: communityName });
+  const community = await bm.communityRepo().findOne({ name });
 
-  fs.createReadStream(`./membership-csv/${communityName}.csv`)
-    .pipe(csv())
-    .on('data', async (row: Record<string, any>) => {
+  const responses = await csv().fromFile(`./membership-csv/${name}.csv`);
+
+  await Promise.all(
+    responses.map(async (row: Record<string, any>) => {
       const email = row[FormQuestionCategory.EMAIL];
 
-      const user: User = email
-        ? await bm.userRepo().findOne({ email })
-        : new User();
+      const user: User = (await bm.userRepo().findOne({ email })) ?? new User();
 
       const membership: Membership = new Membership();
       const membershipData: Record<string, any> = {};
+      bm.persist(membership);
 
       membership.community = community;
       membership.data = membershipData;
@@ -48,9 +53,7 @@ export default async (communityName: string) => {
         })
       );
     })
-    .on('end', async () => {
-      await bm.flush(
-        `Finished processing Membership CSV file: ${communityName}.`
-      );
-    });
+  );
+
+  await bm.flush(`Finished processing Membership CSV file: ${name}.`);
 };
