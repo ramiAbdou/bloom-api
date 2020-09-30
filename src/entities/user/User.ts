@@ -3,7 +3,7 @@
  * @author Rami Abdou
  */
 
-import { IsUrl } from 'class-validator';
+import { IsEmail, IsUrl } from 'class-validator';
 import {
   BeforeCreate,
   Cascade,
@@ -34,6 +34,7 @@ export default class User extends BaseEntity {
 
   @Field()
   @Property({ unique: true })
+  @IsEmail()
   email: string;
 
   @Field({ nullable: true })

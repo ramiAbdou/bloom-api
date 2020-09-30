@@ -14,7 +14,7 @@ import {
 } from 'mikro-orm';
 import { Field, ObjectType } from 'type-graphql';
 
-import { Form } from '@constants';
+import { Form, FormQuestionCategory } from '@constants';
 import BaseEntity from '@util/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
 import MembershipType from '../membership-type/MembershipType';
@@ -48,6 +48,24 @@ export default class Community extends BaseEntity {
   @Field()
   @Property({ unique: true })
   encodedURLName: string;
+
+  @Field(() => Form)
+  @Property({ persist: false, type: JsonType })
+  get basicMembershipForm(): Form {
+    const { questions, ...form } = this.membershipForm;
+    return {
+      ...form,
+      questions: questions.filter(
+        ({ category }) =>
+          ![
+            FormQuestionCategory.FIRST_NAME,
+            FormQuestionCategory.LAST_NAME,
+            FormQuestionCategory.EMAIL,
+            FormQuestionCategory.GENDER
+          ].includes(category)
+      )
+    };
+  }
 
   @BeforeCreate()
   beforeCreate() {
