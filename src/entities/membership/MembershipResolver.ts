@@ -20,7 +20,7 @@ export default class MembershipResolver {
    * Creates a Membership is for the given Community ID, and also creates a
    * User with the basic information from the membership data.
    */
-  @Mutation(() => Membership)
+  @Mutation(() => Membership, { nullable: true })
   async createMembership(
     @Args() { communityId, data, email }: CreateMembershipArgs
   ) {

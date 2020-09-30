@@ -108,6 +108,30 @@ export class FormQuestionInput {
 }
 
 @ObjectType()
+export class Form {
+  @Field()
+  title: string;
+
+  @Field({ nullable: true })
+  description?: string;
+
+  @Field(() => [FormQuestion])
+  questions: FormQuestion[];
+}
+
+@InputType()
+export class FormInput {
+  @Field()
+  title: string;
+
+  @Field({ nullable: true })
+  description?: string;
+
+  @Field(() => [FormQuestionInput])
+  questions: FormQuestionInput[];
+}
+
+@ObjectType()
 export class FormValue {
   @Field()
   title: string;

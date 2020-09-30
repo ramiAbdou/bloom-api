@@ -39,7 +39,7 @@ describe('Community Resolver', () => {
     const source = `
       mutation Community (
         $name: String!,
-        $membershipForm: [FormQuestionInput!]!,
+        $membershipForm: Form!,
         $membershipTypes: [MembershipType!]!
       ) {
         createCommunity(

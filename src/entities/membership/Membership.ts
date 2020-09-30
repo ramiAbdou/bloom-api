@@ -49,7 +49,7 @@ export default class Membership extends BaseEntity {
     const { gender, firstName, lastName, email } = this.user;
     const { name: membershipName } = this.type;
 
-    return membershipForm.map(({ category, title }: FormQuestion) => {
+    return membershipForm.questions.map(({ category, title }: FormQuestion) => {
       let value: any;
 
       if (category === Category.FIRST_NAME) value = firstName;
@@ -74,14 +74,17 @@ export default class Membership extends BaseEntity {
     const { membershipForm } = this.community;
     const { name: membershipName } = this.type;
 
-    return membershipForm.reduce((acc: FormValue[], { category, title }) => {
-      // If it's the membership type, push that value from the entity.
-      if (category === Category.MEMBERSHIP_TYPE)
-        acc.push({ title, value: membershipName });
-      // Otherwise, get the value from the data that lives on the Membership.
-      else if (!category) acc.push({ title, value: this.data[title] });
-      return acc;
-    }, []);
+    return membershipForm.questions.reduce(
+      (acc: FormValue[], { category, title }) => {
+        // If it's the membership type, push that value from the entity.
+        if (category === Category.MEMBERSHIP_TYPE)
+          acc.push({ title, value: membershipName });
+        // Otherwise, get the value from the data that lives on the Membership.
+        else if (!category) acc.push({ title, value: this.data[title] });
+        return acc;
+      },
+      []
+    );
   }
 
   /* 
