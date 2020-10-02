@@ -6,7 +6,7 @@
 type BasicEmailData = { to: string; subject?: string };
 
 export interface ValidateEmailData extends BasicEmailData {
-  validationUrl: string;
+  verificationUrl: string;
 }
 
 export type EmailData = BasicEmailData | ValidateEmailData;

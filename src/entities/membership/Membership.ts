@@ -117,7 +117,7 @@ export default class Membership extends BaseEntity {
   async afterCreate() {
     await sendVerificationEmail({
       to: this.user.email,
-      validationUrl: `${APP.SERVER_URL}/users/${this.user.id}/verify`
+      verificationUrl: `${APP.SERVER_URL}/users/${this.user.id}/verify`
     });
   }
 }
