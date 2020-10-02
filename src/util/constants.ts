@@ -12,7 +12,8 @@ import { Request, Response } from 'express';
 import path from 'path'; // Before constants.
 import { Field, InputType, ObjectType, registerEnumType } from 'type-graphql';
 
-import { isProduction } from './util';
+export const isProduction = process.env.NODE_ENV === 'production';
+export const isTesting = process.env.NODE_ENV === 'testing';
 
 // Environment configuration must happen before loading the constants file
 // because the constants depend on the environment being configured.

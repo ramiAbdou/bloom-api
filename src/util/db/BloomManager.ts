@@ -13,13 +13,13 @@ import {
   MembershipTypeRepo,
   UserRepo
 } from '@repos';
+import db from './db';
 
-export class BloomManager {
+export default class BloomManager {
   em: EntityManager;
 
-  constructor(em?: EntityManager) {
-    // Will be populated when the BloomManager instance is forked.
-    if (em) this.em = em;
+  constructor() {
+    this.em = db.em;
   }
 
   /*
@@ -97,11 +97,6 @@ export class BloomManager {
     else entities.forEach((entity) => this.em.merge(entity));
   };
 
-  /**
-   * Returns a new BloomManager with a forked entity manager and new context.
-   */
-  fork = () => new BloomManager(this.em.fork());
-
   /*
   ___                  _ _           _        
  | _ \___ _ __  ___ __(_) |_ ___ _ _(_)___ ___
@@ -119,5 +114,3 @@ export class BloomManager {
 
   userRepo = () => this.em.getRepository(User) as UserRepo;
 }
-
-export default new BloomManager();

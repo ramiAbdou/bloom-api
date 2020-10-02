@@ -56,6 +56,3 @@ export const now = () => moment.utc().format();
  */
 export const singleLineStringify = (value: any) =>
   JSON.stringify(value, null, 1).replace(/\s+/g, ' ');
-
-export const isProduction = process.env.NODE_ENV === 'production';
-export const isTesting = process.env.NODE_ENV === 'testing';

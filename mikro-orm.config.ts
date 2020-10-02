@@ -6,11 +6,10 @@
 
 import { Connection, IDatabaseDriver, Options } from 'mikro-orm';
 
-import { APP } from '@constants';
+import { APP, isProduction } from '@constants';
 import * as entities from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 import NamingStrategy from '@util/db/NamingStrategy';
-import { isProduction } from '@util/util';
 
 const options: Options<IDatabaseDriver<Connection>> = {
   clientUrl: APP.DB_URL,

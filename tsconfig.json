@@ -10,7 +10,6 @@
     "outDir": "./dist/", // Outputs the compiled JS to the /dist folder.
     "paths": {
       // Used for path aliases.
-      "@bloomManager": ["./src/util/db/bm.ts"],
       "@constants": ["./src/util/constants.ts"],
       "@core/*": ["./src/core/*"],
       "@entities": ["src/entities/index.ts"],

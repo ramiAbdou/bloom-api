@@ -32,8 +32,8 @@ const sendEmail = async (mjml: string, { to, subject, ...data }: EmailData) => {
   }
 };
 
-export const sendValidationEmail = (data: ValidateEmailData) =>
-  sendEmail('validate-email.mjml', {
+export const sendVerificationEmail = (data: ValidateEmailData) =>
+  sendEmail('verify-email.mjml', {
     ...data,
     subject: `Welcome to Bloom! Confirm Your Email`
   });

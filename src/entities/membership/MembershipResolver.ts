@@ -5,9 +5,9 @@
 
 import { Args, Mutation, Resolver } from 'type-graphql';
 
-import bloomManager from '@bloomManager';
 import { FormQuestionCategory, FormValueInput } from '@constants';
 import { Community, Membership, User } from '@entities';
+import BloomManager from '@util/db/BloomManager';
 import {
   CreateMembershipArgs,
   MembershipResponseArgs,
@@ -24,7 +24,7 @@ export default class MembershipResolver {
   async createMembership(
     @Args() { communityId, data, userId }: CreateMembershipArgs
   ) {
-    const bm = bloomManager.fork();
+    const bm = new BloomManager();
 
     const community: Community = await bm
       .communityRepo()
@@ -79,7 +79,7 @@ export default class MembershipResolver {
   async updateMembershipData(
     @Args() { data, membershipId }: UpdateMembershipArgs
   ) {
-    const bm = bloomManager.fork();
+    const bm = new BloomManager();
 
     const membership: Membership = await bm
       .membershipRepo()
@@ -103,7 +103,7 @@ export default class MembershipResolver {
   async respondToMembership(
     @Args() { adminId, membershipId, response }: MembershipResponseArgs
   ) {
-    const bm = bloomManager.fork();
+    const bm = new BloomManager();
 
     const [membership, admin]: [Membership, User] = await Promise.all([
       bm.membershipRepo().findOne({ id: membershipId }, ['user']),
