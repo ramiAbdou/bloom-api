@@ -13,7 +13,7 @@ import User from './User';
 export default class UserRouter extends Router {
   get routes(): Route[] {
     return [
-      { callback: this.verifyEmail, method: 'GET', route: '/:userId/validate' }
+      { callback: this.verifyEmail, method: 'GET', route: '/:userId/verify' }
     ];
   }
 

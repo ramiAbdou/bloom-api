@@ -22,6 +22,7 @@ export default () => {
   // Sets various HTTP response headers to prevent exploits like clickjacking.
   app.use(helmet());
 
+  // Register all of the Express routers.
   app.use('/users', new UserRouter().router);
 
   return app;
