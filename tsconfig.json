@@ -12,10 +12,9 @@
       // Used for path aliases.
       "@constants": ["./src/util/constants.ts"],
       "@core/*": ["./src/core/*"],
-      "@entities": ["src/entities/*"],
-      "@lg": ["src/util/logger.ts"],
+      "@entities/*": ["./src/entities/*"],
+      "@logger": ["./src/util/logger.ts"],
       "@integrations/*": ["./src/integrations/*"],
-      "@repos": ["src/entities/repos.ts"],
       "@util/*": ["./src/util/*"]
     },
     "resolveJsonModule": true, // Allows JSON files to be resolved.

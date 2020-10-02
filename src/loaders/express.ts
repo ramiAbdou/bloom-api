@@ -10,7 +10,7 @@ import bodyParser from 'body-parser';
 import express from 'express';
 import helmet from 'helmet';
 
-import userRouter from '@entities/user/UserRouter';
+import UserRouter from '@entities/user/UserRouter';
 
 export default () => {
   const app = express();
@@ -22,7 +22,7 @@ export default () => {
   // Sets various HTTP response headers to prevent exploits like clickjacking.
   app.use(helmet());
 
-  app.use();
+  app.use('/users', new UserRouter().router);
 
   return app;
 };

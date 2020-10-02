@@ -7,5 +7,5 @@ import { EntityRepository, Repository } from 'mikro-orm';
 
 import Community from './Community';
 
-@Repository(Community)
+@entities/repository(Community)
 export default class CommunityRepo extends EntityRepository<Community> {}

@@ -6,11 +6,11 @@
 import { Request, Response } from 'express';
 
 import { APP, Route } from '@constants';
-import { User } from '@entities/entities';
 import BloomManager from '@util/db/BloomManager';
 import Router from '@util/Router';
+import User from './User';
 
-class UserRouter extends Router {
+export default class UserRouter extends Router {
   get routes(): Route[] {
     return [
       { callback: this.verifyEmail, method: 'GET', route: '/:userId/validate' }
@@ -28,5 +28,3 @@ class UserRouter extends Router {
     response.redirect(APP.CLIENT_URL);
   }
 }
-
-export default new UserRouter().router;

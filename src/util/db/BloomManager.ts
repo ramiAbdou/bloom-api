@@ -11,13 +11,13 @@ import {
   MembershipType,
   User
 } from '@entities/entities';
-import lg from '@lg';
 import {
   CommunityRepo,
   MembershipRepo,
   MembershipTypeRepo,
   UserRepo
-} from '@repos';
+} from '@entities/repos';
+import logger from '@logger';
 import db from './db';
 
 export default class BloomManager {
@@ -41,9 +41,9 @@ export default class BloomManager {
   flush = async (message?: string, data?: Record<string, any>) => {
     try {
       await this.em.flush();
-      if (message) lg.info(message, data);
+      if (message) logger.info(message, data);
     } catch (e) {
-      lg.error(new Error(e));
+      logger.error(new Error(e));
     }
   };
 
@@ -57,9 +57,9 @@ export default class BloomManager {
   ) => {
     try {
       await this.em.persistAndFlush(entities);
-      if (message) lg.info(message, data);
+      if (message) logger.info(message, data);
     } catch (e) {
-      lg.error(e);
+      logger.error(e);
     }
   };
 
@@ -81,9 +81,9 @@ export default class BloomManager {
     try {
       this.remove(entities);
       await this.em.flush();
-      if (message) lg.info(message, data);
+      if (message) logger.info(message, data);
     } catch (e) {
-      lg.error(e);
+      logger.error(e);
     }
   };
 

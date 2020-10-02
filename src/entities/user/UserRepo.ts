@@ -7,5 +7,5 @@ import { EntityRepository, Repository } from 'mikro-orm';
 
 import User from './User';
 
-@Repository(User)
+@entities/repository(User)
 export default class UserRepo extends EntityRepository<User> {}

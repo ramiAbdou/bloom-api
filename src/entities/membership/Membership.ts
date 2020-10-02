@@ -4,6 +4,7 @@
  */
 
 import {
+  AfterCreate,
   BeforeCreate,
   Entity,
   Enum,
@@ -14,11 +15,13 @@ import {
 import { Field, Int, ObjectType } from 'type-graphql';
 
 import {
+  APP,
   FormQuestion,
   FormQuestionCategory as Category,
   FormValue
 } from '@constants';
 import BaseEntity from '@util/db/BaseEntity';
+import { sendVerificationEmail } from '@util/emails';
 import Community from '../community/Community';
 import MembershipType from '../membership-type/MembershipType';
 import User from '../user/User';
@@ -108,5 +111,13 @@ export default class Membership extends BaseEntity {
   @BeforeCreate()
   beforeCreate() {
     if (this.community.autoAccept) this.status = 1;
+  }
+
+  @AfterCreate()
+  async afterCreate() {
+    await sendVerificationEmail({
+      to: this.user.email,
+      validationUrl: `${APP.SERVER_URL}/users/${this.user.id}/verification`
+    });
   }
 }

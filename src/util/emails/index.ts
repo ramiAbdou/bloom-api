@@ -8,7 +8,7 @@ import { compile } from 'handlebars';
 import mjml2html from 'mjml';
 
 import { SENDGRID } from '@constants';
-import lg from '@lg';
+import logger from '@logger';
 import sg from '@sendgrid/mail';
 import { EmailData, ValidateEmailData } from './types';
 
@@ -28,7 +28,7 @@ const sendEmail = async (mjml: string, { to, subject, ...data }: EmailData) => {
     const options = { from: 'rami@bl.community', html, subject, to };
     await sg.send(options);
   } catch (e) {
-    lg.error(`Failed to send SendGrid mail: ${e}`, { subject, to });
+    logger.error(`Failed to send SendGrid mail: ${e}`, { subject, to });
   }
 };
 
