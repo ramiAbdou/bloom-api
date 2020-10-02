@@ -22,8 +22,10 @@ export default class UserRouter extends Router {
     const { userId } = request.params;
 
     const user: User = await bm.userRepo().findOne({ id: userId });
-    user.verified = true;
-    await bm.flush(`${user.firstName} verfied their email.`, { user });
+    if (!user.verified) {
+      user.verified = true;
+      await bm.flush(`${user.firstName} verfied their email.`, { user });
+    }
 
     response.redirect(APP.CLIENT_URL);
   }
