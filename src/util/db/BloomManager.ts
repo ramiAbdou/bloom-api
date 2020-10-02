@@ -5,7 +5,12 @@
 
 import { AnyEntity, EntityManager } from 'mikro-orm';
 
-import { Community, Membership, MembershipType, User } from '@entities';
+import {
+  Community,
+  Membership,
+  MembershipType,
+  User
+} from '@entities/entities';
 import lg from '@lg';
 import {
   CommunityRepo,

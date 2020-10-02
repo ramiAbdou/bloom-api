@@ -18,6 +18,7 @@ module.exports = {
       files: ['index.ts', 'repos.ts'],
       rules: { 'import/prefer-default-export': 0 }
     },
+    { files: ['*Router.ts'], rules: { 'class-methods-use-this': 0 } },
     { files: ['*Args.ts', '*.types.ts'], rules: { 'max-classes-per-file': 0 } }
   ],
   rules: {

@@ -12,7 +12,7 @@
       // Used for path aliases.
       "@constants": ["./src/util/constants.ts"],
       "@core/*": ["./src/core/*"],
-      "@entities": ["src/entities/index.ts"],
+      "@entities": ["src/entities/*"],
       "@lg": ["src/util/logger.ts"],
       "@integrations/*": ["./src/integrations/*"],
       "@repos": ["src/entities/repos.ts"],

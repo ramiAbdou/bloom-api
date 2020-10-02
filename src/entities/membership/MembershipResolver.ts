@@ -6,7 +6,7 @@
 import { Args, Mutation, Resolver } from 'type-graphql';
 
 import { FormQuestionCategory, FormValueInput } from '@constants';
-import { Community, Membership, User } from '@entities';
+import { Community, Membership, User } from '@entities/entities';
 import BloomManager from '@util/db/BloomManager';
 import {
   CreateMembershipArgs,

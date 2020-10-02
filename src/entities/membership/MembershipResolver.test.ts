@@ -10,7 +10,7 @@ import {
   FormQuestionType,
   FormValueInput
 } from '@constants';
-import { Membership, User } from '@entities';
+import { Membership, User } from '@entities/entities';
 import BloomManager from '@util/db/BloomManager';
 import db from '@util/db/db';
 import { callGQL } from '@util/util';

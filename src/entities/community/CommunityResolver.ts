@@ -7,7 +7,7 @@ import csv from 'csvtojson';
 import { Args, Mutation, Query, Resolver } from 'type-graphql';
 
 import { FormQuestionCategory } from '@constants';
-import { Community, Membership, User } from '@entities';
+import { Community, Membership, User } from '@entities/entities';
 import BloomManager from '@util/db/BloomManager';
 import {
   CommunityPopulation,
