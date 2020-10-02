@@ -73,6 +73,10 @@ export default class User extends BaseEntity {
   @IsUrl()
   twitterUrl: string;
 
+  @Field(() => Boolean)
+  @Property({ nullable: true, type: Boolean })
+  verified = false;
+
   @BeforeCreate()
   beforeCreate() {
     this.email = this.email.toLowerCase();

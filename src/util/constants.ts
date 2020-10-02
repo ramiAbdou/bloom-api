@@ -31,6 +31,8 @@ export const APP = {
     : 'http://localhost:8080'
 };
 
+export const SENDGRID = { API_KEY: process.env.SENDGRID_API_KEY };
+
 /**
  * All exported TYPE declaration constants are below.
  * NOTE that if any services have types that are specific to them, they will

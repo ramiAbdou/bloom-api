@@ -3,7 +3,7 @@
  * - Initializes and export the Express server. Middleware includes
  * body parsing to JSON, security measures (Helmet), sessions and more.
  * @see https://www.npmjs.com/package/helmet#how-it-works
- * @author Rami Abdou, Enoch Chen
+ * @author Rami Abdou
  */
 
 import bodyParser from 'body-parser';
