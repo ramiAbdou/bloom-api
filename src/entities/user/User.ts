@@ -68,6 +68,11 @@ export default class User extends BaseEntity {
   @IsUrl()
   linkedInUrl: string;
 
+  // Refresh token that is supplied by Google.
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  refreshToken: string;
+
   @Field({ nullable: true })
   @Property({ nullable: true })
   @IsUrl()

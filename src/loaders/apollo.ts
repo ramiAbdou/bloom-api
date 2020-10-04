@@ -8,14 +8,37 @@
 
 import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
 import { GraphQLSchema } from 'graphql';
+import { buildSchema } from 'type-graphql';
 
-import { createSchema } from '@util/util';
+import CommunityResolver from '../entities/community/CommunityResolver';
+import MembershipResolver from '../entities/membership/MembershipResolver';
+import UserResolver from '../entities/user/UserResolver';
+
+/**
+ * Builds the schema with the application's resolvers.
+ *
+ * The auth checker returns true (is authorized) if there is a refreshToken
+ * present b/c we have an Express middleware that automatically updates the
+ * idToken using the refreshToken if it is invalid.
+ */
+export const createSchema = async (): Promise<GraphQLSchema> =>
+  buildSchema({
+    authChecker: async ({ context: { refreshToken } }) => !!refreshToken,
+    resolvers: [CommunityResolver, MembershipResolver, UserResolver]
+  });
 
 export default async () => {
   const schema: GraphQLSchema = await createSchema();
 
   // Set the playground to false so that's it's not accessible to the outside
   // world. Also handles the request context.
-  const config: ApolloServerExpressConfig = { playground: false, schema };
+  const config: ApolloServerExpressConfig = {
+    context: ({ req }) => ({
+      idToken: req.cookies.idToken,
+      refreshToken: req.cookies.refreshToken
+    }),
+    playground: false,
+    schema
+  };
   return new ApolloServer(config);
 };

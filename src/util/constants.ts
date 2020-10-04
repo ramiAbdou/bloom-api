@@ -32,6 +32,12 @@ export const APP = {
     : 'http://localhost:8080'
 };
 
+export const GOOGLE = {
+  CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+  REDIRECT_URI: `${APP.SERVER_URL}/google/auth`
+};
+
 export const SENDGRID = { API_KEY: process.env.SENDGRID_API_KEY };
 
 /**

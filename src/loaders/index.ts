@@ -18,7 +18,7 @@ import express from './express';
 const startServer = async () => {
   const app = express();
   const [apolloServer] = await Promise.all([apollo(), db.createConnection()]);
-  apolloServer.applyMiddleware({ app, path: '/graphql' });
+  apolloServer.applyMiddleware({ app, cors: false, path: '/graphql' });
   app.listen(APP.PORT, () => logger.info(`Live at: ${APP.SERVER_URL}.`));
 };
 
