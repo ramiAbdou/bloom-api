@@ -32,6 +32,11 @@ export const APP = {
     : 'http://localhost:8080'
 };
 
+export const JWT = {
+  EXPIRES_IN: 5 * 60 * 1000,
+  SECRET: process.env.JWT_SECRET
+};
+
 export const GOOGLE = {
   CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
@@ -56,7 +61,7 @@ export type Route = {
 };
 
 export interface GQLContext {
-  idToken: string;
+  token: string;
   refreshToken: string;
 }
 

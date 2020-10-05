@@ -21,9 +21,15 @@ export default class UserResolver {
 
   @Authorized()
   @Query(() => User, { nullable: true })
-  async getUser(@Ctx() { idToken }: GQLContext) {
-    const { email } = decode(idToken);
-    return new BloomManager().userRepo().findOne({ email });
+  async getUser(@Ctx() { token }: GQLContext) {
+    const { userId } = decode(token);
+    return new BloomManager().userRepo().findOne({ id: userId });
+  }
+
+  @Authorized()
+  @Query(() => Boolean)
+  async isUserLoggedIn(@Ctx() { refreshToken }: GQLContext) {
+    return !!refreshToken;
   }
 
   @Mutation(() => Boolean, { nullable: true })
