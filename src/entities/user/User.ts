@@ -3,8 +3,7 @@
  * @author Rami Abdou
  */
 
-import { IsUrl } from 'class-validator';
-
+import { IsEmail, IsUrl } from 'class-validator';
 import {
   BeforeCreate,
   Cascade,
@@ -35,6 +34,7 @@ export default class User extends BaseEntity {
 
   @Field()
   @Property({ unique: true })
+  @IsEmail()
   email: string;
 
   @Field({ nullable: true })
@@ -68,10 +68,19 @@ export default class User extends BaseEntity {
   @IsUrl()
   linkedInUrl: string;
 
+  // Refresh token that is supplied by Google.
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  refreshToken: string;
+
   @Field({ nullable: true })
   @Property({ nullable: true })
   @IsUrl()
   twitterUrl: string;
+
+  @Field(() => Boolean)
+  @Property({ nullable: true, type: Boolean })
+  verified = false;
 
   @BeforeCreate()
   beforeCreate() {

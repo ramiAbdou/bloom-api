@@ -4,6 +4,7 @@
  */
 
 import {
+  AfterCreate,
   BeforeCreate,
   Entity,
   Enum,
@@ -14,11 +15,13 @@ import {
 import { Field, Int, ObjectType } from 'type-graphql';
 
 import {
+  APP,
   FormQuestion,
   FormQuestionCategory as Category,
   FormValue
 } from '@constants';
 import BaseEntity from '@util/db/BaseEntity';
+import { sendVerificationEmail } from '@util/emails';
 import Community from '../community/Community';
 import MembershipType from '../membership-type/MembershipType';
 import User from '../user/User';
@@ -49,7 +52,7 @@ export default class Membership extends BaseEntity {
     const { gender, firstName, lastName, email } = this.user;
     const { name: membershipName } = this.type;
 
-    return membershipForm.map(({ category, title }: FormQuestion) => {
+    return membershipForm.questions.map(({ category, title }: FormQuestion) => {
       let value: any;
 
       if (category === Category.FIRST_NAME) value = firstName;
@@ -74,14 +77,17 @@ export default class Membership extends BaseEntity {
     const { membershipForm } = this.community;
     const { name: membershipName } = this.type;
 
-    return membershipForm.reduce((acc: FormValue[], { category, title }) => {
-      // If it's the membership type, push that value from the entity.
-      if (category === Category.MEMBERSHIP_TYPE)
-        acc.push({ title, value: membershipName });
-      // Otherwise, get the value from the data that lives on the Membership.
-      else if (!category) acc.push({ title, value: this.data[title] });
-      return acc;
-    }, []);
+    return membershipForm.questions.reduce(
+      (acc: FormValue[], { category, title }) => {
+        // If it's the membership type, push that value from the entity.
+        if (category === Category.MEMBERSHIP_TYPE)
+          acc.push({ title, value: membershipName });
+        // Otherwise, get the value from the data that lives on the Membership.
+        else if (!category) acc.push({ title, value: this.data[title] });
+        return acc;
+      },
+      []
+    );
   }
 
   /* 
@@ -105,5 +111,13 @@ export default class Membership extends BaseEntity {
   @BeforeCreate()
   beforeCreate() {
     if (this.community.autoAccept) this.status = 1;
+  }
+
+  @AfterCreate()
+  async afterCreate() {
+    await sendVerificationEmail({
+      to: this.user.email,
+      verificationUrl: `${APP.SERVER_URL}/users/${this.user.id}/verify`
+    });
   }
 }

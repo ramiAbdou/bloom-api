@@ -17,7 +17,7 @@ export class CreateMembershipArgs {
 
   // This will only be non-null if the User already exists.
   @Field({ nullable: true })
-  email: string;
+  userId: string;
 }
 
 @ArgsType()

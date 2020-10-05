@@ -5,9 +5,9 @@
 
 import { Args, Mutation, Resolver } from 'type-graphql';
 
-import bloomManager from '@bloomManager';
-import { FormValueInput } from '@constants';
-import { Community, Membership, User } from '@entities';
+import { FormQuestionCategory, FormValueInput } from '@constants';
+import { Community, Membership, User } from '@entities/entities';
+import BloomManager from '@util/db/BloomManager';
 import {
   CreateMembershipArgs,
   MembershipResponseArgs,
@@ -20,11 +20,11 @@ export default class MembershipResolver {
    * Creates a Membership is for the given Community ID, and also creates a
    * User with the basic information from the membership data.
    */
-  @Mutation(() => Membership)
+  @Mutation(() => Membership, { nullable: true })
   async createMembership(
-    @Args() { communityId, data, email }: CreateMembershipArgs
+    @Args() { communityId, data, userId }: CreateMembershipArgs
   ) {
-    const bm = bloomManager.fork();
+    const bm = new BloomManager();
 
     const community: Community = await bm
       .communityRepo()
@@ -32,8 +32,8 @@ export default class MembershipResolver {
 
     // The user can potentially already exist if they are a part of other
     // communities.
-    const user: User = email
-      ? await bm.userRepo().findOne({ email })
+    const user: User = userId
+      ? await bm.userRepo().findOne({ id: userId })
       : new User();
 
     const membership: Membership = new Membership();
@@ -47,11 +47,13 @@ export default class MembershipResolver {
     // fetch the type from the DB.
     await Promise.all(
       data.map(async ({ category, title, value }: FormValueInput) => {
-        if (category === 'FIRST_NAME') user.firstName = value;
-        else if (category === 'LAST_NAME') user.lastName = value;
-        else if (category === 'EMAIL') user.email = value;
-        else if (category === 'GENDER') user.gender = value;
-        else if (category === 'MEMBERSHIP_TYPE') {
+        if (category === FormQuestionCategory.FIRST_NAME)
+          user.firstName = value;
+        else if (category === FormQuestionCategory.LAST_NAME)
+          user.lastName = value;
+        else if (category === FormQuestionCategory.EMAIL) user.email = value;
+        else if (category === FormQuestionCategory.GENDER) user.gender = value;
+        else if (category === FormQuestionCategory.MEMBERSHIP_TYPE) {
           const type = await bm
             .membershipTypeRepo()
             .findOne({ community, name: value });
@@ -77,7 +79,7 @@ export default class MembershipResolver {
   async updateMembershipData(
     @Args() { data, membershipId }: UpdateMembershipArgs
   ) {
-    const bm = bloomManager.fork();
+    const bm = new BloomManager();
 
     const membership: Membership = await bm
       .membershipRepo()
@@ -101,7 +103,7 @@ export default class MembershipResolver {
   async respondToMembership(
     @Args() { adminId, membershipId, response }: MembershipResponseArgs
   ) {
-    const bm = bloomManager.fork();
+    const bm = new BloomManager();
 
     const [membership, admin]: [Membership, User] = await Promise.all([
       bm.membershipRepo().findOne({ id: membershipId }, ['user']),

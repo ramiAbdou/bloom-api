@@ -14,7 +14,7 @@ import {
 } from 'mikro-orm';
 import { Field, ObjectType } from 'type-graphql';
 
-import { FormQuestion } from '@constants';
+import { Form, FormQuestionCategory } from '@constants';
 import BaseEntity from '@util/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
 import MembershipType from '../membership-type/MembershipType';
@@ -36,9 +36,9 @@ export default class Community extends BaseEntity {
   // Maps the title to the item. Represented as JSON. This doesn't automatically
   // include the First Name, Last Name, Email, and Membership Types, so when
   // creating the membership form, those need to be specified.
-  @Field(() => [FormQuestion])
+  @Field(() => Form)
   @Property({ type: JsonType })
-  membershipForm: FormQuestion[];
+  membershipForm: Form;
 
   @Field()
   @Property({ unique: true })
@@ -48,6 +48,24 @@ export default class Community extends BaseEntity {
   @Field()
   @Property({ unique: true })
   encodedURLName: string;
+
+  @Field(() => Form)
+  @Property({ persist: false, type: JsonType })
+  get basicMembershipForm(): Form {
+    const { questions, ...form } = this.membershipForm;
+    return {
+      ...form,
+      questions: questions.filter(
+        ({ category }) =>
+          ![
+            FormQuestionCategory.FIRST_NAME,
+            FormQuestionCategory.LAST_NAME,
+            FormQuestionCategory.EMAIL,
+            FormQuestionCategory.GENDER
+          ].includes(category)
+      )
+    };
+  }
 
   @BeforeCreate()
   beforeCreate() {

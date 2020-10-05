@@ -5,8 +5,8 @@
 
 import { ArgsType, Field, registerEnumType } from 'type-graphql';
 
-import { FormQuestionInput } from '@constants';
-import { MembershipType } from '@entities';
+import { FormInput } from '@constants';
+import { MembershipType } from '@entities/entities';
 
 export enum CommunityPopulation {
   GET_MEMBERSHIPS = 'GET_MEMBERSHIPS'
@@ -26,8 +26,8 @@ export class CreateCommunityArgs {
   @Field(() => Boolean)
   hasCSV? = false;
 
-  @Field(() => [FormQuestionInput])
-  membershipForm: FormQuestionInput[];
+  @Field(() => FormInput)
+  membershipForm: FormInput;
 
   @Field(() => [MembershipType])
   membershipTypes: MembershipType[];

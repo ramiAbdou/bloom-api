@@ -5,13 +5,13 @@
 
 import { expect, should } from 'chai';
 
-import bloomManager from '@bloomManager';
 import {
   FormQuestion,
   FormQuestionCategory,
   FormQuestionType
 } from '@constants';
-import { cleanDBForTesting, createConnection } from '@util/db/util';
+import BloomManager from '@util/db/BloomManager';
+import db from '@util/db/db';
 import { callGQL } from '@util/util';
 import { CommunityPopulation } from './CommunityArgs';
 
@@ -24,8 +24,8 @@ describe('Community Resolver', () => {
   */
 
   before(async () => {
-    await cleanDBForTesting();
-    await createConnection();
+    await db.cleanForTesting();
+    await db.createConnection();
   });
 
   /* 
@@ -39,7 +39,7 @@ describe('Community Resolver', () => {
     const source = `
       mutation Community (
         $name: String!,
-        $membershipForm: [FormQuestionInput!]!,
+        $membershipForm: Form!,
         $membershipTypes: [MembershipType!]!
       ) {
         createCommunity(
@@ -71,7 +71,7 @@ describe('Community Resolver', () => {
       variables: { membershipForm, membershipTypes, name }
     });
 
-    const bm = bloomManager.fork();
+    const bm = new BloomManager();
     const community = await bm
       .communityRepo()
       .findOne({ name }, ['membershipTypes']);
@@ -90,7 +90,7 @@ describe('Community Resolver', () => {
   */
 
   it('getCommunity - without population.', async () => {
-    const bm = bloomManager.fork();
+    const bm = new BloomManager();
     const community = bm.communityRepo().create({
       membershipForm: [
         {
@@ -127,7 +127,7 @@ describe('Community Resolver', () => {
   */
 
   it('getCommunity - with population.', async () => {
-    const bm = bloomManager.fork();
+    const bm = new BloomManager();
     const community = bm.communityRepo().create({
       membershipForm: [
         {
@@ -189,5 +189,5 @@ describe('Community Resolver', () => {
  /_/ \_\_|  \__\___|_|  
   */
 
-  after(async () => cleanDBForTesting());
+  after(async () => db.cleanForTesting());
 });

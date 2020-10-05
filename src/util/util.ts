@@ -3,29 +3,18 @@
  * @author Rami Abdou
  */
 
-import { graphql, GraphQLSchema } from 'graphql';
+import { graphql } from 'graphql';
 import { Maybe } from 'graphql/jsutils/Maybe';
 import moment from 'moment';
-import { buildSchema } from 'type-graphql';
 
-import CommunityResolver from '../entities/community/CommunityResolver';
-import MembershipResolver from '../entities/membership/MembershipResolver';
-import UserResolver from '../entities/user/UserResolver';
+import { createSchema } from '../loaders/apollo';
 
-interface Options {
+interface GraphQLOptions {
   source: string;
   variables?: Maybe<{ [key: string]: any }>;
 }
 
-/**
- * Creates the GraphQL Schema based on the resolvers.
- */
-export const createSchema = async (): Promise<GraphQLSchema> =>
-  buildSchema({
-    resolvers: [CommunityResolver, MembershipResolver, UserResolver]
-  });
-
-export const callGQL = async ({ source, variables }: Options) =>
+export const callGQL = async ({ source, variables }: GraphQLOptions) =>
   graphql({
     schema: await createSchema(),
     source,
@@ -56,6 +45,3 @@ export const now = () => moment.utc().format();
  */
 export const singleLineStringify = (value: any) =>
   JSON.stringify(value, null, 1).replace(/\s+/g, ' ');
-
-export const isProduction = process.env.NODE_ENV === 'production';
-export const isTesting = process.env.NODE_ENV === 'testing';

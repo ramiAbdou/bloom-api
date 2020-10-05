@@ -6,9 +6,9 @@
 import csv from 'csvtojson';
 import { Args, Mutation, Query, Resolver } from 'type-graphql';
 
-import bloomManager from '@bloomManager';
 import { FormQuestionCategory } from '@constants';
-import { Community, Membership, User } from '@entities';
+import { Community, Membership, User } from '@entities/entities';
+import BloomManager from '@util/db/BloomManager';
 import {
   CommunityPopulation,
   CreateCommunityArgs,
@@ -33,7 +33,7 @@ export default class CommunityResolver {
       membershipTypes
     }: CreateCommunityArgs
   ) {
-    const bm = bloomManager.fork();
+    const bm = new BloomManager();
     const community = bm
       .communityRepo()
       .create({ autoAccept, membershipForm, membershipTypes, name });
@@ -93,7 +93,7 @@ export default class CommunityResolver {
   async getCommunity(
     @Args() { encodedURLName, id, population }: GetCommunityArgs
   ) {
-    const bm = bloomManager.fork();
+    const bm = new BloomManager();
 
     const populate =
       population === CommunityPopulation.GET_MEMBERSHIPS

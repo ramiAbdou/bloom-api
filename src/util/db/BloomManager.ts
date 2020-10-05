@@ -5,21 +5,26 @@
 
 import { AnyEntity, EntityManager } from 'mikro-orm';
 
-import { Community, Membership, MembershipType, User } from '@entities';
-import lg from '@lg';
+import {
+  Community,
+  Membership,
+  MembershipType,
+  User
+} from '@entities/entities';
 import {
   CommunityRepo,
   MembershipRepo,
   MembershipTypeRepo,
   UserRepo
-} from '@repos';
+} from '@entities/repos';
+import logger from '@logger';
+import db from './db';
 
-export class BloomManager {
+export default class BloomManager {
   em: EntityManager;
 
-  constructor(em?: EntityManager) {
-    // Will be populated when the BloomManager instance is forked.
-    if (em) this.em = em;
+  constructor() {
+    this.em = db.em;
   }
 
   /*
@@ -36,9 +41,9 @@ export class BloomManager {
   flush = async (message?: string, data?: Record<string, any>) => {
     try {
       await this.em.flush();
-      if (message) lg.info(message, data);
+      if (message) logger.info(message, data);
     } catch (e) {
-      lg.error(new Error(e));
+      logger.error(new Error(e));
     }
   };
 
@@ -52,9 +57,9 @@ export class BloomManager {
   ) => {
     try {
       await this.em.persistAndFlush(entities);
-      if (message) lg.info(message, data);
+      if (message) logger.info(message, data);
     } catch (e) {
-      lg.error(e);
+      logger.error(e);
     }
   };
 
@@ -76,9 +81,9 @@ export class BloomManager {
     try {
       this.remove(entities);
       await this.em.flush();
-      if (message) lg.info(message, data);
+      if (message) logger.info(message, data);
     } catch (e) {
-      lg.error(e);
+      logger.error(e);
     }
   };
 
@@ -97,11 +102,6 @@ export class BloomManager {
     else entities.forEach((entity) => this.em.merge(entity));
   };
 
-  /**
-   * Returns a new BloomManager with a forked entity manager and new context.
-   */
-  fork = () => new BloomManager(this.em.fork());
-
   /*
   ___                  _ _           _        
  | _ \___ _ __  ___ __(_) |_ ___ _ _(_)___ ___
@@ -119,5 +119,3 @@ export class BloomManager {
 
   userRepo = () => this.em.getRepository(User) as UserRepo;
 }
-
-export default new BloomManager();

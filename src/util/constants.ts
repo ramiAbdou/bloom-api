@@ -12,7 +12,8 @@ import { Request, Response } from 'express';
 import path from 'path'; // Before constants.
 import { Field, InputType, ObjectType, registerEnumType } from 'type-graphql';
 
-import { isProduction } from './util';
+export const isProduction = process.env.NODE_ENV === 'production';
+export const isTesting = process.env.NODE_ENV === 'testing';
 
 // Environment configuration must happen before loading the constants file
 // because the constants depend on the environment being configured.
@@ -31,6 +32,19 @@ export const APP = {
     : 'http://localhost:8080'
 };
 
+export const JWT = {
+  EXPIRES_IN: 5 * 60 * 1000,
+  SECRET: process.env.JWT_SECRET
+};
+
+export const GOOGLE = {
+  CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+  REDIRECT_URI: `${APP.SERVER_URL}/google/auth`
+};
+
+export const SENDGRID = { API_KEY: process.env.SENDGRID_API_KEY };
+
 /**
  * All exported TYPE declaration constants are below.
  * NOTE that if any services have types that are specific to them, they will
@@ -45,6 +59,11 @@ export type Route = {
   method: 'GET' | 'POST' | 'DELETE' | 'PUT';
   route: string;
 };
+
+export interface GQLContext {
+  token: string;
+  refreshToken: string;
+}
 
 export enum FormQuestionCategory {
   FIRST_NAME = 'FIRST_NAME',
@@ -105,6 +124,30 @@ export class FormQuestionInput {
 
   @Field(() => FormQuestionType)
   type: FormQuestionType;
+}
+
+@ObjectType()
+export class Form {
+  @Field()
+  title: string;
+
+  @Field({ nullable: true })
+  description?: string;
+
+  @Field(() => [FormQuestion])
+  questions: FormQuestion[];
+}
+
+@InputType()
+export class FormInput {
+  @Field()
+  title: string;
+
+  @Field({ nullable: true })
+  description?: string;
+
+  @Field(() => [FormQuestionInput])
+  questions: FormQuestionInput[];
 }
 
 @ObjectType()

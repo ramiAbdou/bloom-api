@@ -5,14 +5,14 @@
 
 import { expect, should } from 'chai';
 
-import bloomManager from '@bloomManager';
 import {
   FormQuestionCategory,
   FormQuestionType,
   FormValueInput
 } from '@constants';
-import { Membership, User } from '@entities';
-import { cleanDBForTesting, createConnection } from '@util/db/util';
+import { Membership, User } from '@entities/entities';
+import BloomManager from '@util/db/BloomManager';
+import db from '@util/db/db';
 import { callGQL } from '@util/util';
 import Community from '../community/Community';
 
@@ -63,10 +63,10 @@ describe('Membership Resolver', () => {
   */
 
   before(async () => {
-    await cleanDBForTesting();
-    await createConnection();
+    await db.cleanForTesting();
+    await db.createConnection();
 
-    const bm = bloomManager.fork();
+    const bm = new BloomManager();
 
     community = bm.communityRepo().create({
       membershipForm: [
@@ -140,7 +140,7 @@ describe('Membership Resolver', () => {
       variables: { communityId: community.id, data }
     });
 
-    const bm = bloomManager.fork();
+    const bm = new BloomManager();
     const membership: Membership = await bm
       .membershipRepo()
       .findOne({ user: { email } }, ['user']);
@@ -161,7 +161,7 @@ describe('Membership Resolver', () => {
   */
 
   it(`createMembership - user already exists.`, async () => {
-    const bm = bloomManager.fork();
+    const bm = new BloomManager();
 
     const email = 'rami@bl.community';
     const user: User = bm.userRepo().create({
@@ -209,7 +209,7 @@ describe('Membership Resolver', () => {
   */
 
   it(`updateMembershipData`, async () => {
-    const bm = bloomManager.fork();
+    const bm = new BloomManager();
 
     const data: FormValueInput[] = [
       { title: 'What do you hope to gain from ColorStack?', value: 'YOUUUUU!' }
@@ -243,7 +243,7 @@ describe('Membership Resolver', () => {
   */
 
   it(`respondToMembership - accept.`, async () => {
-    const bm = bloomManager.fork();
+    const bm = new BloomManager();
 
     const admin: User = bm.userRepo().create({
       email: 'jehron@colorstack.org',
@@ -274,7 +274,7 @@ describe('Membership Resolver', () => {
   */
 
   it(`respondToMembership - reject.`, async () => {
-    const bm = bloomManager.fork();
+    const bm = new BloomManager();
 
     const { id: adminId }: User = await bm.userRepo().findOne({
       email: 'jehron@colorstack.org'
@@ -300,5 +300,5 @@ describe('Membership Resolver', () => {
  /_/ \_\_|  \__\___|_|  
   */
 
-  after(async () => cleanDBForTesting());
+  after(async () => db.cleanForTesting());
 });
