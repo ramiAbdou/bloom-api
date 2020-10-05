@@ -55,6 +55,11 @@ export type Route = {
   route: string;
 };
 
+export interface GQLContext {
+  idToken: string;
+  refreshToken: string;
+}
+
 export enum FormQuestionCategory {
   FIRST_NAME = 'FIRST_NAME',
   LAST_NAME = 'LAST_NAME',

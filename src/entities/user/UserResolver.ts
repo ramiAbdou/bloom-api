@@ -4,9 +4,10 @@
  * @author Rami Abdou
  */
 
-import { Arg, Mutation, Query, Resolver } from 'type-graphql';
+import decode from 'jwt-decode';
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { APP } from '@constants';
+import { APP, GQLContext } from '@constants';
 import { User } from '@entities/entities';
 import BloomManager from '@util/db/BloomManager';
 import { sendVerificationEmail } from '@util/emails';
@@ -16,6 +17,13 @@ export default class UserResolver {
   @Query(() => [User])
   async users() {
     return new BloomManager().userRepo().findAll();
+  }
+
+  @Authorized()
+  @Query(() => User, { nullable: true })
+  async getUser(@Ctx() { idToken }: GQLContext) {
+    const { email } = decode(idToken);
+    return new BloomManager().userRepo().findOne({ email });
   }
 
   @Mutation(() => Boolean, { nullable: true })

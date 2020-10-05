@@ -21,16 +21,10 @@ export default class GoogleRouter extends Router {
   private async retrieveToken({ query }: Request, res: Response) {
     const bm = new BloomManager();
     const {
-      expires_in: expiresIn,
+      expires_in: expiresIn, // Represented as seconds, need to * 1000 for ms.
       id_token: idToken,
       refresh_token: refreshToken
     } = await new GoogleAuth().getTokens(query.code as string);
-
-    const options = {
-      httpOnly: true,
-      maxAge: expiresIn * 1000, // expiresIn is # of seconds.
-      secure: isProduction
-    };
 
     const user: User = await bm
       .userRepo()
@@ -38,15 +32,16 @@ export default class GoogleRouter extends Router {
 
     // If the user isn't found, then direct them back to the login page with
     // the error code, so that React can display the correct error message.
-    if (!user) {
-      res.redirect(`${APP.CLIENT_URL}/login?err=user_not_found`);
-      return;
-    }
+    // if (!user) {
+    //   res.redirect(`${APP.CLIENT_URL}/login?err=user_not_found`);
+    //   return;
+    // }
 
-    user.refreshToken = refreshToken;
-    await bm.flush(`Refresh token stored for ${user.fullName}.`);
+    // user.refreshToken = refreshToken;
+    // await bm.flush(`Refresh token stored for ${user.fullName}.`);
 
-    res.cookie('idToken', idToken, options);
+    const options = { httpOnly: true, secure: isProduction };
+    res.cookie('idToken', idToken, { ...options, maxAge: expiresIn * 1000 });
     res.cookie('refreshToken', refreshToken, options);
     res.redirect(APP.CLIENT_URL);
   }

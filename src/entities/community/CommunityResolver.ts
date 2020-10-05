@@ -4,7 +4,7 @@
  */
 
 import csv from 'csvtojson';
-import { Args, Authorized, Mutation, Query, Resolver } from 'type-graphql';
+import { Args, Mutation, Query, Resolver } from 'type-graphql';
 
 import { FormQuestionCategory } from '@constants';
 import { Community, Membership, User } from '@entities/entities';
@@ -89,7 +89,6 @@ export default class CommunityResolver {
    * time the encodedURLName will be used is when the membershipForm is needed
    * in the GraphQL request.
    */
-  @Authorized()
   @Query(() => Community)
   async getCommunity(
     @Args() { encodedURLName, id, population }: GetCommunityArgs
