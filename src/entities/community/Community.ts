@@ -8,50 +8,69 @@ import {
   BeforeCreate,
   Collection,
   Entity,
-  JsonType,
+  EntityRepositoryType,
   OneToMany,
-  Property
+  OneToOne,
+  Property,
+  QueryOrder
 } from 'mikro-orm';
-import { Field, ObjectType } from 'type-graphql';
+import { Authorized, Field, ObjectType } from 'type-graphql';
 
-import { FormQuestion } from '@constants';
 import BaseEntity from '@util/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
+import CommunityApplication from '../community-application/CommunityApplication';
+import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
+import Event from '../event/Event';
+import MembershipCardItem from '../membership-card-item/MembershipCardItem';
+import MembershipQuestion from '../membership-question/MembershipQuestion';
 import MembershipType from '../membership-type/MembershipType';
 import Membership from '../membership/Membership';
+import CommunityRepo from './CommunityRepo';
 
 @ObjectType()
-@Entity()
+@Entity({ customRepository: () => CommunityRepo })
 export default class Community extends BaseEntity {
+  [EntityRepositoryType]?: CommunityRepo;
+
   // True if the membership should be accepted automatically.
   @Property({ type: Boolean })
   autoAccept = false;
 
-  // URL to the Digital Ocean space.
+  /**
+   * We have to persist this in the DB because we have use cases in which we
+   * need to query the DB by the encodedUrlName, which we wouldn't be able to
+   * do if it wasn't persisted.
+   *
+   * @example ColorStack => colorstack
+   */
+  @Field()
+  @Property({ unique: true })
+  encodedUrlName: string;
+
   @Field({ nullable: true })
   @Property({ nullable: true, unique: true })
   @IsUrl()
-  logo: string;
-
-  // Maps the title to the item. Represented as JSON. This doesn't automatically
-  // include the First Name, Last Name, Email, and Membership Types, so when
-  // creating the membership form, those need to be specified.
-  @Field(() => [FormQuestion])
-  @Property({ type: JsonType })
-  membershipForm: FormQuestion[];
+  logoUrl: string;
 
   @Field()
   @Property({ unique: true })
   name: string;
 
-  // The URL encoded version of the community name: ColorStack => colorstack.
-  @Field()
-  @Property({ unique: true })
-  encodedURLName: string;
+  @Property({ persist: false })
+  get isInviteOnly(): boolean {
+    return !this.application;
+  }
+
+  @Authorized('ADMIN')
+  pendingApplications(): Membership[] {
+    return this.memberships
+      .getItems()
+      .filter(({ status }) => status === 'PENDING');
+  }
 
   @BeforeCreate()
   beforeCreate() {
-    this.encodedURLName = toLowerCaseDash(this.name);
+    this.encodedUrlName = toLowerCaseDash(this.name);
   }
 
   /* 
@@ -62,12 +81,44 @@ export default class Community extends BaseEntity {
                                          |_|      
   */
 
+  // If the community is invite-only, there will be no application. The only
+  // way for someone to join is if the admin adds them manually.
+  @Field(() => CommunityApplication, { nullable: true })
+  @OneToOne(() => CommunityApplication, ({ community }) => community, {
+    nullable: true,
+    owner: true
+  })
+  application: CommunityApplication;
+
+  @OneToMany(() => Event, ({ community }) => community)
+  events = new Collection<Event>(this);
+
+  @Field(() => CommunityIntegrations, { nullable: true })
+  @OneToOne(() => CommunityIntegrations, ({ community }) => community, {
+    nullable: true,
+    owner: true
+  })
+  integrations: CommunityIntegrations;
+
   @Field(() => [Membership])
   @OneToMany(() => Membership, ({ community }) => community)
-  memberships: Collection<Membership> = new Collection<Membership>(this);
+  memberships = new Collection<Membership>(this);
 
-  @OneToMany(() => MembershipType, ({ community }) => community)
-  membershipTypes: Collection<MembershipType> = new Collection<MembershipType>(
-    this
-  );
+  @OneToMany(() => MembershipCardItem, ({ community }) => community, {
+    orderBy: { order: QueryOrder.ASC }
+  })
+  membershipCard = new Collection<MembershipCardItem>(this);
+
+  // Should get the questions by the order that they are stored in the DB.
+  @Field(() => [MembershipQuestion])
+  @OneToMany(() => MembershipQuestion, ({ community }) => community, {
+    orderBy: { order: QueryOrder.ASC }
+  })
+  questions = new Collection<MembershipQuestion>(this);
+
+  // Should get the questions by the order that they are stored in the DB.
+  @OneToMany(() => MembershipType, ({ community }) => community, {
+    orderBy: { amount: QueryOrder.ASC }
+  })
+  types = new Collection<MembershipType>(this);
 }

@@ -5,83 +5,168 @@
 
 import {
   BeforeCreate,
+  Collection,
   Entity,
+  EntityRepositoryType,
   Enum,
-  JsonType,
   ManyToOne,
-  Property
+  OneToMany,
+  Property,
+  QueryOrder
 } from 'mikro-orm';
-import { Field, Int, ObjectType } from 'type-graphql';
+import moment from 'moment';
+import { Authorized, Field, ObjectType } from 'type-graphql';
 
-import {
-  FormQuestion,
-  FormQuestionCategory as Category,
-  FormValue
-} from '@constants';
 import BaseEntity from '@util/db/BaseEntity';
+import { now } from '@util/util';
 import Community from '../community/Community';
+import EventAttendee from '../event-attendee/EventAttendee';
+import EventRSVP from '../event-rsvp/EventRSVP';
+import MembershipCardItem from '../membership-card-item/MembershipCardItem';
+import MembershipData from '../membership-data/MembershipData';
+import MembershipPayment from '../membership-payment/MembershipPayment';
+import MembershipQuestion from '../membership-question/MembershipQuestion';
 import MembershipType from '../membership-type/MembershipType';
 import User from '../user/User';
+import { MembershipRole } from './MembershipArgs';
+import MembershipRepo from './MembershipRepo';
+
+export type MembershipStatus = 'REJECTED' | 'PENDING' | 'APPROVED';
 
 @ObjectType()
-@Entity()
+@Entity({ customRepository: () => MembershipRepo })
 export default class Membership extends BaseEntity {
-  // Maps the title to the value.
-  @Property({ nullable: true, type: JsonType })
-  data: Record<string, any>;
+  [EntityRepositoryType]?: MembershipRepo;
 
-  // -1: Rejected
-  // 0: Pending
-  // 1: Accepted
-  @Field(() => Int)
-  @Enum({ items: [-1, 0, 1], type: Number })
-  status = 0;
+  @Field({ nullable: true })
+  @Property({ nullable: true, type: 'text' })
+  bio: string;
+
+  // Member is allowed to opt-out of email notifications that send after an
+  // event gets posted.
+  @Field(() => Boolean)
+  @Property({ type: Boolean })
+  emailNotifications = true;
+
+  @Field()
+  @Property()
+  joinedOn: string = now();
+
+  // If the member has a role, it will either be ADMIN or OWNER. There should
+  // only be one OWNER in a community.
+  @Field(() => String, { nullable: true })
+  @Enum({ items: ['ADMIN', 'OWNER'], nullable: true, type: String })
+  role: MembershipRole;
+
+  @Field(() => String)
+  @Enum({ items: ['REJECTED', 'PENDING', 'APPROVED'], type: String })
+  status: MembershipStatus = 'PENDING';
+
+  // We don't store any of the customer's financial data in our server. Stripe
+  // handles all of that for us, we just need Stripe's customer ID in order
+  // to use recurring payments.
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  stripeCustomerId: string;
 
   /**
-   * Returns the full data of the membership including the user's basic
-   * information like First Name, Last Name, etc.
+   * Returns the Membership data that is needed to be displayed in the
+   * Community Directory.
    */
-  @Field(() => [FormValue])
-  getFullData(): FormValue[] {
-    if (!this.data) return [];
+  cardData() {
+    const membershipData = this.data.getItems();
+    const {
+      currentLocation,
+      facebookUrl,
+      instagramUrl,
+      linkedInUrl,
+      twitterUrl
+    } = this.user;
 
-    const { membershipForm } = this.community;
-    const { gender, firstName, lastName, email } = this.user;
-    const { name: membershipName } = this.type;
+    // The community specified a list of questions or user-specific categories
+    // to be in the card, so we map each of the items to the appropriate value.
+    return this.community.membershipCard
+      .getItems()
+      .map(({ category, inMinimizedCard, question }: MembershipCardItem) => {
+        let value: string;
 
-    return membershipForm.map(({ category, title }: FormQuestion) => {
-      let value: any;
+        // If no user category is specified, it means it is the item is from
+        // the membership data, NOT the user data.
+        if (!category)
+          value = membershipData.find(
+            ({ question: { id: questionId } }) => question.id === questionId
+          ).value;
+        else if (category === 'BIO') value = this.bio;
+        else if (category === 'CURRENT_LOCATION') value = currentLocation;
+        else if (category === 'FACEBOOK_URL') value = facebookUrl;
+        else if (category === 'INSTAGRAM_URL') value = instagramUrl;
+        else if (category === 'LINKEDIN_URL') value = linkedInUrl;
+        else if (category === 'TWITTER_URL') value = twitterUrl;
 
-      if (category === Category.FIRST_NAME) value = firstName;
-      else if (category === Category.LAST_NAME) value = lastName;
-      else if (category === Category.EMAIL) value = email;
-      else if (category === Category.GENDER) value = gender;
-      else if (category === Category.MEMBERSHIP_TYPE) value = membershipName;
-      else value = this.data[title];
+        return { category, inMinimizedCard, value };
+      });
+  }
 
-      return { title, value };
-    });
+  @Authorized('ADMIN')
+  @Field(() => [MembershipData])
+  fullData(): MembershipData[] {
+    const data = this.data?.getItems();
+    const { email, gender, firstName, lastName } = this.user;
+
+    // @ts-ignore b/c this will only be queried in certain cases.
+    return this.community.questions
+      .getItems()
+      .map(({ category, id, order, title, type }: MembershipQuestion) => {
+        let value: string;
+        const result = data.find(({ question }) => question.title === title);
+
+        if (result) value = result.value;
+        else if (category === 'DATE_JOINED') value = this.joinedOn;
+        else if (category === 'EMAIL') value = email;
+        else if (category === 'FIRST_NAME') value = firstName;
+        else if (category === 'GENDER') value = gender;
+        else if (category === 'LAST_NAME') value = lastName;
+        else if (category === 'MEMBERSHIP_TYPE') value = this.type.name;
+
+        return { question: { id, order, title, type }, value };
+      });
   }
 
   /**
-   * Returns the only the data that is associated with this membership, and none
-   * of the data that lives on the User entity.
+   * Returns true if the member has paid their dues. If the membership type
+   * is free, automatically returns true.
    */
-  @Field(() => [FormValue])
-  getBasicMembershipData(): FormValue[] {
-    if (!this.data) return [];
+  isActive(): boolean {
+    const { isFree, recurrence } = this.type;
+    if (isFree) return true;
 
-    const { membershipForm } = this.community;
-    const { name: membershipName } = this.type;
+    // If the membership is not free and there's no payments recorded, means
+    // that they haven't paid.
+    const lastPaidDate = this.payments[0]?.createdAt;
+    if (!lastPaidDate) return false;
 
-    return membershipForm.reduce((acc: FormValue[], { category, title }) => {
-      // If it's the membership type, push that value from the entity.
-      if (category === Category.MEMBERSHIP_TYPE)
-        acc.push({ title, value: membershipName });
-      // Otherwise, get the value from the data that lives on the Membership.
-      else if (!category) acc.push({ title, value: this.data[title] });
-      return acc;
-    }, []);
+    // If the membership is a LIFETIME membership and the member has paid
+    // any dues at all, regardless of the date, then they are active.
+    if (recurrence === 'LIFETIME') return true;
+
+    // If the recurrence is MONTHLY, then we grab the date from a month ago.
+    // If the recurrence is YEARLY, then we grab the date from a year ago.
+    const checkAgainstMoment = moment
+      .utc()
+      .subtract(1, recurrence === 'MONTHLY' ? 'month' : 'year');
+
+    // The member is active if they've paid after the date above.
+    return checkAgainstMoment.isBefore(moment.utc(lastPaidDate));
+  }
+
+  @BeforeCreate()
+  beforeCreate() {
+    if (this.role || this.community.autoAccept) this.status = 'APPROVED';
+    if (!this.type)
+      // eslint-disable-next-line prefer-destructuring
+      this.type = this.community.types
+        .getItems()
+        .filter(({ isDefault }) => isDefault)[0];
   }
 
   /* 
@@ -92,18 +177,34 @@ export default class Membership extends BaseEntity {
                                          |_|      
   */
 
+  @Field(() => Community)
   @ManyToOne(() => Community)
   community: Community;
 
-  @ManyToOne(() => MembershipType)
+  // Data will only be populated if a question has ever been answered before.
+  @Field(() => [MembershipData])
+  @OneToMany(() => MembershipData, ({ membership }) => membership)
+  data = new Collection<MembershipData>(this);
+
+  @OneToMany(() => EventAttendee, ({ membership }) => membership)
+  eventsAttended = new Collection<EventAttendee>(this);
+
+  @OneToMany(() => EventRSVP, ({ membership }) => membership)
+  eventsRSVPd = new Collection<EventRSVP>(this);
+
+  @OneToMany(() => MembershipPayment, ({ membership }) => membership, {
+    orderBy: { createdAt: QueryOrder.DESC }
+  })
+  payments = new Collection<MembershipPayment>(this);
+
+  // 99% of the time, type MUST exist. However, in some communities, the OWNER
+  // or ADMINs are not actually general members of the community. For example,
+  // in ColorStack, the Community Manager isn't a part of the community, but
+  // in MALIK, even the National President is a general dues-paying member.
+  @ManyToOne(() => MembershipType, { nullable: true })
   type: MembershipType;
 
   @Field(() => User)
   @ManyToOne(() => User)
   user: User;
-
-  @BeforeCreate()
-  beforeCreate() {
-    if (this.community.autoAccept) this.status = 1;
-  }
 }

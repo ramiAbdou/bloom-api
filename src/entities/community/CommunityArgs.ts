@@ -3,44 +3,53 @@
  * @author Rami Abdou
  */
 
-import { ArgsType, Field, registerEnumType } from 'type-graphql';
+import { ArgsType, Field } from 'type-graphql';
 
-import { FormQuestionInput } from '@constants';
-import { MembershipType } from '@entities';
+import { MembershipQuestionInput } from '../membership-question/MembershipQuestionArgs';
+import { MembershipTypeInput } from '../membership-type/MembershipTypeArgs';
 
-export enum CommunityPopulation {
-  GET_MEMBERSHIPS = 'GET_MEMBERSHIPS'
-}
+type CommunityOwnerArgs = {
+  email: string;
+  firstName: string;
+  lastName: string;
+};
 
-registerEnumType(CommunityPopulation, { name: 'CommunityPopulation' });
-
-@ArgsType()
 export class CreateCommunityArgs {
-  @Field()
-  name: string;
+  applicationDescription?: string;
 
-  @Field(() => Boolean)
+  applicationTitle?: string;
+
   autoAccept? = false;
 
-  // True if there is a current Member CSV file stored for the community.
-  @Field(() => Boolean)
-  hasCSV? = false;
+  name: string;
 
-  @Field(() => [FormQuestionInput])
-  membershipForm: FormQuestionInput[];
+  questions: MembershipQuestionInput[];
 
-  @Field(() => [MembershipType])
-  membershipTypes: MembershipType[];
+  owner: CommunityOwnerArgs;
+
+  types: MembershipTypeInput[];
 }
 
 @ArgsType()
 export class GetCommunityArgs {
-  @Field({ nullable: true })
-  id?: string;
+  @Field()
+  encodedUrlName: string;
+}
 
-  @Field({ nullable: true })
-  encodedURLName?: string;
+@ArgsType()
+export class ImportCommunityCSVArgs {
+  @Field()
+  encodedUrlName: string;
+}
 
-  @Field(() => CommunityPopulation, { nullable: true })
-  population?: CommunityPopulation;
+@ArgsType()
+export class ReorderQuestionArgs {
+  @Field()
+  communityId: string;
+
+  @Field()
+  questionId: string;
+
+  @Field()
+  order: number;
 }

@@ -3,5 +3,6 @@ dist
 logs
 node_modules
 package-lock.json
-src/entities/dev-db.ts
 membership-csv
+src/entities/seeder.ts
+src/scripts

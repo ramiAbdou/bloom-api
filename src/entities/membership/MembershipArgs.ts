@@ -3,41 +3,17 @@
  * @author Rami Abdou
  */
 
-import { ArgsType, Field, Int } from 'type-graphql';
+import { ArgsType, Field } from 'type-graphql';
 
-import { FormValueInput } from '@constants';
+import { MembershipDataInput } from '@util/gql';
+
+export type MembershipRole = 'ADMIN' | 'OWNER';
 
 @ArgsType()
-export class CreateMembershipArgs {
+export class ApplyForMembershipArgs {
+  @Field(() => [MembershipDataInput])
+  data: MembershipDataInput[];
+
   @Field()
-  communityId: string;
-
-  @Field(() => [FormValueInput])
-  data: FormValueInput[];
-
-  // This will only be non-null if the User already exists.
-  @Field({ nullable: true })
   email: string;
-}
-
-@ArgsType()
-export class MembershipResponseArgs {
-  // Same as User ID.
-  @Field()
-  adminId: string;
-
-  @Field()
-  membershipId: string;
-
-  @Field(() => Int)
-  response: number;
-}
-
-@ArgsType()
-export class UpdateMembershipArgs {
-  @Field(() => [FormValueInput])
-  data: FormValueInput[];
-
-  @Field()
-  membershipId: string;
 }

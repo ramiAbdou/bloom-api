@@ -3,34 +3,49 @@
  * @author Rami Abdou
  */
 
-import { graphql, GraphQLSchema } from 'graphql';
-import { Maybe } from 'graphql/jsutils/Maybe';
+import { AxiosResponse } from 'axios';
+import * as CSV from 'csv-string';
+import { PristineInput } from 'csv-string/dist/types';
+import jwt from 'jsonwebtoken';
 import moment from 'moment';
-import { buildSchema } from 'type-graphql';
 
-import CommunityResolver from '../entities/community/CommunityResolver';
-import MembershipResolver from '../entities/membership/MembershipResolver';
-import UserResolver from '../entities/user/UserResolver';
-
-interface Options {
-  source: string;
-  variables?: Maybe<{ [key: string]: any }>;
-}
+import { AuthTokens, JWT } from '@constants';
 
 /**
- * Creates the GraphQL Schema based on the resolvers.
+ * Generates and signs both a token and refreshToken. The refreshToken does
+ * not expire, but the token expires after a limited amount of time.
  */
-export const createSchema = async (): Promise<GraphQLSchema> =>
-  buildSchema({
-    resolvers: [CommunityResolver, MembershipResolver, UserResolver]
-  });
+export const decodeToken = (token: string): any => {
+  try {
+    return jwt.decode(token);
+  } catch {
+    return null;
+  }
+};
 
-export const callGQL = async ({ source, variables }: Options) =>
-  graphql({
-    schema: await createSchema(),
-    source,
-    variableValues: variables
-  });
+/**
+ * Returns the accessToken and refreshToken from the data.
+ * Precondition: data has both an access_token and refresh_token.
+ *
+ * @example extractTokensFromAxios(
+ *  { data: { access_token: 'a', refresh_token: 'b' } }
+ * ) => { accessToken: 'a', refreshToken: 'b' }
+ */
+export const extractTokensFromAxios = ({
+  data
+}: AxiosResponse): AuthTokens => ({
+  accessToken: data.access_token,
+  refreshToken: data.refresh_token
+});
+
+/**
+ * Generates and signs both a token and refreshToken. The refreshToken does
+ * not expire, but the token expires after a limited amount of time.
+ */
+export const generateTokens = (payload: string | object): AuthTokens => ({
+  accessToken: jwt.sign(payload, JWT.SECRET, { expiresIn: JWT.EXPIRES_IN }),
+  refreshToken: jwt.sign(payload, JWT.SECRET)
+});
 
 /**
  * Returns the string as lowercase with spaces replaced by dashes.
@@ -49,13 +64,20 @@ export const toLowerCaseDash = (str: string) =>
 export const now = () => moment.utc().format();
 
 /**
- * Returns the stringified value with extra line spaces removed, so it keeps
- * the entire string on one line.
- *
- * @example singleLineStringify({ user: { id: 1 } }) => '{ "user": 1 }'
+ * CSV stringifies the given input and replaces the new line characters at the
+ * end of the input.
  */
-export const singleLineStringify = (value: any) =>
-  JSON.stringify(value, null, 1).replace(/\s+/g, ' ');
+export const stringify = (input: PristineInput): string =>
+  CSV.stringify(input).replace('\r\n', '');
 
-export const isProduction = process.env.NODE_ENV === 'production';
-export const isTesting = process.env.NODE_ENV === 'testing';
+/**
+ * Returns true if the token is both a valid JWT token and if it has not yet
+ * expired.
+ */
+export const verifyToken = (token: string): boolean => {
+  try {
+    return !!jwt.verify(token, JWT.SECRET);
+  } catch {
+    return false;
+  }
+};

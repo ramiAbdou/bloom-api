@@ -1,0 +1,43 @@
+<mjml>
+  <mj-body background-color="#FBFBFB">
+    <mj-section>
+      <mj-column>
+        <mj-image padding-left="12px" width="125px" src="https://uploads-ssl.webflow.com/5ef3a24ad8b20d94964a05fd/5ef3a2ff3cfb074ea988b299_full%20Orignal.png" align="left" alt="Bloom Logo" />
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#E0E0E0" border-radius="6px" padding="1px">
+      <mj-column background-color="#FFFFFF" padding="12px" border-radius="6px">
+        <mj-text font-family="Helvetica Neue, Helvetica" font-size="22px" padding-left="0px" font-weight="300">
+          You're on your way!
+        </mj-text>
+        <mj-text font-family="Helvetica Neue, Helvetica" font-weight="300" font-size="22px" padding-left="0px" padding-top="0px">
+          Let's confirm your email address.
+        </mj-text>
+
+        <mj-text font-family="Helvetica Neue, Helvetica" font-size="16px" font-weight="300" padding-left="0px">
+          By clicking on the following link, you are confirming your email
+          address.
+        </mj-text>
+
+        <mj-button font-family="Helvetica Neue, Helvetica" font-size="13px" font-weight="400" background-color="#F58023" border-radius="6px" color="#FFFFFF" inner-padding="0px 48px" height="48px" padding-top="24px" padding-right="0px" padding-left="0px" align="left" href="{{verificationUrl}}">
+          Confirm Email
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding-top="48px">
+      <mj-column padding-left="12px">
+        <mj-divider padding="0px" border-width="1px" padding-bottom="6px" border-color="#E0E0E0" />
+
+        <mj-image src="https://uploads-ssl.webflow.com/5ef3a24ad8b20d94964a05fd/5ef3a2ff3cfb074ea988b299_full%20Orignal.png" width="75px" align="left" alt="Bloom Logo" padding-left="0px" />
+        <mj-text padding-bottom="0px" padding-top="0px" font-family="Helvetica Neue, Helvetica" font-size="10px" font-weight="300" line-height="16px" padding-left="0px">
+          The Future of Community Building
+        </mj-text>
+        <mj-text padding-bottom="0px" padding-top="0px" font-family="Helvetica Neue, Helvetica" font-size="10px" font-weight="300" padding="0px" line-height="16px">
+          © Bloom Connect Inc. 20620 Hollow Pine Drive, Walnut, CA 91789 USA
+        </mj-text>
+        <mj-button background-color="#FBFBFB" inner-padding="0px" color="#00558A" align="left" padding-left="0px" href="https://www.linkedin.com/company/bloom-university" padding-top="6px" font-family="Helvetica Neue, Helvetica" font-size="10px">LinkedIn</mj-button>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

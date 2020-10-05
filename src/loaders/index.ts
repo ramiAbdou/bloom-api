@@ -10,18 +10,16 @@
 import 'reflect-metadata'; // Needed for type-graphql compilation.
 
 import { APP } from '@constants';
-import lg from '@lg';
-import { createConnection } from '@util/db/util';
-import startApollo from './apollo';
-import startExpress from './express';
+import logger from '@logger';
+import db from '@util/db/db';
+import apollo from './apollo';
+import express from './express';
 
 const startServer = async () => {
-  const app = startExpress();
-  const [apolloServer] = await Promise.all([startApollo(), createConnection()]);
-  apolloServer.applyMiddleware({ app, path: '/graphql' });
-  app.listen(APP.PORT, () =>
-    lg.info(`Server up and running at: ${APP.SERVER_URL}.`)
-  );
+  const app = express();
+  const [apolloServer] = await Promise.all([apollo(), db.createConnection()]);
+  apolloServer.applyMiddleware({ app, cors: false, path: '/graphql' });
+  app.listen(APP.PORT, () => logger.info('SERVER_STARTED'));
 };
 
 startServer();

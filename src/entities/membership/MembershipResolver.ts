@@ -3,16 +3,13 @@
  * @author Rami Abdou
  */
 
-import { Args, Mutation, Resolver } from 'type-graphql';
+import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import bloomManager from '@bloomManager';
-import { FormValueInput } from '@constants';
-import { Community, Membership, User } from '@entities';
-import {
-  CreateMembershipArgs,
-  MembershipResponseArgs,
-  UpdateMembershipArgs
-} from './MembershipArgs';
+import { GQLContext } from '@constants';
+import { Membership } from '@entities';
+import BloomManager from '@util/db/BloomManager';
+import { Populate } from '@util/gql';
+import { ApplyForMembershipArgs } from './MembershipArgs';
 
 @Resolver()
 export default class MembershipResolver {
@@ -20,102 +17,24 @@ export default class MembershipResolver {
    * Creates a Membership is for the given Community ID, and also creates a
    * User with the basic information from the membership data.
    */
-  @Mutation(() => Membership)
-  async createMembership(
-    @Args() { communityId, data, email }: CreateMembershipArgs
-  ) {
-    const bm = bloomManager.fork();
-
-    const community: Community = await bm
-      .communityRepo()
-      .findOne({ id: communityId });
-
-    // The user can potentially already exist if they are a part of other
-    // communities.
-    const user: User = email
-      ? await bm.userRepo().findOne({ email })
-      : new User();
-
-    const membership: Membership = new Membership();
-    const membershipData: Record<string, any> = {};
-
-    membership.community = community;
-    membership.data = membershipData;
-    membership.user = user;
-
-    // We only use a Promise for the Membership Type case since we need to
-    // fetch the type from the DB.
-    await Promise.all(
-      data.map(async ({ category, title, value }: FormValueInput) => {
-        if (category === 'FIRST_NAME') user.firstName = value;
-        else if (category === 'LAST_NAME') user.lastName = value;
-        else if (category === 'EMAIL') user.email = value;
-        else if (category === 'GENDER') user.gender = value;
-        else if (category === 'MEMBERSHIP_TYPE') {
-          const type = await bm
-            .membershipTypeRepo()
-            .findOne({ community, name: value });
-          membership.type = type;
-        } else membershipData[title] = value;
-      })
-    );
-
-    await bm.persistAndFlush(
-      membership,
-      `Membership created for ${user.fullName}.`,
-      { user }
-    );
-
-    return membership;
-  }
-
-  /**
-   * Updates the membership data that is specified, and leaves all other
-   * membership data alone.
-   */
-  @Mutation(() => Membership)
-  async updateMembershipData(
-    @Args() { data, membershipId }: UpdateMembershipArgs
-  ) {
-    const bm = bloomManager.fork();
-
-    const membership: Membership = await bm
+  @Mutation(() => Membership, { nullable: true })
+  async applyForMembership(
+    @Args() { data, email }: ApplyForMembershipArgs,
+    @Ctx() { communityId }: GQLContext
+  ): Promise<Membership> {
+    return new BloomManager()
       .membershipRepo()
-      .findOne({ id: membershipId }, ['community', 'type', 'user']);
-
-    data.forEach(({ title, value }: FormValueInput) => {
-      membership.data[title] = value;
-    });
-
-    const { user } = membership;
-    await bm.flush(`Membership data updated for ${user.fullName}.`, { user });
-
-    return membership;
+      .applyForMembership(communityId, email, data);
   }
 
-  /**
-   * An admin has the option to either accept or reject a Membership when they
-   * apply to the organization.
-   */
-  @Mutation(() => Membership)
-  async respondToMembership(
-    @Args() { adminId, membershipId, response }: MembershipResponseArgs
-  ) {
-    const bm = bloomManager.fork();
-
-    const [membership, admin]: [Membership, User] = await Promise.all([
-      bm.membershipRepo().findOne({ id: membershipId }, ['user']),
-      bm.userRepo().findOne({ id: adminId })
-    ]);
-
-    membership.status = response;
-
-    await bm.flush(
-      `${admin.fullName} responded to ${membership.user.fullName}'s membership
-      application.`,
-      { admin, membership }
-    );
-
-    return membership;
+  @Authorized()
+  @Query(() => [Membership], { nullable: true })
+  async getMembers(
+    @Populate() populate: string[],
+    @Ctx() { communityId }: GQLContext
+  ): Promise<Membership[]> {
+    return new BloomManager()
+      .membershipRepo()
+      .getMembers(communityId, populate);
   }
 }

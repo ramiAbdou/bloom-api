@@ -6,13 +6,13 @@
 
 import { Connection, IDatabaseDriver, Options } from 'mikro-orm';
 
-import { APP } from '@constants';
+import { APP, isProduction } from '@constants';
 import * as entities from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
+import BaseRepo from '@util/db/BaseRepo';
 import NamingStrategy from '@util/db/NamingStrategy';
-import { isProduction } from '@util/util';
 
-const options: Options<IDatabaseDriver<Connection>> = {
+export default {
   clientUrl: APP.DB_URL,
   // This option disallows the usage of entitiesDirs and caching, which we set
   // to true b/c we need since BaseEntity is in a different folder than the
@@ -20,9 +20,8 @@ const options: Options<IDatabaseDriver<Connection>> = {
   discovery: { disableDynamicFileAccess: true },
   driverOptions: { connection: { ssl: isProduction } },
   entities: [BaseEntity, ...Object.values(entities)],
-  migrations: { path: './src/db/migrations' },
+  entityRepository: BaseRepo,
+  filters: { notDeleted: { cond: () => ({ deletedAt: null }) } },
   namingStrategy: NamingStrategy,
   type: 'postgresql'
-};
-
-export default options;
+} as Options<IDatabaseDriver<Connection>>;

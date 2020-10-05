@@ -4,15 +4,29 @@
  * @author Rami Abdou
  */
 
-import { Query, Resolver } from 'type-graphql';
+import { Authorized, Ctx, Query, Resolver } from 'type-graphql';
 
+import { GQLContext } from '@constants';
 import { User } from '@entities';
-import bm from '@util/db/bm';
+import BloomManager from '@util/db/BloomManager';
+import { Populate } from '@util/gql';
 
 @Resolver()
 export default class UserResolver {
   @Query(() => [User])
   async users() {
-    return bm.fork().userRepo().findAll();
+    return new BloomManager().userRepo().findAll();
+  }
+
+  @Authorized()
+  @Query(() => User, { nullable: true })
+  async getUser(@Ctx() { userId }: GQLContext, @Populate() populate: string[]) {
+    const bm = new BloomManager();
+    return bm.userRepo().findOne({ id: userId }, populate);
+  }
+
+  @Query(() => Boolean)
+  async isUserLoggedIn(@Ctx() { userId }: GQLContext) {
+    return !!userId;
   }
 }
