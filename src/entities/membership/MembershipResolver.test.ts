@@ -89,7 +89,6 @@ describe('Membership Resolver', () => {
           type: FormQuestionType.SHORT_TEXT
         },
         {
-          category: FormQuestionCategory.MEMBERSHIP_TYPE,
           options: ['Family Member', 'General Member', 'Admin'],
           required: true,
           title: 'What type of membership are you interested in?',
@@ -125,10 +124,7 @@ describe('Membership Resolver', () => {
       { category: FormQuestionCategory.FIRST_NAME, value: 'Rami' },
       { category: FormQuestionCategory.LAST_NAME, value: 'Abdou' },
       { category: FormQuestionCategory.EMAIL, value: email },
-      {
-        category: FormQuestionCategory.MEMBERSHIP_TYPE,
-        value: 'Family Member'
-      },
+      { value: 'Family Member' },
       {
         title: 'What do you hope to gain from ColorStack?',
         value: 'Family Member'
@@ -176,10 +172,7 @@ describe('Membership Resolver', () => {
       { category: FormQuestionCategory.FIRST_NAME, value: 'Rami' },
       { category: FormQuestionCategory.LAST_NAME, value: 'Abdou' },
       { category: FormQuestionCategory.EMAIL, value: email },
-      {
-        category: FormQuestionCategory.MEMBERSHIP_TYPE,
-        value: 'Family Member'
-      },
+      { value: 'Family Member' },
       {
         title: 'What do you hope to gain from ColorStack?',
         value: 'Family Member'

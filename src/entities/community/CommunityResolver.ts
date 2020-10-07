@@ -25,18 +25,12 @@ export default class CommunityResolver {
   @Mutation(() => Community, { nullable: true })
   async createCommunity(
     @Args()
-    {
-      autoAccept,
-      hasCSV,
-      name,
-      membershipForm,
-      membershipTypes
-    }: CreateCommunityArgs
+    { autoAccept, hasCSV, name, membershipForm }: CreateCommunityArgs
   ) {
     const bm = new BloomManager();
     const community = bm
       .communityRepo()
-      .create({ autoAccept, membershipForm, membershipTypes, name });
+      .create({ autoAccept, membershipForm, name });
     bm.persist(community);
 
     // If the community has a CSV file of existing members, then we run this
@@ -72,15 +66,13 @@ export default class CommunityResolver {
               user.lastName = value;
             else if (key === FormQuestionCategory.EMAIL) user.email = value;
             else if (key === FormQuestionCategory.GENDER) user.gender = value;
-            else if (key === FormQuestionCategory.MEMBERSHIP_TYPE)
-              membership.type = membershipTypes.find((el) => el.name === value);
             else membershipData[key] = value;
           });
         })
       );
     }
 
-    await bm.flush(`The ${name} community has been created!`, { community });
+    await bm.flush(`${name} has been created!`, { community });
     return community;
   }
 

@@ -4,7 +4,6 @@
  */
 
 import { Request, Response } from 'express';
-import decode from 'jwt-decode';
 
 import { APP, isProduction, JWT, Route } from '@constants';
 import { User } from '@entities/entities';
@@ -12,7 +11,6 @@ import Auth from '@util/auth/Auth';
 import BloomManager from '@util/db/BloomManager';
 import Router from '@util/Router';
 import GoogleAuth from './GoogleAuth';
-import { DecodedGoogleIDToken } from './GoogleTypes';
 
 export default class GoogleRouter extends Router {
   get routes(): Route[] {
@@ -20,11 +18,10 @@ export default class GoogleRouter extends Router {
   }
 
   private async retrieveToken({ query }: Request, res: Response) {
-    const idToken = await new GoogleAuth().getIdToken(query.code as string);
-    const { email } = decode(idToken) as DecodedGoogleIDToken;
-
     const bm = new BloomManager();
-    const user: User = await bm.userRepo().findOne({ email });
+    const user: User = await bm.userRepo().findOne({
+      email: await new GoogleAuth().getEmailFromCode(query.code as string)
+    });
 
     // If the user isn't found, then direct them back to the login page with
     // the error code, so that React can display the correct error message.

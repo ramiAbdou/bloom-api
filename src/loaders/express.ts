@@ -16,6 +16,7 @@ import { APP } from '@constants';
 import { User } from '@entities/entities';
 import UserRouter from '@entities/user/UserRouter';
 import GoogleRouter from '@integrations/google/GoogleRouter';
+import ZoomRouter from '@integrations/zoom/ZoomRouter';
 import Auth from '@util/auth/Auth';
 import BloomManager from '@util/db/BloomManager';
 
@@ -39,7 +40,9 @@ const updateToken = async (req: Request, res: Response, next: NextFunction) => {
       refreshToken: updatedRefreshToken
     } = auth.generateTokens({ userId: user.id });
     req.cookies.token = updatedToken;
+    req.cookies.refreshToken = updatedRefreshToken;
     res.cookie('token', updatedToken);
+    res.cookie('refreshToken', updatedRefreshToken);
     user.refreshToken = updatedRefreshToken;
     await bm.flush(`Refresh token updated for ${user.fullName}.`);
   }
@@ -56,11 +59,12 @@ export default () => {
   app.use(cors({ credentials: true, origin: APP.CLIENT_URL }));
   app.use(cookieParser());
   app.use(helmet()); // Sets various HTTP response headers to prevent exploits.
+  app.use(updateToken);
 
   // Third-party routers (mostly for webhooks and catching routes).
   app.use('/google', new GoogleRouter().router);
+  app.use('/zoom', new ZoomRouter().router);
 
-  app.use(updateToken);
   app.use('/users', new UserRouter().router);
 
   return app;

@@ -17,7 +17,6 @@ import { Field, ObjectType } from 'type-graphql';
 import { Form, FormQuestionCategory } from '@constants';
 import BaseEntity from '@util/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
-import MembershipType from '../membership-type/MembershipType';
 import Membership from '../membership/Membership';
 
 @ObjectType()
@@ -45,9 +44,18 @@ export default class Community extends BaseEntity {
   name: string;
 
   // The URL encoded version of the community name: ColorStack => colorstack.
+  // We have to persist this in the DB because we have use cases in which we
+  // need to query the DB by the encodedURLName, which we wouldn't be able to
+  // do if it wasn't persisted.
   @Field()
   @Property({ unique: true })
   encodedURLName: string;
+
+  @Property({ nullable: true, unique: true })
+  zoomAccessToken: string;
+
+  @Property({ nullable: true, unique: true })
+  zoomRefreshToken: string;
 
   @Field(() => Form)
   @Property({ persist: false, type: JsonType })
@@ -83,9 +91,4 @@ export default class Community extends BaseEntity {
   @Field(() => [Membership])
   @OneToMany(() => Membership, ({ community }) => community)
   memberships: Collection<Membership> = new Collection<Membership>(this);
-
-  @OneToMany(() => MembershipType, ({ community }) => community)
-  membershipTypes: Collection<MembershipType> = new Collection<MembershipType>(
-    this
-  );
 }

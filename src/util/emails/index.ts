@@ -7,12 +7,12 @@ import { readFileSync } from 'fs';
 import { compile } from 'handlebars';
 import mjml2html from 'mjml';
 
-import { isProduction, SENDGRID } from '@constants';
+import { isProduction } from '@constants';
 import logger from '@logger';
 import sg from '@sendgrid/mail';
 import { EmailData, ValidateEmailData } from './types';
 
-sg.setApiKey(SENDGRID.API_KEY);
+sg.setApiKey(process.env.SENDGRID_API_KEY);
 
 /**
  * Sends an email using the given MJML template and the data that is needed

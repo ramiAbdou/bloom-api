@@ -6,7 +6,6 @@
 import { ArgsType, Field, registerEnumType } from 'type-graphql';
 
 import { FormInput } from '@constants';
-import { MembershipType } from '@entities/entities';
 
 export enum CommunityPopulation {
   GET_MEMBERSHIPS = 'GET_MEMBERSHIPS'
@@ -28,9 +27,6 @@ export class CreateCommunityArgs {
 
   @Field(() => FormInput)
   membershipForm: FormInput;
-
-  @Field(() => [MembershipType])
-  membershipTypes: MembershipType[];
 }
 
 @ArgsType()

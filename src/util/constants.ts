@@ -37,14 +37,6 @@ export const JWT = {
   SECRET: process.env.JWT_SECRET
 };
 
-export const GOOGLE = {
-  CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
-  CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-  REDIRECT_URI: `${APP.SERVER_URL}/google/auth`
-};
-
-export const SENDGRID = { API_KEY: process.env.SENDGRID_API_KEY };
-
 /**
  * All exported TYPE declaration constants are below.
  * NOTE that if any services have types that are specific to them, they will
@@ -69,8 +61,7 @@ export enum FormQuestionCategory {
   FIRST_NAME = 'FIRST_NAME',
   LAST_NAME = 'LAST_NAME',
   EMAIL = 'EMAIL',
-  GENDER = 'GENDER',
-  MEMBERSHIP_TYPE = 'MEMBERSHIP_TYPE'
+  GENDER = 'GENDER'
 }
 
 export enum FormQuestionType {

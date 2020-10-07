@@ -79,7 +79,6 @@ describe('Community Resolver', () => {
     should().exist(community);
     expect(community.name).to.equal(name);
     expect(community.membershipForm).to.eql(membershipForm);
-    expect(community.membershipTypes.length).to.equal(membershipTypes.length);
   });
 
   /* 
@@ -151,13 +150,7 @@ describe('Community Resolver', () => {
       lastName: 'Abdou'
     });
 
-    bm.membershipRepo().create({
-      community,
-      data: {},
-      type: community.membershipTypes[0],
-      user
-    });
-
+    bm.membershipRepo().create({ community, data: {}, user });
     await bm.persistAndFlush(community);
 
     const source = `

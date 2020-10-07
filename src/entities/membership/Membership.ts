@@ -23,7 +23,6 @@ import {
 import BaseEntity from '@util/db/BaseEntity';
 import { sendVerificationEmail } from '@util/emails';
 import Community from '../community/Community';
-import MembershipType from '../membership-type/MembershipType';
 import User from '../user/User';
 
 @ObjectType()
@@ -50,7 +49,6 @@ export default class Membership extends BaseEntity {
 
     const { membershipForm } = this.community;
     const { gender, firstName, lastName, email } = this.user;
-    const { name: membershipName } = this.type;
 
     return membershipForm.questions.map(({ category, title }: FormQuestion) => {
       let value: any;
@@ -59,7 +57,6 @@ export default class Membership extends BaseEntity {
       else if (category === Category.LAST_NAME) value = lastName;
       else if (category === Category.EMAIL) value = email;
       else if (category === Category.GENDER) value = gender;
-      else if (category === Category.MEMBERSHIP_TYPE) value = membershipName;
       else value = this.data[title];
 
       return { title, value };
@@ -75,15 +72,11 @@ export default class Membership extends BaseEntity {
     if (!this.data) return [];
 
     const { membershipForm } = this.community;
-    const { name: membershipName } = this.type;
 
     return membershipForm.questions.reduce(
       (acc: FormValue[], { category, title }) => {
-        // If it's the membership type, push that value from the entity.
-        if (category === Category.MEMBERSHIP_TYPE)
-          acc.push({ title, value: membershipName });
-        // Otherwise, get the value from the data that lives on the Membership.
-        else if (!category) acc.push({ title, value: this.data[title] });
+        // Get the value from the data that lives on the Membership.
+        if (!category) acc.push({ title, value: this.data[title] });
         return acc;
       },
       []
@@ -100,9 +93,6 @@ export default class Membership extends BaseEntity {
 
   @ManyToOne(() => Community)
   community: Community;
-
-  @ManyToOne(() => MembershipType)
-  type: MembershipType;
 
   @Field(() => User)
   @ManyToOne(() => User)

@@ -3,9 +3,11 @@
  * @author Rami Abdou
  */
 
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
+import decode from 'jwt-decode';
 
-import { GOOGLE } from '@constants';
+import { APP } from '@constants';
+import { DecodedGoogleIDToken } from './GoogleTypes';
 
 export default class GoogleAuth {
   /**
@@ -15,15 +17,21 @@ export default class GoogleAuth {
    * @param code Code from authorization callback that we need to exchange for
    * a token from the Google API.
    */
-  getIdToken = async (code: string): Promise<string> => {
-    const TOKEN_EXCHANGE_URL =
-      `https://oauth2.googleapis.com/token` +
-      `?code=${code}` +
-      `&grant_type=authorization_code` +
-      `&redirect_uri=${GOOGLE.REDIRECT_URI}` +
-      `&client_id=${GOOGLE.CLIENT_ID}` +
-      `&client_secret=${GOOGLE.CLIENT_SECRET}`;
+  getEmailFromCode = async (code: string): Promise<string> => {
+    const options: AxiosRequestConfig = {
+      method: 'POST',
+      params: {
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        code,
+        grant_type: 'authorization_code',
+        redirect_uri: `${APP.SERVER_URL}/google/auth`
+      },
+      url: 'https://oauth2.googleapis.com/token'
+    };
 
-    return (await axios.post(TOKEN_EXCHANGE_URL)).data.id_token;
+    const { data } = await axios(options);
+    const { email } = decode(data.id_token) as DecodedGoogleIDToken;
+    return email;
   };
 }

@@ -53,12 +53,7 @@ export default class MembershipResolver {
           user.lastName = value;
         else if (category === FormQuestionCategory.EMAIL) user.email = value;
         else if (category === FormQuestionCategory.GENDER) user.gender = value;
-        else if (category === FormQuestionCategory.MEMBERSHIP_TYPE) {
-          const type = await bm
-            .membershipTypeRepo()
-            .findOne({ community, name: value });
-          membership.type = type;
-        } else membershipData[title] = value;
+        else membershipData[title] = value;
       })
     );
 
