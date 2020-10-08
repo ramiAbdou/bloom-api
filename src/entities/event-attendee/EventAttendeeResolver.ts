@@ -6,7 +6,7 @@
 import { Args, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
-import BloomManager from '../../util/db/BloomManager';
+import BloomManager from '@util/db/BloomManager';
 import { JoinEventArgs } from './EventAttendeeArgs';
 
 @Resolver()

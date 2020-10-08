@@ -15,13 +15,12 @@ import {
 import { Field, Int, ObjectType } from 'type-graphql';
 
 import {
-  APP,
   FormQuestion,
   FormQuestionCategory as Category,
   FormValue
 } from '@constants';
 import BaseEntity from '@util/db/BaseEntity';
-import { sendVerificationEmail } from '@util/emails';
+import BloomManager from '@util/db/BloomManager';
 import Community from '../community/Community';
 import User from '../user/User';
 
@@ -105,9 +104,6 @@ export default class Membership extends BaseEntity {
 
   @AfterCreate()
   async afterCreate() {
-    await sendVerificationEmail({
-      to: this.user.email,
-      verificationUrl: `${APP.SERVER_URL}/users/${this.user.id}/verify`
-    });
+    await new BloomManager().userRepo().sendVerificationEmail(this.user.id);
   }
 }
