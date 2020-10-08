@@ -10,11 +10,11 @@ import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
 import { GraphQLSchema } from 'graphql';
 import { AuthChecker, buildSchema } from 'type-graphql';
 
-import Auth from '@util/auth/Auth';
+import { GQLContext } from '@constants';
+import { decodeToken } from '@util/util';
 import CommunityResolver from '../entities/community/CommunityResolver';
 import MembershipResolver from '../entities/membership/MembershipResolver';
 import UserResolver from '../entities/user/UserResolver';
-import { GQLContext } from '../util/constants';
 
 /**
  * The auth checker returns true (is authorized) if there is a refreshToken
@@ -40,7 +40,7 @@ export default async () => {
     context: ({ req, res }) => ({
       req,
       res,
-      userId: new Auth().decodeToken(req.cookies.token).userId
+      userId: decodeToken(req.cookies.token).userId
     }),
     playground: false,
     schema: await createSchema()

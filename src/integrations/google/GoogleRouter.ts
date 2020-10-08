@@ -7,9 +7,9 @@ import { Request, Response } from 'express';
 
 import { APP, isProduction, JWT, Route } from '@constants';
 import { User } from '@entities/entities';
-import Auth from '@util/auth/Auth';
 import BloomManager from '@util/db/BloomManager';
 import Router from '@util/Router';
+import { generateTokens } from '@util/util';
 import GoogleAuth from './GoogleAuth';
 
 export default class GoogleRouter extends Router {
@@ -30,9 +30,7 @@ export default class GoogleRouter extends Router {
       return;
     }
 
-    const { token, refreshToken } = new Auth().generateTokens({
-      userId: user.id
-    });
+    const { token, refreshToken } = generateTokens({ userId: user.id });
     user.refreshToken = refreshToken;
     await bm.flush(`Refresh token stored for ${user.fullName}.`);
 

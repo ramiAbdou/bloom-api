@@ -18,8 +18,8 @@ import UserRouter from '@entities/user/UserRouter';
 import GoogleRouter from '@integrations/google/GoogleRouter';
 import MailchimpRouter from '@integrations/mailchimp/MailchimpRouter';
 import ZoomRouter from '@integrations/zoom/ZoomRouter';
-import Auth from '@util/auth/Auth';
 import BloomManager from '@util/db/BloomManager';
+import { generateTokens, verifyToken } from '@util/util';
 
 /**
  * Authentication middleware that tries to update the idToken if the idToken
@@ -33,13 +33,11 @@ const updateToken = async (req: Request, res: Response, next: NextFunction) => {
   const user: User = await bm.userRepo().findOne({ refreshToken });
   if (!user) return next();
 
-  const auth = new Auth();
-
-  if (!auth.verifyToken(token)) {
+  if (!verifyToken(token)) {
     const {
       token: updatedToken,
       refreshToken: updatedRefreshToken
-    } = auth.generateTokens({ userId: user.id });
+    } = generateTokens({ userId: user.id });
     req.cookies.token = updatedToken;
     req.cookies.refreshToken = updatedRefreshToken;
     res.cookie('token', updatedToken);
