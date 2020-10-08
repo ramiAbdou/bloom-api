@@ -26,13 +26,16 @@ export default class Community extends BaseEntity {
   @Property({ type: Boolean })
   autoAccept = false;
 
+  @Property({ nullable: true, unique: true })
+  airtableApiKey: string;
+
   // The URL encoded version of the community name: ColorStack => colorstack.
   // We have to persist this in the DB because we have use cases in which we
-  // need to query the DB by the encodedURLName, which we wouldn't be able to
+  // need to query the DB by the encodedUrlName, which we wouldn't be able to
   // do if it wasn't persisted.
   @Field()
   @Property({ unique: true })
-  encodedURLName: string;
+  encodedUrlName: string;
 
   // URL to the Digital Ocean space.
   @Field({ nullable: true })
@@ -80,7 +83,7 @@ export default class Community extends BaseEntity {
 
   @BeforeCreate()
   beforeCreate() {
-    this.encodedURLName = toLowerCaseDash(this.name);
+    this.encodedUrlName = toLowerCaseDash(this.name);
   }
 
   /* 

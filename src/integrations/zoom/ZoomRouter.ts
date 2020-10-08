@@ -27,28 +27,21 @@ export default class ZoomRouter extends Router {
    * back via httpOnly cookies.
    */
   private async handleAuth({ query }: Request, res: Response) {
-    const { code, state: encodedURLName } = query;
+    const { code, state: encodedUrlName } = query;
     const bm = new BloomManager();
 
     // Fetch the accessToken and refreshToken from the Zoom API and set them as
     // httpOnly cookies so that the user can use the accessToken immediately.
     const {
       accessToken,
-      expiresIn,
       refreshToken
     } = await new ZoomAuth().getTokensFromCode(code as string);
 
-    res.cookie('zoomAccessToken', accessToken, {
-      httpOnly: true,
-      maxAge: expiresIn * 1000 // expiresIn needs to be converted from s to ms.
-    });
-    res.cookie('zoomRefreshToken', refreshToken, { httpOnly: true });
-
-    // The state param stores a community's encodedURLName, so we find them
+    // The state param stores a community's encodedUrlName, so we find them
     // in our DB.
     const community: Community = await bm
       .communityRepo()
-      .findOne({ encodedURLName: encodedURLName as string });
+      .findOne({ encodedUrlName: encodedUrlName as string });
 
     // If that community doesn't exist, then we don't persist the tokens in the
     // DB and instead we redirect them to the React app.

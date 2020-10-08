@@ -9,9 +9,9 @@ import { Collection, Entity, ManyToOne, OneToMany, Property } from 'mikro-orm';
 import { APP } from '@constants';
 import { Community } from '@entities/entities';
 import BaseEntity from '@util/db/BaseEntity';
-import URLBuilder from '../../util/URLBuilder';
-import EventAttendee from './EventAttendee';
-import EventRSVP from './EventRSVP';
+import URLBuilder from '@util/URLBuilder';
+import EventAttendee from '../event-attendee/EventAttendee';
+import EventRSVP from '../event-rsvp/EventRSVP';
 
 @Entity()
 export default class Event extends BaseEntity {

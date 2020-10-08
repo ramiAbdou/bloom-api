@@ -21,9 +21,8 @@ import { GQLContext } from '../util/constants';
  * present b/c we have an Express middleware that automatically updates the
  * idToken using the refreshToken if it is invalid.
  */
-const authChecker: AuthChecker<GQLContext> = ({
-  context: { token, refreshToken }
-}) => !!token && !!refreshToken;
+const authChecker: AuthChecker<GQLContext> = ({ context: { userId } }) =>
+  !!userId;
 
 /**
  * Builds the schema with the application's resolvers.
@@ -39,11 +38,9 @@ export default async () => {
   // world. Also handles the request context.
   const config: ApolloServerExpressConfig = {
     context: ({ req, res }) => ({
-      refreshToken: req.cookies.refreshToken,
       req,
       res,
-      token: req.cookies.token,
-      userId: new Auth().decodeToken(req.cookies.token)
+      userId: new Auth().decodeToken(req.cookies.token).userId
     }),
     playground: false,
     schema: await createSchema()

@@ -32,11 +32,6 @@ export default class ZoomAuth {
     };
 
     const { data } = await axios(options);
-
-    return {
-      accessToken: data.access_token,
-      expiresIn: data.expires_in,
-      refreshToken: data.refresh_token
-    };
+    return { accessToken: data.access_token, refreshToken: data.refresh_token };
   };
 }

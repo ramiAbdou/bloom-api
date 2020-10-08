@@ -6,10 +6,9 @@
 
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { APP, GQLContext } from '@constants';
+import { GQLContext } from '@constants';
 import { User } from '@entities/entities';
 import BloomManager from '@util/db/BloomManager';
-import { sendVerificationEmail } from '@util/emails';
 
 @Resolver()
 export default class UserResolver {
@@ -26,19 +25,12 @@ export default class UserResolver {
 
   @Authorized()
   @Query(() => Boolean)
-  async isUserLoggedIn(@Ctx() { refreshToken }: GQLContext) {
-    return !!refreshToken;
+  async isUserLoggedIn(@Ctx() { userId }: GQLContext) {
+    return !!userId;
   }
 
   @Mutation(() => Boolean, { nullable: true })
   async sendVerificationEmail(@Arg('userId') userId: string) {
-    const { email, id }: User = await new BloomManager()
-      .userRepo()
-      .findOne({ id: userId });
-
-    await sendVerificationEmail({
-      to: email,
-      verificationUrl: `${APP.SERVER_URL}/users/${id}/verify`
-    });
+    await new BloomManager().userRepo().sendVerificationEmail(userId);
   }
 }

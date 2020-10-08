@@ -35,7 +35,7 @@ export class GetCommunityArgs {
   id?: string;
 
   @Field({ nullable: true })
-  encodedURLName?: string;
+  encodedUrlName?: string;
 
   @Field(() => CommunityPopulation, { nullable: true })
   population?: CommunityPopulation;

@@ -8,11 +8,7 @@
  * AUTH - Types pertaining to the OAuth2 flow for authentication.
  */
 
-export type ZoomTokens = {
-  accessToken: string;
-  expiresIn: number;
-  refreshToken: string;
-};
+export type ZoomTokens = { accessToken: string; refreshToken: string };
 
 /**
  * MEETING - Types pertaining to a Zoom Meeting.

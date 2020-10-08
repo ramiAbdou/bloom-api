@@ -25,7 +25,6 @@ export default class MembershipResolver {
     @Args() { communityId, data, userId }: CreateMembershipArgs
   ) {
     const bm = new BloomManager();
-
     const community: Community = await bm
       .communityRepo()
       .findOne({ id: communityId });
@@ -75,7 +74,6 @@ export default class MembershipResolver {
     @Args() { data, membershipId }: UpdateMembershipArgs
   ) {
     const bm = new BloomManager();
-
     const membership: Membership = await bm
       .membershipRepo()
       .findOne({ id: membershipId }, ['community', 'type', 'user']);
