@@ -4,7 +4,6 @@
  * @author Rami Abdou
  */
 
-import decode from 'jwt-decode';
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { APP, GQLContext } from '@constants';
@@ -21,8 +20,7 @@ export default class UserResolver {
 
   @Authorized()
   @Query(() => User, { nullable: true })
-  async getUser(@Ctx() { token }: GQLContext) {
-    const { userId } = decode(token);
+  async getUser(@Ctx() { userId }: GQLContext) {
     return new BloomManager().userRepo().findOne({ id: userId });
   }
 

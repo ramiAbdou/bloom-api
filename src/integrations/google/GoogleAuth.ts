@@ -4,7 +4,7 @@
  */
 
 import axios, { AxiosRequestConfig } from 'axios';
-import decode from 'jwt-decode';
+import jwt from 'jsonwebtoken';
 
 import { APP } from '@constants';
 import { DecodedGoogleIDToken } from './GoogleTypes';
@@ -31,7 +31,7 @@ export default class GoogleAuth {
     };
 
     const { data } = await axios(options);
-    const { email } = decode(data.id_token) as DecodedGoogleIDToken;
+    const { email } = jwt.decode(data.id_token) as DecodedGoogleIDToken;
     return email;
   };
 }

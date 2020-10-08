@@ -15,7 +15,7 @@ export default class ZoomAuth {
    * @param code Code from authorization callback that we need to exchange for
    * a token from the Google API.
    */
-  getTokenFromCode = async (code: string): Promise<ZoomTokens> => {
+  getTokensFromCode = async (code: string): Promise<ZoomTokens> => {
     const base64AuthString = Buffer.from(
       `${process.env.ZOOM_CLIENT_ID}:${process.env.ZOOM_CLIENT_SECRET}`
     ).toString('base64');
@@ -32,6 +32,11 @@ export default class ZoomAuth {
     };
 
     const { data } = await axios(options);
-    return { accessToken: data.access_token, refreshToken: data.refresh_token };
+
+    return {
+      accessToken: data.access_token,
+      expiresIn: data.expires_in,
+      refreshToken: data.refresh_token
+    };
   };
 }

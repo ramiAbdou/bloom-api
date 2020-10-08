@@ -13,25 +13,55 @@ import ZoomAuth from './ZoomAuth';
 
 export default class ZoomRouter extends Router {
   get routes(): Route[] {
-    return [{ callback: this.retrieveTokens, method: 'GET', route: '/auth' }];
+    return [
+      { callback: this.handleAuth, method: 'GET', route: '/auth' },
+      { callback: this.onEvent, method: 'POST', route: '/events' }
+    ];
   }
 
-  private async retrieveTokens({ query }: Request, res: Response) {
+  private async onEvent({ query }: Request, res: Response) {}
+
+  /**
+   * Catches the Authorization code from the Zoom API and exchanges it for an
+   * accessToken, refreshToken which we store in the Community entity and send
+   * back via httpOnly cookies.
+   */
+  private async handleAuth({ query }: Request, res: Response) {
     const { code, state: encodedURLName } = query;
     const bm = new BloomManager();
+
+    // Fetch the accessToken and refreshToken from the Zoom API and set them as
+    // httpOnly cookies so that the user can use the accessToken immediately.
+    const {
+      accessToken,
+      expiresIn,
+      refreshToken
+    } = await new ZoomAuth().getTokensFromCode(code as string);
+
+    res.cookie('zoomAccessToken', accessToken, {
+      httpOnly: true,
+      maxAge: expiresIn * 1000 // expiresIn needs to be converted from s to ms.
+    });
+    res.cookie('zoomRefreshToken', refreshToken, { httpOnly: true });
+
+    // The state param stores a community's encodedURLName, so we find them
+    // in our DB.
     const community: Community = await bm
       .communityRepo()
       .findOne({ encodedURLName: encodedURLName as string });
 
+    // If that community doesn't exist, then we don't persist the tokens in the
+    // DB and instead we redirect them to the React app.
     if (!community) {
       res.redirect(`${APP.CLIENT_URL}?err=community_not_found`);
       return;
     }
 
-    const tokens = await new ZoomAuth().getTokenFromCode(code as string);
-    community.zoomAccessToken = tokens.accessToken;
-    community.zoomRefreshToken = tokens.refreshToken;
+    // Otherwise, store the tokens in our DB!
+    community.zoomAccessToken = accessToken;
+    community.zoomRefreshToken = refreshToken;
     await bm.flush(`Zoom tokens stored for ${community.name}.`);
+
     res.redirect(APP.CLIENT_URL);
   }
 }

@@ -19,6 +19,9 @@ export default class ZoomMeeting {
     if (meetingId) this.meetingId = meetingId;
   }
 
+  /**
+   * Creates a Zoom meeting with the given Zoom options and returns the
+   */
   createMeeting = async () => {};
 
   /**

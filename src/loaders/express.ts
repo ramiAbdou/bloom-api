@@ -16,6 +16,7 @@ import { APP } from '@constants';
 import { User } from '@entities/entities';
 import UserRouter from '@entities/user/UserRouter';
 import GoogleRouter from '@integrations/google/GoogleRouter';
+import MailchimpRouter from '@integrations/mailchimp/MailchimpRouter';
 import ZoomRouter from '@integrations/zoom/ZoomRouter';
 import Auth from '@util/auth/Auth';
 import BloomManager from '@util/db/BloomManager';
@@ -63,6 +64,7 @@ export default () => {
 
   // Third-party routers (mostly for webhooks and catching routes).
   app.use('/google', new GoogleRouter().router);
+  app.use('/mailchimp', new MailchimpRouter().router);
   app.use('/zoom', new ZoomRouter().router);
 
   app.use('/users', new UserRouter().router);

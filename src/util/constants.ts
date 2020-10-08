@@ -53,8 +53,11 @@ export type Route = {
 };
 
 export interface GQLContext {
-  token: string;
   refreshToken: string;
+  req: Request;
+  res: Response;
+  token: string;
+  userId: string;
 }
 
 export enum FormQuestionCategory {

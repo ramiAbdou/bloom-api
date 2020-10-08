@@ -10,6 +10,7 @@ import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
 import { GraphQLSchema } from 'graphql';
 import { AuthChecker, buildSchema } from 'type-graphql';
 
+import Auth from '@util/auth/Auth';
 import CommunityResolver from '../entities/community/CommunityResolver';
 import MembershipResolver from '../entities/membership/MembershipResolver';
 import UserResolver from '../entities/user/UserResolver';
@@ -37,9 +38,12 @@ export default async () => {
   // Set the playground to false so that's it's not accessible to the outside
   // world. Also handles the request context.
   const config: ApolloServerExpressConfig = {
-    context: ({ req }) => ({
+    context: ({ req, res }) => ({
       refreshToken: req.cookies.refreshToken,
-      token: req.cookies.token
+      req,
+      res,
+      token: req.cookies.token,
+      userId: new Auth().decodeToken(req.cookies.token)
     }),
     playground: false,
     schema: await createSchema()

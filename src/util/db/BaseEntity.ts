@@ -6,7 +6,7 @@
  */
 
 import { PrimaryKey, Property } from 'mikro-orm';
-import shortid from 'shortid';
+import { nanoid } from 'nanoid';
 import { Field, ID, ObjectType } from 'type-graphql';
 
 import { now } from '@util/util';
@@ -15,7 +15,7 @@ import { now } from '@util/util';
 export default abstract class BaseEntity {
   @Field(() => ID)
   @PrimaryKey()
-  id: string = shortid().toLowerCase();
+  id: string = nanoid();
 
   @Field()
   @Property()

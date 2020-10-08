@@ -13,6 +13,18 @@ export default class Auth {
    * Generates and signs both a token and refreshToken. The refreshToken does
    * not expire, but the token expires after a limited amount of time.
    */
+  decodeToken = (token: string): any => {
+    try {
+      return jwt.decode(token);
+    } catch {
+      return null;
+    }
+  };
+
+  /**
+   * Generates and signs both a token and refreshToken. The refreshToken does
+   * not expire, but the token expires after a limited amount of time.
+   */
   generateTokens = (payload: string | object): AuthTokens => ({
     refreshToken: jwt.sign(payload, JWT.SECRET),
     token: jwt.sign(payload, JWT.SECRET, { expiresIn: JWT.EXPIRES_IN })

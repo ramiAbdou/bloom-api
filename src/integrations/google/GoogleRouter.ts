@@ -14,10 +14,10 @@ import GoogleAuth from './GoogleAuth';
 
 export default class GoogleRouter extends Router {
   get routes(): Route[] {
-    return [{ callback: this.retrieveToken, method: 'GET', route: '/auth' }];
+    return [{ callback: this.handleAuth, method: 'GET', route: '/auth' }];
   }
 
-  private async retrieveToken({ query }: Request, res: Response) {
+  private async handleAuth({ query }: Request, res: Response) {
     const bm = new BloomManager();
     const user: User = await bm.userRepo().findOne({
       email: await new GoogleAuth().getEmailFromCode(query.code as string)

@@ -26,11 +26,22 @@ export default class Community extends BaseEntity {
   @Property({ type: Boolean })
   autoAccept = false;
 
+  // The URL encoded version of the community name: ColorStack => colorstack.
+  // We have to persist this in the DB because we have use cases in which we
+  // need to query the DB by the encodedURLName, which we wouldn't be able to
+  // do if it wasn't persisted.
+  @Field()
+  @Property({ unique: true })
+  encodedURLName: string;
+
   // URL to the Digital Ocean space.
   @Field({ nullable: true })
   @Property({ nullable: true, unique: true })
   @IsUrl()
   logo: string;
+
+  @Property({ nullable: true, unique: true })
+  mailchimpAccessToken: string;
 
   // Maps the title to the item. Represented as JSON. This doesn't automatically
   // include the First Name, Last Name, Email, and Membership Types, so when
@@ -42,14 +53,6 @@ export default class Community extends BaseEntity {
   @Field()
   @Property({ unique: true })
   name: string;
-
-  // The URL encoded version of the community name: ColorStack => colorstack.
-  // We have to persist this in the DB because we have use cases in which we
-  // need to query the DB by the encodedURLName, which we wouldn't be able to
-  // do if it wasn't persisted.
-  @Field()
-  @Property({ unique: true })
-  encodedURLName: string;
 
   @Property({ nullable: true, unique: true })
   zoomAccessToken: string;
