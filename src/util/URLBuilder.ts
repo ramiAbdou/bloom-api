@@ -9,16 +9,16 @@ export default class URLBuilder {
 
   url: string;
 
-  constructor(url: string) {
-    if (url.includes('?')) this.hasFirstParam = true;
-    this.url = url;
+  constructor(baseUrl: string) {
+    if (baseUrl.includes('?')) this.hasFirstParam = true;
+    this.url = baseUrl;
   }
 
   /**
    * Adds the query parameter either using a separating character '?' if it is
    * the first parameter and a '&' otherwise.
    */
-  addParam = (key: string, value: string) => {
+  addParam = (key: string, value: any) => {
     if (!this.hasFirstParam) this.hasFirstParam = true;
     const separatingCharacter = this.hasFirstParam ? '?' : '&';
     this.url = `${this.url}${separatingCharacter}${key}=${value}`;

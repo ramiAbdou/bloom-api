@@ -4,11 +4,14 @@
  */
 
 import { IsUrl } from 'class-validator';
-import { Entity, ManyToOne, Property } from 'mikro-orm';
+import { Collection, Entity, ManyToOne, OneToMany, Property } from 'mikro-orm';
 
 import { APP } from '@constants';
 import { Community } from '@entities/entities';
 import BaseEntity from '@util/db/BaseEntity';
+import URLBuilder from '../../util/URLBuilder';
+import EventAttendee from './EventAttendee';
+import EventRSVP from './EventRSVP';
 
 @Entity()
 export default class Event extends BaseEntity {
@@ -51,13 +54,23 @@ export default class Event extends BaseEntity {
   @ManyToOne(() => Community)
   community: Community;
 
+  @OneToMany(() => EventRSVP, ({ event }) => event)
+  rsvps: Collection<EventRSVP> = new Collection<EventRSVP>(this);
+
+  @OneToMany(() => EventAttendee, ({ event }) => event)
+  attendees: Collection<EventAttendee> = new Collection<EventAttendee>(this);
+
   @Property({ persist: false })
-  get joinUrl() {
-    return `${APP.CLIENT_URL}/events/${this.zoomMeetingId}?join=true`;
+  get joinUrl(): string {
+    return new URLBuilder(
+      `${APP.CLIENT_URL}/events/${this.zoomMeetingId}`
+    ).addParam('join', true).url;
   }
 
   @Property({ persist: false })
-  get hostUrl() {
-    return `${APP.CLIENT_URL}/events/${this.zoomMeetingId}?join=true`;
+  get hostUrl(): string {
+    return new URLBuilder(`${APP.CLIENT_URL}/events/${this.zoomMeetingId}`)
+      .addParam('join', true)
+      .addParam('host', true).url;
   }
 }
