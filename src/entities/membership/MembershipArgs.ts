@@ -7,6 +7,8 @@ import { ArgsType, Field, Int } from 'type-graphql';
 
 import { FormValueInput } from '@constants';
 
+export type MembershipRole = 'ADMIN' | 'OWNER';
+
 @ArgsType()
 export class CreateMembershipArgs {
   @Field()
@@ -22,10 +24,6 @@ export class CreateMembershipArgs {
 
 @ArgsType()
 export class MembershipResponseArgs {
-  // Same as User ID.
-  @Field()
-  adminId: string;
-
   @Field()
   membershipId: string;
 

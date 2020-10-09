@@ -7,6 +7,7 @@ import { FormQuestionCategory, FormValueInput } from '@constants';
 import { Community, User } from '@entities';
 import BaseRepo from '@util/db/BaseRepo';
 import Membership from './Membership';
+import { MembershipRole } from './MembershipArgs';
 
 export default class MembershipRepo extends BaseRepo<Membership> {
   /**
@@ -83,5 +84,21 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     membership.status = response;
     await this.flush('MEMBERSHIP_ADMISSION', membership);
     return membership;
+  };
+
+  /**
+   * Returns the member's role that is associated with the userId and the
+   * communityId given. Returns null if the membership isn't found.
+   */
+  getMembershipRole = async (
+    userId: string,
+    communityId: string
+  ): Promise<MembershipRole> => {
+    const membership: Membership = await this.findOne({
+      community: { id: communityId },
+      user: { id: userId }
+    });
+
+    return membership?.role;
   };
 }

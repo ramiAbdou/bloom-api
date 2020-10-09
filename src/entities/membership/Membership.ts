@@ -26,6 +26,7 @@ import { sendEmail, VERIFICATION_EMAIL_ARGS } from '@util/emails';
 import { ValidateEmailData } from '@util/emails/types';
 import Community from '../community/Community';
 import User from '../user/User';
+import { MembershipRole } from './MembershipArgs';
 import MembershipRepo from './MembershipRepo';
 
 @ObjectType()
@@ -36,6 +37,10 @@ export default class Membership extends BaseEntity {
   // Maps the title to the value.
   @Property({ nullable: true, type: JsonType })
   data: Record<string, any>;
+
+  // If populated, either ADMIN or OWNER.
+  @Property({ nullable: true, type: String })
+  role: MembershipRole;
 
   // -1: Rejected
   // 0: Pending

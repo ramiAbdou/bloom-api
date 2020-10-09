@@ -3,9 +3,8 @@
  * @author Rami Abdou
  */
 
-import { Args, Ctx, Mutation, Resolver } from 'type-graphql';
+import { Args, Mutation, Resolver } from 'type-graphql';
 
-import { GQLContext } from '@constants';
 import { Membership } from '@entities';
 import BloomManager from '@util/db/BloomManager';
 import {
@@ -48,11 +47,10 @@ export default class MembershipResolver {
    */
   @Mutation(() => Membership)
   async respondToMembership(
-    @Args() { membershipId, response }: MembershipResponseArgs,
-    @Ctx() { userId: adminId }: GQLContext
+    @Args() { membershipId, response }: MembershipResponseArgs
   ) {
     return new BloomManager()
       .membershipRepo()
-      .respondToMembership(membershipId, adminId, response);
+      .respondToMembership(membershipId, response);
   }
 }
