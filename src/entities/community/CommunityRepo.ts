@@ -10,6 +10,7 @@ import { FormQuestionCategory } from '@constants';
 import { Membership, User } from '@entities/entities';
 import MailchimpAuth from '@integrations/mailchimp/MailchimpAuth';
 import BaseRepo from '@util/db/BaseRepo';
+import ZoomAuth from '../../integrations/zoom/ZoomAuth';
 import Community from './Community';
 
 export default class CommunityRepo extends BaseRepo<Community> {
@@ -24,7 +25,7 @@ export default class CommunityRepo extends BaseRepo<Community> {
   ): Promise<Community> {
     const community: Community = this.create(data);
     if (hasCSV) await this.importCSVDataToCommunity(community);
-    await this.flush(`${community.name} has been created!`, { community });
+    await this.flush('COMMUNITY_CREATED', community);
     return community;
   }
 
@@ -92,10 +93,33 @@ export default class CommunityRepo extends BaseRepo<Community> {
 
     const token: string = await new MailchimpAuth().getTokenFromCode(code);
     community.mailchimpAccessToken = token;
-    await this.em.flush();
-    // await this.bm.flush(`Mailchimp token stored for ${community.name}.`, {
-    //   community
-    // });
+    await this.flush('MAILCHIMP_TOKEN_STORED', community);
+    return community;
+  };
+
+  /**
+   * Stores the Zoom tokens in the database after executing the
+   * OAuth token flow, and returns the community following execution.
+   *
+   * @param code Zoom's API produced authorization code that we exchange for
+   * tokens.
+   */
+  storeZoomTokens = async (
+    encodedUrlName: string,
+    code: string
+  ): Promise<Community> => {
+    const community: Community = await this.findOne({ encodedUrlName });
+    if (!community) return null;
+
+    const {
+      accessToken,
+      refreshToken
+    } = await new ZoomAuth().getTokensFromCode(code);
+
+    community.zoomAccessToken = accessToken;
+    community.zoomRefreshToken = refreshToken;
+    await this.flush('ZOOM_TOKENS_STORED', community);
+
     return community;
   };
 }

@@ -73,12 +73,3 @@ export const verifyToken = (token: string): boolean => {
     return false;
   }
 };
-
-/**
- * Returns the stringified value with extra line spaces removed, so it keeps
- * the entire string on one line.
- *
- * @example singleLineStringify({ user: { id: 1 } }) => '{ "user": 1 }'
- */
-export const singleLineStringify = (value: any) =>
-  JSON.stringify(value, null, 1).replace(/\s+/g, ' ');

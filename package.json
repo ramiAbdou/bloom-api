@@ -17,7 +17,6 @@
   "dependencies": {
     "@mikro-orm/postgresql": "^4.0.3",
     "@sendgrid/mail": "^7.2.6",
-    "@slack/web-api": "^5.11.0",
     "@types/bluebird": "^3.5.30",
     "@types/chai": "^4.2.11",
     "@types/cookie-parser": "^1.4.2",

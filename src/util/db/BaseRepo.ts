@@ -6,6 +6,7 @@
 
 import { AnyEntity, EntityRepository } from 'mikro-orm';
 
+import { LoggerEvent } from '@constants';
 import {
   Community,
   Event,
@@ -19,39 +20,30 @@ import logger from '@logger';
 export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
   T
 > {
-  async flush(message?: string, data?: Record<string, any>) {
+  async flush(event?: LoggerEvent, entity?: AnyEntity<any>) {
     try {
       await this.em.flush();
-      if (message) logger.info(message, data);
+      if (event) logger.info(event, entity.id);
     } catch (e) {
-      logger.error(new Error(e));
+      logger.error(event, new Error(e));
     }
   }
 
-  async persistAndFlush(
-    entities: AnyEntity<any> | AnyEntity<any>[],
-    message?: string,
-    data?: Record<string, any>
-  ) {
+  async persistAndFlush(entity: AnyEntity<any>, event?: LoggerEvent) {
     try {
-      await this.em.persistAndFlush(entities);
-      if (message) logger.info(message, data);
+      await this.em.persistAndFlush(entity);
+      if (event) logger.info(event, entity.id);
     } catch (e) {
-      logger.error(new Error(e));
+      logger.error(event, new Error(e));
     }
   }
 
-  async removeAndFlush(
-    entities: AnyEntity<any> | AnyEntity<any>[],
-    message?: string,
-    data?: Record<string, any>
-  ) {
+  async removeAndFlush(entity: AnyEntity<any>, event?: LoggerEvent) {
     try {
-      this.remove(entities);
-      await this.em.flush();
-      if (message) logger.info(message, data);
+      await this.em.removeAndFlush(entity);
+      if (event) logger.info(event, entity.id);
     } catch (e) {
-      logger.error(new Error(e));
+      logger.error(event, new Error(e));
     }
   }
 

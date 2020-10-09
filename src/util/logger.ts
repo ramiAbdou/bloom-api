@@ -5,70 +5,56 @@
  * @author Rami Abdou
  */
 
-import deline from 'deline';
 import fs from 'fs';
 import moment from 'moment';
 
-import { now, singleLineStringify } from '@util/util';
-import { LoggerLevel } from './constants';
+import { now } from '@util/util';
+import { LoggerEvent } from './constants';
+
+type LoggerLevel = 'INFO' | 'ERROR' | 'WARN';
+
+interface LoggerLog extends Record<string, any> {
+  entityId?: string;
+  error?: Error;
+  event: LoggerEvent;
+  level: LoggerLevel;
+  timestamp: string;
+}
 
 class Logger {
-  error = (message: string | Error, data?: Record<string, any>) =>
-    this.writeToFile(this.formatMessage('ERROR', message, data), true);
+  error = (event: LoggerEvent, error?: Error) => {
+    // eslint-disable-next-line sort-keys-fix/sort-keys-fix
+    const baseLog: LoggerLog = { level: 'ERROR', event, timestamp: now() };
+    const log: LoggerLog = error ? { ...baseLog, error } : baseLog;
+    this.writeToFile(log, true);
+  };
 
-  info = (message: string, data?: Record<string, any>) =>
-    this.writeToFile(this.formatMessage('INFO', message, data));
+  info = (event: LoggerEvent, entityId?: string) => {
+    // eslint-disable-next-line sort-keys-fix/sort-keys-fix
+    const baseLog: LoggerLog = { level: 'INFO', event, timestamp: now() };
+    const log: LoggerLog = entityId ? { ...baseLog, entityId } : baseLog;
+    this.writeToFile(log);
+  };
 
-  warn = (message: string, data?: Record<string, any>) =>
-    this.writeToFile(this.formatMessage('WARN', message, data), true);
-
-  /**
-   * Returns the formatted logger messsage that includes the UTC timestamp,
-   * level of the logged message as well optional data.
-   *
-   * @example formatMessage('INFO', 'Hello World') =>
-   *  '2020-08-31T23:17:20Z | INFO | Hello World'
-   *
-   * @example formatMessage('INFO', 'Hello World', { user: { id: 1 } }) =>
-   *  '2020-08-31T23:17:20Z | INFO | Hello World' | { "user": 1 }
-   */
-  private formatMessage = (
-    level: LoggerLevel,
-    message: string | Error,
-    data?: Record<string, any>
-  ) => {
-    const msg = typeof message === 'string' ? deline(message) : message;
-    const result = `${now()} | ${level} | ${msg}`;
-
-    return !data
-      ? result
-      : `${result} | ${singleLineStringify(this.formatData(data))}`;
+  warn = (event: LoggerEvent, error?: Error) => {
+    // eslint-disable-next-line sort-keys-fix/sort-keys-fix
+    const baseLog: LoggerLog = { level: 'WARN', event, timestamp: now() };
+    const log: LoggerLog = error ? { ...baseLog, error } : baseLog;
+    this.writeToFile(log, true);
   };
 
   /**
    * Writes the given message to a file in the ./logs/ folder based on the
    * current UTC date. Adds a newline character as well.
    */
-  private writeToFile = (message: string, writeToConsole = false) => {
+  private writeToFile = (log: LoggerLog, writeToConsole = false) => {
+    const formattedLog = JSON.stringify(log, null, 1).replace(/\s+/g, ' ');
     if (!fs.existsSync('./logs')) fs.mkdirSync('./logs');
     const filename = `./logs/${moment.utc().format('MM-D-YY')}.txt`;
-    fs.appendFileSync(filename, `${message}\n\n`);
+    fs.appendFileSync(filename, `${formattedLog}\n\n`);
 
     // eslint-disable-next-line no-console
-    if (writeToConsole) console.log(`${message}\n\n`);
-  };
-
-  /**
-   * Formats the data so that it returns the respective IDs of the entities.
-   * If an ID field doesn't exist on the value, just keep the value.
-   */
-  private formatData = (data: Record<string, any>) => {
-    Object.entries(data).forEach(([key, value]: [string, any]) => {
-      // If the ID exists on the value, change the value to that.
-      data[key] = value.id || value;
-    });
-
-    return data;
+    if (writeToConsole) console.log(`${formattedLog}\n\n`);
   };
 }
 

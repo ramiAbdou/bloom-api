@@ -44,7 +44,19 @@ export const JWT = {
  * instead of in this globally accessible constants file.
  */
 
-export type LoggerLevel = 'INFO' | 'ERROR' | 'WARN';
+export type LoggerEvent =
+  | 'COMMUNITY_CREATED'
+  | 'EMAIL_VERIFIED'
+  | 'GOOGLE_REFRESH_TOKEN_STORED'
+  | 'JOINED_EVENT_AS_GUEST'
+  | 'JOINED_EVENT_AS_USER'
+  | 'MAILCHIMP_TOKEN_STORED'
+  | 'MEMBERSHIP_ADMISSION'
+  | 'MEMBERSHIP_CREATED'
+  | 'MEMBERSHIP_DATA_UPDATED'
+  | 'SERVER_STARTED'
+  | 'TOKENS_UPDATED'
+  | 'ZOOM_TOKENS_STORED';
 
 export type Route = {
   callback: (request: Request, response: Response) => any;
@@ -52,13 +64,7 @@ export type Route = {
   route: string;
 };
 
-export interface GQLContext {
-  refreshToken: string;
-  req: Request;
-  res: Response;
-  token: string;
-  userId: string;
-}
+export type GQLContext = { req: Request; res: Response; userId: string };
 
 export enum FormQuestionCategory {
   FIRST_NAME = 'FIRST_NAME',

@@ -8,7 +8,6 @@ import { Request, Response } from 'express';
 import { APP, Route } from '@constants';
 import BloomManager from '@util/db/BloomManager';
 import Router from '@util/Router';
-import User from './User';
 
 export default class UserRouter extends Router {
   get routes(): Route[] {
@@ -18,15 +17,7 @@ export default class UserRouter extends Router {
   }
 
   private async verifyEmail(request: Request, response: Response) {
-    const bm = new BloomManager();
-    const { userId } = request.params;
-
-    const user: User = await bm.userRepo().findOne({ id: userId });
-    if (!user.verified) {
-      user.verified = true;
-      await bm.flush(`${user.firstName} verfied their email.`, { user });
-    }
-
+    await new BloomManager().userRepo().verifyEmail(request.params.userId);
     response.redirect(APP.CLIENT_URL);
   }
 }

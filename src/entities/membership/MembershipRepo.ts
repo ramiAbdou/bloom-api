@@ -49,11 +49,7 @@ export default class MembershipRepo extends BaseRepo<Membership> {
       })
     );
 
-    await this.persistAndFlush(
-      membership,
-      `Membership created for ${user.fullName}.`,
-      { user }
-    );
+    await this.persistAndFlush(membership, 'MEMBERSHIP_CREATED');
     return membership;
   };
 
@@ -65,18 +61,13 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     membershipId: string,
     data: FormValueInput[]
   ): Promise<Membership> => {
-    const membership: Membership = await this.findOne({ id: membershipId }, [
-      'community',
-      'type',
-      'user'
-    ]);
+    const membership: Membership = await this.findOne({ id: membershipId });
 
     data.forEach(({ title, value }: FormValueInput) => {
       membership.data[title] = value;
     });
 
-    const { user } = membership;
-    await this.flush(`Membership data updated for ${user.fullName}.`, { user });
+    await this.flush('MEMBERSHIP_DATA_UPDATED', membership);
     return membership;
   };
 
@@ -86,22 +77,11 @@ export default class MembershipRepo extends BaseRepo<Membership> {
    */
   respondToMembership = async (
     membershipId: string,
-    adminId: string,
     response: number
   ): Promise<Membership> => {
-    const [membership, admin]: [Membership, User] = await Promise.all([
-      this.findOne({ id: membershipId }, ['user']),
-      this.userRepo().findOne({ id: adminId })
-    ]);
-
+    const membership: Membership = await this.findOne({ id: membershipId });
     membership.status = response;
-
-    await this.flush(
-      `${admin.fullName} responded to ${membership.user.fullName}'s membership
-      application.`,
-      { admin, membership }
-    );
-
+    await this.flush('MEMBERSHIP_ADMISSION', membership);
     return membership;
   };
 }

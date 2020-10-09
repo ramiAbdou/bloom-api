@@ -20,11 +20,7 @@ export default class EventAttendeeRepo extends BaseRepo<EventAttendee> {
       user
     });
     const attendee: EventAttendee = this.create({ event, membership });
-    await this.persistAndFlush(
-      attendee,
-      `${user.fullName} joined event ID: ${eventId}.`,
-      attendee
-    );
+    await this.persistAndFlush(attendee, 'JOINED_EVENT_AS_USER');
   };
 
   /**
@@ -38,10 +34,6 @@ export default class EventAttendeeRepo extends BaseRepo<EventAttendee> {
   ) => {
     const event: Event = await this.eventRepo().findOne({ id: eventId });
     const attendee: EventAttendee = this.create({ email, event, fullName });
-    await this.persistAndFlush(
-      attendee,
-      `${fullName} (Guest) joined event ID: ${eventId}.`,
-      attendee
-    );
+    await this.persistAndFlush(attendee, 'JOINED_EVENT_AS_GUEST');
   };
 }

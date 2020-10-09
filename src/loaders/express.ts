@@ -13,38 +13,28 @@ import express, { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 
 import { APP } from '@constants';
-import { User } from '@entities/entities';
 import UserRouter from '@entities/user/UserRouter';
 import GoogleRouter from '@integrations/google/GoogleRouter';
 import MailchimpRouter from '@integrations/mailchimp/MailchimpRouter';
 import ZoomRouter from '@integrations/zoom/ZoomRouter';
 import BloomManager from '@util/db/BloomManager';
-import { generateTokens, verifyToken } from '@util/util';
 
 /**
  * Authentication middleware that tries to update the idToken if the idToken
  * is expired.
  */
 const updateToken = async (req: Request, res: Response, next: NextFunction) => {
-  const { token, refreshToken } = req.cookies;
-  if (!refreshToken) return next();
+  const tokens = await new BloomManager()
+    .userRepo()
+    .updateTokens(req.cookies.token, req.cookies.refreshToken);
 
-  const bm = new BloomManager();
-  const user: User = await bm.userRepo().findOne({ refreshToken });
-  if (!user) return next();
+  if (!tokens) return next();
 
-  if (!verifyToken(token)) {
-    const {
-      token: updatedToken,
-      refreshToken: updatedRefreshToken
-    } = generateTokens({ userId: user.id });
-    req.cookies.token = updatedToken;
-    req.cookies.refreshToken = updatedRefreshToken;
-    res.cookie('token', updatedToken);
-    res.cookie('refreshToken', updatedRefreshToken);
-    user.refreshToken = updatedRefreshToken;
-    await bm.flush(`Refresh token updated for ${user.fullName}.`);
-  }
+  const { token, refreshToken } = tokens;
+  req.cookies.token = token;
+  req.cookies.refreshToken = refreshToken;
+  res.cookie('token', token);
+  res.cookie('refreshToken', refreshToken);
 
   return next();
 };
