@@ -54,6 +54,12 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     return membership;
   };
 
+  deleteMemberships = async (membershipIds: string[]): Promise<boolean> => {
+    const memberships: Membership[] = await this.find({ id: membershipIds });
+    await this.deleteAndFlush(memberships, 'MEMBERSHIPS_DELETED');
+    return true;
+  };
+
   /**
    * Updates the membership data that is specified, and leaves all other
    * membership data alone.

@@ -21,6 +21,10 @@ export default abstract class BaseEntity {
   @Property()
   createdAt: string = now();
 
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  deletedAt: string;
+
   @Field()
   @Property({ onUpdate: () => now() })
   updatedAt: string = now();

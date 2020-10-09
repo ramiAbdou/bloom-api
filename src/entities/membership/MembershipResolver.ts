@@ -3,7 +3,7 @@
  * @author Rami Abdou
  */
 
-import { Args, Mutation, Resolver } from 'type-graphql';
+import { Arg, Args, Mutation, Resolver } from 'type-graphql';
 
 import { Membership } from '@entities';
 import BloomManager from '@util/db/BloomManager';
@@ -26,6 +26,11 @@ export default class MembershipResolver {
     return new BloomManager()
       .membershipRepo()
       .createMembership(communityId, data, userId);
+  }
+
+  @Mutation(() => Membership, { nullable: true })
+  async deleteMemberships(@Arg('membershipIds') membershipIds: string[]) {
+    return new BloomManager().membershipRepo().deleteMemberships(membershipIds);
   }
 
   /**

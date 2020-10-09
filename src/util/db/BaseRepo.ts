@@ -16,6 +16,7 @@ import {
   User
 } from '@entities';
 import logger from '@logger';
+import { now } from '@util/util';
 
 export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
   T
@@ -48,10 +49,19 @@ export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
     }
   }
 
-  async removeAndFlush(entity: AnyEntity<any>, event?: LoggerEvent) {
+  async deleteAndFlush(
+    entities?: AnyEntity<any> | AnyEntity<any>[],
+    event?: LoggerEvent
+  ) {
+    if (Array.isArray(entities))
+      entities.forEach((entity: AnyEntity<any>) => {
+        entity.deletedAt = now();
+      });
+    else entities.deletedAt = now();
+
     try {
-      await this.em.removeAndFlush(entity);
-      if (event) logger.info(event, entity.id);
+      await this.flush(event, entities);
+      if (event) logger.info(event);
     } catch (e) {
       logger.error(event, new Error(e));
     }
