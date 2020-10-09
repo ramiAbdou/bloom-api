@@ -76,14 +76,18 @@ export default class MembershipRepo extends BaseRepo<Membership> {
    * An admin has the option to either accept or reject a Membership when they
    * apply to the organization.
    */
-  respondToMembership = async (
-    membershipId: string,
+  respondToMemberships = async (
+    membershipIds: string[],
     response: number
-  ): Promise<Membership> => {
-    const membership: Membership = await this.findOne({ id: membershipId });
-    membership.status = response;
-    await this.flush('MEMBERSHIP_ADMISSION', membership);
-    return membership;
+  ): Promise<Membership[]> => {
+    const memberships: Membership[] = await this.find({ id: membershipIds });
+
+    memberships.forEach((membership: Membership) => {
+      membership.status = response;
+    });
+
+    await this.flush('MEMBERSHIP_ADMISSION', memberships);
+    return memberships;
   };
 
   /**

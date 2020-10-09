@@ -20,10 +20,20 @@ import logger from '@logger';
 export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
   T
 > {
-  async flush(event?: LoggerEvent, entity?: AnyEntity<any>) {
+  async flush(
+    event?: LoggerEvent,
+    entities?: AnyEntity<any> | AnyEntity<any>[]
+  ) {
+    const entityIds: string[] = Array.isArray(entities)
+      ? entities.reduce(
+          (acc: string[], curr: AnyEntity<any>) => [...acc, curr],
+          []
+        )
+      : [entities.id];
+
     try {
       await this.em.flush();
-      if (event) logger.info(event, entity.id);
+      if (event) logger.info(event, entityIds);
     } catch (e) {
       logger.error(event, new Error(e));
     }

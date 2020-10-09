@@ -14,7 +14,6 @@ import { LoggerEvent } from './constants';
 type LoggerLevel = 'INFO' | 'ERROR' | 'WARN';
 
 interface LoggerLog extends Record<string, any> {
-  entityId?: string;
   error?: Error;
   event: LoggerEvent;
   level: LoggerLevel;
@@ -29,11 +28,16 @@ class Logger {
     this.writeToFile(log, true);
   };
 
-  info = (event: LoggerEvent, entityId?: string) => {
+  info = (event: LoggerEvent, entityIds?: string[]) => {
     // eslint-disable-next-line sort-keys-fix/sort-keys-fix
-    const baseLog: LoggerLog = { level: 'INFO', event, timestamp: now() };
-    const log: LoggerLog = entityId ? { ...baseLog, entityId } : baseLog;
-    this.writeToFile(log);
+    const log: LoggerLog = { level: 'INFO', event, timestamp: now() };
+    if (!entityIds) return this.writeToFile(log);
+
+    entityIds.forEach((entityId: string, i: number) => {
+      log[`entity-${i}`] = entityId;
+    });
+
+    return this.writeToFile(log);
   };
 
   warn = (event: LoggerEvent, error?: Error) => {

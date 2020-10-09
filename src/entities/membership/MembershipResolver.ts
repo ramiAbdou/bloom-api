@@ -45,12 +45,12 @@ export default class MembershipResolver {
    * An admin has the option to either accept or reject a Membership when they
    * apply to the organization.
    */
-  @Mutation(() => Membership)
-  async respondToMembership(
-    @Args() { membershipId, response }: MembershipResponseArgs
+  @Mutation(() => [Membership])
+  async respondToMemberships(
+    @Args() { membershipIds, response }: MembershipResponseArgs
   ) {
     return new BloomManager()
       .membershipRepo()
-      .respondToMembership(membershipId, response);
+      .respondToMemberships(membershipIds, response);
   }
 }

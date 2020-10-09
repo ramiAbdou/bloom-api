@@ -25,7 +25,7 @@ export class CreateMembershipArgs {
 @ArgsType()
 export class MembershipResponseArgs {
   @Field()
-  membershipId: string;
+  membershipIds: string[];
 
   @Field(() => Int)
   response: number;
