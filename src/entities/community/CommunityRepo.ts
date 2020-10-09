@@ -54,14 +54,12 @@ export default class CommunityRepo extends BaseRepo<Community> {
 
         // We persist the membership instead of the user since the user can
         // potentially be persisted already.
-        const membership: Membership = new Membership();
+        const membership: Membership = this.membershipRepo().create({});
         const membershipData: Record<string, any> = {};
 
         membership.community = community;
         membership.data = membershipData;
         membership.user = user;
-
-        this.persist(membership);
 
         // The row is a JSON that maps keys to values.
         Object.entries(row).map(async ([key, value]) => {

@@ -3,11 +3,12 @@
  * @author Rami Abdou
  */
 
-import { Arg, Args, Mutation, Resolver } from 'type-graphql';
+import { Arg, Args, Authorized, Mutation, Resolver } from 'type-graphql';
 
 import { Membership } from '@entities';
 import BloomManager from '@util/db/BloomManager';
 import {
+  AddNewAdminArgs,
   CreateMembershipArgs,
   MembershipResponseArgs,
   UpdateMembershipArgs
@@ -57,5 +58,18 @@ export default class MembershipResolver {
     return new BloomManager()
       .membershipRepo()
       .respondToMemberships(membershipIds, response);
+  }
+
+  @Authorized('OWNER')
+  @Mutation(() => Membership)
+  async addAdmin(
+    @Args()
+    { membershipId, communityId, firstName, lastName, email }: AddNewAdminArgs
+  ) {
+    return membershipId
+      ? new BloomManager().membershipRepo().addAdminByMembershipId(membershipId)
+      : new BloomManager()
+          .membershipRepo()
+          .addNewAdmin(communityId, firstName, lastName, email);
   }
 }

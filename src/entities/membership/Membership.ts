@@ -42,9 +42,9 @@ export default class Membership extends BaseEntity {
   @Property({ nullable: true, type: String })
   role: MembershipRole;
 
-  // -1: Rejected
-  // 0: Pending
-  // 1: Accepted
+  // -1: REJECTED
+  // 0: PENDING
+  // 1: APPROVED
   @Field(() => Int)
   @Enum({ items: [-1, 0, 1], type: Number })
   status = 0;

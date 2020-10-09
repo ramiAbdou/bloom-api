@@ -4,7 +4,7 @@
  * @author Rami Abdou
  */
 
-import { AnyEntity, EntityRepository } from 'mikro-orm';
+import { AnyEntity, EntityData, EntityRepository } from 'mikro-orm';
 
 import { LoggerEvent } from '@constants';
 import {
@@ -65,6 +65,12 @@ export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
     } catch (e) {
       logger.error(event, new Error(e));
     }
+  }
+
+  createAndPersist(data: EntityData<T>) {
+    const entity = this.create(data);
+    this.persist(entity);
+    return entity;
   }
 
   /**

@@ -45,6 +45,7 @@ export const JWT = {
  */
 
 export type LoggerEvent =
+  | 'ADMIN_CREATED'
   | 'COMMUNITY_CREATED'
   | 'EMAIL_VERIFIED'
   | 'GOOGLE_REFRESH_TOKEN_STORED'

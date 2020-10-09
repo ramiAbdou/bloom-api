@@ -39,3 +39,21 @@ export class UpdateMembershipArgs {
   @Field()
   membershipId: string;
 }
+
+@ArgsType()
+export class AddNewAdminArgs {
+  @Field({ nullable: true })
+  firstName?: string;
+
+  @Field({ nullable: true })
+  lastName?: string;
+
+  @Field({ nullable: true })
+  email?: string;
+
+  @Field()
+  communityId: string;
+
+  @Field({ nullable: true })
+  membershipId?: string;
+}

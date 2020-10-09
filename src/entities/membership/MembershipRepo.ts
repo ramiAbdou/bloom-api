@@ -54,6 +54,10 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     return membership;
   };
 
+  /**
+   * Soft deletes all the memberships that are found using the array of
+   * membershipIds.
+   */
   deleteMemberships = async (membershipIds: string[]): Promise<boolean> => {
     const memberships: Membership[] = await this.find({ id: membershipIds });
     await this.deleteAndFlush(memberships, 'MEMBERSHIPS_DELETED');
@@ -110,5 +114,48 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     });
 
     return membership?.role;
+  };
+
+  /**
+   * Add a new admin to the community with the communityId.
+   * - If a user exists with the email, then try to find the membership
+   * associated with the user and community.
+   * - If no user exists or no membership exists, then create and persist them.
+   * - Set the membership role to ADMIN and set the status to 1 (APPROVED).
+   */
+  addNewAdmin = async (
+    communityId: string,
+    email: string,
+    firstName: string,
+    lastName: string
+  ) => {
+    const user: User =
+      (await this.userRepo().findOne({ email })) ??
+      this.userRepo().createAndPersist({ email, firstName, lastName });
+
+    const community: Community = await this.communityRepo().findOne({
+      id: communityId
+    });
+
+    const membership: Membership =
+      (await this.findOne({ community, user })) ??
+      this.createAndPersist({ community, user });
+
+    membership.role = 'ADMIN';
+    membership.status = 1;
+    await this.flush('ADMIN_CREATED', membership);
+    return membership;
+  };
+
+  /**
+   * Changes the membership to have a role that is an ADMIN and a status
+   * that is APPROVED.
+   */
+  addAdminByMembershipId = async (membershipId: string) => {
+    const membership: Membership = await this.findOne({ id: membershipId });
+    membership.role = 'ADMIN';
+    membership.status = 1;
+    await this.flush('ADMIN_CREATED', membership);
+    return membership;
   };
 }
