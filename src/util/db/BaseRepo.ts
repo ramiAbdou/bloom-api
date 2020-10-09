@@ -14,7 +14,7 @@ import {
   EventRSVP,
   Membership,
   User
-} from '@entities/entities';
+} from '@entities';
 import logger from '@logger';
 
 export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<

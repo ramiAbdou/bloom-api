@@ -7,7 +7,7 @@ import csv from 'csvtojson';
 import { EntityData } from 'mikro-orm';
 
 import { FormQuestionCategory } from '@constants';
-import { Membership, User } from '@entities/entities';
+import { Membership, User } from '@entities';
 import MailchimpAuth from '@integrations/mailchimp/MailchimpAuth';
 import BaseRepo from '@util/db/BaseRepo';
 import ZoomAuth from '../../integrations/zoom/ZoomAuth';

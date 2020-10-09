@@ -15,7 +15,7 @@ import {
 } from 'mikro-orm';
 
 import { APP } from '@constants';
-import { Community } from '@entities/entities';
+import { Community } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 import URLBuilder from '@util/URLBuilder';
 import EventAttendee from '../event-attendee/EventAttendee';

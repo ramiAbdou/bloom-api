@@ -16,8 +16,10 @@ export default class EventResolver {
     @Args() { eventId, fullName, email }: JoinEventArgs,
     @Ctx() { userId }: GQLContext
   ): Promise<void> {
-    const bm = new BloomManager();
-    if (userId) return bm.eventAttendeeRepo().joinEventAsUser(eventId, userId);
-    return bm.eventAttendeeRepo().joinEventAsGuest(eventId, fullName, email);
+    return userId
+      ? new BloomManager().eventAttendeeRepo().joinEventAsUser(eventId, userId)
+      : new BloomManager()
+          .eventAttendeeRepo()
+          .joinEventAsGuest(eventId, fullName, email);
   }
 }

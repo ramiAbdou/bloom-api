@@ -12,7 +12,7 @@ import {
   EventRSVP,
   Membership,
   User
-} from '@entities/entities';
+} from '@entities';
 import db from './db';
 
 export default class BloomManager {

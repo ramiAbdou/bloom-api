@@ -16,7 +16,7 @@ import {
 import { Field, ObjectType } from 'type-graphql';
 
 import { Form, FormQuestionCategory } from '@constants';
-import { Event } from '@entities/entities';
+import { Event } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
 import Membership from '../membership/Membership';

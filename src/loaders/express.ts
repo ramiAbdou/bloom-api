@@ -13,11 +13,11 @@ import express, { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 
 import { APP } from '@constants';
-import UserRouter from '@entities/user/UserRouter';
 import GoogleRouter from '@integrations/google/GoogleRouter';
 import MailchimpRouter from '@integrations/mailchimp/MailchimpRouter';
 import ZoomRouter from '@integrations/zoom/ZoomRouter';
 import BloomManager from '@util/db/BloomManager';
+import UserRouter from '../entities/user/UserRouter';
 
 /**
  * Authentication middleware that tries to update the idToken if the idToken

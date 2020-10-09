@@ -4,7 +4,7 @@
  */
 
 import { FormQuestionCategory, FormValueInput } from '@constants';
-import { Community, User } from '@entities/entities';
+import { Community, User } from '@entities';
 import BaseRepo from '@util/db/BaseRepo';
 import Membership from './Membership';
 

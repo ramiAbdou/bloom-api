@@ -7,7 +7,7 @@
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
-import { User } from '@entities/entities';
+import { User } from '@entities';
 import BloomManager from '@util/db/BloomManager';
 
 @Resolver()

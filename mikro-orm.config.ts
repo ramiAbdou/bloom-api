@@ -7,7 +7,7 @@
 import { Connection, IDatabaseDriver, Options } from 'mikro-orm';
 
 import { APP, isProduction } from '@constants';
-import * as entities from '@entities/entities';
+import * as entities from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 import NamingStrategy from '@util/db/NamingStrategy';
 import BaseRepo from './src/util/db/BaseRepo';

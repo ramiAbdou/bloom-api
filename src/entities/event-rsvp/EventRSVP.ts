@@ -5,7 +5,7 @@
 
 import { Entity, EntityRepositoryType, ManyToOne, Property } from 'mikro-orm';
 
-import { Event, Membership } from '@entities/entities';
+import { Event, Membership } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 import EventRSVPRepo from './EventRSVPRepo';
 

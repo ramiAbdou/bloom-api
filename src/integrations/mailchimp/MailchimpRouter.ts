@@ -6,7 +6,7 @@
 import { Request, Response } from 'express';
 
 import { APP, Route } from '@constants';
-import { Community } from '@entities/entities';
+import { Community } from '@entities';
 import BloomManager from '@util/db/BloomManager';
 import Router from '@util/Router';
 

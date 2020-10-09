@@ -6,7 +6,7 @@
 import { Args, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
-import { Membership } from '@entities/entities';
+import { Membership } from '@entities';
 import BloomManager from '@util/db/BloomManager';
 import {
   CreateMembershipArgs,

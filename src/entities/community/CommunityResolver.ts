@@ -5,7 +5,7 @@
 
 import { Args, Mutation, Query, Resolver } from 'type-graphql';
 
-import { Community } from '@entities/entities';
+import { Community } from '@entities';
 import BloomManager from '@util/db/BloomManager';
 import {
   CommunityPopulation,

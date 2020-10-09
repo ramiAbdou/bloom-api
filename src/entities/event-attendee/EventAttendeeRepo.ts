@@ -3,7 +3,7 @@
  * @author Rami Abdou
  */
 
-import { Event, Membership, User } from '@entities/entities';
+import { Event, Membership, User } from '@entities';
 import BaseRepo from '@util/db/BaseRepo';
 import EventAttendee from './EventAttendee';
 
