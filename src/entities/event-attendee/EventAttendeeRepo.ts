@@ -13,8 +13,11 @@ export default class EventAttendeeRepo extends BaseRepo<EventAttendee> {
    * the community that the event is hosted in.
    */
   joinEventAsUser = async (eventId: string, userId: string) => {
-    const user: User = await this.userRepo().findOne({ id: userId });
-    const event: Event = await this.eventRepo().findOne({ id: eventId });
+    const [user, event]: [User, Event] = await Promise.all([
+      this.userRepo().findOne({ id: userId }),
+      this.eventRepo().findOne({ id: eventId })
+    ]);
+
     const membership: Membership = await this.membershipRepo().findOne({
       community: event.community,
       user

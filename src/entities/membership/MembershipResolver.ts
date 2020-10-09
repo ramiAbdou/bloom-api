@@ -3,8 +3,9 @@
  * @author Rami Abdou
  */
 
-import { Arg, Args, Authorized, Mutation, Resolver } from 'type-graphql';
+import { Arg, Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
 
+import { GQLContext } from '@constants';
 import { Membership } from '@entities';
 import BloomManager from '@util/db/BloomManager';
 import {
@@ -22,7 +23,8 @@ export default class MembershipResolver {
    */
   @Mutation(() => Membership, { nullable: true })
   async createMembership(
-    @Args() { communityId, data, userId }: CreateMembershipArgs
+    @Args() { data, userId }: CreateMembershipArgs,
+    @Ctx() { communityId }: GQLContext
   ) {
     return new BloomManager()
       .membershipRepo()
@@ -64,7 +66,8 @@ export default class MembershipResolver {
   @Mutation(() => Membership)
   async addAdmin(
     @Args()
-    { membershipId, communityId, firstName, lastName, email }: AddNewAdminArgs
+    { membershipId, firstName, lastName, email }: AddNewAdminArgs,
+    @Ctx() { communityId }: GQLContext
   ) {
     return membershipId
       ? new BloomManager().membershipRepo().addAdminByMembershipId(membershipId)

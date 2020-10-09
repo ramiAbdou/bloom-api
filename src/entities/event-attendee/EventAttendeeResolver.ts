@@ -1,5 +1,5 @@
 /**
- * @fileoverview Resolver: Event
+ * @fileoverview Resolver: EventAttendee
  * @author Rami Abdou
  */
 
@@ -10,7 +10,7 @@ import BloomManager from '@util/db/BloomManager';
 import { JoinEventArgs } from './EventAttendeeArgs';
 
 @Resolver()
-export default class EventResolver {
+export default class EventAttendeeResolver {
   @Mutation(() => Boolean, { nullable: true })
   async joinEvent(
     @Args() { eventId, fullName, email }: JoinEventArgs,

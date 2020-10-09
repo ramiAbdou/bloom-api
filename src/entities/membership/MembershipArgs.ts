@@ -11,9 +11,6 @@ export type MembershipRole = 'ADMIN' | 'OWNER';
 
 @ArgsType()
 export class CreateMembershipArgs {
-  @Field()
-  communityId: string;
-
   @Field(() => [FormValueInput])
   data: FormValueInput[];
 
@@ -50,9 +47,6 @@ export class AddNewAdminArgs {
 
   @Field({ nullable: true })
   email?: string;
-
-  @Field()
-  communityId: string;
 
   @Field({ nullable: true })
   membershipId?: string;

@@ -14,6 +14,8 @@ import { GQLContext } from '@constants';
 import BloomManager from '@util/db/BloomManager';
 import { decodeToken } from '@util/util';
 import CommunityResolver from '../entities/community/CommunityResolver';
+import EventAttendeeResolver from '../entities/event-attendee/EventAttendeeResolver';
+import EventResolver from '../entities/event/EventResolver';
 import MembershipResolver from '../entities/membership/MembershipResolver';
 import UserResolver from '../entities/user/UserResolver';
 
@@ -51,16 +53,21 @@ const authChecker: AuthChecker<GQLContext> = async (
 export const createSchema = async (): Promise<GraphQLSchema> =>
   buildSchema({
     authChecker,
-    resolvers: [CommunityResolver, MembershipResolver, UserResolver]
+    resolvers: [
+      CommunityResolver,
+      EventResolver,
+      EventAttendeeResolver,
+      MembershipResolver,
+      UserResolver
+    ]
   });
 
 export default async () => {
   // Set the playground to false so that's it's not accessible to the outside
   // world. Also handles the request context.
   const config: ApolloServerExpressConfig = {
-    context: ({ req, res }) => ({
-      req,
-      res,
+    context: ({ req }) => ({
+      communityId: req.cookies.communityId,
       userId: decodeToken(req.cookies.token)?.userId
     }),
     playground: false,

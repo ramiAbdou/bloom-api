@@ -66,7 +66,7 @@ export type Route = {
   route: string;
 };
 
-export type GQLContext = { req: Request; res: Response; userId: string };
+export type GQLContext = { communityId: string; userId: string };
 
 export enum FormQuestionCategory {
   FIRST_NAME = 'FIRST_NAME',
