@@ -53,11 +53,11 @@ export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
     entities?: AnyEntity<any> | AnyEntity<any>[],
     event?: LoggerEvent
   ) {
-    if (Array.isArray(entities))
+    if (Array.isArray(entities)) {
       entities.forEach((entity: AnyEntity<any>) => {
         entity.deletedAt = now();
       });
-    else entities.deletedAt = now();
+    } else entities.deletedAt = now();
 
     try {
       await this.flush(event, entities);
@@ -67,6 +67,9 @@ export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
     }
   }
 
+  /**
+   * Combines the create and persist functionality.
+   */
   createAndPersist(data: EntityData<T>) {
     const entity = this.create(data);
     this.persist(entity);
