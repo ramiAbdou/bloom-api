@@ -40,7 +40,7 @@ export default async () => {
     context: ({ req, res }) => ({
       req,
       res,
-      userId: decodeToken(req.cookies.token).userId
+      userId: decodeToken(req.cookies.token)?.userId
     }),
     playground: false,
     schema: await createSchema()

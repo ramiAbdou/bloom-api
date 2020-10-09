@@ -7,6 +7,7 @@ import {
   AfterCreate,
   BeforeCreate,
   Entity,
+  EntityRepositoryType,
   Enum,
   JsonType,
   ManyToOne,
@@ -15,18 +16,23 @@ import {
 import { Field, Int, ObjectType } from 'type-graphql';
 
 import {
+  APP,
   FormQuestion,
   FormQuestionCategory as Category,
   FormValue
 } from '@constants';
 import BaseEntity from '@util/db/BaseEntity';
-import BloomManager from '@util/db/BloomManager';
+import { sendEmail, VERIFICATION_EMAIL_ARGS } from '@util/emails';
+import { ValidateEmailData } from '@util/emails/types';
 import Community from '../community/Community';
 import User from '../user/User';
+import MembershipRepo from './MembershipRepo';
 
 @ObjectType()
-@Entity()
+@Entity({ customRepository: () => MembershipRepo })
 export default class Membership extends BaseEntity {
+  [EntityRepositoryType]?: MembershipRepo;
+
   // Maps the title to the value.
   @Property({ nullable: true, type: JsonType })
   data: Record<string, any>;
@@ -104,6 +110,10 @@ export default class Membership extends BaseEntity {
 
   @AfterCreate()
   async afterCreate() {
-    await new BloomManager().userRepo().sendVerificationEmail(this.user.id);
+    await sendEmail({
+      ...VERIFICATION_EMAIL_ARGS,
+      to: this.user.email,
+      verificationUrl: `${APP.SERVER_URL}/users/${this.user.id}/verify`
+    } as ValidateEmailData);
   }
 }

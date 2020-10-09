@@ -4,7 +4,15 @@
  */
 
 import { IsUrl } from 'class-validator';
-import { Collection, Entity, ManyToOne, OneToMany, Property } from 'mikro-orm';
+import {
+  BeforeCreate,
+  Collection,
+  Entity,
+  EntityRepositoryType,
+  ManyToOne,
+  OneToMany,
+  Property
+} from 'mikro-orm';
 
 import { APP } from '@constants';
 import { Community } from '@entities/entities';
@@ -12,9 +20,12 @@ import BaseEntity from '@util/db/BaseEntity';
 import URLBuilder from '@util/URLBuilder';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventRSVP from '../event-rsvp/EventRSVP';
+import EventRepo from './EventRepo';
 
-@Entity()
+@Entity({ customRepository: () => EventRepo })
 export default class Event extends BaseEntity {
+  [EntityRepositoryType]?: EventRepo;
+
   /**
    * @example
    * """ If you're interested in pursuing a Software Engineering Internship,
@@ -27,6 +38,16 @@ export default class Event extends BaseEntity {
 
   @Property()
   endTime: string;
+
+  /**
+   * @example 10000
+   * @example 10001
+   * @example 10002
+   * @example 10003
+   * @example 10004
+   */
+  @Property({ type: Number })
+  shortId: number;
 
   @Property()
   startTime: string;
@@ -72,5 +93,10 @@ export default class Event extends BaseEntity {
     return new URLBuilder(`${APP.CLIENT_URL}/events/${this.zoomMeetingId}`)
       .addParam('join', true)
       .addParam('host', true).url;
+  }
+
+  @BeforeCreate()
+  beforeCreate() {
+    this.shortId = this.community.events.length + 10000;
   }
 }

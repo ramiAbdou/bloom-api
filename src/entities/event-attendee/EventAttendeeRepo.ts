@@ -3,29 +3,24 @@
  * @author Rami Abdou
  */
 
-import { EntityRepository, Repository } from 'mikro-orm';
-
 import { Event, Membership, User } from '@entities/entities';
-import BloomManager from '@util/db/BloomManager';
+import BaseRepo from '@util/db/BaseRepo';
 import EventAttendee from './EventAttendee';
 
-@Repository(EventAttendee)
-export default class EventAttendeeRepo extends EntityRepository<EventAttendee> {
-  bm: BloomManager = new BloomManager(this.em);
-
+export default class EventAttendeeRepo extends BaseRepo<EventAttendee> {
   /**
    * Creates an EventAttendee based on the membership given by the userId and
    * the community that the event is hosted in.
    */
   joinEventAsUser = async (eventId: string, userId: string) => {
-    const user: User = await this.bm.userRepo().findOne({ id: userId });
-    const event: Event = await this.bm.eventRepo().findOne({ id: eventId });
-    const membership: Membership = await this.bm
-      .membershipRepo()
-      .findOne({ community: event.community, user });
-
+    const user: User = await this.userRepo().findOne({ id: userId });
+    const event: Event = await this.eventRepo().findOne({ id: eventId });
+    const membership: Membership = await this.membershipRepo().findOne({
+      community: event.community,
+      user
+    });
     const attendee: EventAttendee = this.create({ event, membership });
-    await this.bm.persistAndFlush(
+    await this.persistAndFlush(
       attendee,
       `${user.fullName} joined event ID: ${eventId}.`,
       attendee
@@ -41,10 +36,9 @@ export default class EventAttendeeRepo extends EntityRepository<EventAttendee> {
     fullName: string,
     email: string
   ) => {
-    const event: Event = await this.bm.eventRepo().findOne({ id: eventId });
+    const event: Event = await this.eventRepo().findOne({ id: eventId });
     const attendee: EventAttendee = this.create({ email, event, fullName });
-
-    await this.bm.persistAndFlush(
+    await this.persistAndFlush(
       attendee,
       `${fullName} (Guest) joined event ID: ${eventId}.`,
       attendee

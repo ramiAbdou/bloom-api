@@ -8,6 +8,7 @@ import {
   BeforeCreate,
   Collection,
   Entity,
+  EntityRepositoryType,
   JsonType,
   OneToMany,
   Property
@@ -15,13 +16,17 @@ import {
 import { Field, ObjectType } from 'type-graphql';
 
 import { Form, FormQuestionCategory } from '@constants';
+import { Event } from '@entities/entities';
 import BaseEntity from '@util/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
 import Membership from '../membership/Membership';
+import CommunityRepo from './CommunityRepo';
 
 @ObjectType()
-@Entity()
+@Entity({ customRepository: () => CommunityRepo })
 export default class Community extends BaseEntity {
+  [EntityRepositoryType]?: CommunityRepo;
+
   // True if the membership should be accepted automatically.
   @Property({ type: Boolean })
   autoAccept = false;
@@ -93,6 +98,9 @@ export default class Community extends BaseEntity {
  |_|_\___|_\__,_|\__|_\___/_||_/__/_||_|_| .__/__/
                                          |_|      
   */
+
+  @OneToMany(() => Event, ({ community }) => community)
+  events: Collection<Event> = new Collection<Event>(this);
 
   @Field(() => [Membership])
   @OneToMany(() => Membership, ({ community }) => community)

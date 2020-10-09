@@ -4,32 +4,29 @@
  */
 
 import csv from 'csvtojson';
-import { EntityData, EntityRepository, Repository } from 'mikro-orm';
+import { EntityData } from 'mikro-orm';
 
 import { FormQuestionCategory } from '@constants';
 import { Membership, User } from '@entities/entities';
 import MailchimpAuth from '@integrations/mailchimp/MailchimpAuth';
-import BloomManager from '@util/db/BloomManager';
+import BaseRepo from '@util/db/BaseRepo';
 import Community from './Community';
 
-@Repository(Community)
-export default class CommunityRepo extends EntityRepository<Community> {
-  bm: BloomManager = new BloomManager(this.em);
-
+export default class CommunityRepo extends BaseRepo<Community> {
   /**
    * Creates a new community when Bloom has a new customer. Omits the addition
    * of a logo. For now, the community should send Bloom a square logo that
    * we will manually add to the Digital Ocean space.
    */
-  createCommunity = async (
+  async createCommunity(
     data: EntityData<Community>,
     hasCSV: boolean
-  ): Promise<Community> => {
+  ): Promise<Community> {
     const community: Community = this.create(data);
     if (hasCSV) await this.importCSVDataToCommunity(community);
-    await this.bm.flush(`${community.name} has been created!`, { community });
+    await this.flush(`${community.name} has been created!`, { community });
     return community;
-  };
+  }
 
   /**
    * This should only be called in the process of creating a community for the
@@ -38,7 +35,7 @@ export default class CommunityRepo extends EntityRepository<Community> {
    * NEW users if the email is not found in the DB based on the CSV row, or
    * adds a Membership based on the current users in our DB.
    */
-  private importCSVDataToCommunity = async (community: Community) => {
+  private async importCSVDataToCommunity(community: Community) {
     const responses = await csv().fromFile(
       `./membership-csv/${community.name}.csv`
     );
@@ -50,8 +47,9 @@ export default class CommunityRepo extends EntityRepository<Community> {
 
         // If the user already exists, fetch it from the DB and if not, create
         // a new user for the membership.
+
         const user: User =
-          (await this.bm.userRepo().findOne({ email })) ?? new User();
+          (await this.userRepo().findOne({ email })) ?? new User();
 
         // We persist the membership instead of the user since the user can
         // potentially be persisted already.
@@ -75,7 +73,7 @@ export default class CommunityRepo extends EntityRepository<Community> {
         });
       })
     );
-  };
+  }
 
   /**
    * Returns the updated community after updating it's Mailchimp token. If
@@ -94,9 +92,10 @@ export default class CommunityRepo extends EntityRepository<Community> {
 
     const token: string = await new MailchimpAuth().getTokenFromCode(code);
     community.mailchimpAccessToken = token;
-    await this.bm.flush(`Mailchimp token stored for ${community.name}.`, {
-      community
-    });
+    await this.em.flush();
+    // await this.bm.flush(`Mailchimp token stored for ${community.name}.`, {
+    //   community
+    // });
     return community;
   };
 }

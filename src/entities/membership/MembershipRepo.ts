@@ -3,17 +3,12 @@
  * @author Rami Abdou
  */
 
-import { EntityRepository, Repository } from 'mikro-orm';
-
 import { FormQuestionCategory, FormValueInput } from '@constants';
 import { Community, User } from '@entities/entities';
-import BloomManager from '@util/db/BloomManager';
+import BaseRepo from '@util/db/BaseRepo';
 import Membership from './Membership';
 
-@Repository(Membership)
-export default class MembershipRepo extends EntityRepository<Membership> {
-  bm: BloomManager = new BloomManager(this.em);
-
+export default class MembershipRepo extends BaseRepo<Membership> {
   /**
    * Creates a Membership is for the given Community ID, and also creates a
    * User with the basic information from the membership data.
@@ -23,14 +18,14 @@ export default class MembershipRepo extends EntityRepository<Membership> {
     data: FormValueInput[],
     userId?: string
   ): Promise<Membership> => {
-    const community: Community = await this.bm
-      .communityRepo()
-      .findOne({ id: communityId });
+    const community: Community = await this.communityRepo().findOne({
+      id: communityId
+    });
 
     // The user can potentially already exist if they are a part of other
     // communities.
     const user: User = userId
-      ? await this.bm.userRepo().findOne({ id: userId })
+      ? await this.userRepo().findOne({ id: userId })
       : new User();
 
     const membership: Membership = new Membership();
@@ -54,12 +49,11 @@ export default class MembershipRepo extends EntityRepository<Membership> {
       })
     );
 
-    await this.bm.persistAndFlush(
+    await this.persistAndFlush(
       membership,
       `Membership created for ${user.fullName}.`,
       { user }
     );
-
     return membership;
   };
 
@@ -82,10 +76,7 @@ export default class MembershipRepo extends EntityRepository<Membership> {
     });
 
     const { user } = membership;
-    await this.bm.flush(`Membership data updated for ${user.fullName}.`, {
-      user
-    });
-
+    await this.flush(`Membership data updated for ${user.fullName}.`, { user });
     return membership;
   };
 
@@ -100,12 +91,12 @@ export default class MembershipRepo extends EntityRepository<Membership> {
   ): Promise<Membership> => {
     const [membership, admin]: [Membership, User] = await Promise.all([
       this.findOne({ id: membershipId }, ['user']),
-      this.bm.userRepo().findOne({ id: adminId })
+      this.userRepo().findOne({ id: adminId })
     ]);
 
     membership.status = response;
 
-    await this.bm.flush(
+    await this.flush(
       `${admin.fullName} responded to ${membership.user.fullName}'s membership
       application.`,
       { admin, membership }

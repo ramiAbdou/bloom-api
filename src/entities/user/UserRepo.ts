@@ -3,14 +3,13 @@
  * @author Rami Abdou
  */
 
-import { EntityRepository, Repository } from 'mikro-orm';
+import { EntityRepository } from 'mikro-orm';
 
 import { APP } from '@constants';
 import { sendEmail, VERIFICATION_EMAIL_ARGS } from '@util/emails';
-import { ValidateEmailData } from '../../util/emails/types';
+import { ValidateEmailData } from '@util/emails/types';
 import User from './User';
 
-@Repository(User)
 export default class UserRepo extends EntityRepository<User> {
   /**
    * Sends the user a verification email to verify their email address. This

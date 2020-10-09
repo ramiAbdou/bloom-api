@@ -15,7 +15,7 @@ module.exports = {
     // the type-graphql package doesn't encourage it.
     { files: ['*Resolver.ts'], rules: { 'class-methods-use-this': 0 } },
     {
-      files: ['index.ts', 'repos.ts'],
+      files: ['index.ts'],
       rules: { 'import/prefer-default-export': 0 }
     },
     { files: ['*Router.ts'], rules: { 'class-methods-use-this': 0 } },

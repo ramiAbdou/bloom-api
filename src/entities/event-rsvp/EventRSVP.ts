@@ -3,13 +3,16 @@
  * @author Rami Abdou
  */
 
-import { Entity, ManyToOne, Property } from 'mikro-orm';
+import { Entity, EntityRepositoryType, ManyToOne, Property } from 'mikro-orm';
 
 import { Event, Membership } from '@entities/entities';
 import BaseEntity from '@util/db/BaseEntity';
+import EventRSVPRepo from './EventRSVPRepo';
 
-@Entity()
+@Entity({ customRepository: () => EventRSVPRepo })
 export default class EventRSVP extends BaseEntity {
+  [EntityRepositoryType]?: EventRSVPRepo;
+
   @Property({ nullable: true })
   fullName: string;
 

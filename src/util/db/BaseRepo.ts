@@ -1,9 +1,10 @@
 /**
- * @fileoverview Utility: BloomManager
+ * @fileoverview Utility: BaseRepo
+ * - Extends the MikroORM EntityRepository to include logging capabilities.
  * @author Rami Abdou
  */
 
-import { AnyEntity, EntityManager } from 'mikro-orm';
+import { AnyEntity, EntityRepository } from 'mikro-orm';
 
 import {
   Community,
@@ -14,59 +15,37 @@ import {
   User
 } from '@entities/entities';
 import logger from '@logger';
-import db from './db';
 
-export default class BloomManager {
-  em: EntityManager;
-
-  constructor() {
-    this.em = db.em.fork();
-  }
-
-  /**
-   * Tries to flush the managed entities to the database, but if it fails,
-   * log the error.
-   */
-  flush = async (message?: string, data?: Record<string, any>) => {
+export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
+  T
+> {
+  async flush(message?: string, data?: Record<string, any>) {
     try {
       await this.em.flush();
       if (message) logger.info(message, data);
     } catch (e) {
       logger.error(new Error(e));
     }
-  };
+  }
 
-  /**
-   * Persist and flush the given entities.
-   */
-  persistAndFlush = async (
+  async persistAndFlush(
     entities: AnyEntity<any> | AnyEntity<any>[],
     message?: string,
     data?: Record<string, any>
-  ) => {
+  ) {
     try {
       await this.em.persistAndFlush(entities);
       if (message) logger.info(message, data);
     } catch (e) {
       logger.error(new Error(e));
     }
-  };
+  }
 
-  /**
-   * Persists the entity and pushes the log until the Entity Manager either
-   * flushes the changes or clears the changes.
-   */
-  persist = (entities: AnyEntity<any> | AnyEntity<any>[]) =>
-    this.em.persist(entities);
-
-  /**
-   * Removes and flushes the given entities.
-   */
-  removeAndFlush = async (
+  async removeAndFlush(
     entities: AnyEntity<any> | AnyEntity<any>[],
     message?: string,
     data?: Record<string, any>
-  ) => {
+  ) {
     try {
       this.remove(entities);
       await this.em.flush();
@@ -74,14 +53,7 @@ export default class BloomManager {
     } catch (e) {
       logger.error(new Error(e));
     }
-  };
-
-  /**
-   * Removes the entity from the entity manager and pushes the appropriate
-   * logs to the class.
-   */
-  private remove = (entities: AnyEntity<any> | AnyEntity<any>[]) =>
-    this.em.remove(entities);
+  }
 
   /**
    * REPOSITORIES - Exports all of the entity repositories. They are already

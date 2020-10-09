@@ -10,6 +10,7 @@ import { APP, isProduction } from '@constants';
 import * as entities from '@entities/entities';
 import BaseEntity from '@util/db/BaseEntity';
 import NamingStrategy from '@util/db/NamingStrategy';
+import BaseRepo from './src/util/db/BaseRepo';
 
 const options: Options<IDatabaseDriver<Connection>> = {
   clientUrl: APP.DB_URL,
@@ -19,6 +20,7 @@ const options: Options<IDatabaseDriver<Connection>> = {
   discovery: { disableDynamicFileAccess: true },
   driverOptions: { connection: { ssl: isProduction } },
   entities: [BaseEntity, ...Object.values(entities)],
+  entityRepository: BaseRepo,
   migrations: { path: './src/db/migrations' },
   namingStrategy: NamingStrategy,
   type: 'postgresql'
