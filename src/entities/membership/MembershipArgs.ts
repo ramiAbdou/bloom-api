@@ -20,8 +20,14 @@ export class CreateMembershipArgs {
 }
 
 @ArgsType()
+export class DeleteMembershipArgs {
+  @Field(() => [String])
+  membershipIds: string[];
+}
+
+@ArgsType()
 export class MembershipResponseArgs {
-  @Field()
+  @Field(() => [String])
   membershipIds: string[];
 
   @Field(() => Int)

@@ -30,12 +30,13 @@ class Logger {
 
   info = (event: LoggerEvent, entityIds?: string[]) => {
     // eslint-disable-next-line sort-keys-fix/sort-keys-fix
-    const log: LoggerLog = { level: 'INFO', event, timestamp: now() };
-    if (!entityIds) return this.writeToFile(log);
+    const baseLog: LoggerLog = { level: 'INFO', event, timestamp: now() };
+    if (!entityIds || !entityIds.length) return this.writeToFile(baseLog);
 
-    entityIds.forEach((entityId: string, i: number) => {
-      log[`entity-${i}`] = entityId;
-    });
+    const log: LoggerLog =
+      entityIds.length >= 2
+        ? { ...baseLog, entities: entityIds }
+        : { ...baseLog, entity: entityIds[0] };
 
     return this.writeToFile(log);
   };

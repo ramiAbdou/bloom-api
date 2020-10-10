@@ -3,8 +3,14 @@
  * @author Rami Abdou
  */
 
-import { EntityRepository } from 'mikro-orm';
+import { EntityData } from 'mikro-orm';
 
+import BaseRepo from '@util/db/BaseRepo';
 import Event from './Event';
 
-export default class EventRepo extends EntityRepository<Event> {}
+export default class EventRepo extends BaseRepo<Event> {
+  createEvent = async (data: EntityData<Event>) => {
+    const event: Event = this.createAndPersist(data);
+    await this.flush('EVENT_CREATED', event);
+  };
+}

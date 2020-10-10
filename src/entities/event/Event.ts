@@ -13,6 +13,7 @@ import {
   OneToMany,
   Property
 } from 'mikro-orm';
+import { Field, ObjectType } from 'type-graphql';
 
 import { APP } from '@constants';
 import { Community } from '@entities';
@@ -22,6 +23,7 @@ import EventAttendee from '../event-attendee/EventAttendee';
 import EventRSVP from '../event-rsvp/EventRSVP';
 import EventRepo from './EventRepo';
 
+@ObjectType()
 @Entity({ customRepository: () => EventRepo })
 export default class Event extends BaseEntity {
   [EntityRepositoryType]?: EventRepo;
@@ -33,9 +35,11 @@ export default class Event extends BaseEntity {
    * meet their team, ask questions about the application process, and more...
    * """
    */
+  @Field()
   @Property({ type: 'text' })
   description: string;
 
+  @Field()
   @Property()
   endTime: string;
 
@@ -46,28 +50,34 @@ export default class Event extends BaseEntity {
    * @example 10003
    * @example 10004
    */
+  @Field()
   @Property({ type: Number })
   shortId: number;
 
+  @Field()
   @Property()
   startTime: string;
 
   /**
    * @example ColorStack x Facebook: Day in the Life of a Software Engineer
    */
+  @Field()
   @Property()
-  topic: string;
+  title: string;
 
+  @Field()
   @Property()
   zoomMeetingId: string;
 
   // Should ONLY be used by the host of the meeting. This URL will effectively
   // start the Zoom meeting.
+  @Field()
   @Property({ nullable: true })
   @IsUrl()
   zoomHostUrl: string;
 
   // URL for participants to join the meeting.
+  @Field()
   @Property()
   @IsUrl()
   zoomJoinUrl: string;

@@ -11,6 +11,7 @@ import BloomManager from '@util/db/BloomManager';
 import {
   AddNewAdminArgs,
   CreateMembershipArgs,
+  DeleteMembershipArgs,
   MembershipResponseArgs,
   UpdateMembershipArgs
 } from './MembershipArgs';
@@ -32,7 +33,7 @@ export default class MembershipResolver {
   }
 
   @Mutation(() => Membership, { nullable: true })
-  async deleteMemberships(@Arg('membershipIds') membershipIds: string[]) {
+  async deleteMemberships(@Args() { membershipIds }: DeleteMembershipArgs) {
     return new BloomManager().membershipRepo().deleteMemberships(membershipIds);
   }
 

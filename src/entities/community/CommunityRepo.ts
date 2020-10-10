@@ -21,9 +21,9 @@ export default class CommunityRepo extends BaseRepo<Community> {
    */
   async createCommunity(
     data: EntityData<Community>,
-    hasCSV: boolean
+    hasCSV = false
   ): Promise<Community> {
-    const community: Community = this.create(data);
+    const community: Community = this.createAndPersist(data);
     if (hasCSV) await this.importCSVDataToCommunity(community);
     await this.flush('COMMUNITY_CREATED', community);
     return community;

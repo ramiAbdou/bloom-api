@@ -22,7 +22,6 @@ const options: Options<IDatabaseDriver<Connection>> = {
   entities: [BaseEntity, ...Object.values(entities)],
   entityRepository: BaseRepo,
   filters: { notDeleted: { cond: () => ({ deletedAt: null }) } },
-  migrations: { path: './src/db/migrations' },
   namingStrategy: NamingStrategy,
   type: 'postgresql'
 };
