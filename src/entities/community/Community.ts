@@ -62,10 +62,10 @@ export default class Community extends BaseEntity {
   @Property({ unique: true })
   name: string;
 
-  @Property({ nullable: true, unique: true })
+  @Property({ nullable: true, type: 'text', unique: true })
   zoomAccessToken: string;
 
-  @Property({ nullable: true, unique: true })
+  @Property({ nullable: true, type: 'text', unique: true })
   zoomRefreshToken: string;
 
   @Field(() => Form)

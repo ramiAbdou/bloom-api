@@ -8,9 +8,9 @@ import { EntityData } from 'mikro-orm';
 
 import { Membership, User } from '@entities';
 import MailchimpAuth from '@integrations/mailchimp/MailchimpAuth';
+import ZoomAuth from '@integrations/zoom/ZoomAuth';
 import BaseRepo from '@util/db/BaseRepo';
 import { FormQuestionCategory } from '@util/gql';
-import ZoomAuth from '../../integrations/zoom/ZoomAuth';
 import Community from './Community';
 
 export default class CommunityRepo extends BaseRepo<Community> {
@@ -117,6 +117,27 @@ export default class CommunityRepo extends BaseRepo<Community> {
     community.zoomAccessToken = accessToken;
     community.zoomRefreshToken = refreshToken;
     await this.flush('ZOOM_TOKENS_STORED', community);
+
+    return community;
+  };
+
+  /**
+   * Refreshes the Zoom tokens for the community with the following ID.
+   *
+   * Precondition: A zoomRefreshToken must already exist in the Community.
+   */
+  refreshZoomTokens = async (communityId: string): Promise<Community> => {
+    const community = await this.findOne({ id: communityId });
+
+    const {
+      accessToken,
+      refreshToken
+    } = await new ZoomAuth().refreshAccessToken(community.zoomRefreshToken);
+
+    if (accessToken) community.zoomAccessToken = accessToken;
+    if (refreshToken) community.zoomRefreshToken = refreshToken;
+    if (accessToken && refreshToken)
+      await this.flush('ZOOM_TOKENS_REFRESHED', community);
 
     return community;
   };

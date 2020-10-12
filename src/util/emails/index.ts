@@ -33,7 +33,7 @@ export const sendEmail = async ({ mjml, to, subject, ...data }: EmailData) => {
     const options = { from: 'rami@bl.community', html, subject, to };
     await sg.send(options);
   } catch (e) {
-    logger.error(`Failed to send SendGrid mail: ${e}`, { subject, to });
+    logger.error('EMAIL_SENT', new Error(`Failed to send SendGrid mail: ${e}`));
   }
 };
 

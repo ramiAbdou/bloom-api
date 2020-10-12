@@ -14,10 +14,10 @@ export type ZoomTokens = { accessToken: string; refreshToken: string };
  * MEETING - Types pertaining to a Zoom Meeting.
  */
 
-export type ZoomMeetingRequest = {
+export type CreateZoomMeetingData = {
+  endTime: string;
+  startTime: string;
   topic: string;
-  type: number; // 1: Instant, 2: Scheduled, 3: Recurring, 8: Recurring w/ Time
-  start_time: number; // 1: Instant, 2: Scheduled, 3: Recurring, 8: Recurring w/ Time
 };
 
 export type ZoomRecordingResponse = {

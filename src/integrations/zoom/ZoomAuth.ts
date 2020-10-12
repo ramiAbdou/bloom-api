@@ -16,12 +16,8 @@ export default class ZoomAuth {
    * a token from the Google API.
    */
   getTokensFromCode = async (code: string): Promise<ZoomTokens> => {
-    const base64AuthString = Buffer.from(
-      `${process.env.ZOOM_CLIENT_ID}:${process.env.ZOOM_CLIENT_SECRET}`
-    ).toString('base64');
-
     const options: AxiosRequestConfig = {
-      headers: { Authorization: `Basic ${base64AuthString}` },
+      headers: { Authorization: `Basic ${this.getBase64AuthString()}` },
       method: 'POST',
       params: {
         code,
@@ -34,4 +30,25 @@ export default class ZoomAuth {
     const { data } = await axios(options);
     return { accessToken: data.access_token, refreshToken: data.refresh_token };
   };
+
+  refreshAccessToken = async (refreshToken: string): Promise<ZoomTokens> => {
+    const options: AxiosRequestConfig = {
+      headers: { Authorization: `Basic ${this.getBase64AuthString()}` },
+      method: 'POST',
+      params: { grant_type: 'refresh_token', refresh_token: refreshToken },
+      url: 'https://zoom.us/oauth/token'
+    };
+
+    const { data } = await axios(options);
+    return { accessToken: data.access_token, refreshToken: data.refresh_token };
+  };
+
+  /**
+   * Returns the base64 authorization string that uses both the Zoom Client ID
+   * and Zoom Client Secret.
+   */
+  private getBase64AuthString = (): string =>
+    Buffer.from(
+      `${process.env.ZOOM_CLIENT_ID}:${process.env.ZOOM_CLIENT_SECRET}`
+    ).toString('base64');
 }

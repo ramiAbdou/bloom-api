@@ -65,17 +65,6 @@ export default class Event extends BaseEntity {
   @Property()
   title: string;
 
-  @Field()
-  @Property()
-  zoomMeetingId: string;
-
-  // Should ONLY be used by the host of the meeting. This URL will effectively
-  // start the Zoom meeting.
-  @Field()
-  @Property({ nullable: true })
-  @IsUrl()
-  zoomHostUrl: string;
-
   // URL for participants to join the meeting.
   @Field()
   @Property()
@@ -94,15 +83,8 @@ export default class Event extends BaseEntity {
   @Property({ persist: false })
   get joinUrl(): string {
     return new URLBuilder(
-      `${APP.CLIENT_URL}/events/${this.zoomMeetingId}`
+      `${APP.CLIENT_URL}/${this.community.name}/events/${this.shortId}`
     ).addParam('join', true).url;
-  }
-
-  @Property({ persist: false })
-  get hostUrl(): string {
-    return new URLBuilder(`${APP.CLIENT_URL}/events/${this.zoomMeetingId}`)
-      .addParam('join', true)
-      .addParam('host', true).url;
   }
 
   @BeforeCreate()

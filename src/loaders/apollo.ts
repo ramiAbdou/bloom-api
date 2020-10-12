@@ -28,8 +28,8 @@ const authChecker: AuthChecker<GQLContext> = async (
   { args, context: { userId } },
   roles
 ) => {
-  // If the userId or the communityId isn't present, then we can't query the
-  // DB to see if the member has admin priveleges, so return false.
+  // If the userId or the communityId isn't present, then we can't even query
+  // the DB to see if the member has admin priveleges, so return false.
   const { communityId } = args;
   if (!userId || !communityId) return false;
 

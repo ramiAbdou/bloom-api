@@ -44,6 +44,7 @@ export const JWT = {
 export type LoggerEvent =
   | 'ADMIN_CREATED'
   | 'COMMUNITY_CREATED'
+  | 'EMAIL_SENT'
   | 'EMAIL_VERIFIED'
   | 'EVENT_CREATED'
   | 'GOOGLE_REFRESH_TOKEN_STORED'
@@ -56,6 +57,7 @@ export type LoggerEvent =
   | 'MEMBERSHIP_DATA_UPDATED'
   | 'SERVER_STARTED'
   | 'TOKENS_UPDATED'
+  | 'ZOOM_TOKENS_REFRESHED'
   | 'ZOOM_TOKENS_STORED';
 
 export type Route = {
