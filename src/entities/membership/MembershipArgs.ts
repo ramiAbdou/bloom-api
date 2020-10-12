@@ -5,7 +5,7 @@
 
 import { ArgsType, Field, Int } from 'type-graphql';
 
-import { FormValueInput } from '@constants';
+import { FormValueInput } from '@util/gql';
 
 export type MembershipRole = 'ADMIN' | 'OWNER';
 

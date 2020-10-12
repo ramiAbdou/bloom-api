@@ -3,7 +3,7 @@
  * @author Rami Abdou
  */
 
-import { Arg, Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
+import { Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import { Membership } from '@entities';

@@ -3,9 +3,9 @@
  * @author Rami Abdou
  */
 
-import { FormQuestionCategory, FormValueInput } from '@constants';
 import { Community, User } from '@entities';
 import BaseRepo from '@util/db/BaseRepo';
+import { FormQuestionCategory, FormValueInput } from '@util/gql';
 import Membership from './Membership';
 import { MembershipRole } from './MembershipArgs';
 
@@ -19,14 +19,14 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     data: FormValueInput[],
     userId?: string
   ): Promise<Membership> => {
-    const community: Community = await this.communityRepo().findOne({
+    const community: Community = await this.bm().communityRepo().findOne({
       id: communityId
     });
 
     // The user can potentially already exist if they are a part of other
     // communities.
     const user: User = userId
-      ? await this.userRepo().findOne({ id: userId })
+      ? await this.bm().userRepo().findOne({ id: userId })
       : new User();
 
     const membership: Membership = new Membership();
@@ -130,10 +130,10 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     lastName: string
   ) => {
     const user: User =
-      (await this.userRepo().findOne({ email })) ??
-      this.userRepo().createAndPersist({ email, firstName, lastName });
+      (await this.bm().userRepo().findOne({ email })) ??
+      this.bm().userRepo().createAndPersist({ email, firstName, lastName });
 
-    const community: Community = await this.communityRepo().findOne({
+    const community: Community = await this.bm().communityRepo().findOne({
       id: communityId
     });
 

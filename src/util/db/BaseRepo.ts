@@ -7,20 +7,21 @@
 import { AnyEntity, EntityData, EntityRepository } from 'mikro-orm';
 
 import { LoggerEvent } from '@constants';
-import {
-  Community,
-  Event,
-  EventAttendee,
-  EventRSVP,
-  Membership,
-  User
-} from '@entities';
 import logger from '@logger';
+import BloomManager from '@util/db/BloomManager';
 import { now } from '@util/util';
 
 export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
   T
 > {
+  /**
+   * Returns a new BloomManager using the same EntityManager as the current
+   * EntityRepository.
+   */
+  bm() {
+    return new BloomManager(this.em);
+  }
+
   async flush(
     event?: LoggerEvent,
     entities?: AnyEntity<any> | AnyEntity<any>[]
@@ -49,6 +50,12 @@ export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
     }
   }
 
+  /**
+   * Instead of actually removing and flushing the entity(s), this function
+   * acts as a SOFT DELETE and simply sets the deletedAt column within the
+   * table. There is a global filter that gets all entities that have a
+   * deletedAt = null.
+   */
   async deleteAndFlush(
     entities?: AnyEntity<any> | AnyEntity<any>[],
     event?: LoggerEvent
@@ -75,21 +82,4 @@ export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
     this.persist(entity);
     return entity;
   }
-
-  /**
-   * REPOSITORIES - Exports all of the entity repositories. They are already
-   * type-casted (defined in the entity definition itself).
-   */
-
-  communityRepo = () => this.em.getRepository(Community);
-
-  eventRepo = () => this.em.getRepository(Event);
-
-  eventAttendeeRepo = () => this.em.getRepository(EventAttendee);
-
-  eventRSVPRepo = () => this.em.getRepository(EventRSVP);
-
-  membershipRepo = () => this.em.getRepository(Membership);
-
-  userRepo = () => this.em.getRepository(User);
 }

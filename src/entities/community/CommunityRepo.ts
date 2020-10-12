@@ -6,10 +6,10 @@
 import csv from 'csvtojson';
 import { EntityData } from 'mikro-orm';
 
-import { FormQuestionCategory } from '@constants';
 import { Membership, User } from '@entities';
 import MailchimpAuth from '@integrations/mailchimp/MailchimpAuth';
 import BaseRepo from '@util/db/BaseRepo';
+import { FormQuestionCategory } from '@util/gql';
 import ZoomAuth from '../../integrations/zoom/ZoomAuth';
 import Community from './Community';
 
@@ -50,11 +50,11 @@ export default class CommunityRepo extends BaseRepo<Community> {
         // a new user for the membership.
 
         const user: User =
-          (await this.userRepo().findOne({ email })) ?? new User();
+          (await this.bm().userRepo().findOne({ email })) ?? new User();
 
         // We persist the membership instead of the user since the user can
         // potentially be persisted already.
-        const membership: Membership = this.membershipRepo().create({});
+        const membership: Membership = this.bm().membershipRepo().create({});
         const membershipData: Record<string, any> = {};
 
         membership.community = community;

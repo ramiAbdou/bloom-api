@@ -14,11 +14,11 @@ export default class EventAttendeeRepo extends BaseRepo<EventAttendee> {
    */
   joinEventAsUser = async (eventId: string, userId: string) => {
     const [user, event]: [User, Event] = await Promise.all([
-      this.userRepo().findOne({ id: userId }),
-      this.eventRepo().findOne({ id: eventId })
+      this.bm().userRepo().findOne({ id: userId }),
+      this.bm().eventRepo().findOne({ id: eventId })
     ]);
 
-    const membership: Membership = await this.membershipRepo().findOne({
+    const membership: Membership = await this.bm().membershipRepo().findOne({
       community: event.community,
       user
     });
@@ -35,7 +35,7 @@ export default class EventAttendeeRepo extends BaseRepo<EventAttendee> {
     fullName: string,
     email: string
   ) => {
-    const event: Event = await this.eventRepo().findOne({ id: eventId });
+    const event: Event = await this.bm().eventRepo().findOne({ id: eventId });
     const attendee: EventAttendee = this.create({ email, event, fullName });
     await this.persistAndFlush(attendee, 'JOINED_EVENT_AS_GUEST');
   };

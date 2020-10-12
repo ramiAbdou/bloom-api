@@ -15,15 +15,15 @@ import {
 } from 'mikro-orm';
 import { Field, Int, ObjectType } from 'type-graphql';
 
-import {
-  APP,
-  FormQuestion,
-  FormQuestionCategory as Category,
-  FormValue
-} from '@constants';
+import { APP } from '@constants';
 import BaseEntity from '@util/db/BaseEntity';
 import { sendEmail, VERIFICATION_EMAIL_ARGS } from '@util/emails';
 import { ValidateEmailData } from '@util/emails/types';
+import {
+  FormQuestion,
+  FormQuestionCategory as Category,
+  FormValue
+} from '@util/gql';
 import Community from '../community/Community';
 import User from '../user/User';
 import { MembershipRole } from './MembershipArgs';
@@ -38,8 +38,11 @@ export default class Membership extends BaseEntity {
   @Property({ nullable: true, type: JsonType })
   data: Record<string, any>;
 
-  // If populated, either ADMIN or OWNER.
-  @Property({ nullable: true, type: String })
+  /**
+   * @example ADMIN
+   * @example OWNER
+   */
+  @Enum({ items: ['ADMIN', 'OWNER'], nullable: true, type: String })
   role: MembershipRole;
 
   // -1: REJECTED

@@ -18,8 +18,8 @@ import db from './db';
 export default class BloomManager {
   em: EntityManager;
 
-  constructor() {
-    this.em = db.em.fork();
+  constructor(em?: EntityManager) {
+    this.em = em || db.em.fork();
   }
 
   /**

@@ -15,9 +15,9 @@ import {
 } from 'mikro-orm';
 import { Field, ObjectType } from 'type-graphql';
 
-import { Form, FormQuestionCategory } from '@constants';
 import { Event } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
+import { Form, FormQuestionCategory } from '@util/gql';
 import { toLowerCaseDash } from '@util/util';
 import Membership from '../membership/Membership';
 import CommunityRepo from './CommunityRepo';

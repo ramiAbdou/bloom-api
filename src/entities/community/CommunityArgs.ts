@@ -5,7 +5,7 @@
 
 import { ArgsType, Field, registerEnumType } from 'type-graphql';
 
-import { FormInput } from '@constants';
+import { FormInput } from '@util/gql';
 
 export enum CommunityPopulation {
   GET_MEMBERSHIPS = 'GET_MEMBERSHIPS'
