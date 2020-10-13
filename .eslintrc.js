@@ -20,7 +20,7 @@ module.exports = {
     },
     { files: ['*Router.ts'], rules: { 'class-methods-use-this': 0 } },
     {
-      files: ['*Args.ts', '*.types.ts'],
+      files: ['*Args.ts', '*.types.ts', '*Util.ts'],
       rules: { 'max-classes-per-file': 0, 'import/prefer-default-export': 0 }
     }
   ],

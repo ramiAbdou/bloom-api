@@ -7,7 +7,7 @@ import csv from 'csvtojson';
 import { EntityData } from 'mikro-orm';
 
 import { Membership, User } from '@entities';
-import MailchimpAuth from '@integrations/mailchimp/MailchimpAuth';
+import { getTokenFromCode } from '@integrations/mailchimp/MailchimpUtil';
 import {
   getTokensFromCode,
   refreshAccessToken
@@ -82,14 +82,14 @@ export default class CommunityRepo extends BaseRepo<Community> {
    * no community was found based on the encodedUrlName, returns null.
    * Otherwise, exchanges the
    */
-  storeMailchimpToken = async (
+  storeMailchimpTokenFromCode = async (
     encodedUrlName: string,
     code: string
   ): Promise<Community> => {
     const community: Community = await this.findOne({ encodedUrlName });
     if (!community) return null;
 
-    const token: string = await new MailchimpAuth().getTokenFromCode(code);
+    const token: string = await getTokenFromCode(code);
     community.mailchimpAccessToken = token;
     await this.flush('MAILCHIMP_TOKEN_STORED', community);
     return community;
@@ -102,7 +102,7 @@ export default class CommunityRepo extends BaseRepo<Community> {
    * @param code Zoom's API produced authorization code that we exchange for
    * tokens.
    */
-  storeZoomTokens = async (
+  storeZoomTokensFromCode = async (
     encodedUrlName: string,
     code: string
   ): Promise<Community> => {

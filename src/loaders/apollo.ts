@@ -68,7 +68,7 @@ export default async () => {
   const config: ApolloServerExpressConfig = {
     context: ({ req }) => ({
       communityId: req.cookies.communityId,
-      userId: decodeToken(req.cookies.token)?.userId
+      userId: decodeToken(req.cookies.accessToken)?.userId
     }),
     playground: false,
     schema: await createSchema()

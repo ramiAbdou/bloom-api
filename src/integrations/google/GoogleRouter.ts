@@ -8,7 +8,6 @@ import { Request, Response } from 'express';
 import { APP, isProduction, JWT, Route } from '@constants';
 import BloomManager from '@util/db/BloomManager';
 import Router from '@util/Router';
-import { GoogleTokens } from './GoogleTypes';
 
 export default class GoogleRouter extends Router {
   get routes(): Route[] {
@@ -16,7 +15,7 @@ export default class GoogleRouter extends Router {
   }
 
   private async handleAuth({ query }: Request, res: Response) {
-    const tokens: GoogleTokens = await new BloomManager()
+    const tokens = await new BloomManager()
       .userRepo()
       .storeGoogleRefreshToken(query.code as string);
 
@@ -27,9 +26,12 @@ export default class GoogleRouter extends Router {
       return;
     }
 
-    const { token, refreshToken } = tokens;
+    const { accessToken, refreshToken } = tokens;
     const options = { httpOnly: true, secure: isProduction };
-    res.cookie('token', token, { ...options, maxAge: JWT.EXPIRES_IN });
+    res.cookie('accessToken', accessToken, {
+      ...options,
+      maxAge: JWT.EXPIRES_IN
+    });
     res.cookie('refreshToken', refreshToken, options);
     res.redirect(APP.CLIENT_URL);
   }

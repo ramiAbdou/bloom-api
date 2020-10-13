@@ -19,7 +19,7 @@ export default class MailchimpRouter extends Router {
     const { code, state: encodedUrlName } = query;
     const community: Community = await new BloomManager()
       .communityRepo()
-      .storeMailchimpToken(encodedUrlName as string, code as string);
+      .storeMailchimpTokenFromCode(encodedUrlName as string, code as string);
 
     if (!community) res.redirect(`${APP.CLIENT_URL}?err=community_not_found`);
     else res.redirect(APP.CLIENT_URL);

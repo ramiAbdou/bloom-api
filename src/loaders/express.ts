@@ -26,14 +26,14 @@ import UserRouter from '../entities/user/UserRouter';
 const updateToken = async (req: Request, res: Response, next: NextFunction) => {
   const tokens = await new BloomManager()
     .userRepo()
-    .updateTokens(req.cookies.token, req.cookies.refreshToken);
+    .updateTokens(req.cookies.accessToken, req.cookies.refreshToken);
 
   if (!tokens) return next();
 
-  const { token, refreshToken } = tokens;
-  req.cookies.token = token;
+  const { accessToken, refreshToken } = tokens;
+  req.cookies.accessToken = accessToken;
   req.cookies.refreshToken = refreshToken;
-  res.cookie('token', token);
+  res.cookie('accessToken', accessToken);
   res.cookie('refreshToken', refreshToken);
 
   return next();

@@ -24,7 +24,7 @@ export default class ZoomRouter extends Router {
     const { code, state: encodedUrlName } = query;
     const community: Community = await new BloomManager()
       .communityRepo()
-      .storeZoomTokens(encodedUrlName as string, code as string);
+      .storeZoomTokensFromCode(encodedUrlName as string, code as string);
 
     // If that community doesn't exist, then we don't persist the tokens in the
     // DB and instead we redirect them to the React app.

@@ -4,8 +4,7 @@
  */
 
 import { APP, AuthTokens } from '@constants';
-import GoogleAuth from '@integrations/google/GoogleAuth';
-import { GoogleTokens } from '@integrations/google/GoogleTypes';
+import { getEmailFromCode } from '@integrations/google/GoogleUtil';
 import BaseRepo from '@util/db/BaseRepo';
 import { sendEmail, VERIFICATION_EMAIL_ARGS } from '@util/emails';
 import { ValidateEmailData } from '@util/emails/types';
@@ -52,13 +51,12 @@ export default class UserRepo extends BaseRepo<User> {
    *  the new refreshToken in the DB.
    */
   async updateTokens(
-    token: string,
+    accessToken: string,
     refreshToken: string
-  ): Promise<GoogleTokens> {
+  ): Promise<AuthTokens> {
     if (!refreshToken) return null;
-
     const user: User = await this.findOne({ refreshToken });
-    if (!user || verifyToken(token)) return null;
+    if (!user || verifyToken(accessToken)) return null;
 
     const {
       accessToken: updatedToken,
@@ -66,7 +64,7 @@ export default class UserRepo extends BaseRepo<User> {
     } = generateTokens({ userId: user.id });
     user.refreshToken = updatedRefreshToken;
     await this.flush('TOKENS_UPDATED', user);
-    return { refreshToken: updatedRefreshToken, token: updatedToken };
+    return { accessToken: updatedToken, refreshToken: updatedRefreshToken };
   }
 
   /**
@@ -77,7 +75,7 @@ export default class UserRepo extends BaseRepo<User> {
    * tokens.
    */
   async storeGoogleRefreshToken(code: string): Promise<AuthTokens> {
-    const email = await new GoogleAuth().getEmailFromCode(code);
+    const email = await getEmailFromCode(code);
     const user: User = await this.findOne({ email });
 
     if (!user) return null;
@@ -85,7 +83,6 @@ export default class UserRepo extends BaseRepo<User> {
     const { accessToken, refreshToken } = generateTokens({ userId: user.id });
     user.refreshToken = refreshToken;
     await this.flush('GOOGLE_REFRESH_TOKEN_STORED', user);
-
     return { accessToken, refreshToken };
   }
 }

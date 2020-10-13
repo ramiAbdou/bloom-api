@@ -61,8 +61,12 @@ export const refreshAccessToken = async (
     params: { grant_type: 'refresh_token', refresh_token: refreshToken }
   };
 
-  const response = await axios(options);
-  return extractTokensFromAxios(response);
+  try {
+    const response = await axios(options);
+    return extractTokensFromAxios(response);
+  } catch {
+    return { accessToken: null, refreshToken: null };
+  }
 };
 
 /**
