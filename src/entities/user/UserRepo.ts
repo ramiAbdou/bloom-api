@@ -3,7 +3,7 @@
  * @author Rami Abdou
  */
 
-import { APP } from '@constants';
+import { APP, AuthTokens } from '@constants';
 import GoogleAuth from '@integrations/google/GoogleAuth';
 import { GoogleTokens } from '@integrations/google/GoogleTypes';
 import BaseRepo from '@util/db/BaseRepo';
@@ -61,7 +61,7 @@ export default class UserRepo extends BaseRepo<User> {
     if (!user || verifyToken(token)) return null;
 
     const {
-      token: updatedToken,
+      accessToken: updatedToken,
       refreshToken: updatedRefreshToken
     } = generateTokens({ userId: user.id });
     user.refreshToken = updatedRefreshToken;
@@ -76,16 +76,16 @@ export default class UserRepo extends BaseRepo<User> {
    * @param code Google's API produced authorization code that we exchange for
    * tokens.
    */
-  async storeGoogleRefreshToken(code: string): Promise<GoogleTokens> {
+  async storeGoogleRefreshToken(code: string): Promise<AuthTokens> {
     const email = await new GoogleAuth().getEmailFromCode(code);
     const user: User = await this.findOne({ email });
 
     if (!user) return null;
 
-    const { token, refreshToken } = generateTokens({ userId: user.id });
+    const { accessToken, refreshToken } = generateTokens({ userId: user.id });
     user.refreshToken = refreshToken;
     await this.flush('GOOGLE_REFRESH_TOKEN_STORED', user);
 
-    return { refreshToken, token };
+    return { accessToken, refreshToken };
   }
 }

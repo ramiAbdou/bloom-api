@@ -8,7 +8,10 @@ import { EntityData } from 'mikro-orm';
 
 import { Membership, User } from '@entities';
 import MailchimpAuth from '@integrations/mailchimp/MailchimpAuth';
-import ZoomAuth from '@integrations/zoom/ZoomAuth';
+import {
+  getTokensFromCode,
+  refreshAccessToken
+} from '@integrations/zoom/ZoomUtil';
 import BaseRepo from '@util/db/BaseRepo';
 import { FormQuestionCategory } from '@util/gql';
 import Community from './Community';
@@ -83,10 +86,7 @@ export default class CommunityRepo extends BaseRepo<Community> {
     encodedUrlName: string,
     code: string
   ): Promise<Community> => {
-    const community: Community = await this.findOne({
-      encodedUrlName: encodedUrlName as string
-    });
-
+    const community: Community = await this.findOne({ encodedUrlName });
     if (!community) return null;
 
     const token: string = await new MailchimpAuth().getTokenFromCode(code);
@@ -109,15 +109,10 @@ export default class CommunityRepo extends BaseRepo<Community> {
     const community: Community = await this.findOne({ encodedUrlName });
     if (!community) return null;
 
-    const {
-      accessToken,
-      refreshToken
-    } = await new ZoomAuth().getTokensFromCode(code);
-
+    const { accessToken, refreshToken } = await getTokensFromCode(code);
     community.zoomAccessToken = accessToken;
     community.zoomRefreshToken = refreshToken;
     await this.flush('ZOOM_TOKENS_STORED', community);
-
     return community;
   };
 
@@ -129,16 +124,15 @@ export default class CommunityRepo extends BaseRepo<Community> {
   refreshZoomTokens = async (communityId: string): Promise<Community> => {
     const community = await this.findOne({ id: communityId });
 
-    const {
-      accessToken,
-      refreshToken
-    } = await new ZoomAuth().refreshAccessToken(community.zoomRefreshToken);
+    const { accessToken, refreshToken } = await refreshAccessToken(
+      community.zoomRefreshToken
+    );
 
-    if (accessToken) community.zoomAccessToken = accessToken;
-    if (refreshToken) community.zoomRefreshToken = refreshToken;
-    if (accessToken && refreshToken)
-      await this.flush('ZOOM_TOKENS_REFRESHED', community);
+    if (!accessToken && !refreshToken) return community;
 
+    community.zoomAccessToken = accessToken;
+    community.zoomRefreshToken = refreshToken;
+    await this.flush('ZOOM_TOKENS_REFRESHED', community);
     return community;
   };
 }

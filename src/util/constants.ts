@@ -41,6 +41,8 @@ export const JWT = {
  * instead of in this globally accessible constants file.
  */
 
+export type AuthTokens = { accessToken: string; refreshToken: string };
+
 export type LoggerEvent =
   | 'ADMIN_CREATED'
   | 'COMMUNITY_CREATED'

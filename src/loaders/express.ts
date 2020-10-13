@@ -20,7 +20,7 @@ import BloomManager from '@util/db/BloomManager';
 import UserRouter from '../entities/user/UserRouter';
 
 /**
- * Authentication middleware that tries to update the idToken if the idToken
+ * Authentication middleware that tries to update the token if the token
  * is expired.
  */
 const updateToken = async (req: Request, res: Response, next: NextFunction) => {

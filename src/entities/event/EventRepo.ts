@@ -5,7 +5,7 @@
 
 import { EntityData } from 'mikro-orm';
 
-import ZoomMeeting from '@integrations/zoom/ZoomMeeting';
+import { createScheduledMeeting } from '@integrations/zoom/ZoomUtil';
 import BaseRepo from '@util/db/BaseRepo';
 import Community from '../community/Community';
 import Event from './Event';
@@ -20,7 +20,7 @@ export default class EventRepo extends BaseRepo<Event> {
   createEvent = async (data: EntityData<Event>, communityId: string) => {
     const event: Event = this.createAndPersist(data);
 
-    const { endTime, startTime, title, zoomJoinUrl } = data;
+    const { duration, startTime, title, zoomJoinUrl } = data;
 
     // If no Zoom URL was specified, that means we need to create the Zoom
     // meeting ourselves using the community's Zoom account.
@@ -34,15 +34,17 @@ export default class EventRepo extends BaseRepo<Event> {
         .refreshZoomTokens(communityId);
 
       const options = {
-        endTime: endTime as string,
+        duration,
         startTime: startTime as string,
         topic: title as string
       };
 
-      event.zoomJoinUrl = await new ZoomMeeting(
-        zoomAccessToken,
-        zoomRefreshToken
-      ).createScheduledMeeting(options);
+      const { hostUrl, joinUrl } = await createScheduledMeeting({
+        accessToken: zoomAccessToken,
+        ...options
+      });
+
+      event.zoomJoinUrl = joinUrl;
     }
 
     await this.flush('EVENT_CREATED', event);

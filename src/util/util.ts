@@ -3,25 +3,11 @@
  * @author Rami Abdou
  */
 
-import { graphql } from 'graphql';
-import { Maybe } from 'graphql/jsutils/Maybe';
+import { AxiosResponse } from 'axios';
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
 
-import { JWT } from '@constants';
-import { createSchema } from '../loaders/apollo';
-
-interface GraphQLOptions {
-  source: string;
-  variables?: Maybe<{ [key: string]: any }>;
-}
-
-export const callGQL = async ({ source, variables }: GraphQLOptions) =>
-  graphql({
-    schema: await createSchema(),
-    source,
-    variableValues: variables
-  });
+import { AuthTokens, JWT } from '@constants';
 
 /**
  * Generates and signs both a token and refreshToken. The refreshToken does
@@ -35,15 +21,28 @@ export const decodeToken = (token: string): any => {
   }
 };
 
-type AuthTokens = { token: string; refreshToken: string };
+/**
+ * Returns the accessToken and refreshToken from the data.
+ * Precondition: data has both an access_token and refresh_token.
+ *
+ * @example extractTokensFromAxios(
+ *  { data: { access_token: 'a', refresh_token: 'b' } }
+ * ) => { accessToken: 'a', refreshToken: 'b' }
+ */
+export const extractTokensFromAxios = ({
+  data
+}: AxiosResponse): AuthTokens => ({
+  accessToken: data.access_token,
+  refreshToken: data.refresh_token
+});
 
 /**
  * Generates and signs both a token and refreshToken. The refreshToken does
  * not expire, but the token expires after a limited amount of time.
  */
 export const generateTokens = (payload: string | object): AuthTokens => ({
-  refreshToken: jwt.sign(payload, JWT.SECRET),
-  token: jwt.sign(payload, JWT.SECRET, { expiresIn: JWT.EXPIRES_IN })
+  accessToken: jwt.sign(payload, JWT.SECRET, { expiresIn: JWT.EXPIRES_IN }),
+  refreshToken: jwt.sign(payload, JWT.SECRET)
 });
 
 /**

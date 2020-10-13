@@ -39,9 +39,9 @@ export default class Event extends BaseEntity {
   @Property({ type: 'text' })
   description: string;
 
-  @Field()
-  @Property()
-  endTime: string;
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  duration: number;
 
   /**
    * @example 10000
@@ -54,8 +54,8 @@ export default class Event extends BaseEntity {
   @Property({ type: Number })
   shortId: number;
 
-  @Field()
-  @Property()
+  @Field({ nullable: true })
+  @Property({ nullable: true })
   startTime: string;
 
   /**
