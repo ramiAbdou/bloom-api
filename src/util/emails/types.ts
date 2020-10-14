@@ -3,7 +3,7 @@
  * @author Rami Abdou
  */
 
-type BasicEmailData = { to: string; subject?: string };
+type BasicEmailData = { mjml: string; to: string; subject?: string };
 
 export interface ValidateEmailData extends BasicEmailData {
   verificationUrl: string;

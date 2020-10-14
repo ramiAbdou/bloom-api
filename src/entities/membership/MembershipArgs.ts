@@ -5,13 +5,12 @@
 
 import { ArgsType, Field, Int } from 'type-graphql';
 
-import { FormValueInput } from '@constants';
+import { FormValueInput } from '@util/gql';
+
+export type MembershipRole = 'ADMIN' | 'OWNER';
 
 @ArgsType()
 export class CreateMembershipArgs {
-  @Field()
-  communityId: string;
-
   @Field(() => [FormValueInput])
   data: FormValueInput[];
 
@@ -21,13 +20,15 @@ export class CreateMembershipArgs {
 }
 
 @ArgsType()
-export class MembershipResponseArgs {
-  // Same as User ID.
-  @Field()
-  adminId: string;
+export class DeleteMembershipArgs {
+  @Field(() => [String])
+  membershipIds: string[];
+}
 
-  @Field()
-  membershipId: string;
+@ArgsType()
+export class MembershipResponseArgs {
+  @Field(() => [String])
+  membershipIds: string[];
 
   @Field(() => Int)
   response: number;
@@ -40,4 +41,19 @@ export class UpdateMembershipArgs {
 
   @Field()
   membershipId: string;
+}
+
+@ArgsType()
+export class AddNewAdminArgs {
+  @Field({ nullable: true })
+  firstName?: string;
+
+  @Field({ nullable: true })
+  lastName?: string;
+
+  @Field({ nullable: true })
+  email?: string;
+
+  @Field({ nullable: true })
+  membershipId?: string;
 }

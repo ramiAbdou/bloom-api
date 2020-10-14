@@ -16,7 +16,7 @@ export default {
     rules: [{ loader: 'awesome-typescript-loader', test: /\.ts$/ }]
   },
 
-  // MikrORM entities throw errors when minimization is true.
+  // MikroORM entities throw errors when minimization is true.
   optimization: { minimize: false },
   output: { filename: 'index.js', path: path.join(__dirname, '/dist') },
   plugins: [new Dotenv()],

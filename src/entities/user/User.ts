@@ -9,6 +9,7 @@ import {
   Cascade,
   Collection,
   Entity,
+  EntityRepositoryType,
   Enum,
   OneToMany,
   Property
@@ -17,10 +18,13 @@ import { Field, ObjectType } from 'type-graphql';
 
 import BaseEntity from '@util/db/BaseEntity';
 import Membership from '../membership/Membership';
+import UserRepo from './UserRepo';
 
 @ObjectType()
-@Entity()
+@Entity({ customRepository: () => UserRepo })
 export default class User extends BaseEntity {
+  [EntityRepositoryType]?: UserRepo;
+
   /* 
   ___ _     _    _    
  | __(_)___| |__| |___

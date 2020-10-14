@@ -3,119 +3,39 @@
  * @author Rami Abdou
  */
 
-import { AnyEntity, EntityManager } from 'mikro-orm';
+import { EntityManager } from 'mikro-orm';
 
 import {
   Community,
+  Event,
+  EventAttendee,
+  EventRSVP,
   Membership,
-  MembershipType,
   User
-} from '@entities/entities';
-import {
-  CommunityRepo,
-  MembershipRepo,
-  MembershipTypeRepo,
-  UserRepo
-} from '@entities/repos';
-import logger from '@logger';
+} from '@entities';
 import db from './db';
 
 export default class BloomManager {
   em: EntityManager;
 
-  constructor() {
-    this.em = db.em;
+  constructor(em?: EntityManager) {
+    this.em = em || db.em.fork();
   }
 
-  /*
-   ___             
-  / __|___ _ _ ___ 
- | (__/ _ \ '_/ -_)
-  \___\___/_| \___|          
-   */
-
   /**
-   * Tries to flush the managed entities to the database, but if it fails,
-   * log the error.
+   * REPOSITORIES - Exports all of the entity repositories. They are already
+   * type-casted (defined in the entity definition itself).
    */
-  flush = async (message?: string, data?: Record<string, any>) => {
-    try {
-      await this.em.flush();
-      if (message) logger.info(message, data);
-    } catch (e) {
-      logger.error(new Error(e));
-    }
-  };
 
-  /**
-   * Persist and flush the given entities.
-   */
-  persistAndFlush = async (
-    entities: AnyEntity<any> | AnyEntity<any>[],
-    message?: string,
-    data?: Record<string, any>
-  ) => {
-    try {
-      await this.em.persistAndFlush(entities);
-      if (message) logger.info(message, data);
-    } catch (e) {
-      logger.error(e);
-    }
-  };
+  communityRepo = () => this.em.getRepository(Community);
 
-  /**
-   * Persists the entity and pushes the log until the Entity Manager either
-   * flushes the changes or clears the changes.
-   */
-  persist = (entities: AnyEntity<any> | AnyEntity<any>[]) =>
-    this.em.persist(entities);
+  eventRepo = () => this.em.getRepository(Event);
 
-  /**
-   * Removes and flushes the given entities.
-   */
-  removeAndFlush = async (
-    entities: AnyEntity<any> | AnyEntity<any>[],
-    message?: string,
-    data?: Record<string, any>
-  ) => {
-    try {
-      this.remove(entities);
-      await this.em.flush();
-      if (message) logger.info(message, data);
-    } catch (e) {
-      logger.error(e);
-    }
-  };
+  eventAttendeeRepo = () => this.em.getRepository(EventAttendee);
 
-  /**
-   * Removes the entity from the entity manager and pushes the appropriate
-   * logs to the class.
-   */
-  private remove = (entities: AnyEntity<any> | AnyEntity<any>[]) =>
-    this.em.remove(entities);
+  eventRSVPRepo = () => this.em.getRepository(EventRSVP);
 
-  /**
-   * Merges given entity to this EntityManager so it becomes managed.
-   */
-  merge = (entities: AnyEntity<any> | AnyEntity<any>[]) => {
-    if (!Array.isArray(entities)) this.em.merge(entities);
-    else entities.forEach((entity) => this.em.merge(entity));
-  };
+  membershipRepo = () => this.em.getRepository(Membership);
 
-  /*
-  ___                  _ _           _        
- | _ \___ _ __  ___ __(_) |_ ___ _ _(_)___ ___
- |   / -_) '_ \/ _ (_-< |  _/ _ \ '_| / -_|_-<
- |_|_\___| .__/\___/__/_|\__\___/_| |_\___/__/
-         |_|                                  
-  */
-
-  communityRepo = () => this.em.getRepository(Community) as CommunityRepo;
-
-  membershipRepo = () => this.em.getRepository(Membership) as MembershipRepo;
-
-  membershipTypeRepo = () =>
-    this.em.getRepository(MembershipType) as MembershipTypeRepo;
-
-  userRepo = () => this.em.getRepository(User) as UserRepo;
+  userRepo = () => this.em.getRepository(User);
 }

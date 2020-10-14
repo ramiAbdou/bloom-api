@@ -3,23 +3,47 @@
  * @author Rami Abdou
  */
 
-import { graphql } from 'graphql';
-import { Maybe } from 'graphql/jsutils/Maybe';
+import { AxiosResponse } from 'axios';
+import jwt from 'jsonwebtoken';
 import moment from 'moment';
 
-import { createSchema } from '../loaders/apollo';
+import { AuthTokens, JWT } from '@constants';
 
-interface GraphQLOptions {
-  source: string;
-  variables?: Maybe<{ [key: string]: any }>;
-}
+/**
+ * Generates and signs both a token and refreshToken. The refreshToken does
+ * not expire, but the token expires after a limited amount of time.
+ */
+export const decodeToken = (token: string): any => {
+  try {
+    return jwt.decode(token);
+  } catch {
+    return null;
+  }
+};
 
-export const callGQL = async ({ source, variables }: GraphQLOptions) =>
-  graphql({
-    schema: await createSchema(),
-    source,
-    variableValues: variables
-  });
+/**
+ * Returns the accessToken and refreshToken from the data.
+ * Precondition: data has both an access_token and refresh_token.
+ *
+ * @example extractTokensFromAxios(
+ *  { data: { access_token: 'a', refresh_token: 'b' } }
+ * ) => { accessToken: 'a', refreshToken: 'b' }
+ */
+export const extractTokensFromAxios = ({
+  data
+}: AxiosResponse): AuthTokens => ({
+  accessToken: data.access_token,
+  refreshToken: data.refresh_token
+});
+
+/**
+ * Generates and signs both a token and refreshToken. The refreshToken does
+ * not expire, but the token expires after a limited amount of time.
+ */
+export const generateTokens = (payload: string | object): AuthTokens => ({
+  accessToken: jwt.sign(payload, JWT.SECRET, { expiresIn: JWT.EXPIRES_IN }),
+  refreshToken: jwt.sign(payload, JWT.SECRET)
+});
 
 /**
  * Returns the string as lowercase with spaces replaced by dashes.
@@ -38,10 +62,13 @@ export const toLowerCaseDash = (str: string) =>
 export const now = () => moment.utc().format();
 
 /**
- * Returns the stringified value with extra line spaces removed, so it keeps
- * the entire string on one line.
- *
- * @example singleLineStringify({ user: { id: 1 } }) => '{ "user": 1 }'
+ * Returns true if the token is both a valid JWT token and if it has not yet
+ * expired.
  */
-export const singleLineStringify = (value: any) =>
-  JSON.stringify(value, null, 1).replace(/\s+/g, ' ');
+export const verifyToken = (token: string): boolean => {
+  try {
+    return !!jwt.verify(token, JWT.SECRET);
+  } catch {
+    return false;
+  }
+};

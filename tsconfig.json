@@ -11,7 +11,7 @@
     "paths": {
       // Used for path aliases.
       "@constants": ["./src/util/constants.ts"],
-      "@entities/*": ["./src/entities/*"],
+      "@entities": ["./src/entities/index.ts"],
       "@logger": ["./src/util/logger.ts"],
       "@integrations/*": ["./src/integrations/*"],
       "@util/*": ["./src/util/*"]

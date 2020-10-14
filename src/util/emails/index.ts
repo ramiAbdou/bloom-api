@@ -7,12 +7,12 @@ import { readFileSync } from 'fs';
 import { compile } from 'handlebars';
 import mjml2html from 'mjml';
 
-import { isProduction, SENDGRID } from '@constants';
+import { isProduction } from '@constants';
 import logger from '@logger';
 import sg from '@sendgrid/mail';
-import { EmailData, ValidateEmailData } from './types';
+import { EmailData } from './types';
 
-sg.setApiKey(SENDGRID.API_KEY);
+sg.setApiKey(process.env.SENDGRID_API_KEY);
 
 /**
  * Sends an email using the given MJML template and the data that is needed
@@ -21,7 +21,7 @@ sg.setApiKey(SENDGRID.API_KEY);
  * @param mjml Name of the MJML file (including the .mjml extension).
  * @param variables Optional variables that populate the Handlebars template.
  */
-const sendEmail = async (mjml: string, { to, subject, ...data }: EmailData) => {
+export const sendEmail = async ({ mjml, to, subject, ...data }: EmailData) => {
   // We shouldn't send any emails in production. If we do want to, we should
   // comment this line out manually each time.
   if (!isProduction) return;
@@ -33,12 +33,11 @@ const sendEmail = async (mjml: string, { to, subject, ...data }: EmailData) => {
     const options = { from: 'rami@bl.community', html, subject, to };
     await sg.send(options);
   } catch (e) {
-    logger.error(`Failed to send SendGrid mail: ${e}`, { subject, to });
+    logger.error('EMAIL_SENT', new Error(`Failed to send SendGrid mail: ${e}`));
   }
 };
 
-export const sendVerificationEmail = (data: ValidateEmailData) =>
-  sendEmail('verify-email.mjml', {
-    ...data,
-    subject: `Welcome to Bloom! Confirm Your Email`
-  });
+export const VERIFICATION_EMAIL_ARGS = {
+  mjml: 'verify-email.mjml',
+  subject: 'Welcome to Bloom! Confirm Your Email'
+};

@@ -10,19 +10,42 @@ import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
 import { GraphQLSchema } from 'graphql';
 import { AuthChecker, buildSchema } from 'type-graphql';
 
+import { GQLContext } from '@constants';
+import BloomManager from '@util/db/BloomManager';
+import { decodeToken } from '@util/util';
 import CommunityResolver from '../entities/community/CommunityResolver';
+import EventAttendeeResolver from '../entities/event-attendee/EventAttendeeResolver';
+import EventResolver from '../entities/event/EventResolver';
 import MembershipResolver from '../entities/membership/MembershipResolver';
 import UserResolver from '../entities/user/UserResolver';
-import { GQLContext } from '../util/constants';
 
 /**
  * The auth checker returns true (is authorized) if there is a refreshToken
  * present b/c we have an Express middleware that automatically updates the
  * idToken using the refreshToken if it is invalid.
  */
-const authChecker: AuthChecker<GQLContext> = ({
-  context: { token, refreshToken }
-}) => !!token && !!refreshToken;
+const authChecker: AuthChecker<GQLContext> = async (
+  { args, context: { userId } },
+  roles
+) => {
+  // If the userId or the communityId isn't present, then we can't even query
+  // the DB to see if the member has admin priveleges, so return false.
+  const { communityId } = args;
+  if (!userId || !communityId) return false;
+
+  const role = await new BloomManager()
+    .membershipRepo()
+    .getMembershipRole(userId, communityId);
+
+  // If no roles are specified, then we should check if the role is at the
+  // minimum ADMIN. If the role is populated, it will either be ADMIN or
+  // OWNER, so return true if it is populated at all.
+  if (!roles.length) return !!role;
+
+  // The only role that would be provided in the roles array is OWNER, so now
+  // we just check that that is the member's privelege.
+  return role === 'OWNER';
+};
 
 /**
  * Builds the schema with the application's resolvers.
@@ -30,7 +53,13 @@ const authChecker: AuthChecker<GQLContext> = ({
 export const createSchema = async (): Promise<GraphQLSchema> =>
   buildSchema({
     authChecker,
-    resolvers: [CommunityResolver, MembershipResolver, UserResolver]
+    resolvers: [
+      CommunityResolver,
+      EventResolver,
+      EventAttendeeResolver,
+      MembershipResolver,
+      UserResolver
+    ]
   });
 
 export default async () => {
@@ -38,8 +67,8 @@ export default async () => {
   // world. Also handles the request context.
   const config: ApolloServerExpressConfig = {
     context: ({ req }) => ({
-      refreshToken: req.cookies.refreshToken,
-      token: req.cookies.token
+      communityId: req.cookies.communityId,
+      userId: decodeToken(req.cookies.accessToken)?.userId
     }),
     playground: false,
     schema: await createSchema()

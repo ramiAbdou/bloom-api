@@ -10,7 +10,6 @@ import { Router as ExpressRouter } from 'express';
 import { Route } from './constants';
 
 export default abstract class Router {
-  /** @property The Express router. */
   public router: ExpressRouter;
 
   constructor() {

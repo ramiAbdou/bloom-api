@@ -7,6 +7,7 @@ import {
   AfterCreate,
   BeforeCreate,
   Entity,
+  EntityRepositoryType,
   Enum,
   JsonType,
   ManyToOne,
@@ -14,28 +15,39 @@ import {
 } from 'mikro-orm';
 import { Field, Int, ObjectType } from 'type-graphql';
 
+import { APP } from '@constants';
+import BaseEntity from '@util/db/BaseEntity';
+import { sendEmail, VERIFICATION_EMAIL_ARGS } from '@util/emails';
+import { ValidateEmailData } from '@util/emails/types';
 import {
-  APP,
   FormQuestion,
   FormQuestionCategory as Category,
   FormValue
-} from '@constants';
-import BaseEntity from '@util/db/BaseEntity';
-import { sendVerificationEmail } from '@util/emails';
+} from '@util/gql';
 import Community from '../community/Community';
-import MembershipType from '../membership-type/MembershipType';
 import User from '../user/User';
+import { MembershipRole } from './MembershipArgs';
+import MembershipRepo from './MembershipRepo';
 
 @ObjectType()
-@Entity()
+@Entity({ customRepository: () => MembershipRepo })
 export default class Membership extends BaseEntity {
+  [EntityRepositoryType]?: MembershipRepo;
+
   // Maps the title to the value.
   @Property({ nullable: true, type: JsonType })
   data: Record<string, any>;
 
-  // -1: Rejected
-  // 0: Pending
-  // 1: Accepted
+  /**
+   * @example ADMIN
+   * @example OWNER
+   */
+  @Enum({ items: ['ADMIN', 'OWNER'], nullable: true, type: String })
+  role: MembershipRole;
+
+  // -1: REJECTED
+  // 0: PENDING
+  // 1: APPROVED
   @Field(() => Int)
   @Enum({ items: [-1, 0, 1], type: Number })
   status = 0;
@@ -50,7 +62,6 @@ export default class Membership extends BaseEntity {
 
     const { membershipForm } = this.community;
     const { gender, firstName, lastName, email } = this.user;
-    const { name: membershipName } = this.type;
 
     return membershipForm.questions.map(({ category, title }: FormQuestion) => {
       let value: any;
@@ -59,7 +70,6 @@ export default class Membership extends BaseEntity {
       else if (category === Category.LAST_NAME) value = lastName;
       else if (category === Category.EMAIL) value = email;
       else if (category === Category.GENDER) value = gender;
-      else if (category === Category.MEMBERSHIP_TYPE) value = membershipName;
       else value = this.data[title];
 
       return { title, value };
@@ -75,15 +85,11 @@ export default class Membership extends BaseEntity {
     if (!this.data) return [];
 
     const { membershipForm } = this.community;
-    const { name: membershipName } = this.type;
 
     return membershipForm.questions.reduce(
       (acc: FormValue[], { category, title }) => {
-        // If it's the membership type, push that value from the entity.
-        if (category === Category.MEMBERSHIP_TYPE)
-          acc.push({ title, value: membershipName });
-        // Otherwise, get the value from the data that lives on the Membership.
-        else if (!category) acc.push({ title, value: this.data[title] });
+        // Get the value from the data that lives on the Membership.
+        if (!category) acc.push({ title, value: this.data[title] });
         return acc;
       },
       []
@@ -101,9 +107,6 @@ export default class Membership extends BaseEntity {
   @ManyToOne(() => Community)
   community: Community;
 
-  @ManyToOne(() => MembershipType)
-  type: MembershipType;
-
   @Field(() => User)
   @ManyToOne(() => User)
   user: User;
@@ -115,9 +118,10 @@ export default class Membership extends BaseEntity {
 
   @AfterCreate()
   async afterCreate() {
-    await sendVerificationEmail({
+    await sendEmail({
+      ...VERIFICATION_EMAIL_ARGS,
       to: this.user.email,
       verificationUrl: `${APP.SERVER_URL}/users/${this.user.id}/verify`
-    });
+    } as ValidateEmailData);
   }
 }

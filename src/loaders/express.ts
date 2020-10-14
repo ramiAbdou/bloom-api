@@ -13,36 +13,28 @@ import express, { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 
 import { APP } from '@constants';
-import { User } from '@entities/entities';
-import UserRouter from '@entities/user/UserRouter';
 import GoogleRouter from '@integrations/google/GoogleRouter';
-import Auth from '@util/auth/Auth';
+import MailchimpRouter from '@integrations/mailchimp/MailchimpRouter';
+import ZoomRouter from '@integrations/zoom/ZoomRouter';
 import BloomManager from '@util/db/BloomManager';
+import UserRouter from '../entities/user/UserRouter';
 
 /**
- * Authentication middleware that tries to update the idToken if the idToken
+ * Authentication middleware that tries to update the token if the token
  * is expired.
  */
 const updateToken = async (req: Request, res: Response, next: NextFunction) => {
-  const { token, refreshToken } = req.cookies;
-  if (!refreshToken) return next();
+  const tokens = await new BloomManager()
+    .userRepo()
+    .updateTokens(req.cookies.accessToken, req.cookies.refreshToken);
 
-  const bm = new BloomManager();
-  const user: User = await bm.userRepo().findOne({ refreshToken });
-  if (!user) return next();
+  if (!tokens) return next();
 
-  const auth = new Auth();
-
-  if (!auth.verifyToken(token)) {
-    const {
-      token: updatedToken,
-      refreshToken: updatedRefreshToken
-    } = auth.generateTokens({ userId: user.id });
-    req.cookies.token = updatedToken;
-    res.cookie('token', updatedToken);
-    user.refreshToken = updatedRefreshToken;
-    await bm.flush(`Refresh token updated for ${user.fullName}.`);
-  }
+  const { accessToken, refreshToken } = tokens;
+  req.cookies.accessToken = accessToken;
+  req.cookies.refreshToken = refreshToken;
+  res.cookie('accessToken', accessToken);
+  res.cookie('refreshToken', refreshToken);
 
   return next();
 };
@@ -56,11 +48,13 @@ export default () => {
   app.use(cors({ credentials: true, origin: APP.CLIENT_URL }));
   app.use(cookieParser());
   app.use(helmet()); // Sets various HTTP response headers to prevent exploits.
+  app.use(updateToken);
 
   // Third-party routers (mostly for webhooks and catching routes).
   app.use('/google', new GoogleRouter().router);
+  app.use('/mailchimp', new MailchimpRouter().router);
+  app.use('/zoom', new ZoomRouter().router);
 
-  app.use(updateToken);
   app.use('/users', new UserRouter().router);
 
   return app;

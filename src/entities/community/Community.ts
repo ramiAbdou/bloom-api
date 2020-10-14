@@ -8,30 +8,48 @@ import {
   BeforeCreate,
   Collection,
   Entity,
+  EntityRepositoryType,
   JsonType,
   OneToMany,
   Property
 } from 'mikro-orm';
 import { Field, ObjectType } from 'type-graphql';
 
-import { Form, FormQuestionCategory } from '@constants';
+import { Event } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
+import { Form, FormQuestionCategory } from '@util/gql';
 import { toLowerCaseDash } from '@util/util';
-import MembershipType from '../membership-type/MembershipType';
 import Membership from '../membership/Membership';
+import CommunityRepo from './CommunityRepo';
 
 @ObjectType()
-@Entity()
+@Entity({ customRepository: () => CommunityRepo })
 export default class Community extends BaseEntity {
+  [EntityRepositoryType]?: CommunityRepo;
+
   // True if the membership should be accepted automatically.
   @Property({ type: Boolean })
   autoAccept = false;
+
+  @Property({ nullable: true, unique: true })
+  airtableApiKey: string;
+
+  // The URL encoded version of the community name: ColorStack => colorstack.
+  // We have to persist this in the DB because we have use cases in which we
+  // need to query the DB by the encodedUrlName, which we wouldn't be able to
+  // do if it wasn't persisted.
+  @Field()
+  @Property({ unique: true })
+  encodedUrlName: string;
 
   // URL to the Digital Ocean space.
   @Field({ nullable: true })
   @Property({ nullable: true, unique: true })
   @IsUrl()
   logo: string;
+
+  @Property({ nullable: true, unique: true })
+  mailchimpAccessToken: string;
 
   // Maps the title to the item. Represented as JSON. This doesn't automatically
   // include the First Name, Last Name, Email, and Membership Types, so when
@@ -44,10 +62,11 @@ export default class Community extends BaseEntity {
   @Property({ unique: true })
   name: string;
 
-  // The URL encoded version of the community name: ColorStack => colorstack.
-  @Field()
-  @Property({ unique: true })
-  encodedURLName: string;
+  @Property({ nullable: true, type: 'text', unique: true })
+  zoomAccessToken: string;
+
+  @Property({ nullable: true, type: 'text', unique: true })
+  zoomRefreshToken: string;
 
   @Field(() => Form)
   @Property({ persist: false, type: JsonType })
@@ -69,7 +88,7 @@ export default class Community extends BaseEntity {
 
   @BeforeCreate()
   beforeCreate() {
-    this.encodedURLName = toLowerCaseDash(this.name);
+    this.encodedUrlName = toLowerCaseDash(this.name);
   }
 
   /* 
@@ -80,12 +99,10 @@ export default class Community extends BaseEntity {
                                          |_|      
   */
 
+  @OneToMany(() => Event, ({ community }) => community)
+  events: Collection<Event> = new Collection<Event>(this);
+
   @Field(() => [Membership])
   @OneToMany(() => Membership, ({ community }) => community)
   memberships: Collection<Membership> = new Collection<Membership>(this);
-
-  @OneToMany(() => MembershipType, ({ community }) => community)
-  membershipTypes: Collection<MembershipType> = new Collection<MembershipType>(
-    this
-  );
 }
