@@ -1,20 +1,17 @@
 /**
- * @fileoverview Entity: EventRSVP
+ * @fileoverview Entity: MembershipPayment
  * @author Rami Abdou
  */
 
 import { Entity, ManyToOne, Property } from 'mikro-orm';
 
-import { Event, Membership } from '@entities';
+import { Membership } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 
 @Entity()
-export default class EventRSVP extends BaseEntity {
-  @Property({ nullable: true })
-  fullName: string;
-
-  @Property({ nullable: true })
-  email: string;
+export default class MembershipPayment extends BaseEntity {
+  @Property()
+  amount: number;
 
   /* 
   ___     _      _   _             _    _         
@@ -25,8 +22,5 @@ export default class EventRSVP extends BaseEntity {
   */
 
   @ManyToOne()
-  event: Event;
-
-  @ManyToOne({ nullable: true })
   membership: Membership;
 }

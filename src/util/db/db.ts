@@ -1,5 +1,6 @@
 /**
  * @fileoverview Utility: Connection
+ * - Handles the current, running DB connection.
  * @author Rami Abdou
  */
 

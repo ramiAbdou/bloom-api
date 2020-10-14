@@ -1,6 +1,7 @@
 /**
- * @fileoverview Naming strategy for MikroORM to implement with PostgreSQL
- * tables and columns. This overrides the default naming mechanism.
+ * @fileoverview Utility: NamingStrategy
+ * - Naming strategy for MikroORM to implement with PostgreSQL tables and
+ * columns. This overrides the default naming mechanism.
  * @author Rami Abdou
  */
 

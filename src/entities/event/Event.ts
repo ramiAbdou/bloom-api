@@ -16,11 +16,12 @@ import {
 import { Field, ObjectType } from 'type-graphql';
 
 import { APP } from '@constants';
-import { Community } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 import URLBuilder from '@util/URLBuilder';
+import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventRSVP from '../event-rsvp/EventRSVP';
+import MembershipQuestion from '../membership-question/MembershipQuestion';
 import EventRepo from './EventRepo';
 
 @ObjectType()
@@ -39,9 +40,15 @@ export default class Event extends BaseEntity {
   @Property({ type: 'text' })
   description: string;
 
+  @Field()
+  @Property()
+  endTime: string;
+
+  // A 2 x 1 dimension image representing the "flyer" of the event.
   @Field({ nullable: true })
-  @Property({ nullable: true })
-  duration: number;
+  @Property({ nullable: true, unique: true })
+  @IsUrl()
+  image: string;
 
   /**
    * @example 10000
@@ -54,8 +61,8 @@ export default class Event extends BaseEntity {
   @Property({ type: Number })
   shortId: number;
 
-  @Field({ nullable: true })
-  @Property({ nullable: true })
+  @Field()
+  @Property()
   startTime: string;
 
   /**
@@ -71,15 +78,6 @@ export default class Event extends BaseEntity {
   @IsUrl()
   zoomJoinUrl: string;
 
-  @ManyToOne(() => Community)
-  community: Community;
-
-  @OneToMany(() => EventRSVP, ({ event }) => event)
-  rsvps: Collection<EventRSVP> = new Collection<EventRSVP>(this);
-
-  @OneToMany(() => EventAttendee, ({ event }) => event)
-  attendees: Collection<EventAttendee> = new Collection<EventAttendee>(this);
-
   @Property({ persist: false })
   get joinUrl(): string {
     return new URLBuilder(
@@ -91,4 +89,28 @@ export default class Event extends BaseEntity {
   beforeCreate() {
     this.shortId = this.community.events.length + 10000;
   }
+
+  @Property({ persist: false })
+  get questions(): MembershipQuestion[] {
+    return this.community.questions
+      .getItems()
+      .filter(({ inApplication }) => inApplication);
+  }
+
+  /* 
+  ___     _      _   _             _    _         
+ | _ \___| |__ _| |_(_)___ _ _  __| |_ (_)_ __ ___
+ |   / -_) / _` |  _| / _ \ ' \(_-< ' \| | '_ (_-<
+ |_|_\___|_\__,_|\__|_\___/_||_/__/_||_|_| .__/__/
+                                         |_|      
+  */
+
+  @OneToMany(() => EventAttendee, ({ event }) => event)
+  attendees: Collection<EventAttendee> = new Collection<EventAttendee>(this);
+
+  @ManyToOne()
+  community: Community;
+
+  @OneToMany(() => EventRSVP, ({ event }) => event)
+  rsvps: Collection<EventRSVP> = new Collection<EventRSVP>(this);
 }

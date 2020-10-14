@@ -9,16 +9,17 @@ import {
   Collection,
   Entity,
   EntityRepositoryType,
-  JsonType,
   OneToMany,
-  Property
+  OneToOne,
+  Property,
+  QueryOrder
 } from 'mikro-orm';
 import { Field, ObjectType } from 'type-graphql';
 
-import { Event } from '@entities';
+import { CommunityApplication, Event } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
-import { Form, FormQuestionCategory } from '@util/gql';
 import { toLowerCaseDash } from '@util/util';
+import MembershipQuestion from '../membership-question/MembershipQuestion';
 import Membership from '../membership/Membership';
 import CommunityRepo from './CommunityRepo';
 
@@ -31,13 +32,13 @@ export default class Community extends BaseEntity {
   @Property({ type: Boolean })
   autoAccept = false;
 
-  @Property({ nullable: true, unique: true })
-  airtableApiKey: string;
-
-  // The URL encoded version of the community name: ColorStack => colorstack.
-  // We have to persist this in the DB because we have use cases in which we
-  // need to query the DB by the encodedUrlName, which we wouldn't be able to
-  // do if it wasn't persisted.
+  /**
+   * We have to persist this in the DB because we have use cases in which we
+   * need to query the DB by the encodedUrlName, which we wouldn't be able to
+   * do if it wasn't persisted.
+   *
+   * @example ColorStack => colorstack
+   */
   @Field()
   @Property({ unique: true })
   encodedUrlName: string;
@@ -48,19 +49,16 @@ export default class Community extends BaseEntity {
   @IsUrl()
   logo: string;
 
-  @Property({ nullable: true, unique: true })
-  mailchimpAccessToken: string;
-
-  // Maps the title to the item. Represented as JSON. This doesn't automatically
-  // include the First Name, Last Name, Email, and Membership Types, so when
-  // creating the membership form, those need to be specified.
-  @Field(() => Form)
-  @Property({ type: JsonType })
-  membershipForm: Form;
-
   @Field()
   @Property({ unique: true })
   name: string;
+
+  @Property({ nullable: true, unique: true })
+  airtableApiKey: string;
+
+  // This access token doesn't expire, and does not have a refresh flow.
+  @Property({ nullable: true, unique: true })
+  mailchimpAccessToken: string;
 
   @Property({ nullable: true, type: 'text', unique: true })
   zoomAccessToken: string;
@@ -68,22 +66,9 @@ export default class Community extends BaseEntity {
   @Property({ nullable: true, type: 'text', unique: true })
   zoomRefreshToken: string;
 
-  @Field(() => Form)
-  @Property({ persist: false, type: JsonType })
-  get basicMembershipForm(): Form {
-    const { questions, ...form } = this.membershipForm;
-    return {
-      ...form,
-      questions: questions.filter(
-        ({ category }) =>
-          ![
-            FormQuestionCategory.FIRST_NAME,
-            FormQuestionCategory.LAST_NAME,
-            FormQuestionCategory.EMAIL,
-            FormQuestionCategory.GENDER
-          ].includes(category)
-      )
-    };
+  @Property({ persist: false })
+  get isInviteOnly(): boolean {
+    return !this.application;
   }
 
   @BeforeCreate()
@@ -99,10 +84,23 @@ export default class Community extends BaseEntity {
                                          |_|      
   */
 
+  // If the community is invite-only, there will be no application. The only
+  // way for someone to join is if the admin adds them manually.
+  @OneToOne(() => CommunityApplication, ({ community }) => community, {
+    nullable: true
+  })
+  application: CommunityApplication;
+
   @OneToMany(() => Event, ({ community }) => community)
-  events: Collection<Event> = new Collection<Event>(this);
+  events = new Collection<Event>(this);
 
   @Field(() => [Membership])
   @OneToMany(() => Membership, ({ community }) => community)
-  memberships: Collection<Membership> = new Collection<Membership>(this);
+  memberships = new Collection<Membership>(this);
+
+  // Should get the questions by the order that they are stored in the DB.
+  @OneToMany(() => MembershipQuestion, ({ community }) => community, {
+    orderBy: { order: QueryOrder.ASC }
+  })
+  questions = new Collection<MembershipQuestion>(this);
 }

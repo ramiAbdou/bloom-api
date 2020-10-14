@@ -19,9 +19,17 @@ export default class EventAttendee extends BaseEntity {
   @Property({ nullable: true })
   email: string;
 
-  @ManyToOne(() => Event)
+  /* 
+  ___     _      _   _             _    _         
+ | _ \___| |__ _| |_(_)___ _ _  __| |_ (_)_ __ ___
+ |   / -_) / _` |  _| / _ \ ' \(_-< ' \| | '_ (_-<
+ |_|_\___|_\__,_|\__|_\___/_||_/__/_||_|_| .__/__/
+                                         |_|      
+  */
+
+  @ManyToOne()
   event: Event;
 
-  @ManyToOne(() => Membership, { nullable: true })
+  @ManyToOne({ nullable: true })
   membership: Membership;
 }
