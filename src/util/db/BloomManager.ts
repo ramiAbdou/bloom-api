@@ -7,10 +7,16 @@ import { EntityManager } from 'mikro-orm';
 
 import {
   Community,
+  CommunityApplication,
   Event,
   EventAttendee,
   EventRSVP,
   Membership,
+  MembershipData,
+  MembershipPayment,
+  MembershipQuestion,
+  MembershipQuestionOption,
+  MembershipType,
   User
 } from '@entities';
 import db from './db';
@@ -29,6 +35,8 @@ export default class BloomManager {
 
   communityRepo = () => this.em.getRepository(Community);
 
+  communityApplicationRepo = () => this.em.getRepository(CommunityApplication);
+
   eventRepo = () => this.em.getRepository(Event);
 
   eventAttendeeRepo = () => this.em.getRepository(EventAttendee);
@@ -36,6 +44,17 @@ export default class BloomManager {
   eventRSVPRepo = () => this.em.getRepository(EventRSVP);
 
   membershipRepo = () => this.em.getRepository(Membership);
+
+  membershipDataRepo = () => this.em.getRepository(MembershipData);
+
+  membershipPaymentRepo = () => this.em.getRepository(MembershipPayment);
+
+  membershipQuestionRepo = () => this.em.getRepository(MembershipQuestion);
+
+  membershipQuestionOptionRepo = () =>
+    this.em.getRepository(MembershipQuestionOption);
+
+  membershipTypeRepo = () => this.em.getRepository(MembershipType);
 
   userRepo = () => this.em.getRepository(User);
 }
