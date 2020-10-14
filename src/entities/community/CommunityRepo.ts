@@ -22,15 +22,11 @@ export default class CommunityRepo extends BaseRepo<Community> {
    * of a logo. For now, the community should send Bloom a square logo that
    * we will manually add to the Digital Ocean space.
    */
-  async createCommunity(
-    data: EntityData<Community>,
-    hasCSV = false
-  ): Promise<Community> {
+  createCommunity = async (data: EntityData<Community>): Promise<Community> => {
     const community: Community = this.createAndPersist(data);
-    if (hasCSV) await this.importCSVDataToCommunity(community);
     await this.flush('COMMUNITY_CREATED', community);
     return community;
-  }
+  };
 
   /**
    * This should only be called in the process of creating a community for the
@@ -39,7 +35,7 @@ export default class CommunityRepo extends BaseRepo<Community> {
    * NEW users if the email is not found in the DB based on the CSV row, or
    * adds a Membership based on the current users in our DB.
    */
-  private async importCSVDataToCommunity(community: Community) {
+  importCSVDataToCommunity = async (community: Community) => {
     const responses = await csv().fromFile(
       `./membership-csv/${community.name}.csv`
     );
@@ -58,10 +54,8 @@ export default class CommunityRepo extends BaseRepo<Community> {
         // We persist the membership instead of the user since the user can
         // potentially be persisted already.
         const membership: Membership = this.bm().membershipRepo().create({});
-        const membershipData: Record<string, any> = {};
 
         membership.community = community;
-        membership.data = membershipData;
         membership.user = user;
 
         // The row is a JSON that maps keys to values.
@@ -75,7 +69,7 @@ export default class CommunityRepo extends BaseRepo<Community> {
         });
       })
     );
-  }
+  };
 
   /**
    * Returns the updated community after updating it's Mailchimp token. If

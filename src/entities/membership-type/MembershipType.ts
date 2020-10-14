@@ -11,13 +11,13 @@ import BaseEntity from '@util/db/BaseEntity';
 @Entity()
 export default class MembershipType extends BaseEntity {
   @Property()
-  name: string;
-
-  @Property()
   amount: number;
 
   @Property({ type: Boolean })
   expiresIn: number;
+
+  @Property()
+  name: string;
 
   @Property({ persist: false })
   get isFree(): boolean {

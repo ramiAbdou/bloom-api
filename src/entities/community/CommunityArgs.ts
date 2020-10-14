@@ -21,10 +21,6 @@ export class CreateCommunityArgs {
   @Field(() => Boolean)
   autoAccept? = false;
 
-  // True if there is a current Member CSV file stored for the community.
-  @Field(() => Boolean)
-  hasCSV? = false;
-
   @Field(() => FormInput)
   membershipForm: FormInput;
 }

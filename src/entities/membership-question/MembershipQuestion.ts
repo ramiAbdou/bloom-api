@@ -8,38 +8,53 @@ import { Entity, Enum, ManyToOne, Property } from 'mikro-orm';
 import { Community } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 
-type QuestionType = 'SHORT_TEXT' | 'LONG_TEXT' | 'DROPDOWN';
-type SpecialQuestion = 'FIRST_NAME' | 'LAST_NAME' | 'EMAIL';
+type QuestionType =
+  | 'DROPDOWN_MULTIPLE'
+  | 'LONG_TEXT'
+  | 'MULTIPLE_CHOICE'
+  | 'SHORT_TEXT';
+
+type SpecialQuestion =
+  | 'EMAIL'
+  | 'FIRST_NAME'
+  | 'GENDER'
+  | 'LAST_NAME'
+  | 'MEMBERSHIP_TYPE';
 
 @Entity()
 export default class MembershipQuestion extends BaseEntity {
   @Property({ nullable: true })
   description: string;
 
+  // If set to false, this question will not appear in the community's
+  // membership application form.
   @Property({ type: Boolean })
   inApplication = true;
 
+  // Order that the question appears. Similar to an index in an array.
   @Property()
   order: number;
 
   @Property({ type: Boolean })
   required = true;
 
-  @Enum({ items: ['FIRST_NAME', 'LAST_NAME', 'EMAIL'] })
+  // If the question is a special question, we have to store it in a different
+  // fashion. For example, 'EMAIL' would be stored on the user, NOT the
+  // membership.
+  @Enum({
+    items: ['EMAIL', 'FIRST_NAME', 'GENDER', 'LAST_NAME', 'MEMBERSHIP_TYPE'],
+    nullable: true
+  })
   special: SpecialQuestion;
 
   @Property()
   title: string;
 
-  @Enum({ items: ['SHORT_TEXT', 'LONG_TEXT', 'DROPDOWN'] })
+  @Enum({
+    default: 'SHORT_TEXT',
+    items: ['SHORT_TEXT', 'LONG_TEXT', 'MULTIPLE_CHOICE', 'DROPDOWN_MULTIPLE']
+  })
   type: QuestionType;
-
-  @Property({ persist: false })
-  get questions(): MembershipQuestion[] {
-    return this.community.questions
-      .getItems()
-      .filter(({ inApplication }) => inApplication);
-  }
 
   /* 
   ___     _      _   _             _    _         

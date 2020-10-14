@@ -23,11 +23,11 @@ export default class CommunityResolver {
   @Mutation(() => Community, { nullable: true })
   async createCommunity(
     @Args()
-    { autoAccept, hasCSV, name, membershipForm }: CreateCommunityArgs
+    { autoAccept, name, membershipForm }: CreateCommunityArgs
   ): Promise<Community> {
     return new BloomManager()
       .communityRepo()
-      .createCommunity({ autoAccept, membershipForm, name }, hasCSV);
+      .createCommunity({ autoAccept, membershipForm, name });
   }
 
   /**
