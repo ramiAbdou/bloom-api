@@ -15,6 +15,7 @@ import helmet from 'helmet';
 import { APP } from '@constants';
 import GoogleRouter from '@integrations/google/GoogleRouter';
 import MailchimpRouter from '@integrations/mailchimp/MailchimpRouter';
+import StripeRouter from '@integrations/stripe/StripeRouter';
 import ZoomRouter from '@integrations/zoom/ZoomRouter';
 import BloomManager from '@util/db/BloomManager';
 import UserRouter from '../entities/user/UserRouter';
@@ -53,6 +54,7 @@ export default () => {
   // Third-party routers (mostly for webhooks and catching routes).
   app.use('/google', new GoogleRouter().router);
   app.use('/mailchimp', new MailchimpRouter().router);
+  app.use('/stripe', new StripeRouter().router);
   app.use('/zoom', new ZoomRouter().router);
 
   app.use('/users', new UserRouter().router);
