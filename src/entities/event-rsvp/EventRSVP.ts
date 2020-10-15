@@ -24,9 +24,9 @@ export default class EventRSVP extends BaseEntity {
                                          |_|      
   */
 
-  @ManyToOne()
+  @ManyToOne(() => Event)
   event: Event;
 
-  @ManyToOne({ nullable: true })
+  @ManyToOne(() => Membership, { nullable: true })
   membership: Membership;
 }

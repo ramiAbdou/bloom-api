@@ -16,9 +16,10 @@ import {
 } from 'mikro-orm';
 import { Field, ObjectType } from 'type-graphql';
 
-import { CommunityApplication, Event } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
+import CommunityApplication from '../community-application/CommunityApplication';
+import Event from '../event/Event';
 import MembershipQuestion from '../membership-question/MembershipQuestion';
 import Membership from '../membership/Membership';
 import CommunityRepo from './CommunityRepo';
@@ -86,9 +87,7 @@ export default class Community extends BaseEntity {
 
   // If the community is invite-only, there will be no application. The only
   // way for someone to join is if the admin adds them manually.
-  @OneToOne(() => CommunityApplication, ({ community }) => community, {
-    nullable: true
-  })
+  @OneToOne({ mappedBy: ({ community }: CommunityApplication) => community })
   application: CommunityApplication;
 
   @OneToMany(() => Event, ({ community }) => community)

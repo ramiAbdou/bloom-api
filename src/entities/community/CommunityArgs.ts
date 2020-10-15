@@ -3,36 +3,24 @@
  * @author Rami Abdou
  */
 
-import { ArgsType, Field, registerEnumType } from 'type-graphql';
+import { ArgsType, Field } from 'type-graphql';
 
-import { FormInput } from '@util/gql';
-
-export enum CommunityPopulation {
-  GET_MEMBERSHIPS = 'GET_MEMBERSHIPS'
-}
-
-registerEnumType(CommunityPopulation, { name: 'CommunityPopulation' });
+import MembershipQuestionInput from '../membership-question/MembershipQuestionInput';
 
 @ArgsType()
 export class CreateCommunityArgs {
+  @Field({ nullable: true })
+  applicationDescription: string;
+
+  @Field({ nullable: true })
+  applicationTitle: string;
+
+  @Field(() => Boolean)
+  autoAccept = false;
+
   @Field()
   name: string;
 
-  @Field(() => Boolean)
-  autoAccept? = false;
-
-  @Field(() => FormInput)
-  membershipForm: FormInput;
-}
-
-@ArgsType()
-export class GetCommunityArgs {
-  @Field({ nullable: true })
-  id?: string;
-
-  @Field({ nullable: true })
-  encodedUrlName?: string;
-
-  @Field(() => CommunityPopulation, { nullable: true })
-  population?: CommunityPopulation;
+  @Field(() => [MembershipQuestionInput])
+  questions: MembershipQuestionInput[];
 }

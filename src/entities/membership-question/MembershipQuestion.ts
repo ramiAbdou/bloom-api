@@ -7,22 +7,19 @@ import { Entity, Enum, ManyToOne, Property } from 'mikro-orm';
 
 import { Community } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
-
-type QuestionType =
-  | 'DROPDOWN_MULTIPLE'
-  | 'LONG_TEXT'
-  | 'MULTIPLE_CHOICE'
-  | 'SHORT_TEXT';
-
-type SpecialQuestion =
-  | 'EMAIL'
-  | 'FIRST_NAME'
-  | 'GENDER'
-  | 'LAST_NAME'
-  | 'MEMBERSHIP_TYPE';
+import { QuestionCategory, QuestionType } from '@util/gql';
 
 @Entity()
 export default class MembershipQuestion extends BaseEntity {
+  // If the question is a special question, we have to store it in a different
+  // fashion. For example, 'EMAIL' would be stored on the user, NOT the
+  // membership.
+  @Enum({
+    items: ['EMAIL', 'FIRST_NAME', 'GENDER', 'LAST_NAME', 'MEMBERSHIP_TYPE'],
+    nullable: true
+  })
+  category: QuestionCategory;
+
   @Property({ nullable: true })
   description: string;
 
@@ -37,15 +34,6 @@ export default class MembershipQuestion extends BaseEntity {
 
   @Property({ type: Boolean })
   required = true;
-
-  // If the question is a special question, we have to store it in a different
-  // fashion. For example, 'EMAIL' would be stored on the user, NOT the
-  // membership.
-  @Enum({
-    items: ['EMAIL', 'FIRST_NAME', 'GENDER', 'LAST_NAME', 'MEMBERSHIP_TYPE'],
-    nullable: true
-  })
-  special: SpecialQuestion;
 
   @Property()
   title: string;
@@ -64,6 +52,6 @@ export default class MembershipQuestion extends BaseEntity {
                                          |_|      
   */
 
-  @ManyToOne()
+  @ManyToOne(() => Community)
   community: Community;
 }

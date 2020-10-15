@@ -3,17 +3,14 @@
  * @author Rami Abdou
  */
 
-import csv from 'csvtojson';
 import { EntityData } from 'mikro-orm';
 
-import { Membership, User } from '@entities';
 import { getTokenFromCode } from '@integrations/mailchimp/MailchimpUtil';
 import {
   getTokensFromCode,
   refreshAccessToken
 } from '@integrations/zoom/ZoomUtil';
 import BaseRepo from '@util/db/BaseRepo';
-import { FormQuestionCategory } from '@util/gql';
 import Community from './Community';
 
 export default class CommunityRepo extends BaseRepo<Community> {
@@ -35,41 +32,41 @@ export default class CommunityRepo extends BaseRepo<Community> {
    * NEW users if the email is not found in the DB based on the CSV row, or
    * adds a Membership based on the current users in our DB.
    */
-  importCSVDataToCommunity = async (community: Community) => {
-    const responses = await csv().fromFile(
-      `./membership-csv/${community.name}.csv`
-    );
+  // importCSVDataToCommunity = async (community: Community) => {
+  //   const responses = await csv().fromFile(
+  //     `./membership-csv/${community.name}.csv`
+  //   );
 
-    await Promise.all(
-      responses.map(async (row: Record<string, any>) => {
-        // Precondition: Every row (JSON) should have a field called 'EMAIL'.
-        const email = row[FormQuestionCategory.EMAIL];
+  //   await Promise.all(
+  //     responses.map(async (row: Record<string, any>) => {
+  //       // Precondition: Every row (JSON) should have a field called 'EMAIL'.
+  //       const email = row[FormQuestionCategory.EMAIL];
 
-        // If the user already exists, fetch it from the DB and if not, create
-        // a new user for the membership.
+  //       // If the user already exists, fetch it from the DB and if not, create
+  //       // a new user for the membership.
 
-        const user: User =
-          (await this.bm().userRepo().findOne({ email })) ?? new User();
+  //       const user: User =
+  //         (await this.bm().userRepo().findOne({ email })) ?? new User();
 
-        // We persist the membership instead of the user since the user can
-        // potentially be persisted already.
-        const membership: Membership = this.bm().membershipRepo().create({});
+  //       // We persist the membership instead of the user since the user can
+  //       // potentially be persisted already.
+  //       const membership: Membership = this.bm().membershipRepo().create({});
 
-        membership.community = community;
-        membership.user = user;
+  //       membership.community = community;
+  //       membership.user = user;
 
-        // The row is a JSON that maps keys to values.
-        Object.entries(row).map(async ([key, value]) => {
-          if (key === FormQuestionCategory.FIRST_NAME) user.firstName = value;
-          else if (key === FormQuestionCategory.LAST_NAME)
-            user.lastName = value;
-          else if (key === FormQuestionCategory.EMAIL) user.email = value;
-          else if (key === FormQuestionCategory.GENDER) user.gender = value;
-          else membershipData[key] = value;
-        });
-      })
-    );
-  };
+  //       // The row is a JSON that maps keys to values.
+  //       Object.entries(row).map(async ([key, value]) => {
+  //         if (key === FormQuestionCategory.FIRST_NAME) user.firstName = value;
+  //         else if (key === FormQuestionCategory.LAST_NAME)
+  //           user.lastName = value;
+  //         else if (key === FormQuestionCategory.EMAIL) user.email = value;
+  //         else if (key === FormQuestionCategory.GENDER) user.gender = value;
+  //         else membershipData[key] = value;
+  //       });
+  //     })
+  //   );
+  // };
 
   /**
    * Returns the updated community after updating it's Mailchimp token. If

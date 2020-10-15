@@ -68,7 +68,7 @@ export default class Membership extends BaseEntity {
                                          |_|      
   */
 
-  @ManyToOne()
+  @ManyToOne(() => Community)
   community: Community;
 
   @OneToMany(() => MembershipData, ({ membership }) => membership)
@@ -77,10 +77,10 @@ export default class Membership extends BaseEntity {
   @OneToMany(() => MembershipPayment, ({ membership }) => membership)
   payments = new Collection<MembershipPayment>(this);
 
-  @ManyToOne()
+  @ManyToOne(() => MembershipType)
   type: MembershipType;
 
   @Field(() => User)
-  @ManyToOne()
+  @ManyToOne(() => User)
   user: User;
 }

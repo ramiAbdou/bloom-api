@@ -108,7 +108,7 @@ export default class Event extends BaseEntity {
   @OneToMany(() => EventAttendee, ({ event }) => event)
   attendees: Collection<EventAttendee> = new Collection<EventAttendee>(this);
 
-  @ManyToOne()
+  @ManyToOne(() => Community)
   community: Community;
 
   @OneToMany(() => EventRSVP, ({ event }) => event)

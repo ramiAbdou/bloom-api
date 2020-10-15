@@ -42,7 +42,7 @@ export default class MembershipData extends BaseEntity {
                                          |_|      
   */
 
-  @ManyToOne()
+  @ManyToOne(() => Membership)
   membership: Membership;
 
   // Will only be populated in the case that the question is MULTIPLE_CHOICE.

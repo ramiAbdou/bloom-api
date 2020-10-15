@@ -21,6 +21,6 @@ export default class MembershipQuestionOption extends BaseEntity {
                                          |_|      
   */
 
-  @ManyToOne()
+  @ManyToOne(() => MembershipQuestion)
   question: MembershipQuestion;
 }

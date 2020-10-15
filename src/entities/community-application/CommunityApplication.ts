@@ -32,6 +32,6 @@ export default class CommunityApplication extends BaseEntity {
   */
 
   // Owning side of the relationship.
-  @OneToOne()
+  @OneToOne(() => Community, ({ application }) => application, { owner: true })
   community: Community;
 }

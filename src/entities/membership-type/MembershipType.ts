@@ -32,7 +32,7 @@ export default class MembershipType extends BaseEntity {
                                          |_|      
   */
 
-  @ManyToOne()
+  @ManyToOne(() => Community)
   community: Community;
 
   @OneToMany(() => Membership, ({ type }) => type)

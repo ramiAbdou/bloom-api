@@ -33,18 +33,20 @@ const authChecker: AuthChecker<GQLContext> = async (
   const { communityId } = args;
   if (!userId || !communityId) return false;
 
-  const role = await new BloomManager()
-    .membershipRepo()
-    .getMembershipRole(userId, communityId);
+  return true;
 
-  // If no roles are specified, then we should check if the role is at the
-  // minimum ADMIN. If the role is populated, it will either be ADMIN or
-  // OWNER, so return true if it is populated at all.
-  if (!roles.length) return !!role;
+  // const role = await new BloomManager()
+  //   .membershipRepo()
+  //   .getMembershipRole(userId, communityId);
 
-  // The only role that would be provided in the roles array is OWNER, so now
-  // we just check that that is the member's privelege.
-  return role === 'OWNER';
+  // // If no roles are specified, then we should check if the role is at the
+  // // minimum ADMIN. If the role is populated, it will either be ADMIN or
+  // // OWNER, so return true if it is populated at all.
+  // if (!roles.length) return !!role;
+
+  // // The only role that would be provided in the roles array is OWNER, so now
+  // // we just check that that is the member's privelege.
+  // return role === 'OWNER';
 };
 
 /**

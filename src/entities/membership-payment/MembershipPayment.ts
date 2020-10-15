@@ -21,6 +21,6 @@ export default class MembershipPayment extends BaseEntity {
                                          |_|      
   */
 
-  @ManyToOne()
+  @ManyToOne(() => Membership)
   membership: Membership;
 }
