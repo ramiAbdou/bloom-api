@@ -27,6 +27,8 @@ export default class BloomManager {
     this.em = em || db.em.fork();
   }
 
+  fork = () => new BloomManager();
+
   /**
    * REPOSITORIES - Exports all of the entity repositories. They are already
    * type-casted (defined in the entity definition itself).

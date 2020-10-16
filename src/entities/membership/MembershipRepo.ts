@@ -48,8 +48,10 @@ export default class MembershipRepo extends BaseRepo<Membership> {
         const [question] = questions.filter(({ id }) => questionId === id);
         const { category } = question;
 
-        if (['EMAIL', 'FIRST_NAME', 'LAST_NAME', 'GENDER'].includes(category))
-          bm.userRepo().processUserData(user, category, value);
+        if (category === 'EMAIL') user.email = value;
+        else if (category === 'FIRST_NAME') user.firstName = value;
+        else if (category === 'LAST_NAME') user.lastName = value;
+        else if (category === 'GENDER') user.gender = value;
         else if (category === 'MEMBERSHIP_TYPE') {
           const [type] = types.filter(({ name }) => value === name);
           if (type) membership.type = type;

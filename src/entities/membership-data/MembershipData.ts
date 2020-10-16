@@ -17,16 +17,21 @@ export default class MembershipData extends BaseEntity {
 
   // We keep this loosely defined as a string to give flexibility, especially
   // for multiple choice and multiple select values.
-  @Property({ nullable: true })
+  @Property({ nullable: true, type: 'text' })
   value: string;
 
   /**
    * Although the value gets stored as string, if there are commas separating
-   * the value in the DB, then we need to return it as an array.
+   * the value in the DB, then we need to return it as an array IF the type
+   * is DROPDOWN_MULTIPLE or MULTIPLE_CHOICE.
    */
   @Property({ persist: false })
   get parsedValue(): string | string[] {
-    return this.value?.includes(',') ? CSV.parse(this.value)[0] : this.value;
+    return ['DROPDOWN_MULTIPLE', 'MULTIPLE_CHOICE'].includes(
+      this.question.type
+    ) && this.value?.includes(',')
+      ? CSV.parse(this.value)[0]
+      : this.value;
   }
 
   /* 

@@ -126,8 +126,15 @@ export default class CommunityRepo extends BaseRepo<Community> {
           }
           // IMPORTANT: The value must be a valid input to the Date constructor
           // or else errors will be thrown!
-          else if (key === 'DATE_JOINED')
+          else if (key === 'DATE_JOINED') {
+            const dateValue = new Date(value);
+            if (!dateValue) return;
             membership.joinedOn = moment.utc(new Date(value)).format();
+          }
+
+          // If the question wasn't a special category question, then we find
+          // the question with the given key as the title. We proceed to make
+          // the appropriate membership data.
           else {
             const [question] = questions.filter(({ title }) => key === title);
             if (!question) return;
