@@ -53,7 +53,8 @@ export default class MembershipRepo extends BaseRepo<Membership> {
         else if (category === 'MEMBERSHIP_TYPE') {
           const [type] = types.filter(({ name }) => value === name);
           if (type) membership.type = type;
-        } else bm.membershipDataRepo().create({ membership, question, value });
+        } else
+          bm.membershipDataRepo().createData({ membership, question, value });
       })
     );
 
@@ -95,7 +96,7 @@ export default class MembershipRepo extends BaseRepo<Membership> {
 
         if (membershipData) membershipData.value = value;
         else
-          bm.membershipDataRepo().createAndPersist({
+          bm.membershipDataRepo().createData({
             membership,
             question,
             value

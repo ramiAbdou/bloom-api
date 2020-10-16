@@ -46,13 +46,7 @@ export default class CommunityRepo extends BaseRepo<Community> {
       autoAccept,
       name,
       questions: questions.map((question, i: number) =>
-        bm.membershipQuestionRepo().create({
-          ...question,
-          options: question.options?.map(({ value }) =>
-            bm.membershipQuestionOptionRepo().create({ question, value })
-          ),
-          order: i
-        })
+        bm.membershipQuestionRepo().create({ ...question, order: i })
       ),
       types: types.map((type: MembershipTypeInput) =>
         bm.membershipTypeRepo().create(type)
@@ -117,17 +111,27 @@ export default class CommunityRepo extends BaseRepo<Community> {
 
         // eslint-disable-next-line array-callback-return
         Object.entries(row).map(([key, value]) => {
-          if (['FIRST_NAME', 'LAST_NAME', 'GENDER'].includes(key)) return;
+          // We already stored all of the user-specific information earlier.
+          if (
+            !value ||
+            ['EMAIL', 'FIRST_NAME', 'LAST_NAME', 'GENDER'].includes(key)
+          )
+            return;
+
           if (key === 'MEMBERSHIP_TYPE') {
             const [type] = types.filter(({ name }) => value === name);
+            // If no type exists, then the default membership will be set as the
+            // membership type.
             if (type) membership.type = type;
-          } else if (key === 'DATE_JOINED') {
-            if (value)
-              membership.joinedOn = moment.utc(new Date(value)).format();
-          } else {
+          }
+          // IMPORTANT: The value must be a valid input to the Date constructor
+          // or else errors will be thrown!
+          else if (key === 'DATE_JOINED')
+            membership.joinedOn = moment.utc(new Date(value)).format();
+          else {
             const [question] = questions.filter(({ title }) => key === title);
-            if (question)
-              bm.membershipDataRepo().create({ membership, question, value });
+            if (!question) return;
+            bm.membershipDataRepo().createData({ membership, question, value });
           }
         });
       })
@@ -168,7 +172,6 @@ export default class CommunityRepo extends BaseRepo<Community> {
     code: string
   ): Promise<Community> => {
     const community: Community = await this.findOne({ encodedUrlName });
-
     if (!community) return null;
 
     const { accessToken, refreshToken } = await getTokensFromCode(code);

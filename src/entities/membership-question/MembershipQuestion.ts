@@ -3,20 +3,12 @@
  * @author Rami Abdou
  */
 
-import {
-  Collection,
-  Entity,
-  Enum,
-  ManyToOne,
-  OneToMany,
-  Property
-} from 'mikro-orm';
+import { ArrayType, Entity, Enum, ManyToOne, Property } from 'mikro-orm';
 import { Field, Int, ObjectType } from 'type-graphql';
 
 import { Community } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 import { QuestionCategory, QuestionType } from '@util/gql';
-import MembershipQuestionOption from '../membership-question-option/MembershipQuestionOption';
 
 @ObjectType()
 @Entity()
@@ -41,6 +33,10 @@ export default class MembershipQuestion extends BaseEntity {
   @Field(() => Boolean)
   @Property({ type: Boolean })
   inApplication = true;
+
+  @Field(() => [String])
+  @Property({ type: ArrayType })
+  options: string[] = [];
 
   // Order that the question appears. Similar to an index in an array.
   @Field(() => Int)
@@ -72,7 +68,4 @@ export default class MembershipQuestion extends BaseEntity {
 
   @ManyToOne(() => Community)
   community: Community;
-
-  @OneToMany(() => MembershipQuestionOption, ({ question }) => question)
-  options = new Collection<MembershipQuestionOption>(this);
 }

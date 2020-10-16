@@ -3,25 +3,31 @@
  * @author Rami Abdou
  */
 
-import {
-  Entity,
-  EntityRepositoryType,
-  ManyToOne,
-  OneToOne,
-  Property
-} from 'mikro-orm';
+import * as CSV from 'csv-string';
+import { Entity, EntityRepositoryType, ManyToOne, Property } from 'mikro-orm';
 
 import BaseEntity from '@util/db/BaseEntity';
-import BaseRepo from '@util/db/BaseRepo';
 import MembershipQuestion from '../membership-question/MembershipQuestion';
 import Membership from '../membership/Membership';
+import MembershipDataRepo from './MembershipDataRepo';
 
-@Entity()
+@Entity({ customRepository: () => MembershipDataRepo })
 export default class MembershipData extends BaseEntity {
-  [EntityRepositoryType]?: BaseRepo<MembershipData>;
+  [EntityRepositoryType]?: MembershipDataRepo;
 
+  // We keep this loosely defined as a string to give flexibility, especially
+  // for multiple choice and multiple select values.
   @Property({ nullable: true })
   value: string;
+
+  /**
+   * Although the value gets stored as string, if there are commas separating
+   * the value in the DB, then we need to return it as an array.
+   */
+  @Property({ persist: false })
+  get parsedValue(): string | string[] {
+    return this.value?.includes(',') ? CSV.parse(this.value)[0] : this.value;
+  }
 
   /* 
   ___     _      _   _             _    _         
@@ -34,6 +40,6 @@ export default class MembershipData extends BaseEntity {
   @ManyToOne(() => Membership)
   membership: Membership;
 
-  @OneToOne()
+  @ManyToOne(() => MembershipQuestion)
   question: MembershipQuestion;
 }

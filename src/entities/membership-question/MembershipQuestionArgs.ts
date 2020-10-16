@@ -6,7 +6,6 @@
 import { Field, InputType } from 'type-graphql';
 
 import { QuestionCategory, QuestionType } from '@util/gql';
-import { MembershipQuestionOptionInput } from '../membership-question-option/MembershipQuestionOptionArgs';
 import MembershipQuestion from './MembershipQuestion';
 
 @InputType()
@@ -28,10 +27,10 @@ export class MembershipQuestionInput implements Partial<MembershipQuestion> {
   @Field(() => Boolean)
   required = true;
 
-  @Field(() => [MembershipQuestionOptionInput], { nullable: true })
+  @Field(() => [String], { nullable: true })
   // @ts-ignore b/c we want it to be an array, and type casting is weird when
   // implementing Partial<MembershipQuestion>.
-  options: MembershipQuestionOptionInput[];
+  options: string[];
 
   @Field()
   title: string;

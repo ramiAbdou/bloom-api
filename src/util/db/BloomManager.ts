@@ -15,7 +15,6 @@ import {
   MembershipData,
   MembershipPayment,
   MembershipQuestion,
-  MembershipQuestionOption,
   MembershipType,
   User
 } from '@entities';
@@ -50,9 +49,6 @@ export default class BloomManager {
   membershipPaymentRepo = () => this.em.getRepository(MembershipPayment);
 
   membershipQuestionRepo = () => this.em.getRepository(MembershipQuestion);
-
-  membershipQuestionOptionRepo = () =>
-    this.em.getRepository(MembershipQuestionOption);
 
   membershipTypeRepo = () => this.em.getRepository(MembershipType);
 

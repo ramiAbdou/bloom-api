@@ -7,6 +7,5 @@ export { default as Membership } from './membership/Membership';
 export { default as MembershipData } from './membership-data/MembershipData';
 export { default as MembershipPayment } from './membership-payment/MembershipPayment';
 export { default as MembershipQuestion } from './membership-question/MembershipQuestion';
-export { default as MembershipQuestionOption } from './membership-question-option/MembershipQuestionOption';
 export { default as MembershipType } from './membership-type/MembershipType';
 export { default as User } from './user/User';

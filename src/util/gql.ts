@@ -36,6 +36,31 @@ export type QuestionCategory =
   | 'LAST_NAME'
   | 'MEMBERSHIP_TYPE';
 
+// export const MembershipDataValue = new GraphQLScalarType({
+//   description: 'Membership data value that can either be string or string[].',
+//   name: 'MembershipDataValue',
+//   parseValue(value: unknown): ObjectId {
+//     // check the type of received value
+//     if (typeof value !== 'string') {
+//       throw new Error('ObjectIdScalar can only parse string values');
+//     }
+//     return new ObjectId(value); // value from the client input variables
+//   },
+//   serialize(value: unknown): string {
+//     // check the type of received value
+//     if (!(value instanceof ObjectId)) {
+//       throw new Error('ObjectIdScalar can only serialize ObjectId values');
+//     }
+//     return value.toHexString(); // value sent to the client
+//   }
+// });
+
+// const MembershipDataValue = createUnionType({
+//   name: 'MembershipDataValue',
+//   resolveType: (value) => (Array.isArray(value) ? [String] : String),
+//   types: () => [[String], String] as const
+// });
+
 @InputType()
 export class MembershipDataInput {
   @Field()
