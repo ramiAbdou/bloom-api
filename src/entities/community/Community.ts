@@ -21,6 +21,7 @@ import { toLowerCaseDash } from '@util/util';
 import CommunityApplication from '../community-application/CommunityApplication';
 import Event from '../event/Event';
 import MembershipQuestion from '../membership-question/MembershipQuestion';
+import MembershipType from '../membership-type/MembershipType';
 import Membership from '../membership/Membership';
 import CommunityRepo from './CommunityRepo';
 
@@ -54,6 +55,9 @@ export default class Community extends BaseEntity {
   @Property({ unique: true })
   name: string;
 
+  @Property({ nullable: true, type: 'text' })
+  overview: string;
+
   @Property({ nullable: true, unique: true })
   airtableApiKey: string;
 
@@ -72,6 +76,10 @@ export default class Community extends BaseEntity {
     return !this.application;
   }
 
+  defaultMembership(): MembershipType {
+    return this.types.getItems().filter(({ isDefault }) => isDefault)[0];
+  }
+
   @BeforeCreate()
   beforeCreate() {
     this.encodedUrlName = toLowerCaseDash(this.name);
@@ -87,6 +95,7 @@ export default class Community extends BaseEntity {
 
   // If the community is invite-only, there will be no application. The only
   // way for someone to join is if the admin adds them manually.
+  @Field(() => CommunityApplication, { nullable: true })
   @OneToOne({ mappedBy: ({ community }: CommunityApplication) => community })
   application: CommunityApplication;
 
@@ -102,4 +111,10 @@ export default class Community extends BaseEntity {
     orderBy: { order: QueryOrder.ASC }
   })
   questions = new Collection<MembershipQuestion>(this);
+
+  // Should get the questions by the order that they are stored in the DB.
+  @OneToMany(() => MembershipType, ({ community }) => community, {
+    orderBy: { amount: QueryOrder.ASC }
+  })
+  types = new Collection<MembershipType>(this);
 }

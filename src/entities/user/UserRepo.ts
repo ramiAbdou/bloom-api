@@ -13,6 +13,21 @@ import User from './User';
 
 export default class UserRepo extends BaseRepo<User> {
   /**
+   * Processes the user data by adding the value to the user object in
+   * different instances of the key.
+   *
+   * @param user User to update in case the question category is populated.
+   * @param key Where category of the question is stored.
+   * @param value Value to store in the user of membership.
+   */
+  processUserData = (user: User, key: string, value: string) => {
+    if (key === 'EMAIL') user.email = value;
+    else if (key === 'FIRST_NAME') user.firstName = value;
+    else if (key === 'LAST_NAME') user.lastName = value;
+    else if (key === 'GENDER') user.gender = value;
+  };
+
+  /**
    * Sends the user a verification email to verify their email address. This
    * will only be triggered if a user manually requests the email to be sent
    * (again).

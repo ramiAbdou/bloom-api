@@ -46,6 +46,7 @@ export type AuthTokens = { accessToken: string; refreshToken: string };
 export type LoggerEvent =
   | 'ADMIN_CREATED'
   | 'COMMUNITY_CREATED'
+  | 'COMMUNITY_CSV_PROCESSED'
   | 'EMAIL_SENT'
   | 'EMAIL_VERIFIED'
   | 'EVENT_CREATED'

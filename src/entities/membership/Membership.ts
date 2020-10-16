@@ -4,21 +4,19 @@
  */
 
 import {
-  AfterCreate,
   BeforeCreate,
   Collection,
   Entity,
   EntityRepositoryType,
   Enum,
   ManyToOne,
-  OneToMany
+  OneToMany,
+  Property
 } from 'mikro-orm';
-import { Field, Int, ObjectType } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
 
-import { APP } from '@constants';
 import BaseEntity from '@util/db/BaseEntity';
-import { sendEmail, VERIFICATION_EMAIL_ARGS } from '@util/emails';
-import { ValidateEmailData } from '@util/emails/types';
+import { now } from '@util/util';
 import Community from '../community/Community';
 import MembershipData from '../membership-data/MembershipData';
 import MembershipPayment from '../membership-payment/MembershipPayment';
@@ -27,10 +25,16 @@ import User from '../user/User';
 import { MembershipRole } from './MembershipArgs';
 import MembershipRepo from './MembershipRepo';
 
+export type MembershipStatus = 'REJECTED' | 'PENDING' | 'APPROVED';
+
 @ObjectType()
 @Entity({ customRepository: () => MembershipRepo })
 export default class Membership extends BaseEntity {
   [EntityRepositoryType]?: MembershipRepo;
+
+  @Field()
+  @Property()
+  joinedOn: string = now();
 
   /**
    * @example ADMIN
@@ -39,25 +43,14 @@ export default class Membership extends BaseEntity {
   @Enum({ items: ['ADMIN', 'OWNER'], nullable: true, type: String })
   role: MembershipRole;
 
-  // -1: REJECTED
-  // 0: PENDING
-  // 1: APPROVED
-  @Field(() => Int)
-  @Enum({ items: [-1, 0, 1], type: Number })
-  status = 0;
+  @Field(() => String)
+  @Enum({ items: ['REJECTED', 'PENDING', 'APPROVED'], type: String })
+  status: MembershipStatus = 'PENDING';
 
   @BeforeCreate()
   beforeCreate() {
-    if (this.community.autoAccept) this.status = 1;
-  }
-
-  @AfterCreate()
-  async afterCreate() {
-    await sendEmail({
-      ...VERIFICATION_EMAIL_ARGS,
-      to: this.user.email,
-      verificationUrl: `${APP.SERVER_URL}/users/${this.user.id}/verify`
-    } as ValidateEmailData);
+    if (this.community.autoAccept) this.status = 'APPROVED';
+    if (!this.type) this.type = this.community.defaultMembership();
   }
 
   /* 
@@ -71,6 +64,7 @@ export default class Membership extends BaseEntity {
   @ManyToOne(() => Community)
   community: Community;
 
+  // Data will only be populated if a question has ever been answered before.
   @OneToMany(() => MembershipData, ({ membership }) => membership)
   data = new Collection<MembershipData>(this);
 

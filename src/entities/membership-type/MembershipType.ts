@@ -3,22 +3,41 @@
  * @author Rami Abdou
  */
 
-import { Collection, Entity, ManyToOne, OneToMany, Property } from 'mikro-orm';
+import {
+  Collection,
+  Entity,
+  Enum,
+  ManyToOne,
+  OneToMany,
+  Property
+} from 'mikro-orm';
+import { Field, Float, ObjectType } from 'type-graphql';
 
 import { Community, Membership } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 
+export type MembershipTypeRecurrence = 'MONTHLY' | 'YEARLY' | 'LIFETIME';
+
+@ObjectType()
 @Entity()
 export default class MembershipType extends BaseEntity {
-  @Property()
-  amount: number;
+  @Field(() => Float)
+  @Property({ type: Number })
+  amount = 0.0;
 
+  @Field(() => Boolean)
   @Property({ type: Boolean })
-  expiresIn: number;
+  isDefault = false;
 
+  @Field()
   @Property()
   name: string;
 
+  @Field(() => String)
+  @Enum({ items: ['MONTHLY', 'YEARLY', 'LIFETIME'], type: String })
+  recurrence: MembershipTypeRecurrence = 'LIFETIME';
+
+  @Field()
   @Property({ persist: false })
   get isFree(): boolean {
     return this.amount > 0.0;

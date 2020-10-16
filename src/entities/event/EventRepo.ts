@@ -20,7 +20,7 @@ export default class EventRepo extends BaseRepo<Event> {
   createEvent = async (data: EntityData<Event>, communityId: string) => {
     const event: Event = this.createAndPersist(data);
 
-    const { duration, startTime, title, zoomJoinUrl } = data;
+    const { endTime, startTime, title, zoomJoinUrl } = data;
 
     // If no Zoom URL was specified, that means we need to create the Zoom
     // meeting ourselves using the community's Zoom account.
@@ -34,14 +34,13 @@ export default class EventRepo extends BaseRepo<Event> {
         .refreshZoomTokens(communityId);
 
       const options = {
-        duration,
         startTime: startTime as string,
         topic: title as string
       };
 
       const { hostUrl, joinUrl } = await createScheduledMeeting({
-        accessToken: zoomAccessToken,
-        ...options
+        ...options,
+        accessToken: zoomAccessToken
       });
 
       event.zoomJoinUrl = joinUrl;

@@ -5,7 +5,8 @@
 
 import { ArgsType, Field } from 'type-graphql';
 
-import MembershipQuestionInput from '../membership-question/MembershipQuestionInput';
+import { MembershipQuestionInput } from '../membership-question/MembershipQuestionArgs';
+import { MembershipTypeInput } from '../membership-type/MembershipTypeArgs';
 
 @ArgsType()
 export class CreateCommunityArgs {
@@ -23,4 +24,25 @@ export class CreateCommunityArgs {
 
   @Field(() => [MembershipQuestionInput])
   questions: MembershipQuestionInput[];
+
+  @Field(() => [MembershipTypeInput])
+  types: MembershipTypeInput[];
+
+  @Field({ nullable: true })
+  overview: string;
+}
+
+@ArgsType()
+export class GetCommunityArgs {
+  @Field({ nullable: true })
+  encodedUrlName: string;
+
+  @Field({ nullable: true })
+  id: string;
+}
+
+@ArgsType()
+export class ImportCommunityCSVArgs {
+  @Field()
+  encodedUrlName: string;
 }

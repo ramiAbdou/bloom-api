@@ -3,15 +3,19 @@
  * @author Rami Abdou
  */
 
-import { EntityData } from 'mikro-orm';
+import csv from 'csvtojson';
+import moment from 'moment';
 
+import { Membership, User } from '@entities';
 import { getTokenFromCode } from '@integrations/mailchimp/MailchimpUtil';
 import {
   getTokensFromCode,
   refreshAccessToken
 } from '@integrations/zoom/ZoomUtil';
 import BaseRepo from '@util/db/BaseRepo';
+import { MembershipTypeInput } from '../membership-type/MembershipTypeArgs';
 import Community from './Community';
+import { CreateCommunityArgs, ImportCommunityCSVArgs } from './CommunityArgs';
 
 export default class CommunityRepo extends BaseRepo<Community> {
   /**
@@ -19,8 +23,42 @@ export default class CommunityRepo extends BaseRepo<Community> {
    * of a logo. For now, the community should send Bloom a square logo that
    * we will manually add to the Digital Ocean space.
    */
-  createCommunity = async (data: EntityData<Community>): Promise<Community> => {
-    const community: Community = this.createAndPersist(data);
+  createCommunity = async ({
+    applicationDescription: description,
+    applicationTitle: title,
+    autoAccept,
+    name,
+    questions,
+    overview,
+    types
+  }: CreateCommunityArgs): Promise<Community> => {
+    const bm = this.bm();
+
+    const community: Community = this.createAndPersist({
+      ...(title
+        ? {
+            application: bm
+              .communityApplicationRepo()
+              .create({ description, title })
+          }
+        : {}),
+      ...(overview ? { overview } : {}),
+      autoAccept,
+      name,
+      questions: questions.map((question, i: number) =>
+        bm.membershipQuestionRepo().create({
+          ...question,
+          options: question.options?.map(({ value }) =>
+            bm.membershipQuestionOptionRepo().create({ question, value })
+          ),
+          order: i
+        })
+      ),
+      types: types.map((type: MembershipTypeInput) =>
+        bm.membershipTypeRepo().create(type)
+      )
+    });
+
     await this.flush('COMMUNITY_CREATED', community);
     return community;
   };
@@ -32,41 +70,72 @@ export default class CommunityRepo extends BaseRepo<Community> {
    * NEW users if the email is not found in the DB based on the CSV row, or
    * adds a Membership based on the current users in our DB.
    */
-  // importCSVDataToCommunity = async (community: Community) => {
-  //   const responses = await csv().fromFile(
-  //     `./membership-csv/${community.name}.csv`
-  //   );
+  importCSVDataToCommunity = async ({
+    encodedUrlName
+  }: ImportCommunityCSVArgs) => {
+    const [community, responses]: [
+      Community,
+      Record<string, any>[]
+    ] = await Promise.all([
+      this.findOne({ encodedUrlName }, ['questions', 'types']),
+      csv().fromFile(`./membership-csv/${encodedUrlName}.csv`)
+    ]);
 
-  //   await Promise.all(
-  //     responses.map(async (row: Record<string, any>) => {
-  //       // Precondition: Every row (JSON) should have a field called 'EMAIL'.
-  //       const email = row[FormQuestionCategory.EMAIL];
+    const bm = this.bm();
+    const questions = community.questions.getItems();
+    const types = community.types.getItems();
 
-  //       // If the user already exists, fetch it from the DB and if not, create
-  //       // a new user for the membership.
+    // Adds protection against any emails that are duplicates in the CSV file,
+    // INCLUDING case insensitive duplicates.
+    const uniqueEmails = new Set<string>();
 
-  //       const user: User =
-  //         (await this.bm().userRepo().findOne({ email })) ?? new User();
+    await Promise.all(
+      responses.map(async (row: Record<string, any>) => {
+        // Precondition: Every row (JSON) should have a field called 'EMAIL'.
+        const email = row.EMAIL;
+        const firstName = row.FIRST_NAME;
+        const gender = row.GENDER;
+        const lastName = row.LAST_NAME;
 
-  //       // We persist the membership instead of the user since the user can
-  //       // potentially be persisted already.
-  //       const membership: Membership = this.bm().membershipRepo().create({});
+        // If no email exists OR
+        if (!email || uniqueEmails.has(email.toLowerCase())) return;
+        uniqueEmails.add(email.toLowerCase());
 
-  //       membership.community = community;
-  //       membership.user = user;
+        // If the user already exists, fetch it from the DB and if not, create
+        // a new user for the membership.
+        const user: User =
+          (await bm.userRepo().findOne({ email })) ??
+          bm
+            .userRepo()
+            .createAndPersist({ email, firstName, gender, lastName });
 
-  //       // The row is a JSON that maps keys to values.
-  //       Object.entries(row).map(async ([key, value]) => {
-  //         if (key === FormQuestionCategory.FIRST_NAME) user.firstName = value;
-  //         else if (key === FormQuestionCategory.LAST_NAME)
-  //           user.lastName = value;
-  //         else if (key === FormQuestionCategory.EMAIL) user.email = value;
-  //         else if (key === FormQuestionCategory.GENDER) user.gender = value;
-  //         else membershipData[key] = value;
-  //       });
-  //     })
-  //   );
-  // };
+        // We persist the membership instead of the user since the user can
+        // potentially be persisted already.
+        const membership: Membership = bm
+          .membershipRepo()
+          .createAndPersist({ community, status: 'APPROVED', user });
+
+        // eslint-disable-next-line array-callback-return
+        Object.entries(row).map(([key, value]) => {
+          if (['FIRST_NAME', 'LAST_NAME', 'GENDER'].includes(key)) return;
+          if (key === 'MEMBERSHIP_TYPE') {
+            const [type] = types.filter(({ name }) => value === name);
+            if (type) membership.type = type;
+          } else if (key === 'DATE_JOINED') {
+            if (value)
+              membership.joinedOn = moment.utc(new Date(value)).format();
+          } else {
+            const [question] = questions.filter(({ title }) => key === title);
+            if (question)
+              bm.membershipDataRepo().create({ membership, question, value });
+          }
+        });
+      })
+    );
+
+    await this.flush('COMMUNITY_CSV_PROCESSED', community);
+    return community;
+  };
 
   /**
    * Returns the updated community after updating it's Mailchimp token. If
@@ -82,6 +151,7 @@ export default class CommunityRepo extends BaseRepo<Community> {
 
     const token: string = await getTokenFromCode(code);
     community.mailchimpAccessToken = token;
+
     await this.flush('MAILCHIMP_TOKEN_STORED', community);
     return community;
   };
@@ -98,11 +168,13 @@ export default class CommunityRepo extends BaseRepo<Community> {
     code: string
   ): Promise<Community> => {
     const community: Community = await this.findOne({ encodedUrlName });
+
     if (!community) return null;
 
     const { accessToken, refreshToken } = await getTokensFromCode(code);
     community.zoomAccessToken = accessToken;
     community.zoomRefreshToken = refreshToken;
+
     await this.flush('ZOOM_TOKENS_STORED', community);
     return community;
   };
@@ -114,7 +186,6 @@ export default class CommunityRepo extends BaseRepo<Community> {
    */
   refreshZoomTokens = async (communityId: string): Promise<Community> => {
     const community = await this.findOne({ id: communityId });
-
     const { accessToken, refreshToken } = await refreshAccessToken(
       community.zoomRefreshToken
     );
@@ -123,6 +194,7 @@ export default class CommunityRepo extends BaseRepo<Community> {
 
     community.zoomAccessToken = accessToken;
     community.zoomRefreshToken = refreshToken;
+
     await this.flush('ZOOM_TOKENS_REFRESHED', community);
     return community;
   };

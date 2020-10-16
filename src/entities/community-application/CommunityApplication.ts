@@ -4,23 +4,28 @@
  */
 
 import { Entity, OneToOne, Property } from 'mikro-orm';
+import { Field, ObjectType } from 'type-graphql';
 
 import { Community, MembershipQuestion } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 
+@ObjectType()
 @Entity()
 export default class CommunityApplication extends BaseEntity {
+  @Field()
   @Property({ type: 'text' })
   description: string;
 
+  @Field()
   @Property()
   title: string;
 
+  @Field(() => [MembershipQuestion])
   @Property({ persist: false })
   get questions(): MembershipQuestion[] {
     return this.community.questions
       .getItems()
-      .filter(({ inApplication }) => inApplication);
+      .filter(({ category, inApplication }) => !category && inApplication);
   }
 
   /* 

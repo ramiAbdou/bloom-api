@@ -3,26 +3,37 @@
  * @author Rami Abdou
  */
 
-import { Args, Mutation, Resolver } from 'type-graphql';
+import { Args, Mutation, Query, Resolver } from 'type-graphql';
 
 import { Community } from '@entities';
 import BloomManager from '@util/db/BloomManager';
-import { CreateCommunityArgs } from './CommunityArgs';
+import { Populate } from '@util/gql';
+import {
+  CreateCommunityArgs,
+  GetCommunityArgs,
+  ImportCommunityCSVArgs
+} from './CommunityArgs';
 
 @Resolver()
 export default class CommunityResolver {
-  /**
-   * Creates a new community when Bloom has a new customer. Omits the addition
-   * of a logo. For now, the community should send Bloom a square logo that
-   * we will manually add to the Digital Ocean space.
-   */
   @Mutation(() => Community, { nullable: true })
-  async createCommunity(
-    @Args()
-    { autoAccept, name, membershipForm }: CreateCommunityArgs
+  async createCommunity(@Args() args: CreateCommunityArgs): Promise<Community> {
+    return new BloomManager().communityRepo().createCommunity(args);
+  }
+
+  @Query(() => Community, { nullable: true })
+  async getCommunity(
+    @Args() { encodedUrlName, id }: GetCommunityArgs,
+    @Populate() populate: string[]
   ): Promise<Community> {
-    return new BloomManager()
-      .communityRepo()
-      .createCommunity({ autoAccept, membershipForm, name });
+    const queryBy = id ? { id } : { encodedUrlName };
+    return new BloomManager().communityRepo().findOne({ ...queryBy }, populate);
+  }
+
+  @Mutation(() => Community, { nullable: true })
+  async importCSVDataToCommunity(
+    @Args() args: ImportCommunityCSVArgs
+  ): Promise<Community> {
+    return new BloomManager().communityRepo().importCSVDataToCommunity(args);
   }
 }

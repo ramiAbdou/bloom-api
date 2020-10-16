@@ -3,14 +3,14 @@
  * @author Rami Abdou
  */
 
-import { Field, InputType, Int } from 'type-graphql';
+import { Field, InputType } from 'type-graphql';
 
 import { QuestionCategory, QuestionType } from '@util/gql';
+import { MembershipQuestionOptionInput } from '../membership-question-option/MembershipQuestionOptionArgs';
 import MembershipQuestion from './MembershipQuestion';
 
 @InputType()
-export default class MembershipQuestionInput
-  implements Partial<MembershipQuestion> {
+export class MembershipQuestionInput implements Partial<MembershipQuestion> {
   // If the question is a special question, we have to store it in a different
   // fashion. For example, 'EMAIL' would be stored on the user, NOT the
   // membership.
@@ -25,12 +25,13 @@ export default class MembershipQuestionInput
   @Field(() => Boolean)
   inApplication = true;
 
-  // Order that the question appears. Similar to an index in an array.
-  @Field(() => Int)
-  order: number;
-
   @Field(() => Boolean)
   required = true;
+
+  @Field(() => [MembershipQuestionOptionInput], { nullable: true })
+  // @ts-ignore b/c we want it to be an array, and type casting is weird when
+  // implementing Partial<MembershipQuestion>.
+  options: MembershipQuestionOptionInput[];
 
   @Field()
   title: string;

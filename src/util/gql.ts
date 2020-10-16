@@ -3,7 +3,24 @@
  * @author Rami Abdou
  */
 
+import { fieldsProjection } from 'graphql-fields-list';
+import { createParamDecorator, Field, InputType } from 'type-graphql';
+
 /* eslint-disable max-classes-per-file */
+
+export function Populate(): ParameterDecorator {
+  return createParamDecorator(({ info }) => {
+    return Object.keys(fieldsProjection(info)).reduce(
+      (acc: string[], curr: string) => {
+        if (!curr.includes('.')) return acc;
+        const value = curr.substring(0, curr.lastIndexOf('.'));
+        if (!acc.includes(value)) return [...acc, value];
+        return acc;
+      },
+      []
+    );
+  });
+}
 
 export type QuestionType =
   | 'DROPDOWN_MULTIPLE'
@@ -12,8 +29,18 @@ export type QuestionType =
   | 'SHORT_TEXT';
 
 export type QuestionCategory =
+  | 'DATE_JOINED'
   | 'EMAIL'
   | 'FIRST_NAME'
   | 'GENDER'
   | 'LAST_NAME'
   | 'MEMBERSHIP_TYPE';
+
+@InputType()
+export class MembershipDataInput {
+  @Field()
+  questionId: string;
+
+  @Field()
+  value: string;
+}
