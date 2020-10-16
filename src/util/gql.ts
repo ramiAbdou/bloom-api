@@ -10,7 +10,7 @@ import { createParamDecorator, Field, InputType } from 'type-graphql';
 
 export function Populate(): ParameterDecorator {
   return createParamDecorator(({ info }) => {
-    return Object.keys(fieldsProjection(info)).reduce(
+    const populate = Object.keys(fieldsProjection(info)).reduce(
       (acc: string[], curr: string) => {
         if (!curr.includes('.')) return acc;
         const value = curr.substring(0, curr.lastIndexOf('.'));
@@ -18,6 +18,10 @@ export function Populate(): ParameterDecorator {
         return acc;
       },
       []
+    );
+
+    return [...populate].filter(
+      (value) => !populate.some((val) => val.includes(`${value}.`))
     );
   });
 }

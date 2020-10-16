@@ -16,7 +16,7 @@ export default class MembershipQuestion extends BaseEntity {
   // If the question is a special question, we have to store it in a different
   // fashion. For example, 'EMAIL' would be stored on the user, NOT the
   // membership.
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Enum({
     items: ['EMAIL', 'FIRST_NAME', 'GENDER', 'LAST_NAME', 'MEMBERSHIP_TYPE'],
     nullable: true,
@@ -24,7 +24,7 @@ export default class MembershipQuestion extends BaseEntity {
   })
   category: QuestionCategory;
 
-  @Field()
+  @Field({ nullable: true })
   @Property({ nullable: true, type: 'text' })
   description: string;
 

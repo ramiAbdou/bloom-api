@@ -55,6 +55,7 @@ export default class UserRepo extends BaseRepo<User> {
     refreshToken: string
   ): Promise<AuthTokens> {
     if (!refreshToken) return null;
+
     const user: User = await this.findOne({ refreshToken });
     if (!user || verifyToken(accessToken)) return null;
 

@@ -25,7 +25,7 @@ export default class CommunityApplication extends BaseEntity {
   get questions(): MembershipQuestion[] {
     return this.community.questions
       .getItems()
-      .filter(({ category, inApplication }) => !category && inApplication);
+      .filter(({ inApplication }) => inApplication);
   }
 
   /* 

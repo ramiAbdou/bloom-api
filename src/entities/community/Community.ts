@@ -95,7 +95,7 @@ export default class Community extends BaseEntity {
 
   // If the community is invite-only, there will be no application. The only
   // way for someone to join is if the admin adds them manually.
-  @Field(() => CommunityApplication, { nullable: true })
+  @Field(() => CommunityApplication)
   @OneToOne({ mappedBy: ({ community }: CommunityApplication) => community })
   application: CommunityApplication;
 
@@ -107,6 +107,7 @@ export default class Community extends BaseEntity {
   memberships = new Collection<Membership>(this);
 
   // Should get the questions by the order that they are stored in the DB.
+  @Field(() => [MembershipQuestion])
   @OneToMany(() => MembershipQuestion, ({ community }) => community, {
     orderBy: { order: QueryOrder.ASC }
   })

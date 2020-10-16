@@ -26,6 +26,11 @@ export default class CommunityResolver {
     @Args() { encodedUrlName, id }: GetCommunityArgs,
     @Populate() populate: string[]
   ): Promise<Community> {
+    populate = populate.reduce((acc, value) => {
+      if (value !== 'application.questions') return [...acc, value];
+      return [...acc, 'application', 'questions'];
+    }, []);
+
     const queryBy = id ? { id } : { encodedUrlName };
     return new BloomManager().communityRepo().findOne({ ...queryBy }, populate);
   }

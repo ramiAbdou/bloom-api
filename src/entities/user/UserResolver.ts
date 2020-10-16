@@ -23,7 +23,6 @@ export default class UserResolver {
     return new BloomManager().userRepo().findOne({ id: userId });
   }
 
-  @Authorized()
   @Query(() => Boolean)
   async isUserLoggedIn(@Ctx() { userId }: GQLContext) {
     return !!userId;

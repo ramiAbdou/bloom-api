@@ -30,21 +30,14 @@ const authChecker: AuthChecker<GQLContext> = async (
 ) => {
   // If the userId or the communityId isn't present, then we can't even query
   // the DB to see if the member has admin priveleges, so return false.
-  const { communityId } = args;
-  if (!userId || !communityId) return false;
+  if (!userId) return false;
+  if (!roles.length) return true;
 
   const role = await new BloomManager()
     .membershipRepo()
-    .getMembershipRole(userId, communityId);
+    .getMembershipRole(userId, args.communityId);
 
-  // If no roles are specified, then we should check if the role is at the
-  // minimum ADMIN. If the role is populated, it will either be ADMIN or
-  // OWNER, so return true if it is populated at all.
-  if (!roles.length) return !!role;
-
-  // The only role that would be provided in the roles array is OWNER, so now
-  // we just check that that is the member's privelege.
-  return role === 'OWNER';
+  return roles[0] === role;
 };
 
 /**
