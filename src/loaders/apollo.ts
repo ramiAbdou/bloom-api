@@ -33,20 +33,18 @@ const authChecker: AuthChecker<GQLContext> = async (
   const { communityId } = args;
   if (!userId || !communityId) return false;
 
-  return true;
+  const role = await new BloomManager()
+    .membershipRepo()
+    .getMembershipRole(userId, communityId);
 
-  // const role = await new BloomManager()
-  //   .membershipRepo()
-  //   .getMembershipRole(userId, communityId);
+  // If no roles are specified, then we should check if the role is at the
+  // minimum ADMIN. If the role is populated, it will either be ADMIN or
+  // OWNER, so return true if it is populated at all.
+  if (!roles.length) return !!role;
 
-  // // If no roles are specified, then we should check if the role is at the
-  // // minimum ADMIN. If the role is populated, it will either be ADMIN or
-  // // OWNER, so return true if it is populated at all.
-  // if (!roles.length) return !!role;
-
-  // // The only role that would be provided in the roles array is OWNER, so now
-  // // we just check that that is the member's privelege.
-  // return role === 'OWNER';
+  // The only role that would be provided in the roles array is OWNER, so now
+  // we just check that that is the member's privelege.
+  return role === 'OWNER';
 };
 
 /**
@@ -68,8 +66,9 @@ export default async () => {
   // Set the playground to false so that's it's not accessible to the outside
   // world. Also handles the request context.
   const config: ApolloServerExpressConfig = {
-    context: ({ req }) => ({
+    context: ({ req, res }) => ({
       communityId: req.cookies.communityId,
+      res,
       userId: decodeToken(req.cookies.accessToken)?.userId
     }),
     playground: false,

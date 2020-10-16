@@ -4,6 +4,8 @@
  */
 
 import { AxiosResponse } from 'axios';
+import * as CSV from 'csv-string';
+import { PristineInput } from 'csv-string/dist/types';
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
 
@@ -60,6 +62,13 @@ export const toLowerCaseDash = (str: string) =>
  * @example now() => '2020-08-31T23:17:20Z'
  */
 export const now = () => moment.utc().format();
+
+/**
+ * CSV stringifies the given input and replaces the new line characters at the
+ * end of the input.
+ */
+export const stringify = (input: PristineInput): string =>
+  CSV.stringify(input).replace('\r\n', '');
 
 /**
  * Returns true if the token is both a valid JWT token and if it has not yet

@@ -5,6 +5,7 @@
 
 import BaseRepo from '@util/db/BaseRepo';
 import { MembershipDataInput } from '@util/gql';
+import { stringify } from '@util/util';
 import Community from '../community/Community';
 import MembershipData from '../membership-data/MembershipData';
 import User from '../user/User';
@@ -44,9 +45,10 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     // We only use a Promise for the Membership Type case since we need to
     // fetch the type from the DB.
     await Promise.all(
-      data.map(async ({ questionId, value }) => {
+      data.map(async ({ questionId, value: valueArray }) => {
         const [question] = questions.filter(({ id }) => questionId === id);
         const { category } = question;
+        const value = stringify(valueArray);
 
         if (category === 'EMAIL') user.email = value;
         else if (category === 'FIRST_NAME') user.firstName = value;
@@ -86,24 +88,27 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     const bm = this.bm();
 
     await Promise.all(
-      data.map(async ({ questionId, value }: MembershipDataInput) => {
-        // Find the membership question that is associated with the data.
-        const question = await bm
-          .membershipQuestionRepo()
-          .findOne({ id: questionId });
+      data.map(
+        async ({ questionId, value: valueArray }: MembershipDataInput) => {
+          // Find the membership question that is associated with the data.
+          const question = await bm
+            .membershipQuestionRepo()
+            .findOne({ id: questionId });
 
-        const membershipData: MembershipData = await bm
-          .membershipDataRepo()
-          .findOne({ membership, question });
+          const membershipData: MembershipData = await bm
+            .membershipDataRepo()
+            .findOne({ membership, question });
 
-        if (membershipData) membershipData.value = value;
-        else
-          bm.membershipDataRepo().createData({
-            membership,
-            question,
-            value
-          });
-      })
+          const value = stringify(valueArray);
+          if (membershipData) membershipData.value = value;
+          else
+            bm.membershipDataRepo().createData({
+              membership,
+              question,
+              value
+            });
+        }
+      )
     );
 
     await this.flush('MEMBERSHIP_DATA_UPDATED', membership);
@@ -134,14 +139,13 @@ export default class MembershipRepo extends BaseRepo<Membership> {
   getMembershipRole = async (
     userId: string,
     communityId: string
-  ): Promise<MembershipRole> => {
-    const membership: Membership = await this.findOne({
-      community: { id: communityId },
-      user: { id: userId }
-    });
-
-    return membership?.role;
-  };
+  ): Promise<MembershipRole> =>
+    (
+      await this.findOne({
+        community: { id: communityId },
+        user: { id: userId }
+      })
+    )?.role;
 
   /**
    * Add a new admin to the community with the communityId.
@@ -182,7 +186,6 @@ export default class MembershipRepo extends BaseRepo<Membership> {
    */
   addAdminByMembershipId = async (membershipId: string) => {
     const membership: Membership = await this.findOne({ id: membershipId });
-
     membership.role = 'ADMIN';
     membership.status = 'APPROVED';
 
