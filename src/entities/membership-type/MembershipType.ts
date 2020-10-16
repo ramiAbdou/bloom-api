@@ -15,6 +15,7 @@ import { Field, Float, ObjectType } from 'type-graphql';
 
 import { Community, Membership } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
+import MembershipPayment from '../membership-payment/MembershipPayment';
 
 export type MembershipTypeRecurrence = 'MONTHLY' | 'YEARLY' | 'LIFETIME';
 
@@ -56,4 +57,7 @@ export default class MembershipType extends BaseEntity {
 
   @OneToMany(() => Membership, ({ type }) => type)
   memberships = new Collection<Membership>(this);
+
+  @OneToMany(() => MembershipPayment, ({ type }) => type)
+  payments = new Collection<MembershipPayment>(this);
 }

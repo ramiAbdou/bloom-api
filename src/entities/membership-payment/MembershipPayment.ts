@@ -7,6 +7,7 @@ import { Entity, EntityRepositoryType, ManyToOne, Property } from 'mikro-orm';
 
 import { Membership } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
+import MembershipType from '../membership-type/MembershipType';
 import MembershipPaymentRepo from './MembershipPaymentRepo';
 
 @Entity({ customRepository: () => MembershipPaymentRepo })
@@ -26,4 +27,7 @@ export default class MembershipPayment extends BaseEntity {
 
   @ManyToOne(() => Membership)
   membership: Membership;
+
+  @ManyToOne(() => MembershipType, { nullable: true })
+  type: MembershipType;
 }

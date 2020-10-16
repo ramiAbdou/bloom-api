@@ -14,23 +14,23 @@ export class MembershipQuestionInput implements Partial<MembershipQuestion> {
   // fashion. For example, 'EMAIL' would be stored on the user, NOT the
   // membership.
   @Field(() => String, { nullable: true })
-  category: QuestionCategory;
+  category?: QuestionCategory;
 
   @Field({ nullable: true })
-  description: string;
+  description?: string;
 
   // If set to false, this question will not appear in the community's
   // membership application form.
   @Field(() => Boolean)
-  inApplication = true;
+  inApplication? = true;
 
   @Field(() => Boolean)
-  required = true;
+  required? = true;
 
   @Field(() => [String], { nullable: true })
   // @ts-ignore b/c we want it to be an array, and type casting is weird when
   // implementing Partial<MembershipQuestion>.
-  options: string[];
+  options?: string[];
 
   @Field()
   title: string;

@@ -11,13 +11,13 @@ import { MembershipTypeInput } from '../membership-type/MembershipTypeArgs';
 @ArgsType()
 export class CreateCommunityArgs {
   @Field({ nullable: true })
-  applicationDescription: string;
+  applicationDescription?: string;
 
   @Field({ nullable: true })
-  applicationTitle: string;
+  applicationTitle?: string;
 
   @Field(() => Boolean)
-  autoAccept = false;
+  autoAccept? = false;
 
   @Field()
   name: string;

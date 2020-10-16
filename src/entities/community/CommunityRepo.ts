@@ -118,18 +118,32 @@ export default class CommunityRepo extends BaseRepo<Community> {
           )
             return;
 
+          // If no membership type exists in the array, then the default
+          // membership will be set as the membership type.
           if (key === 'MEMBERSHIP_TYPE') {
             const [type] = types.filter(({ name }) => value === name);
-            // If no type exists, then the default membership will be set as the
-            // membership type.
             if (type) membership.type = type;
           }
+
           // IMPORTANT: The value must be a valid input to the Date constructor
           // or else errors will be thrown!
           else if (key === 'DATE_JOINED') {
             const dateValue = new Date(value);
             if (!dateValue) return;
-            membership.joinedOn = moment.utc(new Date(value)).format();
+            membership.joinedOn = moment.utc(dateValue).format();
+          }
+
+          // If the community has stored paid data, we need to check the last
+          // time they paid. It's important that the associated membership
+          // type.
+          else if (key === 'LAST_PAID_AT') {
+            const dateValue = new Date(value);
+            if (!dateValue) return;
+            bm.membershipPaymentRepo().createAndPersist({
+              createdAt: moment.utc(dateValue).format(),
+              membership,
+              updatedAt: moment.utc(dateValue).format()
+            });
           }
 
           // If the question wasn't a special category question, then we find
