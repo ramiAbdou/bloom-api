@@ -20,7 +20,7 @@ export default class MembershipResolver {
   async applyForMembership(
     @Args() { data, email }: ApplyForMembershipArgs,
     @Ctx() { communityId }: GQLContext
-  ) {
+  ): Promise<Membership> {
     return new BloomManager()
       .membershipRepo()
       .applyForMembership(communityId, email, data);

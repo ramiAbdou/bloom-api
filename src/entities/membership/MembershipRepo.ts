@@ -46,6 +46,10 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     // fetch the type from the DB.
     await Promise.all(
       data.map(async ({ questionId, value: valueArray }) => {
+        // If there's no value, then short circuit. Because for the initial
+        // creation of data, it must exist.
+        if (!valueArray || !valueArray.length) return;
+
         const [question] = questions.filter(({ id }) => questionId === id);
         const { category } = question;
         const value = stringify(valueArray);

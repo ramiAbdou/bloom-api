@@ -45,6 +45,6 @@ export class MembershipDataInput {
   @Field()
   questionId: string;
 
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   value: string[];
 }

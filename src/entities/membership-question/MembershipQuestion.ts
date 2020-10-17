@@ -3,7 +3,14 @@
  * @author Rami Abdou
  */
 
-import { ArrayType, Entity, Enum, ManyToOne, Property } from 'mikro-orm';
+import {
+  ArrayType,
+  BeforeCreate,
+  Entity,
+  Enum,
+  ManyToOne,
+  Property
+} from 'mikro-orm';
 import { Field, Int, ObjectType } from 'type-graphql';
 
 import { Community } from '@entities';
@@ -34,9 +41,9 @@ export default class MembershipQuestion extends BaseEntity {
   @Property({ type: Boolean })
   inApplication = true;
 
-  @Field(() => [String])
-  @Property({ type: ArrayType })
-  options: string[] = [];
+  @Field(() => [String], { nullable: true })
+  @Property({ nullable: true, type: ArrayType })
+  options: string[];
 
   // Order that the question appears. Similar to an index in an array.
   @Field(() => Int)
@@ -57,6 +64,14 @@ export default class MembershipQuestion extends BaseEntity {
     type: String
   })
   type: QuestionType;
+
+  @BeforeCreate()
+  beforeCreate() {
+    if (this.category === 'GENDER')
+      this.options = ['Male', 'Female', 'Non-Binary', 'Prefer Not to Say'];
+    else if (this.category === 'MEMBERSHIP_TYPE')
+      this.options = this.community.types.getItems().map(({ name }) => name);
+  }
 
   /* 
   ___     _      _   _             _    _         
