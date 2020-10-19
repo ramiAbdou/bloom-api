@@ -11,7 +11,8 @@ import { Populate } from '@util/gql';
 import {
   CreateCommunityArgs,
   GetCommunityArgs,
-  ImportCommunityCSVArgs
+  ImportCommunityCSVArgs,
+  ReorderQuestionArgs
 } from './CommunityArgs';
 
 @Resolver()
@@ -40,5 +41,10 @@ export default class CommunityResolver {
     @Args() args: ImportCommunityCSVArgs
   ): Promise<Community> {
     return new BloomManager().communityRepo().importCSVDataToCommunity(args);
+  }
+
+  @Mutation(() => Community, { nullable: true })
+  async reorderQuestion(@Args() args: ReorderQuestionArgs): Promise<Community> {
+    return new BloomManager().communityRepo().reorderQuestion(args);
   }
 }

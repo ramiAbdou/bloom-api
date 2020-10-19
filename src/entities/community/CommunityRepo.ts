@@ -6,7 +6,7 @@
 import csv from 'csvtojson';
 import moment from 'moment';
 
-import { Membership, User } from '@entities';
+import { Membership, MembershipQuestion, User } from '@entities';
 import { getTokenFromCode } from '@integrations/mailchimp/MailchimpUtil';
 import {
   getTokensFromCode,
@@ -15,7 +15,11 @@ import {
 import BaseRepo from '@util/db/BaseRepo';
 import { MembershipTypeInput } from '../membership-type/MembershipTypeArgs';
 import Community from './Community';
-import { CreateCommunityArgs, ImportCommunityCSVArgs } from './CommunityArgs';
+import {
+  CreateCommunityArgs,
+  ImportCommunityCSVArgs,
+  ReorderQuestionArgs
+} from './CommunityArgs';
 
 export default class CommunityRepo extends BaseRepo<Community> {
   /**
@@ -159,6 +163,36 @@ export default class CommunityRepo extends BaseRepo<Community> {
     );
 
     await this.flush('COMMUNITY_CSV_PROCESSED', community);
+    return community;
+  };
+
+  /**
+   * Reorders the question and places it at the given order. Acts like
+   * reordering an array. Loops through all of the questions and moves the
+   * order if appropriate.
+   */
+  reorderQuestion = async ({
+    communityId,
+    questionId,
+    order
+  }: ReorderQuestionArgs): Promise<Community> => {
+    const community: Community = await this.findOne({ id: communityId }, [
+      'questions'
+    ]);
+
+    const questions = community.questions.getItems();
+
+    // Update the order of the question that we need to update.
+    const currIndex = questions.findIndex(({ id }) => id === questionId);
+    questions[currIndex].order = order;
+
+    questions.forEach((question: MembershipQuestion, i: number) => {
+      if (i === currIndex) question.order = order;
+      else if (i < currIndex && i >= order) question.order++;
+      else if (i > currIndex && i <= order) question.order--;
+    });
+
+    await this.flush('REORDER_QUESTION', questions);
     return community;
   };
 

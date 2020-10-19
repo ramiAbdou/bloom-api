@@ -15,6 +15,7 @@ import {
 } from 'mikro-orm';
 import { Field, ObjectType } from 'type-graphql';
 
+import { MembershipQuestion } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 import { now } from '@util/util';
 import Community from '../community/Community';
@@ -47,6 +48,31 @@ export default class Membership extends BaseEntity {
   @Enum({ items: ['REJECTED', 'PENDING', 'APPROVED'], type: String })
   status: MembershipStatus = 'PENDING';
 
+  @Field(() => [MembershipData])
+  @Property({ persist: false })
+  get fullData(): MembershipData[] {
+    const data = this.data.getItems();
+    const { email, gender, firstName, lastName } = this.user;
+
+    // @ts-ignore b/c this will only be queried in certain cases.
+    return this.community.questions
+      .getItems()
+      .map(({ category, order, title, type }: MembershipQuestion) => {
+        let value: string;
+        const result = data.find(({ question }) => question.title === title);
+
+        if (result) value = result.value;
+        else if (category === 'DATE_JOINED') value = this.joinedOn;
+        else if (category === 'EMAIL') value = email;
+        else if (category === 'FIRST_NAME') value = firstName;
+        else if (category === 'GENDER') value = gender;
+        else if (category === 'LAST_NAME') value = lastName;
+        else if (category === 'MEMBERSHIP_TYPE') value = this.type.name;
+
+        return { question: { order, title, type }, value };
+      });
+  }
+
   @BeforeCreate()
   beforeCreate() {
     if (this.community.autoAccept) this.status = 'APPROVED';
@@ -65,6 +91,7 @@ export default class Membership extends BaseEntity {
   community: Community;
 
   // Data will only be populated if a question has ever been answered before.
+  @Field(() => [MembershipData])
   @OneToMany(() => MembershipData, ({ membership }) => membership)
   data = new Collection<MembershipData>(this);
 

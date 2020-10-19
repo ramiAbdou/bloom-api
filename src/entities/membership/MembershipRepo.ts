@@ -14,6 +14,18 @@ import { MembershipRole } from './MembershipArgs';
 
 export default class MembershipRepo extends BaseRepo<Membership> {
   /**
+   * Fetches all of the applicants for a community that are still pending.
+   */
+  getApplicants = async (
+    communityId: string,
+    populate: string[]
+  ): Promise<Membership[]> =>
+    this.find(
+      { community: { id: communityId }, status: 'PENDING' },
+      MembershipRepo.parsePopulate(populate)
+    );
+
+  /**
    * Applies for membership in the community using the given email and data.
    * A user is either created OR fetched based on the email.
    */
@@ -32,6 +44,9 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     const user: User =
       (await bm.userRepo().findOne({ email })) ??
       bm.userRepo().createAndPersist({ email });
+
+    if (await this.findOne({ community, user }))
+      throw new Error('Membership has already been created.');
 
     // We persist the membership instead of the user since the user can
     // potentially be persisted already.
@@ -143,13 +158,14 @@ export default class MembershipRepo extends BaseRepo<Membership> {
   getMembershipRole = async (
     userId: string,
     communityId: string
-  ): Promise<MembershipRole> =>
-    (
-      await this.findOne({
-        community: { id: communityId },
-        user: { id: userId }
-      })
-    )?.role;
+  ): Promise<MembershipRole> => {
+    const membership = await this.findOne({
+      community: { id: communityId },
+      user: { id: userId }
+    });
+
+    return membership?.role;
+  };
 
   /**
    * Add a new admin to the community with the communityId.
@@ -196,4 +212,19 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     await this.flush('ADMIN_CREATED', membership);
     return membership;
   };
+
+  private static parsePopulate(populate: string[]) {
+    return populate.reduce((acc: string[], path: string) => {
+      if (path.includes('fullData')) {
+        acc = [
+          ...acc,
+          'community.questions',
+          path.replace('fullData', 'data'),
+          'type',
+          'user'
+        ];
+      } else acc.push(path);
+      return acc;
+    }, []);
+  }
 }

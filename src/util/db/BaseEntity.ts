@@ -28,4 +28,6 @@ export default abstract class BaseEntity {
   @Field()
   @Property({ onUpdate: () => now() })
   updatedAt: string = now();
+
+  parsePopulate: () => string[];
 }

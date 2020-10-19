@@ -82,4 +82,6 @@ export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
     this.persist(entity);
     return entity;
   }
+
+  parsePopulate: () => string[];
 }
