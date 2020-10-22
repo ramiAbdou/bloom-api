@@ -3,42 +3,13 @@
  * @author Rami Abdou
  */
 
-import { APP, AuthTokens } from '@constants';
+import { AuthTokens } from '@constants';
 import { getEmailFromCode } from '@integrations/google/GoogleUtil';
 import BaseRepo from '@util/db/BaseRepo';
-import { sendEmail, VERIFICATION_EMAIL_ARGS } from '@util/emails';
-import { ValidateEmailData } from '@util/emails/types';
 import { generateTokens, verifyToken } from '@util/util';
 import User from './User';
 
 export default class UserRepo extends BaseRepo<User> {
-  /**
-   * Sends the user a verification email to verify their email address. This
-   * will only be triggered if a user manually requests the email to be sent
-   * (again).
-   */
-  async sendVerificationEmail(userId: string): Promise<void> {
-    const { email, id }: User = await this.findOne({ id: userId });
-    await sendEmail({
-      ...VERIFICATION_EMAIL_ARGS,
-      to: email,
-      verificationUrl: `${APP.SERVER_URL}/users/${id}/verify`
-    } as ValidateEmailData);
-  }
-
-  /**
-   * Attemps to verify the user via the email verification that we send them.
-   * If they are already verified, do nothing.
-   */
-  async verifyEmail(userId: string): Promise<void> {
-    const user: User = await this.findOne({ id: userId });
-
-    if (!user.verified) {
-      user.verified = true;
-      await this.flush('EMAIL_VERIFIED', user);
-    }
-  }
-
   /**
    * Attempts to update the user's tokens for the current session. The following
    * cases are possible:

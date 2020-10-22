@@ -20,6 +20,7 @@ import BaseEntity from '@util/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
 import CommunityApplication from '../community-application/CommunityApplication';
 import Event from '../event/Event';
+import MembershipCardItem from '../membership-card-item/MembershipCardItem';
 import MembershipQuestion from '../membership-question/MembershipQuestion';
 import MembershipType from '../membership-type/MembershipType';
 import Membership from '../membership/Membership';
@@ -76,7 +77,8 @@ export default class Community extends BaseEntity {
     return !this.application;
   }
 
-  defaultMembership(): MembershipType {
+  @Property({ persist: false })
+  get defaultMembership(): MembershipType {
     return this.types.getItems().filter(({ isDefault }) => isDefault)[0];
   }
 
@@ -96,7 +98,9 @@ export default class Community extends BaseEntity {
   // If the community is invite-only, there will be no application. The only
   // way for someone to join is if the admin adds them manually.
   @Field(() => CommunityApplication)
-  @OneToOne({ mappedBy: ({ community }: CommunityApplication) => community })
+  @OneToOne(() => CommunityApplication, ({ community }) => community, {
+    owner: true
+  })
   application: CommunityApplication;
 
   @OneToMany(() => Event, ({ community }) => community)
@@ -105,6 +109,11 @@ export default class Community extends BaseEntity {
   @Field(() => [Membership])
   @OneToMany(() => Membership, ({ community }) => community)
   memberships = new Collection<Membership>(this);
+
+  @OneToMany(() => MembershipCardItem, ({ community }) => community, {
+    orderBy: { order: QueryOrder.ASC }
+  })
+  membershipCard = new Collection<MembershipCardItem>(this);
 
   // Should get the questions by the order that they are stored in the DB.
   @Field(() => [MembershipQuestion])

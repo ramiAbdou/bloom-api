@@ -3,7 +3,7 @@
  * @author Rami Abdou
  */
 
-import { Arg, Args, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import { Membership } from '@entities';
@@ -27,14 +27,14 @@ export default class MembershipResolver {
       .applyForMembership(communityId, email, data);
   }
 
+  @Authorized()
   @Query(() => [Membership], { nullable: true })
-  async getApplicants(
-    @Arg('communityId') communityId: string,
-    @Populate() populate: string[]
-    // @Ctx() { communityId }: GQLContext
+  async getMembers(
+    @Populate() populate: string[],
+    @Ctx() { communityId }: GQLContext
   ): Promise<Membership[]> {
     return new BloomManager()
       .membershipRepo()
-      .getApplicants(communityId, populate);
+      .getMembers(communityId, populate);
   }
 }

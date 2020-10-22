@@ -34,11 +34,8 @@ export class CreateCommunityArgs {
 
 @ArgsType()
 export class GetCommunityArgs {
-  @Field({ nullable: true })
+  @Field()
   encodedUrlName: string;
-
-  @Field({ nullable: true })
-  id: string;
 }
 
 @ArgsType()

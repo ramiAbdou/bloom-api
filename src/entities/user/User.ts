@@ -33,18 +33,13 @@ export default class User extends BaseEntity {
   */
 
   @Field({ nullable: true })
-  @Property({ nullable: true, type: 'text' })
-  bio: string;
+  @Property({ nullable: true })
+  currentLocation: string;
 
   @Field()
   @Property({ unique: true })
   @IsEmail()
   email: string;
-
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  @IsUrl()
-  facebookUrl: string;
 
   @Field()
   @Property()
@@ -58,11 +53,6 @@ export default class User extends BaseEntity {
   })
   gender: string;
 
-  @Field({ nullable: true })
-  @Property({ nullable: true, unique: true })
-  @IsUrl()
-  igUrl: string;
-
   @Field()
   @Property()
   lastName: string;
@@ -70,21 +60,36 @@ export default class User extends BaseEntity {
   @Field({ nullable: true })
   @Property({ nullable: true })
   @IsUrl()
-  linkedInUrl: string;
+  pictureUrl: string;
 
-  // Refresh token that is supplied by Google.
-  @Field({ nullable: true })
+  // Server-generated token that we use to keep the user logged-in when sending
+  // GraphQL requests.
   @Property({ nullable: true })
   refreshToken: string;
+
+  /**
+   * SOCIAL MEDIA INFORMATION
+   */
+
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  @IsUrl()
+  facebookUrl: string;
+
+  @Field({ nullable: true })
+  @Property({ nullable: true, unique: true })
+  @IsUrl()
+  instagramUrl: string;
+
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  @IsUrl()
+  linkedInUrl: string;
 
   @Field({ nullable: true })
   @Property({ nullable: true })
   @IsUrl()
   twitterUrl: string;
-
-  @Field(() => Boolean)
-  @Property({ nullable: true, type: Boolean })
-  verified = false;
 
   @BeforeCreate()
   beforeCreate() {
@@ -107,6 +112,7 @@ export default class User extends BaseEntity {
                                          |_|      
   */
 
+  @Field(() => [Membership])
   @OneToMany(() => Membership, ({ user }) => user, { cascade: [Cascade.ALL] })
   memberships: Collection<Membership> = new Collection<Membership>(this);
 }

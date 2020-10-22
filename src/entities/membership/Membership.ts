@@ -11,16 +11,21 @@ import {
   Enum,
   ManyToOne,
   OneToMany,
-  Property
+  Property,
+  QueryOrder
 } from 'mikro-orm';
-import { Field, ObjectType } from 'type-graphql';
+import moment from 'moment';
+import { Authorized, Field, ObjectType } from 'type-graphql';
 
-import { MembershipQuestion } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 import { now } from '@util/util';
 import Community from '../community/Community';
+import EventAttendee from '../event-attendee/EventAttendee';
+import EventRSVP from '../event-rsvp/EventRSVP';
+import MembershipCardItem from '../membership-card-item/MembershipCardItem';
 import MembershipData from '../membership-data/MembershipData';
 import MembershipPayment from '../membership-payment/MembershipPayment';
+import MembershipQuestion from '../membership-question/MembershipQuestion';
 import MembershipType from '../membership-type/MembershipType';
 import User from '../user/User';
 import { MembershipRole } from './MembershipArgs';
@@ -33,6 +38,10 @@ export type MembershipStatus = 'REJECTED' | 'PENDING' | 'APPROVED';
 export default class Membership extends BaseEntity {
   [EntityRepositoryType]?: MembershipRepo;
 
+  @Field({ nullable: true })
+  @Property({ nullable: true, type: 'text' })
+  bio: string;
+
   @Field()
   @Property()
   joinedOn: string = now();
@@ -41,6 +50,7 @@ export default class Membership extends BaseEntity {
    * @example ADMIN
    * @example OWNER
    */
+  @Field(() => String, { nullable: true })
   @Enum({ items: ['ADMIN', 'OWNER'], nullable: true, type: String })
   role: MembershipRole;
 
@@ -48,6 +58,38 @@ export default class Membership extends BaseEntity {
   @Enum({ items: ['REJECTED', 'PENDING', 'APPROVED'], type: String })
   status: MembershipStatus = 'PENDING';
 
+  @Property({ persist: false })
+  get cardData() {
+    const membershipData = this.data.getItems();
+    const {
+      currentLocation,
+      facebookUrl,
+      instagramUrl,
+      linkedInUrl,
+      twitterUrl
+    } = this.user;
+
+    return this.community.membershipCard
+      .getItems()
+      .map(({ category, inMinimizedCard, question }: MembershipCardItem) => {
+        let value: string;
+
+        if (!category)
+          value = membershipData.find(
+            ({ question: { id: questionId } }) => question.id === questionId
+          ).value;
+        else if (category === 'BIO') value = this.bio;
+        else if (category === 'CURRENT_LOCATION') value = currentLocation;
+        else if (category === 'FACEBOOK_URL') value = facebookUrl;
+        else if (category === 'INSTAGRAM_URL') value = instagramUrl;
+        else if (category === 'LINKEDIN_URL') value = linkedInUrl;
+        else if (category === 'TWITTER_URL') value = twitterUrl;
+
+        return { category, inMinimizedCard, value };
+      });
+  }
+
+  @Authorized('ADMIN')
   @Field(() => [MembershipData])
   @Property({ persist: false })
   get fullData(): MembershipData[] {
@@ -57,7 +99,7 @@ export default class Membership extends BaseEntity {
     // @ts-ignore b/c this will only be queried in certain cases.
     return this.community.questions
       .getItems()
-      .map(({ category, order, title, type }: MembershipQuestion) => {
+      .map(({ category, id, order, title, type }: MembershipQuestion) => {
         let value: string;
         const result = data.find(({ question }) => question.title === title);
 
@@ -69,14 +111,44 @@ export default class Membership extends BaseEntity {
         else if (category === 'LAST_NAME') value = lastName;
         else if (category === 'MEMBERSHIP_TYPE') value = this.type.name;
 
-        return { question: { order, title, type }, value };
+        return { question: { id, order, title, type }, value };
       });
+  }
+
+  /**
+   * Returns true if the member has paid their dues. If the membership type
+   * is free, automatically returns true.
+   */
+  @Property({ persist: false })
+  get isActive(): boolean {
+    const { isFree, recurrence } = this.type;
+    if (isFree) return true;
+
+    // If the membership is not free and there's no payments recorded, means
+    // that they haven't paid.
+    const lastPaidDate = this.payments[0]?.createdAt;
+    if (!lastPaidDate) return false;
+
+    // If the membership is a LIFETIME membership and the member has paid
+    // any dues at all, regardless of the date, then they are active.
+    if (recurrence === 'LIFETIME') return true;
+
+    const lastPaidMoment = moment.utc(lastPaidDate);
+
+    // If the recurrence is MONTHLY, then we grab the date from a month ago.
+    // If the recurrence is YEARLY, then we grab the date from a year ago.
+    const checkAgainstMoment = moment
+      .utc()
+      .subtract(1, recurrence === 'MONTHLY' ? 'month' : 'year');
+
+    // The member is active if they've paid after the date above.
+    return lastPaidMoment.isAfter(checkAgainstMoment);
   }
 
   @BeforeCreate()
   beforeCreate() {
     if (this.community.autoAccept) this.status = 'APPROVED';
-    if (!this.type) this.type = this.community.defaultMembership();
+    if (!this.type) this.type = this.community.defaultMembership;
   }
 
   /* 
@@ -87,6 +159,7 @@ export default class Membership extends BaseEntity {
                                          |_|      
   */
 
+  @Field(() => Community)
   @ManyToOne(() => Community)
   community: Community;
 
@@ -95,7 +168,15 @@ export default class Membership extends BaseEntity {
   @OneToMany(() => MembershipData, ({ membership }) => membership)
   data = new Collection<MembershipData>(this);
 
-  @OneToMany(() => MembershipPayment, ({ membership }) => membership)
+  @OneToMany(() => EventAttendee, ({ membership }) => membership)
+  eventsAttended = new Collection<EventAttendee>(this);
+
+  @OneToMany(() => EventRSVP, ({ membership }) => membership)
+  eventsRSVPd = new Collection<EventRSVP>(this);
+
+  @OneToMany(() => MembershipPayment, ({ membership }) => membership, {
+    orderBy: { createdAt: QueryOrder.DESC }
+  })
   payments = new Collection<MembershipPayment>(this);
 
   @ManyToOne(() => MembershipType)

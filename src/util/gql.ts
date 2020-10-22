@@ -27,9 +27,9 @@ export function Populate(): ParameterDecorator {
 }
 
 export type QuestionType =
-  | 'DROPDOWN_MULTIPLE'
   | 'LONG_TEXT'
   | 'MULTIPLE_CHOICE'
+  | 'MULTIPLE_SELECT'
   | 'SHORT_TEXT';
 
 export type QuestionCategory =

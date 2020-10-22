@@ -19,12 +19,19 @@ import {
 export default class CommunityResolver {
   @Mutation(() => Community, { nullable: true })
   async createCommunity(@Args() args: CreateCommunityArgs): Promise<Community> {
-    return new BloomManager().communityRepo().createCommunity(args);
+    const bm = new BloomManager();
+    // const dateJoinedQuestion = bm.membershipQuestionRepo().create({
+    //   category: 'DATE_JOINED',
+
+    //   title: 'Date Joined',
+    //   type: 'SHORT_TEXT'
+    // });
+    return bm.communityRepo().createCommunity(args);
   }
 
   @Query(() => Community, { nullable: true })
   async getCommunity(
-    @Args() { encodedUrlName, id }: GetCommunityArgs,
+    @Args() { encodedUrlName }: GetCommunityArgs,
     @Populate() populate: string[]
   ): Promise<Community> {
     populate = populate.reduce((acc, value) => {
@@ -32,8 +39,9 @@ export default class CommunityResolver {
       return [...acc, 'application', 'questions'];
     }, []);
 
-    const queryBy = id ? { id } : { encodedUrlName };
-    return new BloomManager().communityRepo().findOne({ ...queryBy }, populate);
+    return new BloomManager()
+      .communityRepo()
+      .findOne({ encodedUrlName }, populate);
   }
 
   @Mutation(() => Community, { nullable: true })

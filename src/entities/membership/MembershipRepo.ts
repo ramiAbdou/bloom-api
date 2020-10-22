@@ -16,12 +16,12 @@ export default class MembershipRepo extends BaseRepo<Membership> {
   /**
    * Fetches all of the applicants for a community that are still pending.
    */
-  getApplicants = async (
+  getMembers = async (
     communityId: string,
     populate: string[]
   ): Promise<Membership[]> =>
     this.find(
-      { community: { id: communityId }, status: 'PENDING' },
+      { community: { id: communityId }, status: 'ACCEPTED' },
       MembershipRepo.parsePopulate(populate)
     );
 
@@ -214,16 +214,13 @@ export default class MembershipRepo extends BaseRepo<Membership> {
   };
 
   private static parsePopulate(populate: string[]) {
+    const baseDataPopulate = ['community.questions', 'type', 'user'];
+
     return populate.reduce((acc: string[], path: string) => {
-      if (path.includes('fullData')) {
-        acc = [
-          ...acc,
-          'community.questions',
-          path.replace('fullData', 'data'),
-          'type',
-          'user'
-        ];
-      } else acc.push(path);
+      if (path.includes('fullData'))
+        acc = [...acc, ...baseDataPopulate, path.replace('fullData', 'data')];
+      else if (path.includes('data')) acc = [...acc, ...baseDataPopulate, path];
+      else acc.push(path);
       return acc;
     }, []);
   }

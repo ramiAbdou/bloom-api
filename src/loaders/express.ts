@@ -12,7 +12,7 @@ import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 
-import { APP } from '@constants';
+import { APP, isProduction, JWT } from '@constants';
 import GoogleRouter from '@integrations/google/GoogleRouter';
 import MailchimpRouter from '@integrations/mailchimp/MailchimpRouter';
 import StripeRouter from '@integrations/stripe/StripeRouter';
@@ -34,8 +34,13 @@ const updateToken = async (req: Request, res: Response, next: NextFunction) => {
   const { accessToken, refreshToken } = tokens;
   req.cookies.accessToken = accessToken;
   req.cookies.refreshToken = refreshToken;
-  res.cookie('accessToken', accessToken);
-  res.cookie('refreshToken', refreshToken);
+
+  const options = { httpOnly: true, secure: isProduction };
+  res.cookie('accessToken', accessToken, {
+    ...options,
+    maxAge: JWT.EXPIRES_IN
+  });
+  res.cookie('refreshToken', refreshToken, options);
 
   return next();
 };

@@ -3,6 +3,7 @@
  * @author Rami Abdou
  */
 
+import { IsUrl } from 'class-validator';
 import { Entity, OneToOne, Property } from 'mikro-orm';
 import { Field, ObjectType } from 'type-graphql';
 
@@ -16,10 +17,16 @@ export default class CommunityApplication extends BaseEntity {
   @Property({ type: 'text' })
   description: string;
 
+  @Field({ nullable: true })
+  @Property({ nullable: true, type: 'text' })
+  @IsUrl()
+  imageUrl: string;
+
   @Field()
   @Property()
   title: string;
 
+  // Filters all of the community questions that should be in the application.
   @Field(() => [MembershipQuestion])
   @Property({ persist: false })
   get questions(): MembershipQuestion[] {
@@ -37,6 +44,6 @@ export default class CommunityApplication extends BaseEntity {
   */
 
   // Owning side of the relationship.
-  @OneToOne(() => Community, ({ application }) => application, { owner: true })
+  @OneToOne({ mappedBy: ({ application }) => application })
   community: Community;
 }

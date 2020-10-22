@@ -7,6 +7,7 @@ import {
   ArrayType,
   BeforeCreate,
   Entity,
+  EntityRepositoryType,
   Enum,
   ManyToOne,
   Property
@@ -15,17 +16,27 @@ import { Field, Int, ObjectType } from 'type-graphql';
 
 import { Community } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
+import BaseRepo from '@util/db/BaseRepo';
 import { QuestionCategory, QuestionType } from '@util/gql';
 
 @ObjectType()
 @Entity()
 export default class MembershipQuestion extends BaseEntity {
+  [EntityRepositoryType]?: BaseRepo<MembershipQuestion>;
+
   // If the question is a special question, we have to store it in a different
   // fashion. For example, 'EMAIL' would be stored on the user, NOT the
   // membership.
   @Field(() => String, { nullable: true })
   @Enum({
-    items: ['EMAIL', 'FIRST_NAME', 'GENDER', 'LAST_NAME', 'MEMBERSHIP_TYPE'],
+    items: [
+      'DATE_JOINED',
+      'EMAIL',
+      'FIRST_NAME',
+      'GENDER',
+      'LAST_NAME',
+      'MEMBERSHIP_TYPE'
+    ],
     nullable: true,
     type: String
   })
@@ -60,7 +71,7 @@ export default class MembershipQuestion extends BaseEntity {
 
   @Field(() => String)
   @Enum({
-    items: ['SHORT_TEXT', 'LONG_TEXT', 'MULTIPLE_CHOICE', 'DROPDOWN_MULTIPLE'],
+    items: ['SHORT_TEXT', 'LONG_TEXT', 'MULTIPLE_CHOICE', 'MULTIPLE_SELECT'],
     type: String
   })
   type: QuestionType;
