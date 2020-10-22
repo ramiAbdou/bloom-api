@@ -46,6 +46,7 @@ export default class CommunityRepo extends BaseRepo<Community> {
       integrations: bm.communityIntegrationsRepo().create({}),
       memberships: [
         bm.membershipRepo().create({
+          role: 'OWNER',
           user: bm.userRepo().create({ ...owner })
         })
       ],

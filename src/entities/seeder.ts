@@ -20,7 +20,7 @@ import db from '@util/db/db';
       {
         category: 'EMAIL',
         description: `We'd prefer if you use your school email, but if you check another email more frequently, please provide that email. Make sure to check for typos.`,
-        title: 'Last Name'
+        title: 'Email'
       },
       {
         description: `Please use the full name of your university. For example, "Cornell University", not "Cornell."`,
@@ -52,7 +52,7 @@ import db from '@util/db/db';
         title: 'Race',
         type: 'MULTIPLE_SELECT'
       },
-      { title: 'Gender', type: 'MULTIPLE_CHOICE' },
+      { category: 'GENDER', title: 'Gender' },
       {
         options: ['NSBE', 'SHPE', 'CODE2040', 'MLT'],
         title: 'Are you an active member of any of these organizations?',

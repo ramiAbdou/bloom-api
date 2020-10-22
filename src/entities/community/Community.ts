@@ -62,8 +62,7 @@ export default class Community extends BaseEntity {
   }
 
   @Authorized('ADMIN')
-  @Property({ persist: false })
-  get pendingApplications(): Membership[] {
+  pendingApplications(): Membership[] {
     return this.memberships
       .getItems()
       .filter(({ status }) => status === 'PENDING');
