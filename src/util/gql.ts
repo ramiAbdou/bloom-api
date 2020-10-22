@@ -8,8 +8,8 @@ import { createParamDecorator, Field, InputType } from 'type-graphql';
 
 /* eslint-disable max-classes-per-file */
 
-export function Populate(): ParameterDecorator {
-  return createParamDecorator(({ info }) => {
+export const Populate = (): ParameterDecorator =>
+  createParamDecorator(({ info }) => {
     const populate = Object.keys(fieldsProjection(info)).reduce(
       (acc: string[], curr: string) => {
         if (!curr.includes('.')) return acc;
@@ -24,7 +24,6 @@ export function Populate(): ParameterDecorator {
       (value) => !populate.some((val) => val.includes(`${value}.`))
     );
   });
-}
 
 export type QuestionType =
   | 'LONG_TEXT'

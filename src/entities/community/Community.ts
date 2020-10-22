@@ -14,7 +14,7 @@ import {
   Property,
   QueryOrder
 } from 'mikro-orm';
-import { Field, ObjectType } from 'type-graphql';
+import { Authorized, Field, ObjectType } from 'type-graphql';
 
 import BaseEntity from '@util/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
@@ -50,7 +50,7 @@ export default class Community extends BaseEntity {
   @Field({ nullable: true })
   @Property({ nullable: true, unique: true })
   @IsUrl()
-  logo: string;
+  logoUrl: string;
 
   @Field()
   @Property({ unique: true })
@@ -59,12 +59,12 @@ export default class Community extends BaseEntity {
   @Property({ nullable: true, type: 'text' })
   overview: string;
 
-  @Property({ nullable: true, unique: true })
-  airtableApiKey: string;
-
   // This access token doesn't expire, and does not have a refresh flow.
   @Property({ nullable: true, unique: true })
   mailchimpAccessToken: string;
+
+  @Property({ nullable: true, unique: true })
+  zapierApiKey: string;
 
   @Property({ nullable: true, type: 'text', unique: true })
   zoomAccessToken: string;
@@ -80,6 +80,14 @@ export default class Community extends BaseEntity {
   @Property({ persist: false })
   get defaultMembership(): MembershipType {
     return this.types.getItems().filter(({ isDefault }) => isDefault)[0];
+  }
+
+  @Authorized('ADMIN')
+  @Property({ persist: false })
+  get pendingApplications(): Membership[] {
+    return this.memberships
+      .getItems()
+      .filter(({ status }) => status === 'PENDING');
   }
 
   @BeforeCreate()

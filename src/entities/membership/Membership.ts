@@ -42,14 +42,18 @@ export default class Membership extends BaseEntity {
   @Property({ nullable: true, type: 'text' })
   bio: string;
 
+  // Member is allowed to opt-out of email notifications that send after an
+  // event gets posted.
+  @Field(() => Boolean)
+  @Property({ type: Boolean })
+  emailNotifications = true;
+
   @Field()
   @Property()
   joinedOn: string = now();
 
-  /**
-   * @example ADMIN
-   * @example OWNER
-   */
+  // If the member has a role, it will either be ADMIN or OWNER. There should
+  // only be one OWNER in a community.
   @Field(() => String, { nullable: true })
   @Enum({ items: ['ADMIN', 'OWNER'], nullable: true, type: String })
   role: MembershipRole;
@@ -58,6 +62,17 @@ export default class Membership extends BaseEntity {
   @Enum({ items: ['REJECTED', 'PENDING', 'APPROVED'], type: String })
   status: MembershipStatus = 'PENDING';
 
+  // We don't store any of the customer's financial data in our server. Stripe
+  // handles all of that for us, we just need Stripe's customer ID in order
+  // to use recurring payments.
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  stripeCustomerId: string;
+
+  /**
+   * Returns the Membership data that is needed to be displayed in the
+   * Community Directory.
+   */
   @Property({ persist: false })
   get cardData() {
     const membershipData = this.data.getItems();
@@ -69,11 +84,15 @@ export default class Membership extends BaseEntity {
       twitterUrl
     } = this.user;
 
+    // The community specified a list of questions or user-specific categories
+    // to be in the card, so we map each of the items to the appropriate value.
     return this.community.membershipCard
       .getItems()
       .map(({ category, inMinimizedCard, question }: MembershipCardItem) => {
         let value: string;
 
+        // If no user category is specified, it means it is the item is from
+        // the membership data, NOT the user data.
         if (!category)
           value = membershipData.find(
             ({ question: { id: questionId } }) => question.id === questionId
@@ -133,8 +152,6 @@ export default class Membership extends BaseEntity {
     // any dues at all, regardless of the date, then they are active.
     if (recurrence === 'LIFETIME') return true;
 
-    const lastPaidMoment = moment.utc(lastPaidDate);
-
     // If the recurrence is MONTHLY, then we grab the date from a month ago.
     // If the recurrence is YEARLY, then we grab the date from a year ago.
     const checkAgainstMoment = moment
@@ -142,7 +159,7 @@ export default class Membership extends BaseEntity {
       .subtract(1, recurrence === 'MONTHLY' ? 'month' : 'year');
 
     // The member is active if they've paid after the date above.
-    return lastPaidMoment.isAfter(checkAgainstMoment);
+    return checkAgainstMoment.isBefore(moment.utc(lastPaidDate));
   }
 
   @BeforeCreate()

@@ -31,13 +31,17 @@ const authChecker: AuthChecker<GQLContext> = async (
   // If the userId or the communityId isn't present, then we can't even query
   // the DB to see if the member has admin priveleges, so return false.
   if (!userId) return false;
+
+  // If no roles are specified, we return true b/c only no roles would be
+  // specified if we wanted ANY logged-in user to be authorized. And, we have
+  // a userId (as seen from above).
   if (!roles.length) return true;
 
   const role = await new BloomManager()
     .membershipRepo()
     .getMembershipRole(userId, args.communityId);
 
-  return roles[0] === role;
+  return role === 'OWNER' || roles[0] === role;
 };
 
 /**
@@ -59,9 +63,8 @@ export default async () => {
   // Set the playground to false so that's it's not accessible to the outside
   // world. Also handles the request context.
   const config: ApolloServerExpressConfig = {
-    context: ({ req, res }) => ({
+    context: ({ req }) => ({
       communityId: req.cookies.communityId,
-      res,
       userId: decodeToken(req.cookies.accessToken)?.userId
     }),
     playground: false,

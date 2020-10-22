@@ -64,10 +64,10 @@ export type LoggerEvent =
   | 'ZOOM_TOKENS_REFRESHED'
   | 'ZOOM_TOKENS_STORED';
 
+export type GQLContext = { communityId: string; userId: string };
+
 export type Route = {
   callback: (request: Request, response: Response) => any;
   method: 'GET' | 'POST' | 'DELETE' | 'PUT';
   route: string;
 };
-
-export type GQLContext = { communityId: string; userId: string };
