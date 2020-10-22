@@ -8,6 +8,7 @@ import { EntityManager } from 'mikro-orm';
 import {
   Community,
   CommunityApplication,
+  CommunityIntegrations,
   Event,
   EventAttendee,
   EventRSVP,
@@ -37,6 +38,9 @@ export default class BloomManager {
   communityRepo = () => this.em.getRepository(Community);
 
   communityApplicationRepo = () => this.em.getRepository(CommunityApplication);
+
+  communityIntegrationsRepo = () =>
+    this.em.getRepository(CommunityIntegrations);
 
   eventRepo = () => this.em.getRepository(Event);
 

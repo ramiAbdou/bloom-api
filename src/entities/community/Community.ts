@@ -47,7 +47,6 @@ export default class Community extends BaseEntity {
   @Property({ unique: true })
   encodedUrlName: string;
 
-  // URL to the Digital Ocean space.
   @Field({ nullable: true })
   @Property({ nullable: true, unique: true })
   @IsUrl()
@@ -56,9 +55,6 @@ export default class Community extends BaseEntity {
   @Field()
   @Property({ unique: true })
   name: string;
-
-  @Property({ nullable: true, type: 'text' })
-  overview: string;
 
   @Property({ persist: false })
   get isInviteOnly(): boolean {

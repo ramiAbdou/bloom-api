@@ -6,6 +6,7 @@
 import {
   Collection,
   Entity,
+  EntityRepositoryType,
   Enum,
   ManyToOne,
   OneToMany,
@@ -15,6 +16,7 @@ import { Field, Float, ObjectType } from 'type-graphql';
 
 import { Community, Membership } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
+import BaseRepo from '@util/db/BaseRepo';
 import MembershipPayment from '../membership-payment/MembershipPayment';
 
 export type MembershipTypeRecurrence = 'MONTHLY' | 'YEARLY' | 'LIFETIME';
@@ -22,6 +24,8 @@ export type MembershipTypeRecurrence = 'MONTHLY' | 'YEARLY' | 'LIFETIME';
 @ObjectType()
 @Entity()
 export default class MembershipType extends BaseEntity {
+  [EntityRepositoryType]?: BaseRepo<MembershipType>;
+
   @Field(() => Float)
   @Property({ type: Number })
   amount = 0.0;

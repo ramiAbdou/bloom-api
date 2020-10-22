@@ -3,21 +3,17 @@
  * @author Rami Abdou
  */
 
-import { Field, Float, InputType } from 'type-graphql';
-
 import MembershipType, { MembershipTypeRecurrence } from './MembershipType';
 
-@InputType()
+// Note that for InputType, we still have to had the "?" for fields that have
+// a default value in order to run scripts without type errors.
+
 export class MembershipTypeInput implements Partial<MembershipType> {
-  @Field(() => Float, { nullable: true })
-  amount = 0.0;
+  amount?: number = 0.0;
 
-  @Field(() => Boolean, { nullable: true })
-  isDefault: boolean;
+  isDefault?: boolean = false;
 
-  @Field(() => String, { nullable: true })
-  recurrence: MembershipTypeRecurrence;
+  recurrence?: MembershipTypeRecurrence = 'LIFETIME';
 
-  @Field()
   name: string;
 }

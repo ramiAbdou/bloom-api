@@ -33,21 +33,22 @@ export default class CommunityRepo extends BaseRepo<Community> {
     autoAccept,
     name,
     questions,
-    overview,
+    owner,
     types
   }: CreateCommunityArgs): Promise<Community> => {
     const bm = this.bm();
 
     const community: Community = this.createAndPersist({
-      ...(title
-        ? {
-            application: bm
-              .communityApplicationRepo()
-              .create({ description, title })
-          }
-        : {}),
-      ...(overview ? { overview } : {}),
+      application: title
+        ? bm.communityApplicationRepo().create({ description, title })
+        : null,
       autoAccept,
+      integrations: bm.communityIntegrationsRepo().create({}),
+      memberships: [
+        bm.membershipRepo().create({
+          user: bm.userRepo().create({ ...owner })
+        })
+      ],
       name,
       questions: questions.map((question, i: number) =>
         bm.membershipQuestionRepo().create({ ...question, order: i })
@@ -84,7 +85,7 @@ export default class CommunityRepo extends BaseRepo<Community> {
     const types = community.types.getItems();
 
     // Adds protection against any emails that are duplicates in the CSV file,
-    // INCLUDING case insensitive duplicates.
+    // INCLUDING case-insensitive duplicates.
     const uniqueEmails = new Set<string>();
 
     await Promise.all(
@@ -106,6 +107,12 @@ export default class CommunityRepo extends BaseRepo<Community> {
           bm
             .userRepo()
             .createAndPersist({ email, firstName, gender, lastName });
+
+        // If a membership already exists for the user, then don't create a new
+        // membership. The likely case for this is for an OWNER of a community.
+        // They will have already been created in a script and might also be
+        // in a CSV.
+        if (await bm.membershipRepo().findOne({ community, user })) return;
 
         // We persist the membership instead of the user since the user can
         // potentially be persisted already.
@@ -142,12 +149,12 @@ export default class CommunityRepo extends BaseRepo<Community> {
           // type.
           else if (key === 'LAST_PAID_AT') {
             const dateValue = new Date(value);
-            if (!dateValue) return;
-            bm.membershipPaymentRepo().createAndPersist({
-              createdAt: moment.utc(dateValue).format(),
-              membership,
-              updatedAt: moment.utc(dateValue).format()
-            });
+            if (dateValue)
+              bm.membershipPaymentRepo().createAndPersist({
+                createdAt: moment.utc(dateValue).format(),
+                membership,
+                updatedAt: moment.utc(dateValue).format()
+              });
           }
 
           // If the question wasn't a special category question, then we find
@@ -205,11 +212,14 @@ export default class CommunityRepo extends BaseRepo<Community> {
     encodedUrlName: string,
     code: string
   ): Promise<Community> => {
-    const community: Community = await this.findOne({ encodedUrlName });
+    const community: Community = await this.findOne({ encodedUrlName }, [
+      'integrations'
+    ]);
+
     if (!community) return null;
 
     const token: string = await getTokenFromCode(code);
-    community.mailchimpAccessToken = token;
+    community.integrations.mailchimpAccessToken = token;
 
     await this.flush('MAILCHIMP_TOKEN_STORED', community);
     return community;
@@ -226,12 +236,15 @@ export default class CommunityRepo extends BaseRepo<Community> {
     encodedUrlName: string,
     code: string
   ): Promise<Community> => {
-    const community: Community = await this.findOne({ encodedUrlName });
+    const community: Community = await this.findOne({ encodedUrlName }, [
+      'integrations'
+    ]);
+
     if (!community) return null;
 
     const { accessToken, refreshToken } = await getTokensFromCode(code);
-    community.zoomAccessToken = accessToken;
-    community.zoomRefreshToken = refreshToken;
+    community.integrations.zoomAccessToken = accessToken;
+    community.integrations.zoomRefreshToken = refreshToken;
 
     await this.flush('ZOOM_TOKENS_STORED', community);
     return community;
@@ -243,15 +256,15 @@ export default class CommunityRepo extends BaseRepo<Community> {
    * Precondition: A zoomRefreshToken must already exist in the Community.
    */
   refreshZoomTokens = async (communityId: string): Promise<Community> => {
-    const community = await this.findOne({ id: communityId });
+    const community = await this.findOne({ id: communityId }, ['integrations']);
     const { accessToken, refreshToken } = await refreshAccessToken(
-      community.zoomRefreshToken
+      community.integrations.zoomRefreshToken
     );
 
     if (!accessToken && !refreshToken) return community;
 
-    community.zoomAccessToken = accessToken;
-    community.zoomRefreshToken = refreshToken;
+    community.integrations.zoomAccessToken = accessToken;
+    community.integrations.zoomRefreshToken = refreshToken;
 
     await this.flush('ZOOM_TOKENS_REFRESHED', community);
     return community;

@@ -8,28 +8,26 @@ import { ArgsType, Field } from 'type-graphql';
 import { MembershipQuestionInput } from '../membership-question/MembershipQuestionArgs';
 import { MembershipTypeInput } from '../membership-type/MembershipTypeArgs';
 
-@ArgsType()
+type CommunityOwnerArgs = {
+  email: string;
+  firstName: string;
+  lastName: string;
+};
+
 export class CreateCommunityArgs {
-  @Field({ nullable: true })
   applicationDescription?: string;
 
-  @Field({ nullable: true })
   applicationTitle?: string;
 
-  @Field(() => Boolean)
   autoAccept? = false;
 
-  @Field()
   name: string;
 
-  @Field(() => [MembershipQuestionInput])
   questions: MembershipQuestionInput[];
 
-  @Field(() => [MembershipTypeInput])
-  types: MembershipTypeInput[];
+  owner: CommunityOwnerArgs;
 
-  @Field({ nullable: true })
-  overview: string;
+  types: MembershipTypeInput[];
 }
 
 @ArgsType()

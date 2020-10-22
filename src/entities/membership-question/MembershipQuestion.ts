@@ -29,14 +29,7 @@ export default class MembershipQuestion extends BaseEntity {
   // membership.
   @Field(() => String, { nullable: true })
   @Enum({
-    items: [
-      'DATE_JOINED',
-      'EMAIL',
-      'FIRST_NAME',
-      'GENDER',
-      'LAST_NAME',
-      'MEMBERSHIP_TYPE'
-    ],
+    items: ['EMAIL', 'FIRST_NAME', 'GENDER', 'LAST_NAME', 'MEMBERSHIP_TYPE'],
     nullable: true,
     type: String
   })
@@ -78,10 +71,15 @@ export default class MembershipQuestion extends BaseEntity {
 
   @BeforeCreate()
   beforeCreate() {
-    if (this.category === 'GENDER')
+    if (['EMAIL', 'FIRST_NAME', 'LAST_NAME'].includes(this.category))
+      this.type = 'SHORT_TEXT';
+    else if (this.category === 'GENDER') {
+      this.type = 'MULTIPLE_CHOICE';
       this.options = ['Male', 'Female', 'Non-Binary', 'Prefer Not to Say'];
-    else if (this.category === 'MEMBERSHIP_TYPE')
+    } else if (this.category === 'MEMBERSHIP_TYPE') {
+      this.type = 'MULTIPLE_CHOICE';
       this.options = this.community.types.getItems().map(({ name }) => name);
+    }
   }
 
   /* 

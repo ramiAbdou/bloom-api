@@ -4,15 +4,18 @@
  */
 
 import { IsUrl } from 'class-validator';
-import { Entity, OneToOne, Property } from 'mikro-orm';
+import { Entity, EntityRepositoryType, OneToOne, Property } from 'mikro-orm';
 import { Field, ObjectType } from 'type-graphql';
 
 import { Community, MembershipQuestion } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
+import BaseRepo from '@util/db/BaseRepo';
 
 @ObjectType()
 @Entity()
 export default class CommunityApplication extends BaseEntity {
+  [EntityRepositoryType]?: BaseRepo<CommunityApplication>;
+
   @Field()
   @Property({ type: 'text' })
   description: string;
@@ -43,7 +46,6 @@ export default class CommunityApplication extends BaseEntity {
                                          |_|      
   */
 
-  // Owning side of the relationship.
-  @OneToOne({ mappedBy: ({ application }) => application })
+  @OneToOne(() => Community, ({ application }) => application)
   community: Community;
 }

@@ -73,8 +73,7 @@ export default class Membership extends BaseEntity {
    * Returns the Membership data that is needed to be displayed in the
    * Community Directory.
    */
-  @Property({ persist: false })
-  get cardData() {
+  cardData() {
     const membershipData = this.data.getItems();
     const {
       currentLocation,
@@ -110,9 +109,8 @@ export default class Membership extends BaseEntity {
 
   @Authorized('ADMIN')
   @Field(() => [MembershipData])
-  @Property({ persist: false })
-  get fullData(): MembershipData[] {
-    const data = this.data.getItems();
+  fullData(): MembershipData[] {
+    const data = this.data?.getItems();
     const { email, gender, firstName, lastName } = this.user;
 
     // @ts-ignore b/c this will only be queried in certain cases.
@@ -138,8 +136,7 @@ export default class Membership extends BaseEntity {
    * Returns true if the member has paid their dues. If the membership type
    * is free, automatically returns true.
    */
-  @Property({ persist: false })
-  get isActive(): boolean {
+  isActive(): boolean {
     const { isFree, recurrence } = this.type;
     if (isFree) return true;
 
@@ -200,7 +197,11 @@ export default class Membership extends BaseEntity {
   })
   payments = new Collection<MembershipPayment>(this);
 
-  @ManyToOne(() => MembershipType)
+  // 99% of the time, type MUST exist. However, in some communities, the OWNER
+  // or ADMINs are not actually general members of the community. For example,
+  // in ColorStack, the Community Manager isn't a part of the community, but
+  // in MALIK, even the National President is a general dues-paying member.
+  @ManyToOne(() => MembershipType, { nullable: true })
   type: MembershipType;
 
   @Field(() => User)

@@ -26,7 +26,8 @@ export default class EventResolver {
     @Args() args: CreateEventArgs,
     @Ctx() { communityId }: GQLContext
   ) {
-    return new BloomManager().eventRepo().createEvent({ ...args }, communityId);
+    return null;
+    // return new BloomManager().eventRepo().createEvent({ ...args }, communityId);
   }
 
   @Query(() => Event, { nullable: true })

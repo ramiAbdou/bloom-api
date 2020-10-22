@@ -37,6 +37,7 @@ export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
       await this.em.flush();
       if (event) logger.info(event, entityIds);
     } catch (e) {
+      console.log(e);
       logger.error(event, e);
     }
   }
