@@ -19,6 +19,7 @@ import { Authorized, Field, ObjectType } from 'type-graphql';
 import BaseEntity from '@util/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
 import CommunityApplication from '../community-application/CommunityApplication';
+import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
 import Event from '../event/Event';
 import MembershipCardItem from '../membership-card-item/MembershipCardItem';
 import MembershipQuestion from '../membership-question/MembershipQuestion';
@@ -59,27 +60,9 @@ export default class Community extends BaseEntity {
   @Property({ nullable: true, type: 'text' })
   overview: string;
 
-  // This access token doesn't expire, and does not have a refresh flow.
-  @Property({ nullable: true, unique: true })
-  mailchimpAccessToken: string;
-
-  @Property({ nullable: true, unique: true })
-  zapierApiKey: string;
-
-  @Property({ nullable: true, type: 'text', unique: true })
-  zoomAccessToken: string;
-
-  @Property({ nullable: true, type: 'text', unique: true })
-  zoomRefreshToken: string;
-
   @Property({ persist: false })
   get isInviteOnly(): boolean {
     return !this.application;
-  }
-
-  @Property({ persist: false })
-  get defaultMembership(): MembershipType {
-    return this.types.getItems().filter(({ isDefault }) => isDefault)[0];
   }
 
   @Authorized('ADMIN')
@@ -105,14 +88,22 @@ export default class Community extends BaseEntity {
 
   // If the community is invite-only, there will be no application. The only
   // way for someone to join is if the admin adds them manually.
-  @Field(() => CommunityApplication)
+  @Field(() => CommunityApplication, { nullable: true })
   @OneToOne(() => CommunityApplication, ({ community }) => community, {
+    nullable: true,
     owner: true
   })
   application: CommunityApplication;
 
   @OneToMany(() => Event, ({ community }) => community)
   events = new Collection<Event>(this);
+
+  @Field(() => CommunityIntegrations, { nullable: true })
+  @OneToOne(() => CommunityIntegrations, ({ community }) => community, {
+    nullable: true,
+    owner: true
+  })
+  integrations: CommunityIntegrations;
 
   @Field(() => [Membership])
   @OneToMany(() => Membership, ({ community }) => community)

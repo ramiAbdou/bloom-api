@@ -165,7 +165,11 @@ export default class Membership extends BaseEntity {
   @BeforeCreate()
   beforeCreate() {
     if (this.community.autoAccept) this.status = 'APPROVED';
-    if (!this.type) this.type = this.community.defaultMembership;
+    if (!this.type)
+      // eslint-disable-next-line prefer-destructuring
+      this.type = this.community.types
+        .getItems()
+        .filter(({ isDefault }) => isDefault)[0];
   }
 
   /* 
