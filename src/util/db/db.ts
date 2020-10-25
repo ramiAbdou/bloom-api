@@ -4,9 +4,9 @@
  * @author Rami Abdou
  */
 
-import { EntityManager, MikroORM } from 'mikro-orm';
 import options from 'mikro-orm.config';
 
+import { EntityManager, MikroORM } from '@mikro-orm/core';
 import { isProduction } from '../constants';
 
 class Connection {

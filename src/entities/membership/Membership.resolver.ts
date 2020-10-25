@@ -3,13 +3,15 @@
  * @author Rami Abdou
  */
 
-import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import { Membership } from '@entities';
 import BloomManager from '@util/db/BloomManager';
-import { Populate } from '@util/gql';
-import { ApplyForMembershipArgs } from './MembershipArgs';
+import {
+  ApplyForMembershipArgs,
+  RespondToMembershipsArgs
+} from './Membership.args';
 
 @Resolver()
 export default class MembershipResolver {
@@ -19,22 +21,21 @@ export default class MembershipResolver {
    */
   @Mutation(() => Membership, { nullable: true })
   async applyForMembership(
-    @Args() { data, email }: ApplyForMembershipArgs,
-    @Ctx() { communityId }: GQLContext
+    @Args() { data, email, encodedUrlName }: ApplyForMembershipArgs
   ): Promise<Membership> {
     return new BloomManager()
       .membershipRepo()
-      .applyForMembership(communityId, email, data);
+      .applyForMembership(encodedUrlName, email, data);
   }
 
-  @Authorized()
-  @Query(() => [Membership], { nullable: true })
-  async getMembers(
-    @Populate() populate: string[],
+  @Authorized('ADMIN')
+  @Mutation(() => Boolean, { nullable: true })
+  async respondToMemberships(
+    @Args() { membershipIds, response }: RespondToMembershipsArgs,
     @Ctx() { communityId }: GQLContext
-  ): Promise<Membership[]> {
-    return new BloomManager()
+  ) {
+    return !!(await new BloomManager()
       .membershipRepo()
-      .getMembers(communityId, populate);
+      .respondToMemberships(membershipIds, response, communityId));
   }
 }

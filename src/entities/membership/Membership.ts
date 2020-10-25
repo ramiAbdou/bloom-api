@@ -3,6 +3,9 @@
  * @author Rami Abdou
  */
 
+import moment from 'moment';
+import { Authorized, Field, ObjectType } from 'type-graphql';
+
 import {
   BeforeCreate,
   Collection,
@@ -13,10 +16,8 @@ import {
   OneToMany,
   Property,
   QueryOrder
-} from 'mikro-orm';
-import moment from 'moment';
-import { Authorized, Field, ObjectType } from 'type-graphql';
-
+} from '@mikro-orm/core';
+// import dataQueue from '@util/cache/dataQueue';
 import BaseEntity from '@util/db/BaseEntity';
 import { now } from '@util/util';
 import Community from '../community/Community';
@@ -28,10 +29,10 @@ import MembershipPayment from '../membership-payment/MembershipPayment';
 import MembershipQuestion from '../membership-question/MembershipQuestion';
 import MembershipType from '../membership-type/MembershipType';
 import User from '../user/User';
-import { MembershipRole } from './MembershipArgs';
-import MembershipRepo from './MembershipRepo';
+import { MemberData, MembershipRole } from './Membership.args';
+import MembershipRepo from './Membership.repo';
 
-export type MembershipStatus = 'REJECTED' | 'PENDING' | 'APPROVED';
+export type MembershipStatus = 'REJECTED' | 'PENDING' | 'ACCEPTED';
 
 @ObjectType()
 @Entity({ customRepository: () => MembershipRepo })
@@ -59,7 +60,7 @@ export default class Membership extends BaseEntity {
   role: MembershipRole;
 
   @Field(() => String)
-  @Enum({ items: ['REJECTED', 'PENDING', 'APPROVED'], type: String })
+  @Enum({ items: ['REJECTED', 'PENDING', 'ACCEPTED'], type: String })
   status: MembershipStatus = 'PENDING';
 
   // We don't store any of the customer's financial data in our server. Stripe
@@ -108,15 +109,15 @@ export default class Membership extends BaseEntity {
   }
 
   @Authorized('ADMIN')
-  @Field(() => [MembershipData])
-  fullData(): MembershipData[] {
+  @Field(() => [MemberData])
+  allData(): MemberData[] {
     const data = this.data?.getItems();
     const { email, gender, firstName, lastName } = this.user;
 
     // @ts-ignore b/c this will only be queried in certain cases.
     return this.community.questions
       .getItems()
-      .map(({ category, id, order, title, type }: MembershipQuestion) => {
+      .map(({ category, id, title }: MembershipQuestion) => {
         let value: string;
         const result = data.find(({ question }) => question.title === title);
 
@@ -128,8 +129,43 @@ export default class Membership extends BaseEntity {
         else if (category === 'LAST_NAME') value = lastName;
         else if (category === 'MEMBERSHIP_TYPE') value = this.type.name;
 
-        return { question: { id, order, title, type }, value };
+        return { questionId: id, value };
       });
+  }
+
+  /**
+   * Returns the pending application data that will allow the ADMIN of the
+   * community to accept or reject the application.
+   */
+  @Authorized('ADMIN')
+  @Field(() => [MemberData])
+  applicantData(): MemberData[] {
+    // This method is only intended for retrieving pending application data.
+    if (this.status !== 'PENDING') return null;
+
+    const data = this.data.getItems();
+    const { email, gender, firstName, lastName } = this.user;
+
+    return (
+      this.community.questions
+        .getItems()
+        // We only need the questions in the application.
+        .filter(({ inApplication }: MembershipQuestion) => inApplication)
+        .map(({ category, id, title }: MembershipQuestion) => {
+          let value: string;
+          const result = data.find(({ question }) => question.title === title);
+
+          if (result) value = result.value;
+          else if (category === 'DATE_JOINED') value = this.joinedOn;
+          else if (category === 'EMAIL') value = email;
+          else if (category === 'FIRST_NAME') value = firstName;
+          else if (category === 'GENDER') value = gender;
+          else if (category === 'LAST_NAME') value = lastName;
+          else if (category === 'MEMBERSHIP_TYPE') value = this.type.name;
+
+          return { questionId: id, value };
+        })
+    );
   }
 
   /**
@@ -161,7 +197,7 @@ export default class Membership extends BaseEntity {
 
   @BeforeCreate()
   beforeCreate() {
-    if (this.role || this.community.autoAccept) this.status = 'APPROVED';
+    if (this.role || this.community.autoAccept) this.status = 'ACCEPTED';
     if (!this.type)
       // eslint-disable-next-line prefer-destructuring
       this.type = this.community.types
@@ -201,6 +237,7 @@ export default class Membership extends BaseEntity {
   // or ADMINs are not actually general members of the community. For example,
   // in ColorStack, the Community Manager isn't a part of the community, but
   // in MALIK, even the National President is a general dues-paying member.
+  @Field(() => MembershipType)
   @ManyToOne(() => MembershipType, { nullable: true })
   type: MembershipType;
 

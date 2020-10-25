@@ -13,14 +13,17 @@ module.exports = {
   overrides: [
     // For the GraphQL resolver files, we don't need to use this because
     // the type-graphql package doesn't encourage it.
-    { files: ['*Resolver.ts'], rules: { 'class-methods-use-this': 0 } },
+    {
+      files: ['*.resolver.ts', '*.repo.ts'],
+      rules: { 'class-methods-use-this': 0 }
+    },
     {
       files: ['index.ts'],
       rules: { 'import/prefer-default-export': 0 }
     },
-    { files: ['*Router.ts'], rules: { 'class-methods-use-this': 0 } },
+    { files: ['*.router.ts'], rules: { 'class-methods-use-this': 0 } },
     {
-      files: ['*Args.ts', '*.types.ts', '*Util.ts'],
+      files: ['*.args.ts', '*.types.ts', '*.util.ts'],
       rules: { 'max-classes-per-file': 0, 'import/prefer-default-export': 0 }
     }
   ],

@@ -4,7 +4,7 @@
  */
 
 import * as CSV from 'csv-string';
-import { EntityData } from 'mikro-orm';
+import { EntityData } from '@mikro-orm/core';
 
 import BaseRepo from '@util/db/BaseRepo';
 import MembershipData from './MembershipData';

@@ -3,7 +3,7 @@
  * @author Rami Abdou
  */
 
-import { Entity, EntityRepositoryType, OneToOne, Property } from 'mikro-orm';
+import { Entity, EntityRepositoryType, OneToOne, Property } from '@mikro-orm/core';
 import { ObjectType } from 'type-graphql';
 
 import BaseEntity from '@util/db/BaseEntity';

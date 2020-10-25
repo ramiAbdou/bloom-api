@@ -10,7 +10,6 @@ import mjml2html from 'mjml';
 import { isProduction } from '@constants';
 import logger from '@logger';
 import sg from '@sendgrid/mail';
-import { EmailData } from './types';
 
 sg.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -21,12 +20,17 @@ sg.setApiKey(process.env.SENDGRID_API_KEY);
  * @param mjml Name of the MJML file (including the .mjml extension).
  * @param variables Optional variables that populate the Handlebars template.
  */
-export const sendEmail = async ({ mjml, to, subject, ...data }: EmailData) => {
+export const sendEmail = async (
+  mjml: string,
+  subject: string,
+  to: string,
+  data?: Record<string, any>
+) => {
   // We shouldn't send any emails in production. If we do want to, we should
   // comment this line out manually each time.
   if (!isProduction) return;
 
-  const pathToFile = `./src/util/emails/templates/${mjml}`;
+  const pathToFile = `./src/util/emails/${mjml}`;
   const template = compile(readFileSync(pathToFile, 'utf8'));
   const { html } = mjml2html(template(data));
   try {
@@ -35,9 +39,4 @@ export const sendEmail = async ({ mjml, to, subject, ...data }: EmailData) => {
   } catch (e) {
     logger.error('EMAIL_SENT', new Error(`Failed to send SendGrid mail: ${e}`));
   }
-};
-
-export const VERIFICATION_EMAIL_ARGS = {
-  mjml: 'verify-email.mjml',
-  subject: 'Welcome to Bloom! Confirm Your Email'
 };

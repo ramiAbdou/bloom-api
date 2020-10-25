@@ -7,19 +7,19 @@ import csv from 'csvtojson';
 import moment from 'moment';
 
 import { Membership, MembershipQuestion, User } from '@entities';
-import { getTokenFromCode } from '@integrations/mailchimp/MailchimpUtil';
+import { getTokenFromCode } from '@integrations/mailchimp/Mailchimp.util';
 import {
   getTokensFromCode,
   refreshAccessToken
-} from '@integrations/zoom/ZoomUtil';
+} from '@integrations/zoom/Zoom.util';
 import BaseRepo from '@util/db/BaseRepo';
-import { MembershipTypeInput } from '../membership-type/MembershipTypeArgs';
+import { MembershipTypeInput } from '../membership-type/MembershipType.args';
 import Community from './Community';
 import {
   CreateCommunityArgs,
   ImportCommunityCSVArgs,
   ReorderQuestionArgs
-} from './CommunityArgs';
+} from './Community.args';
 
 export default class CommunityRepo extends BaseRepo<Community> {
   /**
@@ -30,19 +30,18 @@ export default class CommunityRepo extends BaseRepo<Community> {
   createCommunity = async ({
     applicationDescription: description,
     applicationTitle: title,
-    autoAccept,
-    name,
     questions,
     owner,
-    types
+    types,
+    ...data
   }: CreateCommunityArgs): Promise<Community> => {
     const bm = this.bm();
 
     const community: Community = this.createAndPersist({
+      ...data,
       application: title
         ? bm.communityApplicationRepo().create({ description, title })
         : null,
-      autoAccept,
       integrations: bm.communityIntegrationsRepo().create({}),
       memberships: [
         bm.membershipRepo().create({
@@ -50,7 +49,6 @@ export default class CommunityRepo extends BaseRepo<Community> {
           user: bm.userRepo().create({ ...owner })
         })
       ],
-      name,
       questions: questions.map((question, i: number) =>
         bm.membershipQuestionRepo().create({ ...question, order: i })
       ),
@@ -119,7 +117,7 @@ export default class CommunityRepo extends BaseRepo<Community> {
         // potentially be persisted already.
         const membership: Membership = bm
           .membershipRepo()
-          .createAndPersist({ community, status: 'APPROVED', user });
+          .createAndPersist({ community, status: 'ACCEPTED', user });
 
         // eslint-disable-next-line array-callback-return
         Object.entries(row).map(([key, value]) => {

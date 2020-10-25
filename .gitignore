@@ -4,5 +4,4 @@ logs
 node_modules
 package-lock.json
 membership-csv
-src/entities/seeder.ts
 src/scripts

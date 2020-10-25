@@ -12,35 +12,42 @@ import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 
-import { APP, isProduction, JWT } from '@constants';
-import GoogleRouter from '@integrations/google/GoogleRouter';
-import MailchimpRouter from '@integrations/mailchimp/MailchimpRouter';
-import StripeRouter from '@integrations/stripe/StripeRouter';
-import ZoomRouter from '@integrations/zoom/ZoomRouter';
+import { APP } from '@constants';
+import GoogleRouter from '@integrations/google/Google.router';
+import MailchimpRouter from '@integrations/mailchimp/Mailchimp.router';
+import StripeRouter from '@integrations/stripe/Stripe.router';
+import ZoomRouter from '@integrations/zoom/Zoom.router';
 import BloomManager from '@util/db/BloomManager';
-import UserRouter from '../entities/user/UserRouter';
+import { decodeToken, verifyToken } from '@util/util';
 
 /**
- * Authentication middleware that tries to update the token if the token
- * is expired.
+ * When a user is sending a request to the GraphQL resolvers, they pass along
+ * an accessToken and refreshToken along in every request. If the access token
+ * is expired, we need to update BOTH tokens and send them back.
  */
-const updateToken = async (req: Request, res: Response, next: NextFunction) => {
-  const tokens = await new BloomManager()
-    .userRepo()
-    .updateTokens(req.cookies.accessToken, req.cookies.refreshToken);
+const refreshTokenIfExpired = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { accessToken, refreshToken } = req.cookies;
 
-  if (!tokens) return next();
+  // If the accessToken has expired, but there is a valid refreshToken and
+  // the request comes to the /graphql endpoint, we run the refresh flow.
+  if (!verifyToken(accessToken) && refreshToken && req.url === '/graphql') {
+    const userId: string = decodeToken(refreshToken)?.userId;
+    const tokens = await new BloomManager().userRepo().refreshTokenFlow({
+      res,
+      userId
+    });
 
-  const { accessToken, refreshToken } = tokens;
-  req.cookies.accessToken = accessToken;
-  req.cookies.refreshToken = refreshToken;
-
-  const options = { httpOnly: true, secure: isProduction };
-  res.cookie('accessToken', accessToken, {
-    ...options,
-    maxAge: JWT.EXPIRES_IN
-  });
-  res.cookie('refreshToken', refreshToken, options);
+    // We have to update the tokens on the request as well in order to ensure that
+    // GraphQL context can set the user ID properly.
+    if (tokens) {
+      req.cookies.accessToken = tokens.accessToken;
+      req.cookies.refreshToken = tokens.refreshToken;
+    }
+  }
 
   return next();
 };
@@ -54,15 +61,14 @@ export default () => {
   app.use(cors({ credentials: true, origin: APP.CLIENT_URL }));
   app.use(cookieParser());
   app.use(helmet()); // Sets various HTTP response headers to prevent exploits.
-  app.use(updateToken);
+  app.use(refreshTokenIfExpired);
 
-  // Third-party routers (mostly for webhooks and catching routes).
+  // ## EXPRESS ROUTERS
+
   app.use('/google', new GoogleRouter().router);
   app.use('/mailchimp', new MailchimpRouter().router);
   app.use('/stripe', new StripeRouter().router);
   app.use('/zoom', new ZoomRouter().router);
-
-  app.use('/users', new UserRouter().router);
 
   return app;
 };

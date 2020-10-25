@@ -3,7 +3,7 @@
  * @author Rami Abdou
  */
 
-import { Entity, ManyToOne, Property } from 'mikro-orm';
+import { Entity, ManyToOne, Property } from '@mikro-orm/core';
 
 import { Event, Membership } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';

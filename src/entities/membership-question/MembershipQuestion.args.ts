@@ -18,6 +18,10 @@ export class MembershipQuestionInput implements Partial<MembershipQuestion> {
   // membership application form.
   inApplication? = true;
 
+  // If set to false, this question will not appear in the community's
+  // membership application form.
+  inApplicantCard? = false;
+
   required? = true;
 
   // @ts-ignore b/c we want it to be an array, and type casting is weird when

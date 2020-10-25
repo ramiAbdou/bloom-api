@@ -4,27 +4,74 @@
  * @author Rami Abdou
  */
 
-import { AnyEntity, EntityData, EntityRepository } from 'mikro-orm';
+/* eslint-disable no-underscore-dangle */
 
 import { LoggerEvent } from '@constants';
 import logger from '@logger';
+import {
+  AnyEntity,
+  EntityData,
+  EntityRepository,
+  FilterQuery,
+  FindOneOptions,
+  Loaded,
+  Populate,
+  QueryOrderMap
+} from '@mikro-orm/core';
 import BloomManager from '@util/db/BloomManager';
-import { now } from '@util/util';
+import { buildCacheKey, now } from '@util/util';
+import cache from '../cache';
 
 export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
   T
 > {
   /**
-   * Returns a new BloomManager using the same EntityManager as the current
-   * EntityRepository.
+   * Returns a new BloomManager using the SAME EntityManager as the current
+   * EntityRepository. It is important that is the SAME!
    */
-  bm() {
-    return new BloomManager(this.em);
+  bm = () => new BloomManager(this.em);
+
+  /**
+   * Finds first entity matching your `where` query.
+   *
+   * @param key is for the cache.
+   */
+  async findOne<P extends Populate<T> = any>(
+    where: FilterQuery<T>,
+    populate?: P | FindOneOptions<T, P>,
+    orderBy?: QueryOrderMap,
+    key?: string
+  ): Promise<Loaded<T, P> | null> {
+    // Try to find and return the entity from the cache. We must return it as
+    // a resolved Promise to ensure type safety.
+    key =
+      key ??
+      buildCacheKey({
+        entityName: this.entityName,
+        orderBy,
+        populate,
+        where
+      });
+
+    if (cache.has(key)) return cache.get(key) as Promise<Loaded<T, P> | null>;
+
+    // If not found, get it from the DB.
+    const result = await this.em.findOne<T, P>(
+      this.entityName,
+      where,
+      populate as P,
+      orderBy
+    );
+
+    // Update the cache after fetching from the DB.
+    cache.set(key, result);
+    return result;
   }
 
   async flush(
     event?: LoggerEvent,
-    entities?: AnyEntity<any> | AnyEntity<any>[]
+    entities?: AnyEntity<any> | AnyEntity<any>[],
+    invalidateCache = true
   ) {
     const entityIds: string[] = Array.isArray(entities)
       ? entities.reduce(
@@ -36,9 +83,10 @@ export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
     try {
       await this.em.flush();
       if (event) logger.info(event, entityIds);
+      if (invalidateCache) cache.invalidateEntries(entityIds);
     } catch (e) {
-      console.log(e);
       logger.error(event, e);
+      throw new Error(e);
     }
   }
 
@@ -46,8 +94,10 @@ export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
     try {
       await this.em.persistAndFlush(entity);
       if (event) logger.info(event, entity.id);
+      cache.invalidateEntries(entity.id);
     } catch (e) {
       logger.error(event, new Error(e));
+      throw new Error(e);
     }
   }
 
@@ -70,6 +120,7 @@ export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
     try {
       await this.flush(event, entities);
       if (event) logger.info(event);
+      cache.invalidateEntries(entities.map(({ id }) => id));
     } catch (e) {
       logger.error(event, new Error(e));
     }
@@ -83,6 +134,4 @@ export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
     this.persist(entity);
     return entity;
   }
-
-  parsePopulate: () => string[];
 }

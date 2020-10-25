@@ -8,11 +8,10 @@ import {
   BeforeCreate,
   Collection,
   Entity,
-  EntityRepositoryType,
   ManyToOne,
   OneToMany,
   Property
-} from 'mikro-orm';
+} from '@mikro-orm/core';
 import { Field, ObjectType } from 'type-graphql';
 
 import { APP } from '@constants';
@@ -22,13 +21,10 @@ import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventRSVP from '../event-rsvp/EventRSVP';
 import MembershipQuestion from '../membership-question/MembershipQuestion';
-import EventRepo from './EventRepo';
 
 @ObjectType()
-@Entity({ customRepository: () => EventRepo })
+@Entity()
 export default class Event extends BaseEntity {
-  [EntityRepositoryType]?: EventRepo;
-
   /**
    * @example
    * """ If you're interested in pursuing a Software Engineering Internship,

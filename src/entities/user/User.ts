@@ -4,6 +4,8 @@
  */
 
 import { IsEmail, IsUrl } from 'class-validator';
+import { Field, ObjectType } from 'type-graphql';
+
 import {
   BeforeCreate,
   Cascade,
@@ -13,12 +15,10 @@ import {
   Enum,
   OneToMany,
   Property
-} from 'mikro-orm';
-import { Field, ObjectType } from 'type-graphql';
-
+} from '@mikro-orm/core';
 import BaseEntity from '@util/db/BaseEntity';
 import Membership from '../membership/Membership';
-import UserRepo from './UserRepo';
+import UserRepo from './User.repo';
 
 @ObjectType()
 @Entity({ customRepository: () => UserRepo })
@@ -56,11 +56,6 @@ export default class User extends BaseEntity {
   @Field()
   @Property()
   lastName: string;
-
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  @IsUrl()
-  pictureUrl: string;
 
   // Server-generated token that we use to keep the user logged-in when sending
   // GraphQL requests.

@@ -3,12 +3,12 @@
  * @author Rami Abdou
  */
 
-import { Entity, EntityRepositoryType, ManyToOne, Property } from 'mikro-orm';
+import { Entity, EntityRepositoryType, ManyToOne, Property } from '@mikro-orm/core';
 
 import { Membership } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 import MembershipType from '../membership-type/MembershipType';
-import MembershipPaymentRepo from './MembershipPaymentRepo';
+import MembershipPaymentRepo from './MembershipPayment.repo';
 
 @Entity({ customRepository: () => MembershipPaymentRepo })
 export default class MembershipPayment extends BaseEntity {

@@ -11,13 +11,10 @@ import { GraphQLSchema } from 'graphql';
 import { AuthChecker, buildSchema } from 'type-graphql';
 
 import { GQLContext } from '@constants';
-import BloomManager from '@util/db/BloomManager';
 import { decodeToken } from '@util/util';
-import CommunityResolver from '../entities/community/CommunityResolver';
-import EventAttendeeResolver from '../entities/event-attendee/EventAttendeeResolver';
-import EventResolver from '../entities/event/EventResolver';
-import MembershipResolver from '../entities/membership/MembershipResolver';
-import UserResolver from '../entities/user/UserResolver';
+import CommunityResolver from '../entities/community/Community.resolver';
+import MembershipResolver from '../entities/membership/Membership.resolver';
+import UserResolver from '../entities/user/User.resolver';
 
 /**
  * The auth checker returns true (is authorized) if there is a refreshToken
@@ -25,7 +22,7 @@ import UserResolver from '../entities/user/UserResolver';
  * idToken using the refreshToken if it is invalid.
  */
 const authChecker: AuthChecker<GQLContext> = async (
-  { args, context: { userId } },
+  { context: { role, userId } },
   roles: string[]
 ) => {
   // If the userId or the communityId isn't present, then we can't even query
@@ -37,10 +34,6 @@ const authChecker: AuthChecker<GQLContext> = async (
   // a userId (as seen from above).
   if (!roles.length) return true;
 
-  const role = await new BloomManager()
-    .membershipRepo()
-    .getMembershipRole(userId, args.communityId);
-
   return role === 'OWNER' || roles[0] === role;
 };
 
@@ -50,21 +43,17 @@ const authChecker: AuthChecker<GQLContext> = async (
 export const createSchema = async (): Promise<GraphQLSchema> =>
   buildSchema({
     authChecker,
-    resolvers: [
-      CommunityResolver,
-      EventResolver,
-      EventAttendeeResolver,
-      MembershipResolver,
-      UserResolver
-    ]
+    resolvers: [CommunityResolver, MembershipResolver, UserResolver]
   });
 
 export default async () => {
   // Set the playground to false so that's it's not accessible to the outside
   // world. Also handles the request context.
   const config: ApolloServerExpressConfig = {
-    context: ({ req }) => ({
+    context: ({ req, res }) => ({
       communityId: req.cookies.communityId,
+      res,
+      role: req.cookies.role, // Saves DB call on every GraphQL query.
       userId: decodeToken(req.cookies.accessToken)?.userId
     }),
     playground: false,

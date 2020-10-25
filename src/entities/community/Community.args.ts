@@ -5,8 +5,8 @@
 
 import { ArgsType, Field } from 'type-graphql';
 
-import { MembershipQuestionInput } from '../membership-question/MembershipQuestionArgs';
-import { MembershipTypeInput } from '../membership-type/MembershipTypeArgs';
+import { MembershipQuestionInput } from '../membership-question/MembershipQuestion.args';
+import { MembershipTypeInput } from '../membership-type/MembershipType.args';
 
 type CommunityOwnerArgs = {
   email: string;
@@ -23,6 +23,8 @@ export class CreateCommunityArgs {
 
   name: string;
 
+  primaryColor?: string;
+
   questions: MembershipQuestionInput[];
 
   owner: CommunityOwnerArgs;
@@ -32,7 +34,7 @@ export class CreateCommunityArgs {
 
 @ArgsType()
 export class GetCommunityArgs {
-  @Field()
+  @Field({ nullable: true })
   encodedUrlName: string;
 }
 

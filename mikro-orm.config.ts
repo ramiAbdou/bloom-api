@@ -4,10 +4,9 @@
  * @author Rami Abdou
  */
 
-import { Connection, IDatabaseDriver, Options } from 'mikro-orm';
-
 import { APP, isProduction } from '@constants';
 import * as entities from '@entities';
+import { Connection, IDatabaseDriver, Options } from '@mikro-orm/core';
 import BaseEntity from '@util/db/BaseEntity';
 import BaseRepo from '@util/db/BaseRepo';
 import NamingStrategy from '@util/db/NamingStrategy';
@@ -23,5 +22,6 @@ export default {
   entityRepository: BaseRepo,
   filters: { notDeleted: { cond: () => ({ deletedAt: null }) } },
   namingStrategy: NamingStrategy,
+  resultCache: { expiration: 0 },
   type: 'postgresql'
 } as Options<IDatabaseDriver<Connection>>;

@@ -3,6 +3,9 @@
  * @author Rami Abdou
  */
 
+import { Authorized, Field, Int, ObjectType } from 'type-graphql';
+
+import { Community } from '@entities';
 import {
   ArrayType,
   BeforeCreate,
@@ -11,10 +14,7 @@ import {
   Enum,
   ManyToOne,
   Property
-} from 'mikro-orm';
-import { Field, Int, ObjectType } from 'type-graphql';
-
-import { Community } from '@entities';
+} from '@mikro-orm/core';
 import BaseEntity from '@util/db/BaseEntity';
 import BaseRepo from '@util/db/BaseRepo';
 import { QuestionCategory, QuestionType } from '@util/gql';
@@ -45,6 +45,13 @@ export default class MembershipQuestion extends BaseEntity {
   @Property({ type: Boolean })
   inApplication = true;
 
+  // In the applicant card if it's important to the ADMIN.
+  @Authorized('ADMIN')
+  @Field(() => Boolean)
+  @Property({ type: Boolean })
+  inApplicantCard = false;
+
+  // Will only be non-null if the type is MULTIPLE_CHOICE or MULTIPLE_SELECT.
   @Field(() => [String], { nullable: true })
   @Property({ nullable: true, type: ArrayType })
   options: string[];
@@ -80,6 +87,8 @@ export default class MembershipQuestion extends BaseEntity {
       this.type = 'MULTIPLE_CHOICE';
       this.options = this.community.types.getItems().map(({ name }) => name);
     }
+
+    if (this.category === 'MEMBERSHIP_TYPE') this.inApplicantCard = true;
   }
 
   /* 

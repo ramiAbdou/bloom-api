@@ -3,6 +3,9 @@
  * @author Rami Abdou
  */
 
+import { Field, Float, ObjectType } from 'type-graphql';
+
+import { Community, Membership } from '@entities';
 import {
   Collection,
   Entity,
@@ -11,10 +14,7 @@ import {
   ManyToOne,
   OneToMany,
   Property
-} from 'mikro-orm';
-import { Field, Float, ObjectType } from 'type-graphql';
-
-import { Community, Membership } from '@entities';
+} from '@mikro-orm/core';
 import BaseEntity from '@util/db/BaseEntity';
 import BaseRepo from '@util/db/BaseRepo';
 import MembershipPayment from '../membership-payment/MembershipPayment';

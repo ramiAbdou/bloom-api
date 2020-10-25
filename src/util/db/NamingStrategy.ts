@@ -7,7 +7,7 @@
 
 /* eslint-disable class-methods-use-this */
 
-import { AbstractNamingStrategy } from 'mikro-orm';
+import { AbstractNamingStrategy } from '@mikro-orm/core';
 import { plural, singular } from 'pluralize';
 
 export default class NamingStrategy extends AbstractNamingStrategy {

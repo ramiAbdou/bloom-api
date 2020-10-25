@@ -4,6 +4,9 @@
  */
 
 import { IsUrl } from 'class-validator';
+import { Authorized, Field, ObjectType } from 'type-graphql';
+
+import { DIGITAL_OCEAN } from '@constants';
 import {
   BeforeCreate,
   Collection,
@@ -13,9 +16,7 @@ import {
   OneToOne,
   Property,
   QueryOrder
-} from 'mikro-orm';
-import { Authorized, Field, ObjectType } from 'type-graphql';
-
+} from '@mikro-orm/core';
 import BaseEntity from '@util/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
 import CommunityApplication from '../community-application/CommunityApplication';
@@ -25,14 +26,17 @@ import MembershipCardItem from '../membership-card-item/MembershipCardItem';
 import MembershipQuestion from '../membership-question/MembershipQuestion';
 import MembershipType from '../membership-type/MembershipType';
 import Membership from '../membership/Membership';
-import CommunityRepo from './CommunityRepo';
+import CommunityRepo from './Community.repo';
 
 @ObjectType()
 @Entity({ customRepository: () => CommunityRepo })
 export default class Community extends BaseEntity {
   [EntityRepositoryType]?: CommunityRepo;
 
+  // ## FIELDS
+
   // True if the membership should be accepted automatically.
+  @Field(() => Boolean)
   @Property({ type: Boolean })
   autoAccept = false;
 
@@ -56,30 +60,31 @@ export default class Community extends BaseEntity {
   @Property({ unique: true })
   name: string;
 
-  @Property({ persist: false })
-  get isInviteOnly(): boolean {
-    return !this.application;
-  }
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  primaryColor: string;
 
-  @Authorized('ADMIN')
-  pendingApplications(): Membership[] {
-    return this.memberships
-      .getItems()
-      .filter(({ status }) => status === 'PENDING');
-  }
+  // ## LIFECYCLE HOOKS
 
   @BeforeCreate()
   beforeCreate() {
     this.encodedUrlName = toLowerCaseDash(this.name);
+    if (!this.logoUrl)
+      this.logoUrl = `${DIGITAL_OCEAN.SPACE_URL}/${this.encodedUrlName}.png`;
   }
 
-  /* 
-  ___     _      _   _             _    _         
- | _ \___| |__ _| |_(_)___ _ _  __| |_ (_)_ __ ___
- |   / -_) / _` |  _| / _ \ ' \(_-< ' \| | '_ (_-<
- |_|_\___|_\__,_|\__|_\___/_||_/__/_||_|_| .__/__/
-                                         |_|      
-  */
+  // ## MEMBER FUNCTIONS
+
+  @Field(() => [Membership])
+  @Authorized('ADMIN')
+  async pendingApplicants(): Promise<Membership[]> {
+    if (!this.memberships.isInitialized())
+      await this.memberships.init({ where: { status: 'PENDING' } });
+    const memberships: Membership[] = this.memberships.getItems();
+    return memberships.filter(({ status }) => status === 'PENDING');
+  }
+
+  // ## RELATIONSHIPS
 
   // If the community is invite-only, there will be no application. The only
   // way for someone to join is if the admin adds them manually.

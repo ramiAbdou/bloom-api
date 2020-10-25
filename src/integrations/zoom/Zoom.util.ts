@@ -3,12 +3,24 @@
  * @author Rami Abdou
  */
 
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import camelCase from 'camelcase-keys';
 import snakeCase from 'snakecase-keys';
 
 import { APP, AuthTokens } from '@constants';
-import { extractTokensFromAxios } from '@util/util';
+
+/**
+ * Returns the accessToken and refreshToken from the data.
+ * Precondition: data has both an access_token and refresh_token.
+ *
+ * @example extractTokensFromAxios(
+ *  { data: { access_token: 'a', refresh_token: 'b' } }
+ * ) => { accessToken: 'a', refreshToken: 'b' }
+ */
+const extractTokensFromAxios = ({ data }: AxiosResponse): AuthTokens => ({
+  accessToken: data.access_token,
+  refreshToken: data.refresh_token
+});
 
 /**
  *
