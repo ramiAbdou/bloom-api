@@ -3,9 +3,14 @@
  * @author Rami Abdou
  */
 
-import { Entity, EntityRepositoryType, OneToOne, Property } from '@mikro-orm/core';
 import { ObjectType } from 'type-graphql';
 
+import {
+  Entity,
+  EntityRepositoryType,
+  OneToOne,
+  Property
+} from '@mikro-orm/core';
 import BaseEntity from '@util/db/BaseEntity';
 import BaseRepo from '@util/db/BaseRepo';
 import Community from '../community/Community';
@@ -28,13 +33,7 @@ export default class CommunityIntegrations extends BaseEntity {
   @Property({ nullable: true, type: 'text', unique: true })
   zoomRefreshToken: string;
 
-  /* 
-  ___     _      _   _             _    _         
- | _ \___| |__ _| |_(_)___ _ _  __| |_ (_)_ __ ___
- |   / -_) / _` |  _| / _ \ ' \(_-< ' \| | '_ (_-<
- |_|_\___|_\__,_|\__|_\___/_||_/__/_||_|_| .__/__/
-                                         |_|      
-  */
+  // ## RELATIONSHIPS
 
   @OneToOne(() => Community, ({ integrations }) => integrations)
   community: Community;

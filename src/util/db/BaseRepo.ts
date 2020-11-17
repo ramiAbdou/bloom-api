@@ -71,7 +71,7 @@ export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
   async flush(
     event?: LoggerEvent,
     entities?: AnyEntity<any> | AnyEntity<any>[],
-    invalidateCache = true
+    invalidateCache = false
   ) {
     const entityIds: string[] = Array.isArray(entities)
       ? entities.reduce(
