@@ -21,6 +21,8 @@ export default class MailchimpRouter extends Router {
       .communityRepo()
       .storeMailchimpTokenFromCode(encodedUrlName as string, code as string);
 
-    res.redirect(`${APP.CLIENT_URL}/${encodedUrlName}/integrations`);
+    res.redirect(
+      `${APP.CLIENT_URL}/${encodedUrlName}/integrations?flow=mailchimp`
+    );
   }
 }

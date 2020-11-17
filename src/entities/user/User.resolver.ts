@@ -69,6 +69,9 @@ export default class UserResolver {
   async getUser(@Ctx() { userId }: GQLContext) {
     return new BloomManager()
       .userRepo()
-      .findOne({ id: userId }, ['memberships.community', 'memberships.type']);
+      .findOne({ id: userId }, [
+        'memberships.community.integrations',
+        'memberships.type'
+      ]);
   }
 }

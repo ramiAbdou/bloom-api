@@ -3,7 +3,8 @@
  * @author Rami Abdou
  */
 
-import { ObjectType } from 'type-graphql';
+import axios, { AxiosRequestConfig } from 'axios';
+import { Field, ObjectType } from 'type-graphql';
 
 import {
   Entity,
@@ -24,6 +25,12 @@ export default class CommunityIntegrations extends BaseEntity {
   @Property({ nullable: true, unique: true })
   mailchimpAccessToken: string;
 
+  // Represents the audience/list that the user wants to add them as a member
+  // on.
+  @Field({ nullable: true })
+  @Property({ nullable: true, unique: true })
+  mailchimpListId: string;
+
   @Property({ nullable: true, unique: true })
   zapierApiKey: string;
 
@@ -37,4 +44,20 @@ export default class CommunityIntegrations extends BaseEntity {
 
   @OneToOne(() => Community, ({ integrations }) => integrations)
   community: Community;
+
+  // ## MEMBER FUNCTIONS
+
+  @Field(() => [String], { nullable: true })
+  async mailchimpLists(): Promise<string[]> {
+    if (!this.mailchimpAccessToken) return [];
+
+    const options: AxiosRequestConfig = {
+      headers: { Authorization: `OAuth ${this.mailchimpAccessToken}` },
+      method: 'GET',
+      url: `https://us2.api.mailchimp.com/3.0/lists`
+    };
+
+    const { data } = await axios(options);
+    return data?.lists?.map(({ name }) => name);
+  }
 }
