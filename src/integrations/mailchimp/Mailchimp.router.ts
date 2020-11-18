@@ -18,7 +18,7 @@ export default class MailchimpRouter extends Router {
     const { code, state: encodedUrlName } = query;
 
     await new BloomManager()
-      .communityRepo()
+      .communityIntegrationsRepo()
       .storeMailchimpTokenFromCode(encodedUrlName as string, code as string);
 
     res.redirect(

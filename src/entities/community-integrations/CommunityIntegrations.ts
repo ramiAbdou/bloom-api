@@ -13,13 +13,14 @@ import {
   Property
 } from '@mikro-orm/core';
 import BaseEntity from '@util/db/BaseEntity';
-import BaseRepo from '@util/db/BaseRepo';
 import Community from '../community/Community';
+import { MailchimpLists } from './CommunityIntegrations.args';
+import CommunityIntegrationsRepo from './CommunityIntegrations.repo';
 
 @ObjectType()
-@Entity()
+@Entity({ customRepository: () => CommunityIntegrationsRepo })
 export default class CommunityIntegrations extends BaseEntity {
-  [EntityRepositoryType]?: BaseRepo<CommunityIntegrations>;
+  [EntityRepositoryType]?: CommunityIntegrationsRepo;
 
   // This access token doesn't expire, and does not have a refresh flow.
   @Property({ nullable: true, unique: true })
@@ -47,7 +48,12 @@ export default class CommunityIntegrations extends BaseEntity {
 
   // ## MEMBER FUNCTIONS
 
-  @Field(() => [String], { nullable: true })
+  @Field(() => Boolean)
+  isMailchimpAuthenticated(): boolean {
+    return !!this.mailchimpAccessToken;
+  }
+
+  @Field(() => [MailchimpLists], { nullable: true })
   async mailchimpLists(): Promise<string[]> {
     if (!this.mailchimpAccessToken) return [];
 
@@ -58,6 +64,6 @@ export default class CommunityIntegrations extends BaseEntity {
     };
 
     const { data } = await axios(options);
-    return data?.lists?.map(({ name }) => name);
+    return data?.lists?.map(({ id, name }) => ({ id, name }));
   }
 }

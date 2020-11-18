@@ -12,6 +12,7 @@ import { AuthChecker, buildSchema } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import { decodeToken } from '@util/util';
+import CommunityIntegrations from '../entities/community-integrations/CommunityIntegrations.resolver';
 import CommunityResolver from '../entities/community/Community.resolver';
 import MembershipResolver from '../entities/membership/Membership.resolver';
 import UserResolver from '../entities/user/User.resolver';
@@ -43,7 +44,12 @@ const authChecker: AuthChecker<GQLContext> = async (
 export const createSchema = async (): Promise<GraphQLSchema> =>
   buildSchema({
     authChecker,
-    resolvers: [CommunityResolver, MembershipResolver, UserResolver]
+    resolvers: [
+      CommunityResolver,
+      CommunityIntegrations,
+      MembershipResolver,
+      UserResolver
+    ]
   });
 
 export default async () => {

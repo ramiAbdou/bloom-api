@@ -3,17 +3,10 @@
  * @author Rami Abdou
  */
 
-import axios, { AxiosRequestConfig } from 'axios';
 import csv from 'csvtojson';
 import moment from 'moment';
-import { URLSearchParams } from 'url';
 
-import { APP, isProduction } from '@constants';
 import { Membership, MembershipQuestion, User } from '@entities';
-import {
-  getTokensFromCode,
-  refreshAccessToken
-} from '@integrations/zoom/Zoom.util';
 import BaseRepo from '@util/db/BaseRepo';
 import { MembershipTypeInput } from '../membership-type/MembershipType.args';
 import Community from './Community';
@@ -201,92 +194,6 @@ export default class CommunityRepo extends BaseRepo<Community> {
     });
 
     await this.flush('REORDER_QUESTION', questions);
-    return community;
-  };
-
-  /**
-   * Returns the updated community after updating it's Mailchimp token. If
-   * no community was found based on the encodedUrlName, returns null.
-   *
-   * Precondition: The community ID must represent a community.
-   */
-  storeMailchimpTokenFromCode = async (
-    encodedUrlName: string,
-    code: string
-  ): Promise<Community> => {
-    const community: Community = await this.findOne({ encodedUrlName }, [
-      'integrations'
-    ]);
-
-    // All the other redirect URIs use localhost when in development, but
-    // Mailchimp forces us to use 127.0.0.1 instead, so we can't use the
-    // APP.SERVER_URL local URL.
-    const BASE_URI = isProduction ? APP.SERVER_URL : 'http://127.0.0.1:8080';
-
-    const options: AxiosRequestConfig = {
-      data: new URLSearchParams({
-        client_id: process.env.MAILCHIMP_CLIENT_ID,
-        client_secret: process.env.MAILCHIMP_CLIENT_SECRET,
-        code,
-        grant_type: 'authorization_code',
-        redirect_uri: `${BASE_URI}/mailchimp/auth`
-      }),
-      method: 'POST',
-      url: 'https://login.mailchimp.com/oauth2/token'
-    };
-
-    const {
-      data: { access_token: token }
-    } = await axios(options);
-
-    community.integrations.mailchimpAccessToken = token;
-    await this.flush('MAILCHIMP_TOKEN_STORED', community);
-
-    return community;
-  };
-
-  /**
-   * Stores the Zoom tokens in the database after executing the
-   * OAuth token flow, and returns the community following execution.
-   *
-   * @param code Zoom's API produced authorization code that we exchange for
-   * tokens.
-   */
-  storeZoomTokensFromCode = async (
-    encodedUrlName: string,
-    code: string
-  ): Promise<Community> => {
-    const community: Community = await this.findOne({ encodedUrlName }, [
-      'integrations'
-    ]);
-
-    if (!community) return null;
-
-    const { accessToken, refreshToken } = await getTokensFromCode(code);
-    community.integrations.zoomAccessToken = accessToken;
-    community.integrations.zoomRefreshToken = refreshToken;
-
-    await this.flush('ZOOM_TOKENS_STORED', community);
-    return community;
-  };
-
-  /**
-   * Refreshes the Zoom tokens for the community with the following ID.
-   *
-   * Precondition: A zoomRefreshToken must already exist in the Community.
-   */
-  refreshZoomTokens = async (communityId: string): Promise<Community> => {
-    const community = await this.findOne({ id: communityId }, ['integrations']);
-    const { accessToken, refreshToken } = await refreshAccessToken(
-      community.integrations.zoomRefreshToken
-    );
-
-    if (!accessToken && !refreshToken) return community;
-
-    community.integrations.zoomAccessToken = accessToken;
-    community.integrations.zoomRefreshToken = refreshToken;
-
-    await this.flush('ZOOM_TOKENS_REFRESHED', community);
     return community;
   };
 }
