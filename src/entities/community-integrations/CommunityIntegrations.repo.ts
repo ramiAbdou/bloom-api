@@ -7,6 +7,8 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { URLSearchParams } from 'url';
 
 import { APP, Event, isProduction } from '@constants';
+import { Community, Membership } from '@entities';
+import logger from '@logger';
 import cache from '@util/cache';
 import BaseRepo from '@util/db/BaseRepo';
 import CommunityIntegrations from './CommunityIntegrations';
@@ -80,5 +82,33 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
       `${Event.GET_INTEGRATIONS}-${integrations.community.id}`,
       true
     );
+  };
+
+  /**
+   * Adds all of the users associated with the memberships to the Mailchimp
+   * audience stored in the community.
+   */
+  addToMailchimpAudience = async (
+    memberships: Membership[],
+    community: Community
+  ) => {
+    const { mailchimpAccessToken, mailchimpListId } = community.integrations;
+
+    // Format the data that we send to Mailchimp to add users to the audience.
+    const members = memberships.map(({ user }) => ({
+      email_address: user.email,
+      merge_fields: { F_NAME: user.firstName, L_NAME: user.lastName },
+      status: 'subscribed'
+    }));
+
+    const options: AxiosRequestConfig = {
+      data: { members },
+      headers: { Authorization: `OAuth ${mailchimpAccessToken}` },
+      method: 'POST',
+      url: `https://us2.api.mailchimp.com/3.0/lists/${mailchimpListId}`
+    };
+
+    await axios(options);
+    logger.info('MAILCHIMP_LIST_MEMBERS_ADDED');
   };
 }
