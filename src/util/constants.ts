@@ -52,7 +52,8 @@ export type AuthTokens = { accessToken: string; refreshToken: string };
 
 // Used for caching purposes (building the keys).
 export enum Event {
-  GET_APPLICANTS = 'GET_APPLICANTS'
+  GET_APPLICANTS = 'GET_APPLICANTS',
+  GET_INTEGRATIONS = 'GET_INTEGRATIONS'
 }
 
 export type LoggerEvent =

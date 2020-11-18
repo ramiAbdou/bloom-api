@@ -6,7 +6,8 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { URLSearchParams } from 'url';
 
-import { APP, isProduction } from '@constants';
+import { APP, Event, isProduction } from '@constants';
+import cache from '@util/cache';
 import BaseRepo from '@util/db/BaseRepo';
 import CommunityIntegrations from './CommunityIntegrations';
 
@@ -23,9 +24,10 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
     encodedUrlName: string,
     code: string
   ): Promise<void> => {
-    const integrations: CommunityIntegrations = await this.findOne({
-      community: { encodedUrlName }
-    });
+    const integrations: CommunityIntegrations = await this.findOne(
+      { community: { encodedUrlName } },
+      ['community']
+    );
 
     // All the other redirect URIs use localhost when in development, but
     // Mailchimp forces us to use 127.0.0.1 instead, so we can't use the
@@ -50,6 +52,12 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
 
     integrations.mailchimpAccessToken = token;
     await this.flush('MAILCHIMP_TOKEN_STORED', integrations);
+
+    // Invalidate the cache for the GET_APPLICANTS call.
+    cache.invalidateEntries(
+      `${Event.GET_INTEGRATIONS}-${integrations.community.id}`,
+      true
+    );
   };
 
   /**
@@ -66,5 +74,11 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
 
     integrations.mailchimpListId = mailchimpListId;
     await this.flush('MAILCHIMP_LIST_STORED', integrations);
+
+    // Invalidate the cache for the GET_APPLICANTS call.
+    cache.invalidateEntries(
+      `${Event.GET_INTEGRATIONS}-${integrations.community.id}`,
+      true
+    );
   };
 }

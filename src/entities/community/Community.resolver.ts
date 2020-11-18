@@ -62,6 +62,11 @@ export default class CommunityResolver {
   ): Promise<Community> {
     return new BloomManager()
       .communityRepo()
-      .findOne({ id: communityId }, ['integrations']);
+      .findOne(
+        { id: communityId },
+        ['integrations'],
+        null,
+        `${Event.GET_INTEGRATIONS}-${communityId}`
+      );
   }
 }
