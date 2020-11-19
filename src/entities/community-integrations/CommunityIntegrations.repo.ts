@@ -9,6 +9,7 @@ import { URLSearchParams } from 'url';
 
 import { APP, AuthTokens, Event, isProduction } from '@constants';
 import { Community, Membership } from '@entities';
+import { stripe } from '@integrations/stripe/Stripe.util';
 import logger from '@logger';
 import cache from '@util/cache';
 import BaseRepo from '@util/db/BaseRepo';
@@ -222,5 +223,38 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
 
     await this.flush('ZOOM_TOKENS_REFRESHED', integrations);
     return { accessToken, refreshToken };
+  };
+
+  // ## STRIPE
+
+  /**
+   * Stores the Stripe tokens in the database after executing the
+   * OAuth token flow.
+   *
+   * @param code Stripe's API produced authorization code that we exchange for
+   * tokens.
+   */
+  storeStripeTokensFromCode = async (
+    encodedUrlName: string,
+    code: string
+  ): Promise<void> => {
+    const integrations: CommunityIntegrations = await this.findOne(
+      { community: { encodedUrlName } },
+      ['community']
+    );
+
+    const { stripe_user_id } = await stripe.oauth.token({
+      code,
+      grant_type: 'authorization_code'
+    });
+
+    integrations.stripeAccountId = stripe_user_id;
+    await this.flush('STRIPE_ACCOUNT_STORED', integrations);
+
+    // Invalidate the cache for the GET_INTEGRATIONS call.
+    cache.invalidateEntries(
+      `${Event.GET_INTEGRATIONS}-${integrations.community.id}`,
+      true
+    );
   };
 }

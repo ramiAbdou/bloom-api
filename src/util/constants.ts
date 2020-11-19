@@ -32,8 +32,11 @@ export const APP = {
     : 'http://localhost:8080'
 };
 
-export const DIGITAL_OCEAN = {
-  SPACE_URL: 'https://sfo2.digitaloceanspaces.com/bl.community'
+export const INTEGRATIONS = {
+  DIGITAL_OCEAN_SPACE_URL: 'https://sfo2.digitaloceanspaces.com/bl.community',
+  STRIPE_API_KEY: isProduction
+    ? process.env.STRIPE_API_KEY
+    : process.env.STRIPE_TEST_API_KEY
 };
 
 export const JWT = {
@@ -76,6 +79,7 @@ export type LoggerEvent =
   | 'MEMBERSHIP_DATA_UPDATED'
   | 'REORDER_QUESTION'
   | 'SERVER_STARTED'
+  | 'STRIPE_ACCOUNT_STORED'
   | 'TOKENS_UPDATED'
   | 'ZOOM_TOKENS_REFRESHED'
   | 'ZOOM_TOKENS_STORED';

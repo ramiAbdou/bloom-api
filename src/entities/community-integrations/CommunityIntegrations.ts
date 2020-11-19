@@ -33,6 +33,10 @@ export default class CommunityIntegrations extends BaseEntity {
   @Property({ nullable: true, unique: true })
   mailchimpListId: string;
 
+  @Field({ nullable: true })
+  @Property({ nullable: true, unique: true })
+  stripeAccountId: string;
+
   @Property({ nullable: true, unique: true })
   zapierApiKey: string;
 
@@ -51,7 +55,6 @@ export default class CommunityIntegrations extends BaseEntity {
   community: Community;
 
   // ## MEMBER FUNCTIONS
-
   // ## MAILCHIMP
 
   @Field(() => Boolean)
