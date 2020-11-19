@@ -4,14 +4,20 @@
  */
 
 import axios, { AxiosRequestConfig } from 'axios';
+import moment from 'moment';
 import { URLSearchParams } from 'url';
 
-import { APP, Event, isProduction } from '@constants';
+import { APP, AuthTokens, Event, isProduction } from '@constants';
 import { Community, Membership } from '@entities';
 import logger from '@logger';
 import cache from '@util/cache';
 import BaseRepo from '@util/db/BaseRepo';
 import CommunityIntegrations from './CommunityIntegrations';
+
+type RefreshZoomTokensArgs = {
+  communityId?: string;
+  integrations?: CommunityIntegrations;
+};
 
 export default class CommunityIntegrationsRepo extends BaseRepo<
   CommunityIntegrations
@@ -50,11 +56,9 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
       url: 'https://login.mailchimp.com/oauth2/token'
     };
 
-    const {
-      data: { access_token: token }
-    } = await axios(options);
+    const { data } = await axios(options);
 
-    integrations.mailchimpAccessToken = token;
+    integrations.mailchimpAccessToken = data?.access_token;
     await this.flush('MAILCHIMP_TOKEN_STORED', integrations);
 
     // Invalidate the cache for the GET_APPLICANTS call.
@@ -71,7 +75,7 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
   updateMailchimpListId = async (
     communityId: string,
     mailchimpListId: string
-  ) => {
+  ): Promise<CommunityIntegrations> => {
     const integrations: CommunityIntegrations = await this.findOne({
       community: { id: communityId }
     });
@@ -84,6 +88,8 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
       `${Event.GET_INTEGRATIONS}-${integrations.community.id}`,
       true
     );
+
+    return integrations;
   };
 
   /**
@@ -151,8 +157,70 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
     const { data } = await axios(options);
 
     integrations.zoomAccessToken = data?.access_token;
+    integrations.zoomExpiresAt = moment
+      .utc()
+      .add(data?.expires_in, 'seconds')
+      .format();
     integrations.zoomRefreshToken = data?.refresh_token;
 
     await this.flush('ZOOM_TOKENS_STORED', integrations);
+
+    // Invalidate the cache for the GET_INTEGRATIONS call.
+    cache.invalidateEntries(
+      `${Event.GET_INTEGRATIONS}-${integrations.community.id}`,
+      true
+    );
+  };
+
+  /**
+   * Refreshes the Zoom tokens for the community with the following ID.
+   *
+   * Precondition: A zoomRefreshToken must already exist in the Community.
+   */
+  refreshZoomTokens = async ({
+    communityId,
+    integrations
+  }: RefreshZoomTokensArgs): Promise<AuthTokens> => {
+    integrations =
+      integrations ?? (await this.findOne({ community: { id: communityId } }));
+
+    // We don't need to run the refresh flow if the token hasn't expired yet.
+    if (moment.utc().isBefore(moment.utc(integrations.zoomExpiresAt)))
+      return {
+        accessToken: integrations.zoomAccessToken,
+        refreshToken: integrations.zoomRefreshToken
+      };
+
+    // Create the Base64 token from the Zoom client and secret.
+    const base64Token = Buffer.from(
+      `${process.env.ZOOM_CLIENT_ID}:${process.env.ZOOM_CLIENT_SECRET}`
+    ).toString('base64');
+
+    const options: AxiosRequestConfig = {
+      headers: { Authorization: `Basic ${base64Token}` },
+      method: 'POST',
+      params: {
+        grant_type: 'refresh_token',
+        refresh_token: integrations.zoomRefreshToken
+      },
+      url: 'https://zoom.us/oauth/token'
+    };
+
+    const { data } = await axios(options);
+    const {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+      expires_in: expiresIn
+    } = data;
+
+    integrations.zoomAccessToken = accessToken;
+    integrations.zoomExpiresAt = moment
+      .utc()
+      .add(expiresIn, 'seconds')
+      .format();
+    integrations.zoomRefreshToken = refreshToken;
+
+    await this.flush('ZOOM_TOKENS_REFRESHED', integrations);
+    return { accessToken, refreshToken };
   };
 }

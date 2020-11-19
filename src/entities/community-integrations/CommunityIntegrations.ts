@@ -13,8 +13,9 @@ import {
   Property
 } from '@mikro-orm/core';
 import BaseEntity from '@util/db/BaseEntity';
+import BloomManager from '@util/db/BloomManager';
 import Community from '../community/Community';
-import { MailchimpLists } from './CommunityIntegrations.args';
+import { MailchimpLists, ZoomAccountInfo } from './CommunityIntegrations.args';
 import CommunityIntegrationsRepo from './CommunityIntegrations.repo';
 
 @ObjectType()
@@ -37,6 +38,9 @@ export default class CommunityIntegrations extends BaseEntity {
 
   @Property({ nullable: true, type: 'text', unique: true })
   zoomAccessToken: string;
+
+  @Property({ nullable: true })
+  zoomExpiresAt: string;
 
   @Property({ nullable: true, type: 'text', unique: true })
   zoomRefreshToken: string;
@@ -89,5 +93,25 @@ export default class CommunityIntegrations extends BaseEntity {
   @Field(() => Boolean)
   isZoomAuthenticated(): boolean {
     return !!this.zoomAccessToken && !!this.zoomRefreshToken;
+  }
+
+  @Field(() => ZoomAccountInfo, { nullable: true })
+  async zoomAccountInfo(): Promise<ZoomAccountInfo> {
+    if (!this.zoomAccessToken || !this.zoomRefreshToken) return null;
+
+    const {
+      accessToken
+    } = await new BloomManager()
+      .communityIntegrationsRepo()
+      .refreshZoomTokens({ integrations: this });
+
+    const options: AxiosRequestConfig = {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      method: 'GET',
+      url: 'https://api.zoom.us/v2/users/me'
+    };
+
+    const { data } = await axios(options);
+    return { email: data?.email, pmi: data?.pmi, userId: data?.id };
   }
 }
