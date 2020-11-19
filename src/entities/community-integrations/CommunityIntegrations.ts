@@ -48,6 +48,8 @@ export default class CommunityIntegrations extends BaseEntity {
 
   // ## MEMBER FUNCTIONS
 
+  // ## MAILCHIMP
+
   @Field(() => Boolean)
   isMailchimpAuthenticated(): boolean {
     return !!this.mailchimpAccessToken;
@@ -80,5 +82,12 @@ export default class CommunityIntegrations extends BaseEntity {
 
     const { data } = await axios(options);
     return data?.lists?.map(({ id, name }) => ({ id, name }));
+  }
+
+  // ## ZOOM
+
+  @Field(() => Boolean)
+  isZoomAuthenticated(): boolean {
+    return !!this.zoomAccessToken && !!this.zoomRefreshToken;
   }
 }

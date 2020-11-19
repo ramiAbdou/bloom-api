@@ -16,6 +16,8 @@ import CommunityIntegrations from './CommunityIntegrations';
 export default class CommunityIntegrationsRepo extends BaseRepo<
   CommunityIntegrations
 > {
+  // ## MAILCHIMP
+
   /**
    * Returns the updated community after updating it's Mailchimp token. If
    * no community was found based on the encodedUrlName, returns null.
@@ -110,5 +112,47 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
 
     await axios(options);
     logger.info('MAILCHIMP_LIST_MEMBERS_ADDED');
+  };
+
+  // ## ZOOM
+
+  /**
+   * Stores the Zoom tokens in the database after executing the
+   * OAuth token flow, and returns the community following execution.
+   *
+   * @param code Zoom's API produced authorization code that we exchange for
+   * tokens.
+   */
+  storeZoomTokensFromCode = async (
+    encodedUrlName: string,
+    code: string
+  ): Promise<void> => {
+    const integrations: CommunityIntegrations = await this.findOne(
+      { community: { encodedUrlName } },
+      ['community']
+    );
+
+    // Create the Base64 token from the Zoom client and secret.
+    const base64Token = Buffer.from(
+      `${process.env.ZOOM_CLIENT_ID}:${process.env.ZOOM_CLIENT_SECRET}`
+    ).toString('base64');
+
+    const options: AxiosRequestConfig = {
+      headers: { Authorization: `Basic ${base64Token}` },
+      method: 'POST',
+      params: {
+        code,
+        grant_type: 'authorization_code',
+        redirect_uri: `${APP.SERVER_URL}/zoom/auth`
+      },
+      url: 'https://zoom.us/oauth/token'
+    };
+
+    const { data } = await axios(options);
+
+    integrations.zoomAccessToken = data?.access_token;
+    integrations.zoomRefreshToken = data?.refresh_token;
+
+    await this.flush('ZOOM_TOKENS_STORED', integrations);
   };
 }

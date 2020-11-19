@@ -5,9 +5,8 @@
 
 import { Request, Response } from 'express';
 
-import { Route } from '@constants';
-// import { Community } from '@entities';
-// import BloomManager from '@util/db/BloomManager';
+import { APP, Route } from '@constants';
+import BloomManager from '@util/db/BloomManager';
 import Router from '@util/Router';
 
 export default class ZoomRouter extends Router {
@@ -21,13 +20,12 @@ export default class ZoomRouter extends Router {
    * back via httpOnly cookies.
    */
   private async handleAuth({ query }: Request, res: Response) {
-    // const { code, state: encodedUrlName } = query;
-    // const community: Community = await new BloomManager()
-    //   .communityRepo()
-    //   .storeZoomTokensFromCode(encodedUrlName as string, code as string);
-    // // If that community doesn't exist, then we don't persist the tokens in the
-    // // DB and instead we redirect them to the React app.
-    // if (!community) res.redirect(`${APP.CLIENT_URL}?err=community_not_found`);
-    // else res.redirect(APP.CLIENT_URL);
+    const { code, state: encodedUrlName } = query;
+
+    await new BloomManager()
+      .communityIntegrationsRepo()
+      .storeZoomTokensFromCode(encodedUrlName as string, code as string);
+
+    res.redirect(`${APP.CLIENT_URL}/${encodedUrlName}/integrations`);
   }
 }
