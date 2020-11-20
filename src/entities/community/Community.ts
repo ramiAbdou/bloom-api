@@ -6,7 +6,7 @@
 import { IsUrl } from 'class-validator';
 import { Authorized, Field, ObjectType } from 'type-graphql';
 
-import { DIGITAL_OCEAN } from '@constants';
+import { INTEGRATIONS } from '@constants';
 import {
   BeforeCreate,
   Collection,
@@ -27,6 +27,8 @@ import MembershipQuestion from '../membership-question/MembershipQuestion';
 import MembershipType from '../membership-type/MembershipType';
 import Membership from '../membership/Membership';
 import CommunityRepo from './Community.repo';
+
+const { DIGITAL_OCEAN_SPACE_URL } = INTEGRATIONS;
 
 @ObjectType()
 @Entity({ customRepository: () => CommunityRepo })
@@ -70,7 +72,7 @@ export default class Community extends BaseEntity {
   beforeCreate() {
     this.encodedUrlName = toLowerCaseDash(this.name);
     if (!this.logoUrl)
-      this.logoUrl = `${DIGITAL_OCEAN.SPACE_URL}/${this.encodedUrlName}.png`;
+      this.logoUrl = `${DIGITAL_OCEAN_SPACE_URL}/${this.encodedUrlName}.png`;
   }
 
   // ## MEMBER FUNCTIONS

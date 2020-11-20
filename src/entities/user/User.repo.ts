@@ -48,7 +48,7 @@ export default class UserRepo extends BaseRepo<User> {
 
     // Update the refreshToken in the DB.
     user.refreshToken = tokens.refreshToken;
-    await this.flush('REFRESH_TOKEN_STORED', user, false);
+    await this.flush('REFRESH_TOKEN_STORED', user);
 
     return tokens;
   };

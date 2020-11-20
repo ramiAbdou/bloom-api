@@ -32,8 +32,11 @@ export const APP = {
     : 'http://localhost:8080'
 };
 
-export const DIGITAL_OCEAN = {
-  SPACE_URL: 'https://sfo2.digitaloceanspaces.com/bl.community'
+export const INTEGRATIONS = {
+  DIGITAL_OCEAN_SPACE_URL: 'https://sfo2.digitaloceanspaces.com/bl.community',
+  STRIPE_API_KEY: isProduction
+    ? process.env.STRIPE_API_KEY
+    : process.env.STRIPE_TEST_API_KEY
 };
 
 export const JWT = {
@@ -52,7 +55,8 @@ export type AuthTokens = { accessToken: string; refreshToken: string };
 
 // Used for caching purposes (building the keys).
 export enum Event {
-  GET_APPLICANTS = 'GET_APPLICANTS'
+  GET_APPLICANTS = 'GET_APPLICANTS',
+  GET_INTEGRATIONS = 'GET_INTEGRATIONS'
 }
 
 export type LoggerEvent =
@@ -66,6 +70,8 @@ export type LoggerEvent =
   | 'REFRESH_TOKEN_STORED'
   | 'JOINED_EVENT_AS_GUEST'
   | 'JOINED_EVENT_AS_USER'
+  | 'MAILCHIMP_LIST_STORED'
+  | 'MAILCHIMP_LIST_MEMBERS_ADDED'
   | 'MAILCHIMP_TOKEN_STORED'
   | 'MEMBERSHIP_ADMISSION'
   | 'MEMBERSHIP_CREATED'
@@ -73,6 +79,7 @@ export type LoggerEvent =
   | 'MEMBERSHIP_DATA_UPDATED'
   | 'REORDER_QUESTION'
   | 'SERVER_STARTED'
+  | 'STRIPE_ACCOUNT_STORED'
   | 'TOKENS_UPDATED'
   | 'ZOOM_TOKENS_REFRESHED'
   | 'ZOOM_TOKENS_STORED';

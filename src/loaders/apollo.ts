@@ -11,7 +11,9 @@ import { GraphQLSchema } from 'graphql';
 import { AuthChecker, buildSchema } from 'type-graphql';
 
 import { GQLContext } from '@constants';
+import BloomManager from '@util/db/BloomManager';
 import { decodeToken } from '@util/util';
+import CommunityIntegrations from '../entities/community-integrations/CommunityIntegrations.resolver';
 import CommunityResolver from '../entities/community/Community.resolver';
 import MembershipResolver from '../entities/membership/Membership.resolver';
 import UserResolver from '../entities/user/User.resolver';
@@ -25,9 +27,10 @@ const authChecker: AuthChecker<GQLContext> = async (
   { context: { role, userId } },
   roles: string[]
 ) => {
-  // If the userId or the communityId isn't present, then we can't even query
-  // the DB to see if the member has admin priveleges, so return false.
-  if (!userId) return false;
+  // If the userId isn't present or the userId doesn't exist in the DB, then
+  // the user isn't authenticated.
+  if (!userId || !(await new BloomManager().userRepo().findOne({ id: userId })))
+    return false;
 
   // If no roles are specified, we return true b/c only no roles would be
   // specified if we wanted ANY logged-in user to be authorized. And, we have
@@ -43,7 +46,12 @@ const authChecker: AuthChecker<GQLContext> = async (
 export const createSchema = async (): Promise<GraphQLSchema> =>
   buildSchema({
     authChecker,
-    resolvers: [CommunityResolver, MembershipResolver, UserResolver]
+    resolvers: [
+      CommunityResolver,
+      CommunityIntegrations,
+      MembershipResolver,
+      UserResolver
+    ]
   });
 
 export default async () => {

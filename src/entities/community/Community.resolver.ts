@@ -40,6 +40,7 @@ export default class CommunityResolver {
       );
   }
 
+  @Authorized('ADMIN')
   @Query(() => Community, { nullable: true })
   async getMemberDatabase(
     @Ctx() { communityId }: GQLContext
@@ -52,5 +53,20 @@ export default class CommunityResolver {
         'memberships.type',
         'memberships.user'
       ]);
+  }
+
+  @Authorized('ADMIN')
+  @Query(() => Community, { nullable: true })
+  async getIntegrations(
+    @Ctx() { communityId }: GQLContext
+  ): Promise<Community> {
+    return new BloomManager()
+      .communityRepo()
+      .findOne(
+        { id: communityId },
+        ['integrations'],
+        null,
+        `${Event.GET_INTEGRATIONS}-${communityId}`
+      );
   }
 }

@@ -29,7 +29,7 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     // data in a relational manner.
     const community = await bm
       .communityRepo()
-      .findOne({ encodedUrlName }, ['questions', 'types']);
+      .findOne({ encodedUrlName }, ['integrations', 'questions', 'types']);
 
     // The user can potentially already exist if they are a part of other
     // communities.
@@ -107,15 +107,19 @@ export default class MembershipRepo extends BaseRepo<Membership> {
 
     await this.flush('MEMBERSHIP_ADMISSION', memberships);
 
-    // Send the appropriate emails based on the response.
+    // Send the appropriate emails based on the response. Also, add the members
+    // to the Mailchimp audience.
     setTimeout(async () => {
       const community: Community = await this.bm()
         .communityRepo()
-        .findOne({ id: communityId });
+        .findOne({ id: communityId }, ['integrations']);
 
-      if (response === 'ACCEPTED')
+      if (response === 'ACCEPTED') {
         await this.sendMembershipAcceptedEmails(memberships, community);
-      else await this.sendMembershipIgnoredEmails(memberships, community);
+        await this.bm()
+          .communityIntegrationsRepo()
+          .addToMailchimpAudience(memberships, community);
+      } else await this.sendMembershipIgnoredEmails(memberships, community);
     }, 0);
 
     return memberships;
@@ -201,9 +205,7 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     const { email: ownerEmail, fullName: ownerFullName } =
       community.memberships[0]?.user || {};
 
-    const { user } = membership;
-
-    const { email, firstName } = user;
+    const { email, firstName } = membership.user;
 
     await sendEmail(
       'application-received.mjml',
