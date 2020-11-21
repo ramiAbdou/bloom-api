@@ -91,13 +91,7 @@ export default class MembershipQuestion extends BaseEntity {
     if (this.category === 'MEMBERSHIP_TYPE') this.inApplicantCard = true;
   }
 
-  /* 
-  ___     _      _   _             _    _         
- | _ \___| |__ _| |_(_)___ _ _  __| |_ (_)_ __ ___
- |   / -_) / _` |  _| / _ \ ' \(_-< ' \| | '_ (_-<
- |_|_\___|_\__,_|\__|_\___/_||_/__/_||_|_| .__/__/
-                                         |_|      
-  */
+  // ## RELATIONSHIPS
 
   @ManyToOne(() => Community)
   community: Community;

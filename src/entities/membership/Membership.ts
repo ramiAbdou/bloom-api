@@ -17,13 +17,11 @@ import {
   Property,
   QueryOrder
 } from '@mikro-orm/core';
-// import dataQueue from '@util/cache/dataQueue';
 import BaseEntity from '@util/db/BaseEntity';
 import { now } from '@util/util';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventRSVP from '../event-rsvp/EventRSVP';
-import MembershipCardItem from '../membership-card-item/MembershipCardItem';
 import MembershipData from '../membership-data/MembershipData';
 import MembershipPayment from '../membership-payment/MembershipPayment';
 import MembershipQuestion from '../membership-question/MembershipQuestion';
@@ -70,43 +68,7 @@ export default class Membership extends BaseEntity {
   @Property({ nullable: true })
   stripeCustomerId: string;
 
-  /**
-   * Returns the Membership data that is needed to be displayed in the
-   * Community Directory.
-   */
-  cardData() {
-    const membershipData = this.data.getItems();
-    const {
-      currentLocation,
-      facebookUrl,
-      instagramUrl,
-      linkedInUrl,
-      twitterUrl
-    } = this.user;
-
-    // The community specified a list of questions or user-specific categories
-    // to be in the card, so we map each of the items to the appropriate value.
-    return this.community.membershipCard
-      .getItems()
-      .map(({ category, inMinimizedCard, question }: MembershipCardItem) => {
-        let value: string;
-
-        // If no user category is specified, it means it is the item is from
-        // the membership data, NOT the user data.
-        if (!category)
-          value = membershipData.find(
-            ({ question: { id: questionId } }) => question.id === questionId
-          ).value;
-        else if (category === 'BIO') value = this.bio;
-        else if (category === 'CURRENT_LOCATION') value = currentLocation;
-        else if (category === 'FACEBOOK_URL') value = facebookUrl;
-        else if (category === 'INSTAGRAM_URL') value = instagramUrl;
-        else if (category === 'LINKEDIN_URL') value = linkedInUrl;
-        else if (category === 'TWITTER_URL') value = twitterUrl;
-
-        return { category, inMinimizedCard, value };
-      });
-  }
+  // ## MEMBER FUNCTIONS
 
   @Authorized('ADMIN')
   @Field(() => [MemberData])
@@ -114,7 +76,6 @@ export default class Membership extends BaseEntity {
     const data = this.data?.getItems();
     const { email, gender, firstName, lastName } = this.user;
 
-    // @ts-ignore b/c this will only be queried in certain cases.
     return this.community.questions
       .getItems()
       .map(({ category, id, title }: MembershipQuestion) => {
@@ -205,13 +166,7 @@ export default class Membership extends BaseEntity {
         .filter(({ isDefault }) => isDefault)[0];
   }
 
-  /* 
-  ___     _      _   _             _    _         
- | _ \___| |__ _| |_(_)___ _ _  __| |_ (_)_ __ ___
- |   / -_) / _` |  _| / _ \ ' \(_-< ' \| | '_ (_-<
- |_|_\___|_\__,_|\__|_\___/_||_/__/_||_|_| .__/__/
-                                         |_|      
-  */
+  // ## RELATIONSHIPS
 
   @Field(() => Community)
   @ManyToOne(() => Community)

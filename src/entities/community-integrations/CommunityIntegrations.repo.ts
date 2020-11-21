@@ -62,7 +62,7 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
     integrations.mailchimpAccessToken = data?.access_token;
     await this.flush('MAILCHIMP_TOKEN_STORED', integrations);
 
-    // Invalidate the cache for the GET_APPLICANTS call.
+    // Invalidate the cache for the GET_INTEGRATIONS call.
     cache.invalidateEntries(
       `${Event.GET_INTEGRATIONS}-${integrations.community.id}`,
       true
@@ -84,7 +84,7 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
     integrations.mailchimpListId = mailchimpListId;
     await this.flush('MAILCHIMP_LIST_STORED', integrations);
 
-    // Invalidate the cache for the GET_APPLICANTS call.
+    // Invalidate the cache for the GET_INTEGRATIONS call.
     cache.invalidateEntries(
       `${Event.GET_INTEGRATIONS}-${integrations.community.id}`,
       true

@@ -42,17 +42,20 @@ export default class CommunityResolver {
 
   @Authorized('ADMIN')
   @Query(() => Community, { nullable: true })
-  async getMemberDatabase(
-    @Ctx() { communityId }: GQLContext
-  ): Promise<Community> {
+  async getDatabase(@Ctx() { communityId }: GQLContext): Promise<Community> {
     return new BloomManager()
       .communityRepo()
-      .findOne({ id: communityId, memberships: { status: 'ACCEPTED' } }, [
-        'questions',
-        'memberships.data',
-        'memberships.type',
-        'memberships.user'
-      ]);
+      .findOne(
+        { id: communityId, memberships: { status: 'ACCEPTED' } },
+        [
+          'questions',
+          'memberships.data',
+          'memberships.type',
+          'memberships.user'
+        ],
+        null,
+        `${Event.GET_MEMBERS}-${communityId}`
+      );
   }
 
   @Authorized('ADMIN')

@@ -76,7 +76,13 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     await this.persistAndFlush(membership, 'MEMBERSHIP_CREATED');
 
     // Invalidate the cache for the GET_APPLICANTS call.
-    cache.invalidateEntries(`${Event.GET_APPLICANTS}-${community.id}`, true);
+    cache.invalidateEntries(
+      [
+        `${Event.GET_APPLICANTS}-${community.id}`,
+        `${Event.GET_MEMBERS}-${community.id}`
+      ],
+      true
+    );
 
     // Send the appropriate emails based on the response.
     setTimeout(async () => {
