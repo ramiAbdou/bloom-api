@@ -132,7 +132,7 @@ export default class CommunityRepo extends BaseRepo<Community> {
 
           // IMPORTANT: The value must be a valid input to the Date constructor
           // or else errors will be thrown!
-          else if (key === 'DATE_JOINED') {
+          else if (key === 'JOINED_ON') {
             const dateValue = new Date(value);
             if (!dateValue) return;
             membership.joinedOn = moment.utc(dateValue).format();

@@ -8,7 +8,7 @@ import cache from '@util/cache';
 import BaseRepo from '@util/db/BaseRepo';
 import { sendEmail } from '@util/emails';
 import { MembershipDataInput } from '@util/gql';
-import { stringify } from '@util/util';
+import { now, stringify } from '@util/util';
 import Community from '../community/Community';
 import User from '../user/User';
 import Membership, { MembershipStatus } from './Membership';
@@ -108,6 +108,7 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     ]);
 
     memberships.forEach((membership: Membership) => {
+      membership.joinedOn = now();
       membership.status = response;
     });
 

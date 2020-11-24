@@ -29,7 +29,14 @@ export default class MembershipQuestion extends BaseEntity {
   // membership.
   @Field(() => String, { nullable: true })
   @Enum({
-    items: ['EMAIL', 'FIRST_NAME', 'GENDER', 'LAST_NAME', 'MEMBERSHIP_TYPE'],
+    items: [
+      'EMAIL',
+      'FIRST_NAME',
+      'GENDER',
+      'JOINED_ON',
+      'LAST_NAME',
+      'MEMBERSHIP_TYPE'
+    ],
     nullable: true,
     type: String
   })
@@ -69,9 +76,10 @@ export default class MembershipQuestion extends BaseEntity {
   @Property()
   title: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Enum({
     items: ['SHORT_TEXT', 'LONG_TEXT', 'MULTIPLE_CHOICE', 'MULTIPLE_SELECT'],
+    nullable: true,
     type: String
   })
   type: QuestionType;

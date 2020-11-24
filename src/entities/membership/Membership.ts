@@ -47,9 +47,10 @@ export default class Membership extends BaseEntity {
   @Property({ type: Boolean })
   emailNotifications = true;
 
-  @Field()
-  @Property()
-  joinedOn: string = now();
+  // Refers to the date that the membership was ACCEPTED.
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  joinedOn: string;
 
   // If the member has a role, it will either be ADMIN or OWNER. There should
   // only be one OWNER in a community.
@@ -83,10 +84,10 @@ export default class Membership extends BaseEntity {
         const result = data.find(({ question }) => question.title === title);
 
         if (result) value = result.value;
-        else if (category === 'DATE_JOINED') value = this.joinedOn;
         else if (category === 'EMAIL') value = email;
         else if (category === 'FIRST_NAME') value = firstName;
         else if (category === 'GENDER') value = gender;
+        else if (category === 'JOINED_ON') value = this.joinedOn;
         else if (category === 'LAST_NAME') value = lastName;
         else if (category === 'MEMBERSHIP_TYPE') value = this.type.name;
 
@@ -117,7 +118,7 @@ export default class Membership extends BaseEntity {
           const result = data.find(({ question }) => question.title === title);
 
           if (result) value = result.value;
-          else if (category === 'DATE_JOINED') value = this.joinedOn;
+          else if (category === 'JOINED_ON') value = this.joinedOn;
           else if (category === 'EMAIL') value = email;
           else if (category === 'FIRST_NAME') value = firstName;
           else if (category === 'GENDER') value = gender;
@@ -158,12 +159,18 @@ export default class Membership extends BaseEntity {
 
   @BeforeCreate()
   beforeCreate() {
-    if (this.role || this.community.autoAccept) this.status = 'ACCEPTED';
+    if (this.role || this.community.autoAccept) {
+      this.joinedOn = now();
+      this.status = 'ACCEPTED';
+    }
+
+    // If no membership type is provided, assign them the default membership.
+    // Every community should've assigned one default membership.
     if (!this.type)
       // eslint-disable-next-line prefer-destructuring
       this.type = this.community.types
         .getItems()
-        .filter(({ isDefault }) => isDefault)[0];
+        .find(({ isDefault }) => isDefault);
   }
 
   // ## RELATIONSHIPS

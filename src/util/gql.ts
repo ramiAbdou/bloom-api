@@ -12,10 +12,10 @@ export type QuestionType =
   | 'SHORT_TEXT';
 
 export type QuestionCategory =
-  | 'DATE_JOINED'
   | 'EMAIL'
   | 'FIRST_NAME'
   | 'GENDER'
+  | 'JOINED_ON'
   | 'LAST_NAME'
   | 'MEMBERSHIP_TYPE';
 
