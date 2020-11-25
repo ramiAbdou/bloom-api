@@ -132,6 +132,32 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     return memberships;
   };
 
+  /**
+   * Deletes the following memberships.
+   */
+  deleteMemberships = async (
+    membershipIds: string[],
+    communityId: string
+  ): Promise<boolean> => {
+    const memberships: Membership[] = await this.find({ id: membershipIds }, [
+      'user'
+    ]);
+
+    const { id }: Community = await this.bm()
+      .communityRepo()
+      .findOne({ id: communityId });
+
+    await this.deleteAndFlush(memberships, 'MEMBERSHIPS_DELETED');
+
+    // Invalidate the cache for the GET_APPLICANTS call.
+    cache.invalidateEntries(
+      [`${Event.GET_MEMBERS}-${id}`, `${Event.GET_MEMBERS}-${id}`],
+      true
+    );
+
+    return true;
+  };
+
   // ## EMAIL HELPERS
 
   /**

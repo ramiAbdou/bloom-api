@@ -7,7 +7,7 @@ import { Args, Authorized, Ctx, Query, Resolver } from 'type-graphql';
 
 import { Event, GQLContext } from '@constants';
 import { Community } from '@entities';
-import { QueryOrder } from '@mikro-orm/core';
+import { LoadStrategy, QueryOrder } from '@mikro-orm/core';
 import BloomManager from '@util/db/BloomManager';
 import { GetCommunityArgs } from './Community.args';
 
@@ -56,6 +56,19 @@ export default class CommunityResolver {
         null,
         `${Event.GET_MEMBERS}-${communityId}`
       );
+    // return new BloomManager()
+    //   .communityRepo()
+    //   .findOne(
+    //     { id: communityId, memberships: { status: 'ACCEPTED' } },
+    //     [
+    //       'questions',
+    //       'memberships.data',
+    //       'memberships.type',
+    //       'memberships.user'
+    //     ],
+    //     null,
+    //     `${Event.GET_MEMBERS}-${communityId}`
+    //   );
   }
 
   @Authorized('ADMIN')

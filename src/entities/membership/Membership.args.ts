@@ -31,6 +31,12 @@ export class RespondToMembershipsArgs {
   response: MembershipStatus;
 }
 
+@ArgsType()
+export class DeleteMembershipsArgs {
+  @Field(() => [String])
+  membershipIds: string[];
+}
+
 @ObjectType()
 export class MemberData {
   @Field()

@@ -20,7 +20,7 @@ export default {
   driverOptions: { connection: { ssl: isProduction } },
   entities: [BaseEntity, ...Object.values(entities)],
   entityRepository: BaseRepo,
-  filters: { notDeleted: { cond: () => ({ deletedAt: null }) } },
+  filters: { notDeleted: { args: false, cond: { deletedAt: null } } },
   namingStrategy: NamingStrategy,
   resultCache: { expiration: 0 },
   type: 'postgresql'

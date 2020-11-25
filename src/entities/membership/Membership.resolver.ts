@@ -10,6 +10,7 @@ import { Membership } from '@entities';
 import BloomManager from '@util/db/BloomManager';
 import {
   ApplyForMembershipArgs,
+  DeleteMembershipsArgs,
   RespondToMembershipsArgs
 } from './Membership.args';
 
@@ -37,5 +38,16 @@ export default class MembershipResolver {
     return !!(await new BloomManager()
       .membershipRepo()
       .respondToMemberships(membershipIds, response, communityId));
+  }
+
+  @Authorized('ADMIN')
+  @Mutation(() => Boolean, { nullable: true })
+  async deleteMemberships(
+    @Args() { membershipIds }: DeleteMembershipsArgs,
+    @Ctx() { communityId }: GQLContext
+  ) {
+    return !!(await new BloomManager()
+      .membershipRepo()
+      .deleteMemberships(membershipIds, communityId));
   }
 }

@@ -5,10 +5,10 @@
  * @author Rami Abdou
  */
 
-import { PrimaryKey, Property } from '@mikro-orm/core';
 import { nanoid } from 'nanoid';
 import { Field, ID, ObjectType } from 'type-graphql';
 
+import { PrimaryKey, Property } from '@mikro-orm/core';
 import { now } from '@util/util';
 
 @ObjectType()
