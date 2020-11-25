@@ -158,6 +158,19 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     return true;
   };
 
+  /**
+   * Promotes the membershipIds to ADMINs of the community.
+   */
+  promoteToAdmin = async (membershipIds: string[]): Promise<boolean> => {
+    const memberships: Membership[] = await this.find({ id: membershipIds });
+    memberships.forEach((membership: Membership) => {
+      membership.role = 'ADMIN';
+    });
+
+    await this.flush('MEMBERSHIPS_PROMOTION', memberships);
+    return true;
+  };
+
   // ## EMAIL HELPERS
 
   /**

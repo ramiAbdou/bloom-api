@@ -40,6 +40,12 @@ export default class MembershipResolver {
       .respondToMemberships(membershipIds, response, communityId));
   }
 
+  @Authorized('OWNER')
+  @Mutation(() => Boolean, { nullable: true })
+  async promoteToAdmin(@Args() { membershipIds }: DeleteMembershipsArgs) {
+    return new BloomManager().membershipRepo().promoteToAdmin(membershipIds);
+  }
+
   @Authorized('ADMIN')
   @Mutation(() => Boolean, { nullable: true })
   async deleteMemberships(
