@@ -60,7 +60,7 @@ export default class Membership extends BaseEntity {
   role: MembershipRole;
 
   @Field(() => String)
-  @Enum({ items: ['REJECTED', 'PENDING', 'ACCEPTED'], type: String })
+  @Enum({ items: ['REJECTED', 'PENDING', 'INVITED', 'ACCEPTED'], type: String })
   status: MembershipStatus = 'PENDING';
 
   // We don't store any of the customer's financial data in our server. Stripe

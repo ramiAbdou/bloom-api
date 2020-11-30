@@ -182,10 +182,19 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     const bm = this.bm();
     const community: Community = await bm
       .communityRepo()
-      .findOne({ id: communityId });
+      .findOne({ id: communityId }, ['types']);
+
+    const existingMemberships: Membership[] = await bm
+      .membershipRepo()
+      .find({ community, user: { email: members.map(({ email }) => email) } });
+
+    if (existingMemberships.length)
+      throw new Error(
+        'At least 1 of these emails already exist in this community.'
+      );
 
     const memberships: Membership[] = await Promise.all(
-      members.map(async ({ isAdmin, email }) =>
+      members.map(async ({ isAdmin, email, firstName, lastName }) =>
         bm.membershipRepo().createAndPersist({
           community,
           role: isAdmin ? 'ADMIN' : null,
@@ -194,11 +203,7 @@ export default class MembershipRepo extends BaseRepo<Membership> {
           // communities.
           user:
             (await bm.userRepo().findOne({ email })) ??
-            bm.userRepo().createAndPersist({
-              email,
-              firstName: 'First Name',
-              lastName: 'Last Name'
-            })
+            bm.userRepo().createAndPersist({ email, firstName, lastName })
         })
       )
     );

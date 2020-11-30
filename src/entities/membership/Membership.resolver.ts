@@ -59,7 +59,7 @@ export default class MembershipResolver {
   }
 
   @Authorized('ADMIN')
-  @Mutation(() => Membership, { nullable: true })
+  @Mutation(() => Boolean, { nullable: true })
   async createMemberships(
     @Args() { members }: CreateMembershipsArgs,
     @Ctx() { communityId }: GQLContext

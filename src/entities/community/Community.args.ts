@@ -43,15 +43,3 @@ export class ImportCommunityCSVArgs {
   @Field()
   encodedUrlName: string;
 }
-
-@ArgsType()
-export class ReorderQuestionArgs {
-  @Field()
-  communityId: string;
-
-  @Field()
-  questionId: string;
-
-  @Field()
-  order: number;
-}

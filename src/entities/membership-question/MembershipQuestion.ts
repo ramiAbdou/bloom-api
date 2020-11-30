@@ -58,6 +58,11 @@ export default class MembershipQuestion extends BaseEntity {
   @Property({ type: Boolean })
   inApplicantCard = false;
 
+  @Authorized('ADMIN')
+  @Field(() => Boolean)
+  @Property({ type: Boolean })
+  inDirectoryCard = false;
+
   // Will only be non-null if the type is MULTIPLE_CHOICE or MULTIPLE_SELECT.
   @Field(() => [String], { nullable: true })
   @Property({ nullable: true, type: ArrayType })
