@@ -12,6 +12,7 @@ import { now, stringify } from '@util/util';
 import Community from '../community/Community';
 import User from '../user/User';
 import Membership, { MembershipStatus } from './Membership';
+import { NewMemberInput } from './Membership.args';
 
 export default class MembershipRepo extends BaseRepo<Membership> {
   /**
@@ -169,6 +170,41 @@ export default class MembershipRepo extends BaseRepo<Membership> {
 
     await this.flush('MEMBERSHIPS_PROMOTION', memberships);
     return true;
+  };
+
+  /**
+   * Creates new memberships when invited by the admin of the community.
+   */
+  createMemberships = async (
+    members: NewMemberInput[],
+    communityId: string
+  ) => {
+    const bm = this.bm();
+    const community: Community = await bm
+      .communityRepo()
+      .findOne({ id: communityId });
+
+    const memberships: Membership[] = await Promise.all(
+      members.map(async ({ isAdmin, email }) =>
+        bm.membershipRepo().createAndPersist({
+          community,
+          role: isAdmin ? 'ADMIN' : null,
+          status: 'INVITED',
+          // The user can potentially already exist if they are a part of other
+          // communities.
+          user:
+            (await bm.userRepo().findOne({ email })) ??
+            bm.userRepo().createAndPersist({
+              email,
+              firstName: 'First Name',
+              lastName: 'Last Name'
+            })
+        })
+      )
+    );
+
+    await this.flush('MEMBERSHIPS_CREATED', memberships);
+    return memberships;
   };
 
   // ## EMAIL HELPERS

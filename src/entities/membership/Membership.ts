@@ -31,7 +31,7 @@ import User from '../user/User';
 import { MemberData, MembershipRole } from './Membership.args';
 import MembershipRepo from './Membership.repo';
 
-export type MembershipStatus = 'REJECTED' | 'PENDING' | 'ACCEPTED';
+export type MembershipStatus = 'REJECTED' | 'PENDING' | 'INVITED' | 'ACCEPTED';
 
 @ObjectType()
 @Entity({ customRepository: () => MembershipRepo })

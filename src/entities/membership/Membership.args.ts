@@ -3,7 +3,7 @@
  * @author Rami Abdou
  */
 
-import { ArgsType, Field, ObjectType } from 'type-graphql';
+import { ArgsType, Field, InputType, ObjectType } from 'type-graphql';
 
 import { MembershipDataInput } from '@util/gql';
 import { MembershipStatus } from '../membership-card-item/MembershipCardItem';
@@ -35,6 +35,21 @@ export class RespondToMembershipsArgs {
 export class DeleteMembershipsArgs {
   @Field(() => [String])
   membershipIds: string[];
+}
+
+@InputType()
+export class NewMemberInput {
+  @Field(() => String)
+  email: string;
+
+  @Field(() => Boolean)
+  isAdmin: boolean;
+}
+
+@ArgsType()
+export class CreateMembershipsArgs {
+  @Field(() => [NewMemberInput])
+  members: NewMemberInput[];
 }
 
 @ObjectType()
