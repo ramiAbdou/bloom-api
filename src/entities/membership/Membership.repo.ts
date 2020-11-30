@@ -3,7 +3,7 @@
  * @author Rami Abdou
  */
 
-import { Event } from '@constants';
+import { APP, Event } from '@constants';
 import cache from '@util/cache';
 import BaseRepo from '@util/db/BaseRepo';
 import { sendEmail } from '@util/emails';
@@ -190,7 +190,7 @@ export default class MembershipRepo extends BaseRepo<Membership> {
 
     if (existingMemberships.length)
       throw new Error(
-        'At least 1 of these emails already exist in this community.'
+        'At least 1 of these emails already exists in this community.'
       );
 
     const memberships: Membership[] = await Promise.all(
@@ -208,7 +208,22 @@ export default class MembershipRepo extends BaseRepo<Membership> {
       )
     );
 
+    // sendMembershipInvitationEmail
+
     await this.flush('MEMBERSHIPS_CREATED', memberships);
+
+    // Send the appropriate emails based on the response. Also, add the members
+    // to the Mailchimp audience.
+    setTimeout(async () => {
+      // this.sendMembershipInvitationEmails(memberships);
+      // if (response === 'ACCEPTED') {
+      //   await this.sendMembershipAcceptedEmails(memberships, community);
+      //   await this.bm()
+      //     .communityIntegrationsRepo()
+      //     .addToMailchimpAudience(memberships, community);
+      // } else await this.sendMembershipIgnoredEmails(memberships, community);
+    }, 0);
+
     return memberships;
   };
 
@@ -305,6 +320,54 @@ export default class MembershipRepo extends BaseRepo<Membership> {
         ownerEmail,
         ownerFullName
       }
+    );
+  };
+
+  /**
+   * Sends an email notification to the user who recently had a membership
+   * added to their account by the community admin.
+   */
+  private sendMembershipInvitationEmails = async (
+    memberships: Membership[],
+    community: Community
+  ) => {
+    const { name: communityName } = community;
+
+    await Promise.all(
+      memberships.map(async ({ user }) => {
+        const { email, firstName } = user;
+
+        await sendEmail(
+          'membership-invitation.mjml',
+          `You've Been Invited to Join ${communityName}`,
+          email,
+          { clientUrl: `${APP.CLIENT_URL}/login`, communityName, firstName }
+        );
+      })
+    );
+  };
+
+  /**
+   * Sends an email notification to the user who recently had an
+   * ADMINISTRATIVE membership added to their account by the community admin.
+   */
+  private sendAdminInvitationEmail = async (
+    memberships: Membership[],
+    community: Community
+  ) => {
+    const { name: communityName } = community;
+
+    await Promise.all(
+      memberships.map(async ({ user }) => {
+        const { email, firstName } = user;
+
+        await sendEmail(
+          'membership-invitation.mjml',
+          `You've Been Invited to Join ${communityName}`,
+          email,
+          { clientUrl: `${APP.CLIENT_URL}/login`, communityName, firstName }
+        );
+      })
     );
   };
 }

@@ -1,0 +1,40 @@
+<mjml>
+  <mj-body background-color="#FBFBFB">
+    <mj-section>
+      <mj-column>
+        <mj-image padding-left="0" width="75px" src="https://sfo2.digitaloceanspaces.com/bl.community/bloom.png" align="left" alt="Bloom Logo" />
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#E0E0E0" border-radius="6px" padding="1px">
+      <mj-column background-color="#FFFFFF" padding="12px" border-radius="6px">
+        <mj-text font-family="Helvetica Neue, Helvetica" font-size="22px" padding-left="0px" font-weight="300">
+          Hi {{firstName}},
+        </mj-text>
+        <mj-text font-family="Helvetica Neue, Helvetica" font-weight="300" font-size="22px" padding-left="0px" padding-top="16px">
+          You've received an invitation to be an admin of the {{communityName}} community! Please click on the link below to login and complete your onboarding.
+        </mj-text>
+
+        <mj-button font-family="Helvetica Neue, Helvetica" font-size="12px" font-weight="400" background-color="#F58023" border-radius="6px" color="#FFFFFF" inner-padding="0px 24px" height="48px" padding-top="24px" padding-right="0px" padding-left="0px" align="left" href="{{clientUrl}}" text-transform="uppercase">
+          Login to {{communityName}}
+        </mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-section padding-top="48px">
+      <mj-column padding-left="0">
+        <mj-divider padding="0px" border-width="1px" padding-bottom="8px" border-color="#E0E0E0" />
+        <mj-image src="https://sfo2.digitaloceanspaces.com/bl.community/bloom.png" width="50px" align="left" alt="Bloom Logo" padding-left="0px" />
+        <mj-text padding-bottom="0px" padding-top="0px" font-family="Helvetica Neue, Helvetica" font-size="10px" font-weight="300" line-height="16px" padding-left="0px">
+          With &hearts; from the Bloom Team
+        </mj-text>
+        <mj-text padding-bottom="0px" padding-top="0px" font-family="Helvetica Neue, Helvetica" font-size="10px" font-weight="300" line-height="16px" padding-left="0px">
+          The Future of Community Building
+        </mj-text>
+        <mj-text padding-bottom="0px" padding-top="0px" font-family="Helvetica Neue, Helvetica" font-size="10px" font-weight="300" padding="0px" line-height="16px">
+          © Bloom Connect Inc. 20620 Hollow Pine Drive, Walnut, CA 91789 USA
+        </mj-text>
+        <mj-button background-color="#FBFBFB" inner-padding="0px" color="#018A8A" align="left" padding-left="0px" href="https://www.linkedin.com/company/bloom-university" padding-top="6px" font-family="Helvetica Neue, Helvetica" font-size="10px">LinkedIn</mj-button>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
