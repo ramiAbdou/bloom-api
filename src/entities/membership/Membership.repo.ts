@@ -184,9 +184,10 @@ export default class MembershipRepo extends BaseRepo<Membership> {
       .communityRepo()
       .findOne({ id: communityId }, ['types']);
 
-    const existingMemberships: Membership[] = await bm
-      .membershipRepo()
-      .find({ community, user: { email: members.map(({ email }) => email) } });
+    const existingMemberships: Membership[] = await bm.membershipRepo().find({
+      community,
+      user: { email: members.map(({ email }) => email.toLowerCase()) }
+    });
 
     if (existingMemberships.length)
       throw new Error(

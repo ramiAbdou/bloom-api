@@ -25,12 +25,7 @@ import UserRepo from './User.repo';
 export default class User extends BaseEntity {
   [EntityRepositoryType]?: UserRepo;
 
-  /* 
-  ___ _     _    _    
- | __(_)___| |__| |___
- | _|| / -_) / _` (_-<
- |_| |_\___|_\__,_/__/
-  */
+  // ## FIELDS
 
   @Field({ nullable: true })
   @Property({ nullable: true })

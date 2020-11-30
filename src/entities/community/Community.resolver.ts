@@ -24,6 +24,19 @@ export default class CommunityResolver {
 
   @Authorized('ADMIN')
   @Query(() => Community, { nullable: true })
+  async getAdmins(@Ctx() { communityId }: GQLContext): Promise<Community> {
+    return new BloomManager()
+      .communityRepo()
+      .findOne(
+        { id: communityId, memberships: { role: ['ADMIN', 'OWNER'] } },
+        ['memberships.user'],
+        { createdAt: QueryOrder.DESC },
+        `${Event.GET_ADMINS}-${communityId}`
+      );
+  }
+
+  @Authorized('ADMIN')
+  @Query(() => Community, { nullable: true })
   async getApplicants(@Ctx() { communityId }: GQLContext): Promise<Community> {
     return new BloomManager()
       .communityRepo()
