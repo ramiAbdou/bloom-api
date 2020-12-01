@@ -12,7 +12,8 @@ import {
   ApplyForMembershipArgs,
   CreateMembershipsArgs,
   DeleteMembershipsArgs,
-  RespondToMembershipsArgs
+  RespondToMembershipsArgs,
+  ToggleAdminArgs
 } from './Membership.args';
 
 @Resolver()
@@ -43,8 +44,13 @@ export default class MembershipResolver {
 
   @Authorized('OWNER')
   @Mutation(() => Boolean, { nullable: true })
-  async promoteToAdmin(@Args() { membershipIds }: DeleteMembershipsArgs) {
-    return new BloomManager().membershipRepo().promoteToAdmin(membershipIds);
+  async toggleAdmins(
+    @Args() { membershipIds }: ToggleAdminArgs,
+    @Ctx() { communityId }: GQLContext
+  ) {
+    return new BloomManager()
+      .membershipRepo()
+      .toggleAdmins(membershipIds, communityId);
   }
 
   @Authorized('ADMIN')
@@ -59,13 +65,13 @@ export default class MembershipResolver {
   }
 
   @Authorized('ADMIN')
-  @Mutation(() => Boolean, { nullable: true })
+  @Mutation(() => [Membership], { nullable: true })
   async createMemberships(
     @Args() { members }: CreateMembershipsArgs,
     @Ctx() { communityId }: GQLContext
   ) {
-    return !!(await new BloomManager()
+    return new BloomManager()
       .membershipRepo()
-      .createMemberships(members, communityId));
+      .createMemberships(members, communityId);
   }
 }

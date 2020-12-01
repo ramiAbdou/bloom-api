@@ -144,31 +144,37 @@ export default class MembershipRepo extends BaseRepo<Membership> {
       'user'
     ]);
 
-    const { id }: Community = await this.bm()
-      .communityRepo()
-      .findOne({ id: communityId });
-
     await this.deleteAndFlush(memberships, 'MEMBERSHIPS_DELETED');
 
-    // Invalidate the cache for the GET_APPLICANTS call.
-    cache.invalidateEntries(
-      [`${Event.GET_MEMBERS}-${id}`, `${Event.GET_MEMBERS}-${id}`],
-      true
-    );
+    // If any of the members were an ADMIN of the community, then we need to
+    // invalidate the GET_ADMINS cache key.
+    if (memberships.some(({ role }) => !!role))
+      cache.invalidateEntries([`${Event.GET_ADMINS}-${communityId}`], true);
+    cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`], true);
 
     return true;
   };
 
   /**
-   * Promotes the membershipIds to ADMINs of the community.
+   * Toggles the admin status of the membership. If the role of the memberships
+   * were previously ADMIN, they become null, and vice versa.
    */
-  promoteToAdmin = async (membershipIds: string[]): Promise<boolean> => {
+  toggleAdmins = async (
+    membershipIds: string[],
+    communityId: string
+  ): Promise<boolean> => {
     const memberships: Membership[] = await this.find({ id: membershipIds });
+
     memberships.forEach((membership: Membership) => {
-      membership.role = 'ADMIN';
+      if (!membership.role) membership.role = 'ADMIN';
+      else membership.role = null;
     });
 
-    await this.flush('MEMBERSHIPS_PROMOTION', memberships);
+    await this.flush('MEMBERSHIPS_ADMIN_STATUS_UPDATED', memberships);
+
+    // Invalidate the cache for the GET_ADMINS call.
+    cache.invalidateEntries([`${Event.GET_ADMINS}-${communityId}`], true);
+
     return true;
   };
 
@@ -209,21 +215,12 @@ export default class MembershipRepo extends BaseRepo<Membership> {
       )
     );
 
-    // sendMembershipInvitationEmail
-
     await this.flush('MEMBERSHIPS_CREATED', memberships);
 
-    // Send the appropriate emails based on the response. Also, add the members
-    // to the Mailchimp audience.
-    setTimeout(async () => {
-      // this.sendMembershipInvitationEmails(memberships);
-      // if (response === 'ACCEPTED') {
-      //   await this.sendMembershipAcceptedEmails(memberships, community);
-      //   await this.bm()
-      //     .communityIntegrationsRepo()
-      //     .addToMailchimpAudience(memberships, community);
-      // } else await this.sendMembershipIgnoredEmails(memberships, community);
-    }, 0);
+    // Invalidate the cache for the GET_ADMINS call if one of the
+    // memberships created was an ADMIN account.
+    if (members.some(({ isAdmin }) => isAdmin))
+      cache.invalidateEntries([`${Event.GET_ADMINS}-${communityId}`], true);
 
     return memberships;
   };

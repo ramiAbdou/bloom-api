@@ -37,6 +37,12 @@ export class DeleteMembershipsArgs {
   membershipIds: string[];
 }
 
+@ArgsType()
+export class ToggleAdminArgs {
+  @Field(() => [String])
+  membershipIds: string[];
+}
+
 @InputType()
 export class NewMemberInput {
   @Field(() => String)
