@@ -3,8 +3,19 @@
  * @author Rami Abdou
  */
 
+import { ArgsType, Field } from 'type-graphql';
+
 import { QuestionCategory, QuestionType } from '@util/gql';
 import MembershipQuestion from './MembershipQuestion';
+
+@ArgsType()
+export class RenameQuestionArgs {
+  @Field()
+  id: string;
+
+  @Field()
+  title: string;
+}
 
 export class MembershipQuestionInput implements Partial<MembershipQuestion> {
   // If the question is a special question, we have to store it in a different

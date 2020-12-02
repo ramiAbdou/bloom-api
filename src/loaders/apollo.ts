@@ -15,6 +15,7 @@ import BloomManager from '@util/db/BloomManager';
 import { decodeToken } from '@util/util';
 import CommunityIntegrations from '../entities/community-integrations/CommunityIntegrations.resolver';
 import CommunityResolver from '../entities/community/Community.resolver';
+import MembershipQuestionResolver from '../entities/membership-question/MembershipQuestion.resolver';
 import MembershipResolver from '../entities/membership/Membership.resolver';
 import UserResolver from '../entities/user/User.resolver';
 
@@ -49,6 +50,7 @@ export const createSchema = async (): Promise<GraphQLSchema> =>
     resolvers: [
       CommunityResolver,
       CommunityIntegrations,
+      MembershipQuestionResolver,
       MembershipResolver,
       UserResolver
     ]

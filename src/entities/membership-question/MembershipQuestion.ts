@@ -16,13 +16,13 @@ import {
   Property
 } from '@mikro-orm/core';
 import BaseEntity from '@util/db/BaseEntity';
-import BaseRepo from '@util/db/BaseRepo';
 import { QuestionCategory, QuestionType } from '@util/gql';
+import MembershipQuestionRepo from './MembershipQuestion.repo';
 
 @ObjectType()
-@Entity()
+@Entity({ customRepository: () => MembershipQuestionRepo })
 export default class MembershipQuestion extends BaseEntity {
-  [EntityRepositoryType]?: BaseRepo<MembershipQuestion>;
+  [EntityRepositoryType]?: MembershipQuestionRepo;
 
   // If the question is a special question, we have to store it in a different
   // fashion. For example, 'EMAIL' would be stored on the user, NOT the
