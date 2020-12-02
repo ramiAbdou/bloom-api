@@ -15,11 +15,11 @@ export default class MembershipQuestionResolver {
   @Authorized('ADMIN')
   @Mutation(() => MembershipQuestion, { nullable: true })
   async renameQuestion(
-    @Args() { id, title }: RenameQuestionArgs,
+    @Args() { id, title, version }: RenameQuestionArgs,
     @Ctx() { communityId }: GQLContext
   ): Promise<MembershipQuestion> {
     return new BloomManager()
       .membershipQuestionRepo()
-      .renameQuestion(id, title, communityId);
+      .renameQuestion(id, title, version, communityId);
   }
 }

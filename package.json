@@ -15,8 +15,8 @@
     "npm": "6.9.0"
   },
   "dependencies": {
-    "@mikro-orm/core": "^4.2.3",
-    "@mikro-orm/postgresql": "^4.2.3",
+    "@mikro-orm/core": "^4.3.2",
+    "@mikro-orm/postgresql": "^4.3.2",
     "@sendgrid/mail": "^7.2.6",
     "@types/bluebird": "^3.5.30",
     "@types/chai": "^4.2.11",

@@ -9,6 +9,7 @@ import { Community } from '@entities';
 import {
   ArrayType,
   BeforeCreate,
+  BeforeUpdate,
   Entity,
   EntityRepositoryType,
   Enum,
@@ -23,6 +24,10 @@ import MembershipQuestionRepo from './MembershipQuestion.repo';
 @Entity({ customRepository: () => MembershipQuestionRepo })
 export default class MembershipQuestion extends BaseEntity {
   [EntityRepositoryType]?: MembershipQuestionRepo;
+
+  @Field(() => Number)
+  @Property({ version: true })
+  version!: number;
 
   // If the question is a special question, we have to store it in a different
   // fashion. For example, 'EMAIL' would be stored on the user, NOT the
@@ -102,6 +107,11 @@ export default class MembershipQuestion extends BaseEntity {
     }
 
     if (this.category === 'MEMBERSHIP_TYPE') this.inApplicantCard = true;
+  }
+
+  @BeforeUpdate()
+  beforeUpdate() {
+    console.log('UPDATING');
   }
 
   // ## RELATIONSHIPS

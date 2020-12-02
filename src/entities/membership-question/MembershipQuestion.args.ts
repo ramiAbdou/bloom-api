@@ -3,7 +3,7 @@
  * @author Rami Abdou
  */
 
-import { ArgsType, Field } from 'type-graphql';
+import { ArgsType, Field, Int } from 'type-graphql';
 
 import { QuestionCategory, QuestionType } from '@util/gql';
 import MembershipQuestion from './MembershipQuestion';
@@ -15,6 +15,9 @@ export class RenameQuestionArgs {
 
   @Field()
   title: string;
+
+  @Field(() => Int)
+  version: number;
 }
 
 export class MembershipQuestionInput implements Partial<MembershipQuestion> {

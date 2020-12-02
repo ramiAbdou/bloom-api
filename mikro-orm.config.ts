@@ -22,6 +22,5 @@ export default {
   entityRepository: BaseRepo,
   filters: { notDeleted: { args: false, cond: { deletedAt: null } } },
   namingStrategy: NamingStrategy,
-  resultCache: { expiration: 0 },
   type: 'postgresql'
 } as Options<IDatabaseDriver<Connection>>;

@@ -85,7 +85,6 @@ export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
       if (event) logger.info(event, entityIds);
       if (invalidateCache) cache.invalidateEntries(entityIds);
     } catch (e) {
-      console.log(e);
       logger.error(event, e);
       throw new Error(e);
     }
