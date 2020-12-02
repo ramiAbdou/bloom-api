@@ -4,8 +4,6 @@
  * @author Rami Abdou
  */
 
-/* eslint-disable no-underscore-dangle */
-
 import { LoggerEvent } from '@constants';
 import logger from '@logger';
 import {

@@ -9,7 +9,6 @@ import { Community } from '@entities';
 import {
   ArrayType,
   BeforeCreate,
-  BeforeUpdate,
   Entity,
   EntityRepositoryType,
   Enum,
@@ -107,11 +106,6 @@ export default class MembershipQuestion extends BaseEntity {
     }
 
     if (this.category === 'MEMBERSHIP_TYPE') this.inApplicantCard = true;
-  }
-
-  @BeforeUpdate()
-  beforeUpdate() {
-    console.log('UPDATING');
   }
 
   // ## RELATIONSHIPS

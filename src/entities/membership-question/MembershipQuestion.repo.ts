@@ -19,18 +19,16 @@ export default class MembershipQuestionRepo extends BaseRepo<
   ) => {
     const question = await this.findOne({ id });
 
-    console.log(question.title);
-    console.log(title);
-
     if (version < question.version)
       throw new Error(
-        `Looks like somebody else just updated this question title. Please refresh and try again.`
+        `Looks like somebody else just updated this question title. \
+        Please refresh and try again.`
       );
 
     question.title = title;
-    await this.flush('QUESTION_RENAMED', question);
-
+    await this.flush('QUESTION_RENAMED', question, true);
     cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`], true);
+
     return question;
   };
 }
