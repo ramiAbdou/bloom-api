@@ -14,12 +14,17 @@ import { GetCommunityArgs } from './Community.args';
 @Resolver()
 export default class CommunityResolver {
   @Query(() => Community, { nullable: true })
-  async getMembershipForm(
+  async getApplication(
     @Args() { encodedUrlName }: GetCommunityArgs
   ): Promise<Community> {
     return new BloomManager()
       .communityRepo()
-      .findOne({ encodedUrlName }, ['application', 'questions']);
+      .findOne(
+        { encodedUrlName },
+        ['application', 'questions'],
+        null,
+        `${Event.GET_APPLICATION}-${encodedUrlName}`
+      );
   }
 
   @Authorized('ADMIN')
