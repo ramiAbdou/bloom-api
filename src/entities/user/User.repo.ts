@@ -8,17 +8,18 @@ import { generateTokens, setHttpOnlyTokens } from '@util/util';
 import Membership from '../membership/Membership';
 import User from './User';
 
-type RefreshTokenFlowArgs = { user?: User; userId?: string };
+type RefreshTokenFlowArgs = { res?: Response; user?: User; userId?: string };
 
 export default class UserRepo extends BaseRepo<User> {
   /**
    * Refreshes the user's tokens and sets the HTTP only cookies if Express
    * res object is provided. If the refreshing succeeds, the tokenw il
    */
-  refreshTokenFlow = async (
-    res: Response,
-    { user, userId }: RefreshTokenFlowArgs
-  ): Promise<AuthTokens> => {
+  refreshTokenFlow = async ({
+    res,
+    user,
+    userId
+  }: RefreshTokenFlowArgs): Promise<AuthTokens> => {
     user = user ?? (await this.findOne({ id: userId }));
 
     // If no user found with the given arguments or a user is found and
@@ -28,8 +29,8 @@ export default class UserRepo extends BaseRepo<User> {
 
     const tokens = generateTokens({ userId: user.id });
 
-    // Set the HTTP only cookies on the Express Response object.
-    setHttpOnlyTokens(res, tokens);
+    // If an Express Response object is passed in, set the HTTP only cookies.
+    if (res) setHttpOnlyTokens(res, tokens);
 
     // Update the refreshToken in the DB.
     user.refreshToken = tokens.refreshToken;

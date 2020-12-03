@@ -25,7 +25,7 @@ export default class GoogleRouter extends Router {
         await bm.membershipRepo().updateInvitedStatuses(memberships);
       }
 
-      await userRepo.refreshTokenFlow(res, { user });
+      await userRepo.refreshTokenFlow({ res, user });
     }
 
     res.redirect(APP.CLIENT_URL);
