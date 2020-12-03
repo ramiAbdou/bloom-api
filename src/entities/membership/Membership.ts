@@ -12,7 +12,6 @@ import {
   Entity,
   EntityRepositoryType,
   Enum,
-  Filter,
   ManyToOne,
   OneToMany,
   Property,

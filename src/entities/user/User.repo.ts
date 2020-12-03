@@ -85,7 +85,7 @@ export default class UserRepo extends BaseRepo<User> {
           .reduce((acc: LoginError, { status }: Membership) => {
             // SUCCESS CASE: If the user has been approved in some community,
             // update the refresh token in the DB.
-            if (status === 'ACCEPTED') return null;
+            if (['ACCEPTED', 'INVITED'].includes(status)) return null;
 
             // If acc is null and application is PENDING, don't do anything, cause
             // the user is already approved. If acc isn't null, then set error to

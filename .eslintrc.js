@@ -45,6 +45,25 @@ module.exports = {
     'no-param-reassign': 0, // Allow parameter reassigning in a function.
     'no-plusplus': 0, // Allow the i++ syntax, helpful for manual for-loops.
     'object-curly-newline': 0,
+    'padding-line-between-statements': [
+      'error',
+      { blankLine: 'always', prev: 'multiline-const', next: '*' },
+      {
+        blankLine: 'always',
+        prev: ['block-like', 'multiline-expression'],
+        next: '*'
+      },
+      {
+        blankLine: 'always',
+        prev: '*',
+        next: ['function', 'multiline-const', 'multiline-expression']
+      },
+      {
+        blankLine: 'always',
+        prev: ['multiline-const', 'multiline-expression'],
+        next: 'return'
+      }
+    ],
     semi: 2, // Must have semicolon wherever possible.
     'simple-import-sort/sort': [
       2,

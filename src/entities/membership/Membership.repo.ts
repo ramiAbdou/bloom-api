@@ -124,6 +124,7 @@ export default class MembershipRepo extends BaseRepo<Membership> {
 
       if (response === 'ACCEPTED') {
         await this.sendMembershipAcceptedEmails(memberships, community);
+
         await this.bm()
           .communityIntegrationsRepo()
           .addToMailchimpAudience(memberships, community);
@@ -186,6 +187,7 @@ export default class MembershipRepo extends BaseRepo<Membership> {
     communityId: string
   ) => {
     const bm = this.bm();
+
     const community: Community = await bm
       .communityRepo()
       .findOne({ id: communityId }, ['types']);
@@ -223,6 +225,20 @@ export default class MembershipRepo extends BaseRepo<Membership> {
       cache.invalidateEntries([`${Event.GET_ADMINS}-${communityId}`], true);
 
     return memberships;
+  };
+
+  /**
+   * Updates all of the INVITED statuses to ACCEPTED on a membership.
+   * Precondition: Should only be called when a user is logging into Bloom.
+   */
+  updateInvitedStatuses = async (memberships: Membership[]) => {
+    await Promise.all(
+      memberships.map(async (membership: Membership) => {
+        if (membership.status === 'INVITED') membership.status = 'ACCEPTED';
+      })
+    );
+
+    await this.flush('MEMBERSHIPS_INVITED_STATUS_UPDATED', memberships);
   };
 
   // ## EMAIL HELPERS
