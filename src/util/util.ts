@@ -7,6 +7,11 @@ import hash from 'object-hash';
 
 import { AuthTokens, isProduction, JWT } from '@constants';
 
+/**
+ * Creates a hashed key based on the data given. The same exact cache key will
+ * be given for the same object, as the hashing function performs a deep
+ * equality.
+ */
 export const buildCacheKey = (data: Record<string, any>) =>
   hash(
     Object.entries(data).reduce(
