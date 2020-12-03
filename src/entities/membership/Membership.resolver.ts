@@ -1,8 +1,3 @@
-/**
- * @fileoverview Resolver: Membership
- * @author Rami Abdou
- */
-
 import { Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';

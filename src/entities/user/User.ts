@@ -1,8 +1,3 @@
-/**
- * @fileoverview Entity: User
- * @author Rami Abdou
- */
-
 import { IsEmail, IsUrl } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
 import {

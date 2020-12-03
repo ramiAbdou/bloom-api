@@ -1,9 +1,3 @@
-/**
- * @fileoverview Utility: Connection
- * - Handles the current, running DB connection.
- * @author Rami Abdou
- */
-
 import options from 'mikro-orm.config';
 import { EntityManager, MikroORM } from '@mikro-orm/core';
 

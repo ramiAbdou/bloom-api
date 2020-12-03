@@ -1,8 +1,3 @@
-/**
- * @fileoverview Resolver Arguments: Event
- * @author Rami Abdou
- */
-
 import { ArgsType, Field } from 'type-graphql';
 
 @ArgsType()

@@ -1,8 +1,3 @@
-/**
- * @fileoverview Resolver Arguments: Membership
- * @author Rami Abdou
- */
-
 import { ArgsType, Field, InputType, ObjectType } from 'type-graphql';
 
 import { MembershipDataInput } from '@util/gql';

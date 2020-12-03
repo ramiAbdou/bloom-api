@@ -1,8 +1,3 @@
-/**
- * @fileoverview Utility: Cache
- * @author Rami Abdou
- */
-
 import merge from 'lodash.merge';
 import LRUCache from 'lru-cache';
 

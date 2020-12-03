@@ -1,8 +1,3 @@
-/**
- * @fileoverview Entity: Event
- * @author Rami Abdou
- */
-
 import { IsUrl } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
 import {

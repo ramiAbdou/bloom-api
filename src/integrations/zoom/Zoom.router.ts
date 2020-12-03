@@ -1,8 +1,3 @@
-/**
- * @fileoverview Router: Zoom
- * @author Rami Abdou
- */
-
 import { Request, Response } from 'express';
 
 import { APP, Route } from '@constants';

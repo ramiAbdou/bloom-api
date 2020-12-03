@@ -1,8 +1,3 @@
-/**
- * @fileoverview Repository: CommunityIntegrations
- * @author Rami Abdou
- */
-
 import axios, { AxiosRequestConfig } from 'axios';
 import moment from 'moment';
 import { URLSearchParams } from 'url';

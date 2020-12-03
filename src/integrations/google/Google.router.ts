@@ -1,8 +1,3 @@
-/**
- * @fileoverview Router: Google
- * @author Rami Abdou
- */
-
 import { Request, Response } from 'express';
 
 import { APP, LoginError, Route } from '@constants';

@@ -1,10 +1,3 @@
-/**
- * @fileoverview Utility: Constants
- * - All constants required throughout the application including the common
- * types used throughout.
- * @author Rami Abdou, Enoch Chen
- */
-
 import dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import path from 'path'; // Before constants.

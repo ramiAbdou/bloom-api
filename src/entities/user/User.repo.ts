@@ -1,8 +1,3 @@
-/**
- * @fileoverview Repository: User
- * @author Rami Abdou
- */
-
 import { Response } from 'express';
 
 import { APP, AuthTokens, LoginError } from '@constants';

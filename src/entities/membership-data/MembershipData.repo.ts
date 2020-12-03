@@ -1,8 +1,3 @@
-/**
- * @fileoverview Repository: MembershipData
- * @author Rami Abdou
- */
-
 import * as CSV from 'csv-string';
 import { EntityData } from '@mikro-orm/core';
 

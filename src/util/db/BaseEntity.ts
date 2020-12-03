@@ -1,16 +1,13 @@
-/**
- * @fileoverview Utility: BaseEntity
- * - All entity classes will extend this. Includes the createdAt and updatedAt
- * timestamp fields.
- * @author Rami Abdou
- */
-
 import { nanoid } from 'nanoid';
 import { Field, ID, ObjectType } from 'type-graphql';
 import { PrimaryKey, Property } from '@mikro-orm/core';
 
 import { now } from '@util/util';
 
+/**
+ * All entity classes will extend this. Includes the createdAt and updatedAt
+ * timestamp fields.
+ */
 @ObjectType()
 export default abstract class BaseEntity {
   @Field(() => ID)

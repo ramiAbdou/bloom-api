@@ -1,8 +1,3 @@
-/**
- * @fileoverview Resolver: Community
- * @author Rami Abdou
- */
-
 import { Args, Authorized, Ctx, Query, Resolver } from 'type-graphql';
 import { QueryOrder } from '@mikro-orm/core';
 

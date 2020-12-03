@@ -1,11 +1,3 @@
-/**
- * @fileoverview Loader: Express
- * - Initializes and export the Express server. Middleware includes
- * body parsing to JSON, security measures (Helmet), sessions and more.
- * @see https://www.npmjs.com/package/helmet#how-it-works
- * @author Rami Abdou
- */
-
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -53,6 +45,12 @@ const refreshTokenIfExpired = async (
   return next();
 };
 
+/**
+ * Initializes and export the Express server. Middleware includes
+ * body parsing to JSON, security measures (Helmet), sessions and more.
+ *
+ * @see https://www.npmjs.com/package/helmet#how-it-works
+ */
 export default () => {
   const app = express();
 

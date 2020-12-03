@@ -1,8 +1,3 @@
-/**
- * @fileoverview Utility: GraphQL Types
- * @author Rami Abdou
- */
-
 import { Field, InputType } from 'type-graphql';
 
 export type QuestionType =

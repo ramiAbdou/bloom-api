@@ -1,9 +1,3 @@
-/**
- * @fileoverview Entity: MembershipCard
- * - This
- * @author Rami Abdou
- */
-
 import { Field, Int, ObjectType } from 'type-graphql';
 import { Entity, Enum, ManyToOne, Property } from '@mikro-orm/core';
 

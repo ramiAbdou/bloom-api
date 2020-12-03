@@ -1,8 +1,3 @@
-/**
- * @fileoverview Entity: MembershipQuestion
- * @author Rami Abdou
- */
-
 import { ArgsType, Field, Int } from 'type-graphql';
 
 import { QuestionCategory, QuestionType } from '@util/gql';

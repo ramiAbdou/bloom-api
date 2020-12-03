@@ -1,8 +1,3 @@
-/**
- * @fileoverview Resolver Argument: GetCommunity
- * @author Rami Abdou
- */
-
 import { ArgsType, Field } from 'type-graphql';
 
 import { MembershipQuestionInput } from '../membership-question/MembershipQuestion.args';

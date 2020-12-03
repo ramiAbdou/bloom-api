@@ -1,9 +1,3 @@
-/**
- * @fileoverview Resolver: User
- * - Supports fetching and updating users.
- * @author Rami Abdou
- */
-
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext, LoginError } from '@constants';

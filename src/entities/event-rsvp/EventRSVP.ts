@@ -1,8 +1,3 @@
-/**
- * @fileoverview Entity: EventRSVP
- * @author Rami Abdou
- */
-
 import { Entity, ManyToOne, Property } from '@mikro-orm/core';
 
 import { Event, Membership } from '@entities';

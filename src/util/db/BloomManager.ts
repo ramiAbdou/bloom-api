@@ -1,8 +1,3 @@
-/**
- * @fileoverview Utility: BloomManager
- * @author Rami Abdou
- */
-
 import { EntityManager } from '@mikro-orm/core';
 
 import {

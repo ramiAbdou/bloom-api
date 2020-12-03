@@ -1,8 +1,3 @@
-/**
- * @fileoverview Entity: MembershipData
- * @author Rami Abdou
- */
-
 import { Field, ObjectType } from 'type-graphql';
 import {
   Entity,

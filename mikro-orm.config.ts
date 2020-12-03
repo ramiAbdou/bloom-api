@@ -1,9 +1,3 @@
-/**
- * @fileoverview Config: MikroORM
- * - Exports all of the database connection and initialization information.
- * @author Rami Abdou
- */
-
 import { Connection, IDatabaseDriver, Options } from '@mikro-orm/core';
 
 import { APP, isProduction } from '@constants';
@@ -12,6 +6,9 @@ import BaseEntity from '@util/db/BaseEntity';
 import BaseRepo from '@util/db/BaseRepo';
 import NamingStrategy from '@util/db/NamingStrategy';
 
+/**
+ * Exports all of the database connection and initialization information.
+ */
 export default {
   clientUrl: APP.DB_URL,
   // This option disallows the usage of entitiesDirs and caching, which we set

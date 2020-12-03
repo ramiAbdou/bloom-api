@@ -1,8 +1,3 @@
-/**
- * @fileoverview Utility: Stripe
- * @author Rami Abdou
- */
-
 import Stripe from 'stripe';
 
 import { INTEGRATIONS } from '@constants';

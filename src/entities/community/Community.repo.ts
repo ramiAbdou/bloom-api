@@ -1,8 +1,3 @@
-/**
- * @fileoverview Repository: Community
- * @author Rami Abdou
- */
-
 import csv from 'csvtojson';
 import moment from 'moment';
 

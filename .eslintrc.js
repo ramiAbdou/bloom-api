@@ -1,9 +1,3 @@
-/**
- * @fileoverview Config: ESLint
- * @see https://eslint.org/docs/user-guide/configuring
- * @author Rami Abdou
- */
-
 module.exports = {
   env: {
     mocha: true

@@ -1,18 +1,12 @@
-/**
- * @fileoverview Entity: Community
- * @author Rami Abdou
- */
-
-// eslint-disable-next-line simple-import-sort/sort
 import axios, { AxiosRequestConfig } from 'axios';
 import { Field, ObjectType } from 'type-graphql';
-
 import {
   Entity,
   EntityRepositoryType,
   OneToOne,
   Property
 } from '@mikro-orm/core';
+
 import BaseEntity from '@util/db/BaseEntity';
 import BloomManager from '@util/db/BloomManager';
 import Community from '../community/Community';

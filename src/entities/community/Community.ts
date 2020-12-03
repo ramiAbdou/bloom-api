@@ -1,8 +1,3 @@
-/**
- * @fileoverview Entity: Community
- * @author Rami Abdou
- */
-
 import { IsUrl } from 'class-validator';
 import { Authorized, Field, ObjectType } from 'type-graphql';
 import {

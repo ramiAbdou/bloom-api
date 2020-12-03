@@ -1,8 +1,3 @@
-/**
- * @fileoverview Repository: Membership
- * @author Rami Abdou
- */
-
 import { APP, Event } from '@constants';
 import cache from '@util/cache';
 import BaseRepo from '@util/db/BaseRepo';

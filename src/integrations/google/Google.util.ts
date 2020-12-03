@@ -1,8 +1,3 @@
-/**
- * @fileoverview Service: GoogleAuth
- * @author Rami Abdou
- */
-
 import axios, { AxiosRequestConfig } from 'axios';
 import jwt from 'jsonwebtoken';
 

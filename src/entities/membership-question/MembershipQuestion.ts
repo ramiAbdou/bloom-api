@@ -1,8 +1,3 @@
-/**
- * @fileoverview Entity: MembershipQuestion
- * @author Rami Abdou
- */
-
 import { Authorized, Field, Int, ObjectType } from 'type-graphql';
 import {
   ArrayType,

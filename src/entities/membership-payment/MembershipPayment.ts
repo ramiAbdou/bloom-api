@@ -1,8 +1,3 @@
-/**
- * @fileoverview Entity: MembershipPayment
- * @author Rami Abdou
- */
-
 import {
   Entity,
   EntityRepositoryType,

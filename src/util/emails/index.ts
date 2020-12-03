@@ -1,8 +1,3 @@
-/**
- * @fileoverview Utility: sendEmail
- * @author Rami Abdou
- */
-
 import { readFileSync } from 'fs';
 import { compile } from 'handlebars';
 import mjml2html from 'mjml';
