@@ -13,7 +13,7 @@ import {
 
 import { INTEGRATIONS } from '@constants';
 import BaseEntity from '@core/db/BaseEntity';
-import { toLowerCaseDash } from '@core/util';
+import { toLowerCaseDash } from '@util/util';
 import CommunityApplication from '../community-application/CommunityApplication';
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
 import Event from '../event/Event';

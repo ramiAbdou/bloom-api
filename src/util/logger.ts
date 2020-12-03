@@ -1,7 +1,7 @@
 import fs from 'fs';
 import moment from 'moment';
 
-import { now } from '@core/util';
+import { now } from '@util/util';
 import { LoggerEvent } from './constants';
 
 type LoggerLevel = 'INFO' | 'ERROR' | 'WARN';

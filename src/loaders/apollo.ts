@@ -4,7 +4,7 @@ import { AuthChecker, buildSchema } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { decodeToken } from '@core/util';
+import { decodeToken } from '@util/util';
 import CommunityIntegrations from '../entities/community-integrations/CommunityIntegrations.resolver';
 import CommunityResolver from '../entities/community/Community.resolver';
 import MembershipQuestionResolver from '../entities/membership-question/MembershipQuestion.resolver';

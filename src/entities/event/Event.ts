@@ -11,7 +11,7 @@ import {
 
 import { APP } from '@constants';
 import BaseEntity from '@core/db/BaseEntity';
-import URLBuilder from '@core/URLBuilder';
+import URLBuilder from '@util/URLBuilder';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventRSVP from '../event-rsvp/EventRSVP';

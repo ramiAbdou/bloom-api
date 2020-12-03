@@ -2,8 +2,8 @@ import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext, LoginError } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { decodeToken } from '@core/util';
 import { User } from '@entities';
+import { decodeToken } from '@util/util';
 
 @Resolver()
 export default class UserResolver {

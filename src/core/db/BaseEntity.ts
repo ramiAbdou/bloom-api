@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid';
 import { Field, ID, ObjectType } from 'type-graphql';
 import { PrimaryKey, Property } from '@mikro-orm/core';
 
-import { now } from '@core/util';
+import { now } from '@util/util';
 
 /**
  * All entity classes will extend this. Includes the createdAt and updatedAt

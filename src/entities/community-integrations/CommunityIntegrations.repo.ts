@@ -5,7 +5,7 @@ import { URLSearchParams } from 'url';
 import { APP, AuthTokens, Event, isProduction } from '@constants';
 import cache from '@core/cache';
 import BaseRepo from '@core/db/BaseRepo';
-import logger from '@core/logger';
+import logger from '@util/logger';
 import { Community, Membership } from '@entities';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import CommunityIntegrations from './CommunityIntegrations';

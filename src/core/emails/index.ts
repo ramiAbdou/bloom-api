@@ -3,8 +3,8 @@ import { compile } from 'handlebars';
 import mjml2html from 'mjml';
 
 import { isProduction } from '@constants';
+import logger from '@util/logger';
 import sg from '@sendgrid/mail';
-import logger from '@core/logger';
 
 sg.setApiKey(process.env.SENDGRID_API_KEY);
 

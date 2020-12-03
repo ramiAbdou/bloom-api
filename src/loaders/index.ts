@@ -2,7 +2,7 @@ import 'reflect-metadata'; // Needed for type-graphql compilation.
 
 import { APP } from '@constants';
 import db from '@core/db/db';
-import logger from '@core/logger';
+import logger from '@util/logger';
 import apollo from './apollo';
 import express from './express';
 

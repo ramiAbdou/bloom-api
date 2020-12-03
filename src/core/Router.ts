@@ -1,6 +1,6 @@
 import { Router as ExpressRouter } from 'express';
 
-import { Route } from './constants';
+import { Route } from '@constants';
 
 /**
  * Binds the given routes to the Express Router. Must override the routes

@@ -6,7 +6,7 @@ import helmet from 'helmet';
 
 import { APP } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { decodeToken, verifyToken } from '@core/util';
+import { decodeToken, verifyToken } from '@util/util';
 import GoogleRouter from '@integrations/google/Google.router';
 import MailchimpRouter from '@integrations/mailchimp/Mailchimp.router';
 import StripeRouter from '@integrations/stripe/Stripe.router';

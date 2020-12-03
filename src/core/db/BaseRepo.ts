@@ -11,8 +11,8 @@ import {
 
 import { LoggerEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import logger from '@core/logger';
-import { buildCacheKey, now } from '@core/util';
+import logger from '@util/logger';
+import { buildCacheKey, now } from '@util/util';
 import cache from '../cache';
 
 /**
