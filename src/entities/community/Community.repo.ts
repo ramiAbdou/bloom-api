@@ -1,8 +1,8 @@
 import csv from 'csvtojson';
 import moment from 'moment';
 
+import BaseRepo from '@core/db/BaseRepo';
 import { Membership, User } from '@entities';
-import BaseRepo from '@util/db/BaseRepo';
 import { MembershipTypeInput } from '../membership-type/MembershipType.args';
 import Community from './Community';
 import { CreateCommunityArgs, ImportCommunityCSVArgs } from './Community.args';

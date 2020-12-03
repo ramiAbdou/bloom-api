@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 
 import { APP, Route } from '@constants';
-import BloomManager from '@util/db/BloomManager';
-import Router from '@util/Router';
+import BloomManager from '@core/db/BloomManager';
+import Router from '@core/Router';
 
 export default class ZoomRouter extends Router {
   get routes(): Route[] {

@@ -1,6 +1,6 @@
 import { Event } from '@constants';
-import cache from '@util/cache';
-import BaseRepo from '@util/db/BaseRepo';
+import cache from '@core/cache';
+import BaseRepo from '@core/db/BaseRepo';
 import MembershipQuestion from './MembershipQuestion';
 
 export default class MembershipQuestionRepo extends BaseRepo<

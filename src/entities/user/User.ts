@@ -11,7 +11,7 @@ import {
   Property
 } from '@mikro-orm/core';
 
-import BaseEntity from '@util/db/BaseEntity';
+import BaseEntity from '@core/db/BaseEntity';
 import Membership from '../membership/Membership';
 import UserRepo from './User.repo';
 

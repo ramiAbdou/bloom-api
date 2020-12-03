@@ -1,6 +1,6 @@
 import { ArgsType, Field, Int } from 'type-graphql';
 
-import { QuestionCategory, QuestionType } from '@util/gql';
+import { QuestionCategory, QuestionType } from '@core/gql';
 import MembershipQuestion from './MembershipQuestion';
 
 @ArgsType()

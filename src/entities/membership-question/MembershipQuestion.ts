@@ -9,9 +9,9 @@ import {
   Property
 } from '@mikro-orm/core';
 
+import BaseEntity from '@core/db/BaseEntity';
+import { QuestionCategory, QuestionType } from '@core/gql';
 import { Community } from '@entities';
-import BaseEntity from '@util/db/BaseEntity';
-import { QuestionCategory, QuestionType } from '@util/gql';
 import MembershipQuestionRepo from './MembershipQuestion.repo';
 
 @ObjectType()

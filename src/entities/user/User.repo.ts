@@ -1,10 +1,10 @@
 import { Response } from 'express';
 
 import { APP, AuthTokens, LoginError } from '@constants';
-import BaseRepo from '@util/db/BaseRepo';
-import { sendEmail } from '@util/emails';
-import URLBuilder from '@util/URLBuilder';
-import { generateTokens, setHttpOnlyTokens } from '@util/util';
+import { generateTokens, setHttpOnlyTokens } from '@core/util';
+import BaseRepo from '@core/db/BaseRepo';
+import { sendEmail } from '@core/emails';
+import URLBuilder from '@core/URLBuilder';
 import Membership from '../membership/Membership';
 import User from './User';
 

@@ -1,7 +1,7 @@
 import { Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
-import BloomManager from '@util/db/BloomManager';
+import BloomManager from '@core/db/BloomManager';
 import MembershipQuestion from './MembershipQuestion';
 import { RenameQuestionArgs } from './MembershipQuestion.args';
 

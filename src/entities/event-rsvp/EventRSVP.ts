@@ -1,7 +1,7 @@
 import { Entity, ManyToOne, Property } from '@mikro-orm/core';
 
 import { Event, Membership } from '@entities';
-import BaseEntity from '@util/db/BaseEntity';
+import BaseEntity from '@core/db/BaseEntity';
 
 @Entity()
 export default class EventRSVP extends BaseEntity {

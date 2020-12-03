@@ -10,9 +10,9 @@ import {
 } from '@mikro-orm/core';
 
 import { LoggerEvent } from '@constants';
-import BloomManager from '@util/db/BloomManager';
-import logger from '@util/logger';
-import { buildCacheKey, now } from '@util/util';
+import BloomManager from '@core/db/BloomManager';
+import logger from '@core/logger';
+import { buildCacheKey, now } from '@core/util';
 import cache from '../cache';
 
 /**

@@ -1,6 +1,6 @@
 import { ArgsType, Field, InputType, ObjectType } from 'type-graphql';
 
-import { MembershipDataInput } from '@util/gql';
+import { MembershipDataInput } from '@core/gql';
 
 export type MembershipRole = 'ADMIN' | 'OWNER';
 export type MembershipStatus = 'REJECTED' | 'PENDING' | 'INVITED' | 'ACCEPTED';

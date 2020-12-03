@@ -12,8 +12,8 @@ import {
 } from '@mikro-orm/core';
 
 import { INTEGRATIONS } from '@constants';
-import BaseEntity from '@util/db/BaseEntity';
-import { toLowerCaseDash } from '@util/util';
+import BaseEntity from '@core/db/BaseEntity';
+import { toLowerCaseDash } from '@core/util';
 import CommunityApplication from '../community-application/CommunityApplication';
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
 import Event from '../event/Event';

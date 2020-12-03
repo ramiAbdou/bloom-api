@@ -2,8 +2,8 @@ import { Args, Authorized, Ctx, Query, Resolver } from 'type-graphql';
 import { QueryOrder } from '@mikro-orm/core';
 
 import { Event, GQLContext } from '@constants';
+import BloomManager from '@core/db/BloomManager';
 import { Community } from '@entities';
-import BloomManager from '@util/db/BloomManager';
 import { GetCommunityArgs } from './Community.args';
 
 @Resolver()

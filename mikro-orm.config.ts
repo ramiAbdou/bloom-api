@@ -1,10 +1,11 @@
+// eslint-disable-next-line simple-import-sort/sort
 import { Connection, IDatabaseDriver, Options } from '@mikro-orm/core';
 
 import { APP, isProduction } from '@constants';
 import * as entities from '@entities';
-import BaseEntity from '@util/db/BaseEntity';
-import BaseRepo from '@util/db/BaseRepo';
-import NamingStrategy from '@util/db/NamingStrategy';
+import BaseEntity from '@core/db/BaseEntity';
+import BaseRepo from '@core/db/BaseRepo';
+import NamingStrategy from '@core/db/NamingStrategy';
 
 /**
  * Exports all of the database connection and initialization information.

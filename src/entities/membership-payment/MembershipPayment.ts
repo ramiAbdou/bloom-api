@@ -6,7 +6,7 @@ import {
 } from '@mikro-orm/core';
 
 import { Membership } from '@entities';
-import BaseEntity from '@util/db/BaseEntity';
+import BaseEntity from '@core/db/BaseEntity';
 import MembershipType from '../membership-type/MembershipType';
 import MembershipPaymentRepo from './MembershipPayment.repo';
 

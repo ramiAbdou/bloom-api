@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 
 import { APP, LoginError, Route } from '@constants';
+import BloomManager from '@core/db/BloomManager';
+import Router from '@core/Router';
 import { Membership, User } from '@entities';
-import BloomManager from '@util/db/BloomManager';
-import Router from '@util/Router';
 import { getEmailFromCode } from './Google.util';
 
 export default class GoogleRouter extends Router {

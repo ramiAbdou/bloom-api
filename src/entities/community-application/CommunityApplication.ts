@@ -8,8 +8,8 @@ import {
 } from '@mikro-orm/core';
 
 import { Community, MembershipQuestion } from '@entities';
-import BaseEntity from '@util/db/BaseEntity';
-import BaseRepo from '@util/db/BaseRepo';
+import BaseEntity from '@core/db/BaseEntity';
+import BaseRepo from '@core/db/BaseRepo';
 
 @ObjectType()
 @Entity()

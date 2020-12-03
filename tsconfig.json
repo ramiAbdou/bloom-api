@@ -10,11 +10,11 @@
     "outDir": "./dist/", // Outputs the compiled JS to the /dist folder.
     "paths": {
       // Used for path aliases.
-      "@constants": ["./src/util/constants.ts"],
+      "@core/*": ["./src/core/*"],
+      "@constants": ["./src/core/constants.ts"],
       "@entities": ["./src/entities/index.ts"],
-      "@logger": ["./src/util/logger.ts"],
-      "@integrations/*": ["./src/integrations/*"],
-      "@util/*": ["./src/util/*"]
+      "@logger": ["./src/core/logger.ts"],
+      "@integrations/*": ["./src/integrations/*"]
     },
     "resolveJsonModule": true, // Allows JSON files to be resolved.
     "sourceMap": true,

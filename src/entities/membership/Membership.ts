@@ -12,8 +12,8 @@ import {
   QueryOrder
 } from '@mikro-orm/core';
 
-import BaseEntity from '@util/db/BaseEntity';
-import { now } from '@util/util';
+import BaseEntity from '@core/db/BaseEntity';
+import { now } from '@core/util';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventRSVP from '../event-rsvp/EventRSVP';

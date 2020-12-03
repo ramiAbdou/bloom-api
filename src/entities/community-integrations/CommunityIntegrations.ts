@@ -7,8 +7,8 @@ import {
   Property
 } from '@mikro-orm/core';
 
-import BaseEntity from '@util/db/BaseEntity';
-import BloomManager from '@util/db/BloomManager';
+import BaseEntity from '@core/db/BaseEntity';
+import BloomManager from '@core/db/BloomManager';
 import Community from '../community/Community';
 import { MailchimpLists, ZoomAccountInfo } from './CommunityIntegrations.args';
 import CommunityIntegrationsRepo from './CommunityIntegrations.repo';
