@@ -6,9 +6,9 @@
 import { ArgsType, Field, InputType, ObjectType } from 'type-graphql';
 
 import { MembershipDataInput } from '@util/gql';
-import { MembershipStatus } from '../membership-card-item/MembershipCardItem';
 
 export type MembershipRole = 'ADMIN' | 'OWNER';
+export type MembershipStatus = 'REJECTED' | 'PENDING' | 'INVITED' | 'ACCEPTED';
 
 @ArgsType()
 export class ApplyForMembershipArgs {

@@ -5,14 +5,14 @@
 
 import { IsUrl } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
-
-import { Community, MembershipQuestion } from '@entities';
 import {
   Entity,
   EntityRepositoryType,
   OneToOne,
   Property
 } from '@mikro-orm/core';
+
+import { Community, MembershipQuestion } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 import BaseRepo from '@util/db/BaseRepo';
 

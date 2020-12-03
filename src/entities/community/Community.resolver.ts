@@ -4,10 +4,10 @@
  */
 
 import { Args, Authorized, Ctx, Query, Resolver } from 'type-graphql';
+import { QueryOrder } from '@mikro-orm/core';
 
 import { Event, GQLContext } from '@constants';
 import { Community } from '@entities';
-import { QueryOrder } from '@mikro-orm/core';
 import BloomManager from '@util/db/BloomManager';
 import { GetCommunityArgs } from './Community.args';
 

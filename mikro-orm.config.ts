@@ -4,9 +4,10 @@
  * @author Rami Abdou
  */
 
+import { Connection, IDatabaseDriver, Options } from '@mikro-orm/core';
+
 import { APP, isProduction } from '@constants';
 import * as entities from '@entities';
-import { Connection, IDatabaseDriver, Options } from '@mikro-orm/core';
 import BaseEntity from '@util/db/BaseEntity';
 import BaseRepo from '@util/db/BaseRepo';
 import NamingStrategy from '@util/db/NamingStrategy';

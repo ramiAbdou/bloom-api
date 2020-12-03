@@ -69,7 +69,7 @@ module.exports = {
       2,
       // This groups 3rd-party packages together, then groups internal @
       // alias modules with "../" type files.
-      { groups: [['^\\u0000'], ['^\\w'], ['^@?\\w', '^\\.']] }
+      { groups: [['^\\u0000'], ['^\\w', '^@mikro-orm'], ['^@?\\w', '^\\.']] }
     ],
     'sort-keys-fix/sort-keys-fix': 2 // Sorts objects keys automatically.
   },

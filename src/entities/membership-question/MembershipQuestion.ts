@@ -4,8 +4,6 @@
  */
 
 import { Authorized, Field, Int, ObjectType } from 'type-graphql';
-
-import { Community } from '@entities';
 import {
   ArrayType,
   BeforeCreate,
@@ -15,6 +13,8 @@ import {
   ManyToOne,
   Property
 } from '@mikro-orm/core';
+
+import { Community } from '@entities';
 import BaseEntity from '@util/db/BaseEntity';
 import { QuestionCategory, QuestionType } from '@util/gql';
 import MembershipQuestionRepo from './MembershipQuestion.repo';

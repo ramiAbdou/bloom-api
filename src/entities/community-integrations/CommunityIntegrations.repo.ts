@@ -10,9 +10,9 @@ import { URLSearchParams } from 'url';
 import { APP, AuthTokens, Event, isProduction } from '@constants';
 import { Community, Membership } from '@entities';
 import { stripe } from '@integrations/stripe/Stripe.util';
-import logger from '@logger';
 import cache from '@util/cache';
 import BaseRepo from '@util/db/BaseRepo';
+import logger from '@util/logger';
 import CommunityIntegrations from './CommunityIntegrations';
 
 type RefreshZoomTokensArgs = {
@@ -158,10 +158,12 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
     const { data } = await axios(options);
 
     integrations.zoomAccessToken = data?.access_token;
+
     integrations.zoomExpiresAt = moment
       .utc()
       .add(data?.expires_in, 'seconds')
       .format();
+
     integrations.zoomRefreshToken = data?.refresh_token;
 
     await this.flush('ZOOM_TOKENS_STORED', integrations);
@@ -208,6 +210,7 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
     };
 
     const { data } = await axios(options);
+
     const {
       access_token: accessToken,
       refresh_token: refreshToken,
@@ -215,10 +218,12 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
     } = data;
 
     integrations.zoomAccessToken = accessToken;
+
     integrations.zoomExpiresAt = moment
       .utc()
       .add(expiresIn, 'seconds')
       .format();
+
     integrations.zoomRefreshToken = refreshToken;
 
     await this.flush('ZOOM_TOKENS_REFRESHED', integrations);

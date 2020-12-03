@@ -3,8 +3,13 @@
  * @author Rami Abdou
  */
 
-import { Entity, EntityRepositoryType, ManyToOne, Property } from '@mikro-orm/core';
 import { Field, ObjectType } from 'type-graphql';
+import {
+  Entity,
+  EntityRepositoryType,
+  ManyToOne,
+  Property
+} from '@mikro-orm/core';
 
 import BaseEntity from '@util/db/BaseEntity';
 import MembershipQuestion from '../membership-question/MembershipQuestion';

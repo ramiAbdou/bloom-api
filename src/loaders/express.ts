@@ -36,6 +36,7 @@ const refreshTokenIfExpired = async (
   // the request comes to the /graphql endpoint, we run the refresh flow.
   if (!verifyToken(accessToken) && refreshToken && req.url === '/graphql') {
     const userId: string = decodeToken(refreshToken)?.userId;
+
     const tokens = await new BloomManager().userRepo().refreshTokenFlow({
       res,
       userId

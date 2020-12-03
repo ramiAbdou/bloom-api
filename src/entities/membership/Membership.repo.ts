@@ -11,8 +11,8 @@ import { MembershipDataInput } from '@util/gql';
 import { now, stringify } from '@util/util';
 import Community from '../community/Community';
 import User from '../user/User';
-import Membership, { MembershipStatus } from './Membership';
-import { NewMemberInput } from './Membership.args';
+import Membership from './Membership';
+import { MembershipStatus, NewMemberInput } from './Membership.args';
 
 export default class MembershipRepo extends BaseRepo<Membership> {
   /**

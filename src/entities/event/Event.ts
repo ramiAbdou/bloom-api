@@ -4,6 +4,7 @@
  */
 
 import { IsUrl } from 'class-validator';
+import { Field, ObjectType } from 'type-graphql';
 import {
   BeforeCreate,
   Collection,
@@ -12,7 +13,6 @@ import {
   OneToMany,
   Property
 } from '@mikro-orm/core';
-import { Field, ObjectType } from 'type-graphql';
 
 import { APP } from '@constants';
 import BaseEntity from '@util/db/BaseEntity';

@@ -5,7 +5,6 @@
 
 import moment from 'moment';
 import { Authorized, Field, ObjectType } from 'type-graphql';
-
 import {
   BeforeCreate,
   Collection,
@@ -17,6 +16,7 @@ import {
   Property,
   QueryOrder
 } from '@mikro-orm/core';
+
 import BaseEntity from '@util/db/BaseEntity';
 import { now } from '@util/util';
 import Community from '../community/Community';
@@ -27,10 +27,12 @@ import MembershipPayment from '../membership-payment/MembershipPayment';
 import MembershipQuestion from '../membership-question/MembershipQuestion';
 import MembershipType from '../membership-type/MembershipType';
 import User from '../user/User';
-import { MemberData, MembershipRole } from './Membership.args';
+import {
+  MemberData,
+  MembershipRole,
+  MembershipStatus
+} from './Membership.args';
 import MembershipRepo from './Membership.repo';
-
-export type MembershipStatus = 'REJECTED' | 'PENDING' | 'INVITED' | 'ACCEPTED';
 
 @ObjectType()
 @Entity({ customRepository: () => MembershipRepo })

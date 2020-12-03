@@ -3,6 +3,7 @@
  * @author Rami Abdou
  */
 
+// eslint-disable-next-line simple-import-sort/sort
 import axios, { AxiosRequestConfig } from 'axios';
 import { Field, ObjectType } from 'type-graphql';
 

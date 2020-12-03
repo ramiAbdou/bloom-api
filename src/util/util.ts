@@ -1,8 +1,3 @@
-/**
- * @fileoverview Utility: General
- * @author Rami Abdou
- */
-
 import * as CSV from 'csv-string';
 import { PristineInput } from 'csv-string/dist/types';
 import { Response } from 'express';
@@ -92,6 +87,7 @@ export const setHttpOnlyTokens = (
 ) => {
   const options = { httpOnly: true, secure: isProduction };
   res.cookie('refreshToken', refreshToken, options);
+
   res.cookie('accessToken', accessToken, {
     ...options,
     maxAge: JWT.EXPIRES_IN * 1000 // x1000 because represented as milliseconds.

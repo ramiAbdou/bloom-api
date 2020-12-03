@@ -4,8 +4,7 @@
  * @author Rami Abdou
  */
 
-import { LoggerEvent } from '@constants';
-import logger from '@logger';
+// eslint-disable-next-line simple-import-sort/sort
 import {
   AnyEntity,
   EntityData,
@@ -16,8 +15,11 @@ import {
   Populate,
   QueryOrderMap
 } from '@mikro-orm/core';
+import { LoggerEvent } from '@constants';
 import BloomManager from '@util/db/BloomManager';
+import logger from '@util/logger';
 import { buildCacheKey, now } from '@util/util';
+
 import cache from '../cache';
 
 export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<

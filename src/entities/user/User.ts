@@ -5,7 +5,6 @@
 
 import { IsEmail, IsUrl } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
-
 import {
   BeforeCreate,
   Cascade,
@@ -16,6 +15,7 @@ import {
   OneToMany,
   Property
 } from '@mikro-orm/core';
+
 import BaseEntity from '@util/db/BaseEntity';
 import Membership from '../membership/Membership';
 import UserRepo from './User.repo';

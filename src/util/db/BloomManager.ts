@@ -3,6 +3,8 @@
  * @author Rami Abdou
  */
 
+import { EntityManager } from '@mikro-orm/core';
+
 import {
   Community,
   CommunityApplication,
@@ -17,7 +19,6 @@ import {
   MembershipType,
   User
 } from '@entities';
-import { EntityManager } from '@mikro-orm/core';
 import db from './db';
 
 export default class BloomManager {
