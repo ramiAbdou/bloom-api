@@ -34,7 +34,7 @@ export default class UserResolver {
     const userId: string = decodeToken(loginToken)?.userId;
 
     if (
-      !(await new BloomManager().userRepo().refreshTokenFlow({ res, userId }))
+      !(await new BloomManager().userRepo().refreshTokenFlow(res, { userId }))
     ) {
       res.cookie('LOGIN_LINK_ERROR', 'TOKEN_EXPIRED');
       return false;

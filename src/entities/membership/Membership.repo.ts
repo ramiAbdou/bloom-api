@@ -192,10 +192,11 @@ export default class MembershipRepo extends BaseRepo<Membership> {
       user: { email: members.map(({ email }) => email.toLowerCase()) }
     });
 
-    if (existingMemberships.length)
+    if (existingMemberships.length) {
       throw new Error(
         'At least 1 of these emails already exists in this community.'
       );
+    }
 
     const memberships: Membership[] = await Promise.all(
       members.map(async ({ isAdmin, email, firstName, lastName }) =>
