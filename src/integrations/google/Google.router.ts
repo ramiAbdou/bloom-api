@@ -21,6 +21,10 @@ export default class GoogleRouter extends Router {
     if (loginError) res.cookie('LOGIN_ERROR', loginError);
     else {
       const memberships: Membership[] = user.memberships.getItems();
+
+      // If when trying to login, the user has some a status of INVITED (only
+      // possible if an admin added them manually), then we should set those
+      // statuses to be ACCEPTED.
       if (memberships.some(({ status }) => status === 'INVITED')) {
         await bm.membershipRepo().updateInvitedStatuses(memberships);
       }

@@ -22,8 +22,12 @@ const authChecker: AuthChecker<GQLContext> = async (
 ) => {
   // If the userId isn't present or the userId doesn't exist in the DB, then
   // the user isn't authenticated.
-  if (!userId || !(await new BloomManager().userRepo().findOne({ id: userId })))
+  if (
+    !userId ||
+    !(await new BloomManager().userRepo().findOne({ id: userId }))
+  ) {
     return false;
+  }
 
   // If no roles are specified, we return true b/c only no roles would be
   // specified if we wanted ANY logged-in user to be authorized. And, we have

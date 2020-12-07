@@ -44,6 +44,7 @@ export const JWT = {
  * instead of in this globally accessible constants file.
  */
 
+export type AuthQueryParams = { code: string; state: string };
 export type AuthTokens = { accessToken: string; refreshToken: string };
 
 // Used for caching purposes (building the keys).

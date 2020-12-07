@@ -6,11 +6,11 @@ import helmet from 'helmet';
 
 import { APP } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { decodeToken, verifyToken } from '@util/util';
 import GoogleRouter from '@integrations/google/Google.router';
 import MailchimpRouter from '@integrations/mailchimp/Mailchimp.router';
 import StripeRouter from '@integrations/stripe/Stripe.router';
 import ZoomRouter from '@integrations/zoom/Zoom.router';
+import { decodeToken, verifyToken } from '@util/util';
 
 /**
  * When a user is sending a request to the GraphQL resolvers, they pass along
