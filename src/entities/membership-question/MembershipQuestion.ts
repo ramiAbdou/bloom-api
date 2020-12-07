@@ -1,11 +1,4 @@
-/**
- * @fileoverview Entity: MembershipQuestion
- * @author Rami Abdou
- */
-
 import { Authorized, Field, Int, ObjectType } from 'type-graphql';
-
-import { Community } from '@entities';
 import {
   ArrayType,
   BeforeCreate,
@@ -15,21 +8,34 @@ import {
   ManyToOne,
   Property
 } from '@mikro-orm/core';
-import BaseEntity from '@util/db/BaseEntity';
-import BaseRepo from '@util/db/BaseRepo';
-import { QuestionCategory, QuestionType } from '@util/gql';
+
+import BaseEntity from '@core/db/BaseEntity';
+import { Community } from '@entities';
+import { QuestionCategory, QuestionType } from './MembershipQuestion.args';
+import MembershipQuestionRepo from './MembershipQuestion.repo';
 
 @ObjectType()
-@Entity()
+@Entity({ customRepository: () => MembershipQuestionRepo })
 export default class MembershipQuestion extends BaseEntity {
-  [EntityRepositoryType]?: BaseRepo<MembershipQuestion>;
+  [EntityRepositoryType]?: MembershipQuestionRepo;
+
+  @Field(() => Number)
+  @Property({ version: true })
+  version!: number;
 
   // If the question is a special question, we have to store it in a different
   // fashion. For example, 'EMAIL' would be stored on the user, NOT the
   // membership.
   @Field(() => String, { nullable: true })
   @Enum({
-    items: ['EMAIL', 'FIRST_NAME', 'GENDER', 'LAST_NAME', 'MEMBERSHIP_TYPE'],
+    items: [
+      'EMAIL',
+      'FIRST_NAME',
+      'GENDER',
+      'JOINED_ON',
+      'LAST_NAME',
+      'MEMBERSHIP_TYPE'
+    ],
     nullable: true,
     type: String
   })
@@ -51,6 +57,11 @@ export default class MembershipQuestion extends BaseEntity {
   @Property({ type: Boolean })
   inApplicantCard = false;
 
+  @Authorized('ADMIN')
+  @Field(() => Boolean)
+  @Property({ type: Boolean })
+  inDirectoryCard = false;
+
   // Will only be non-null if the type is MULTIPLE_CHOICE or MULTIPLE_SELECT.
   @Field(() => [String], { nullable: true })
   @Property({ nullable: true, type: ArrayType })
@@ -69,18 +80,19 @@ export default class MembershipQuestion extends BaseEntity {
   @Property()
   title: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Enum({
     items: ['SHORT_TEXT', 'LONG_TEXT', 'MULTIPLE_CHOICE', 'MULTIPLE_SELECT'],
+    nullable: true,
     type: String
   })
   type: QuestionType;
 
   @BeforeCreate()
   beforeCreate() {
-    if (['EMAIL', 'FIRST_NAME', 'LAST_NAME'].includes(this.category))
+    if (['EMAIL', 'FIRST_NAME', 'LAST_NAME'].includes(this.category)) {
       this.type = 'SHORT_TEXT';
-    else if (this.category === 'GENDER') {
+    } else if (this.category === 'GENDER') {
       this.type = 'MULTIPLE_CHOICE';
       this.options = ['Male', 'Female', 'Non-Binary', 'Prefer Not to Say'];
     } else if (this.category === 'MEMBERSHIP_TYPE') {
@@ -91,13 +103,7 @@ export default class MembershipQuestion extends BaseEntity {
     if (this.category === 'MEMBERSHIP_TYPE') this.inApplicantCard = true;
   }
 
-  /* 
-  ___     _      _   _             _    _         
- | _ \___| |__ _| |_(_)___ _ _  __| |_ (_)_ __ ___
- |   / -_) / _` |  _| / _ \ ' \(_-< ' \| | '_ (_-<
- |_|_\___|_\__,_|\__|_\___/_||_/__/_||_|_| .__/__/
-                                         |_|      
-  */
+  // ## RELATIONSHIPS
 
   @ManyToOne(() => Community)
   community: Community;

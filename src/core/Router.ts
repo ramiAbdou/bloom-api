@@ -1,14 +1,11 @@
-/**
- * @fileoverview Utility: Base Router Class (Abstract)
- *  - Binds the given routes to the Express Router. Must override the routes
- *  getter, which defines the available routes for the given router.
- * @author Rami Abdou
- */
-
 import { Router as ExpressRouter } from 'express';
 
-import { Route } from './constants';
+import { Route } from '@constants';
 
+/**
+ * Binds the given routes to the Express Router. Must override the routes
+ * getter, which defines the available routes for the given router.
+ */
 export default abstract class Router {
   public router: ExpressRouter;
 

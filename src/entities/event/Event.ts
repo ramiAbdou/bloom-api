@@ -1,9 +1,5 @@
-/**
- * @fileoverview Entity: Event
- * @author Rami Abdou
- */
-
 import { IsUrl } from 'class-validator';
+import { Field, ObjectType } from 'type-graphql';
 import {
   BeforeCreate,
   Collection,
@@ -12,10 +8,9 @@ import {
   OneToMany,
   Property
 } from '@mikro-orm/core';
-import { Field, ObjectType } from 'type-graphql';
 
 import { APP } from '@constants';
-import BaseEntity from '@util/db/BaseEntity';
+import BaseEntity from '@core/db/BaseEntity';
 import URLBuilder from '@util/URLBuilder';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';

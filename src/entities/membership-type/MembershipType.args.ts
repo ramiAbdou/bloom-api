@@ -1,8 +1,3 @@
-/**
- * @fileoverview Entity: MembershipType
- * @author Rami Abdou
- */
-
 import MembershipType, { MembershipTypeRecurrence } from './MembershipType';
 
 // Note that for InputType, we still have to had the "?" for fields that have

@@ -1,18 +1,13 @@
-/**
- * @fileoverview Repository: CommunityIntegrations
- * @author Rami Abdou
- */
-
 import axios, { AxiosRequestConfig } from 'axios';
 import moment from 'moment';
 import { URLSearchParams } from 'url';
 
 import { APP, AuthTokens, Event, isProduction } from '@constants';
+import cache from '@core/cache';
+import BaseRepo from '@core/db/BaseRepo';
+import logger from '@util/logger';
 import { Community, Membership } from '@entities';
 import { stripe } from '@integrations/stripe/Stripe.util';
-import logger from '@logger';
-import cache from '@util/cache';
-import BaseRepo from '@util/db/BaseRepo';
 import CommunityIntegrations from './CommunityIntegrations';
 
 type RefreshZoomTokensArgs = {
@@ -62,7 +57,7 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
     integrations.mailchimpAccessToken = data?.access_token;
     await this.flush('MAILCHIMP_TOKEN_STORED', integrations);
 
-    // Invalidate the cache for the GET_APPLICANTS call.
+    // Invalidate the cache for the GET_INTEGRATIONS call.
     cache.invalidateEntries(
       `${Event.GET_INTEGRATIONS}-${integrations.community.id}`,
       true
@@ -84,7 +79,7 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
     integrations.mailchimpListId = mailchimpListId;
     await this.flush('MAILCHIMP_LIST_STORED', integrations);
 
-    // Invalidate the cache for the GET_APPLICANTS call.
+    // Invalidate the cache for the GET_INTEGRATIONS call.
     cache.invalidateEntries(
       `${Event.GET_INTEGRATIONS}-${integrations.community.id}`,
       true
@@ -158,10 +153,12 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
     const { data } = await axios(options);
 
     integrations.zoomAccessToken = data?.access_token;
+
     integrations.zoomExpiresAt = moment
       .utc()
       .add(data?.expires_in, 'seconds')
       .format();
+
     integrations.zoomRefreshToken = data?.refresh_token;
 
     await this.flush('ZOOM_TOKENS_STORED', integrations);
@@ -208,6 +205,7 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
     };
 
     const { data } = await axios(options);
+
     const {
       access_token: accessToken,
       refresh_token: refreshToken,
@@ -215,10 +213,12 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
     } = data;
 
     integrations.zoomAccessToken = accessToken;
+
     integrations.zoomExpiresAt = moment
       .utc()
       .add(expiresIn, 'seconds')
       .format();
+
     integrations.zoomRefreshToken = refreshToken;
 
     await this.flush('ZOOM_TOKENS_REFRESHED', integrations);

@@ -1,10 +1,4 @@
-/**
- * @fileoverview Utility: Cache
- * @author Rami Abdou
- */
-
-import merge from 'lodash/merge';
-import xor from 'lodash/xor';
+import merge from 'lodash.merge';
 import LRUCache from 'lru-cache';
 
 import { APP } from '@constants';
@@ -34,10 +28,12 @@ class Cache extends LRUCache<string, any> {
     Object.entries(this.dependencies).forEach(
       ([key, dependencies]: [string, Set<string>]) => {
         if (
-          (isArray && xor([...dependencies], value).length) ||
-          dependencies.has(value as string)
-        )
+          (isArray &&
+            (value as string[]).some((id: string) => dependencies.has(id))) ||
+          (!isArray && dependencies.has(value as string))
+        ) {
           this.del(key);
+        }
       }
     );
   };
@@ -61,7 +57,7 @@ class Cache extends LRUCache<string, any> {
    * asynchronous manner. So, any DB operations will return to the client while
    * this runs in the background.
    */
-  processDependencies = (key: string, data: Record<string, any>) =>
+  private processDependencies = (key: string, data: Record<string, any>) =>
     setTimeout(() => {
       const dependencies: Set<string> = new Set<string>();
 

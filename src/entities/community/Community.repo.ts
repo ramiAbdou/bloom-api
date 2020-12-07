@@ -1,20 +1,11 @@
-/**
- * @fileoverview Repository: Community
- * @author Rami Abdou
- */
-
 import csv from 'csvtojson';
 import moment from 'moment';
 
-import { Membership, MembershipQuestion, User } from '@entities';
-import BaseRepo from '@util/db/BaseRepo';
+import BaseRepo from '@core/db/BaseRepo';
+import { Membership, User } from '@entities';
 import { MembershipTypeInput } from '../membership-type/MembershipType.args';
 import Community from './Community';
-import {
-  CreateCommunityArgs,
-  ImportCommunityCSVArgs,
-  ReorderQuestionArgs
-} from './Community.args';
+import { CreateCommunityArgs, ImportCommunityCSVArgs } from './Community.args';
 
 export default class CommunityRepo extends BaseRepo<Community> {
   /**
@@ -132,7 +123,7 @@ export default class CommunityRepo extends BaseRepo<Community> {
 
           // IMPORTANT: The value must be a valid input to the Date constructor
           // or else errors will be thrown!
-          else if (key === 'DATE_JOINED') {
+          else if (key === 'JOINED_ON') {
             const dateValue = new Date(value);
             if (!dateValue) return;
             membership.joinedOn = moment.utc(dateValue).format();
@@ -164,36 +155,6 @@ export default class CommunityRepo extends BaseRepo<Community> {
     );
 
     await this.flush('COMMUNITY_CSV_PROCESSED', community);
-    return community;
-  };
-
-  /**
-   * Reorders the question and places it at the given order. Acts like
-   * reordering an array. Loops through all of the questions and moves the
-   * order if appropriate.
-   */
-  reorderQuestion = async ({
-    communityId,
-    questionId,
-    order
-  }: ReorderQuestionArgs): Promise<Community> => {
-    const community: Community = await this.findOne({ id: communityId }, [
-      'questions'
-    ]);
-
-    const questions = community.questions.getItems();
-
-    // Update the order of the question that we need to update.
-    const currIndex = questions.findIndex(({ id }) => id === questionId);
-    questions[currIndex].order = order;
-
-    questions.forEach((question: MembershipQuestion, i: number) => {
-      if (i === currIndex) question.order = order;
-      else if (i < currIndex && i >= order) question.order++;
-      else if (i > currIndex && i <= order) question.order--;
-    });
-
-    await this.flush('REORDER_QUESTION', questions);
     return community;
   };
 }

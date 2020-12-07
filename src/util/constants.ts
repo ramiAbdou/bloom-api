@@ -1,10 +1,3 @@
-/**
- * @fileoverview Utility: Constants
- * - All constants required throughout the application including the common
- * types used throughout.
- * @author Rami Abdou, Enoch Chen
- */
-
 import dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import path from 'path'; // Before constants.
@@ -51,36 +44,37 @@ export const JWT = {
  * instead of in this globally accessible constants file.
  */
 
+export type AuthQueryParams = { code: string; state: string };
 export type AuthTokens = { accessToken: string; refreshToken: string };
 
 // Used for caching purposes (building the keys).
 export enum Event {
+  GET_ADMINS = 'GET_ADMINS',
   GET_APPLICANTS = 'GET_APPLICANTS',
+  GET_APPLICATION = 'GET_APPLICATION',
+  GET_MEMBERS = 'GET_MEMBERS',
   GET_INTEGRATIONS = 'GET_INTEGRATIONS'
 }
 
 export type LoggerEvent =
-  | 'ADMIN_CREATED'
   | 'COMMUNITY_CREATED'
   | 'COMMUNITY_CSV_PROCESSED'
-  | 'EMAIL_SENT'
-  | 'EMAIL_VERIFIED'
-  | 'EVENT_CREATED'
+  | 'EMAIL_FAILED'
   | 'GET_APPLICANTS'
-  | 'REFRESH_TOKEN_STORED'
-  | 'JOINED_EVENT_AS_GUEST'
-  | 'JOINED_EVENT_AS_USER'
   | 'MAILCHIMP_LIST_STORED'
   | 'MAILCHIMP_LIST_MEMBERS_ADDED'
   | 'MAILCHIMP_TOKEN_STORED'
   | 'MEMBERSHIP_ADMISSION'
+  | 'MEMBERSHIPS_ADMIN_STATUS_UPDATED'
   | 'MEMBERSHIP_CREATED'
+  | 'MEMBERSHIPS_CREATED'
   | 'MEMBERSHIPS_DELETED'
   | 'MEMBERSHIP_DATA_UPDATED'
-  | 'REORDER_QUESTION'
+  | 'MEMBERSHIPS_INVITED_STATUS_UPDATED'
+  | 'QUESTION_RENAMED'
+  | 'REFRESH_TOKEN_STORED'
   | 'SERVER_STARTED'
   | 'STRIPE_ACCOUNT_STORED'
-  | 'TOKENS_UPDATED'
   | 'ZOOM_TOKENS_REFRESHED'
   | 'ZOOM_TOKENS_STORED';
 

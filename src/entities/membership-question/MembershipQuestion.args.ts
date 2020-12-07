@@ -1,10 +1,32 @@
-/**
- * @fileoverview Entity: MembershipQuestion
- * @author Rami Abdou
- */
+import { ArgsType, Field, Int } from 'type-graphql';
 
-import { QuestionCategory, QuestionType } from '@util/gql';
 import MembershipQuestion from './MembershipQuestion';
+
+export type QuestionType =
+  | 'LONG_TEXT'
+  | 'MULTIPLE_CHOICE'
+  | 'MULTIPLE_SELECT'
+  | 'SHORT_TEXT';
+
+export type QuestionCategory =
+  | 'EMAIL'
+  | 'FIRST_NAME'
+  | 'GENDER'
+  | 'JOINED_ON'
+  | 'LAST_NAME'
+  | 'MEMBERSHIP_TYPE';
+
+@ArgsType()
+export class RenameQuestionArgs {
+  @Field()
+  id: string;
+
+  @Field()
+  title: string;
+
+  @Field(() => Int)
+  version: number;
+}
 
 export class MembershipQuestionInput implements Partial<MembershipQuestion> {
   // If the question is a special question, we have to store it in a different

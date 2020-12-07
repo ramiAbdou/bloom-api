@@ -1,14 +1,8 @@
-/**
- * @fileoverview Resolver: User
- * - Supports fetching and updating users.
- * @author Rami Abdou
- */
-
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext, LoginError } from '@constants';
+import BloomManager from '@core/db/BloomManager';
 import { User } from '@entities';
-import BloomManager from '@util/db/BloomManager';
 import { decodeToken } from '@util/util';
 
 @Resolver()

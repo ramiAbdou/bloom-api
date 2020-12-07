@@ -1,15 +1,12 @@
-/**
- * @fileoverview Utility: NamingStrategy
- * - Naming strategy for MikroORM to implement with PostgreSQL tables and
- * columns. This overrides the default naming mechanism.
- * @author Rami Abdou
- */
-
 /* eslint-disable class-methods-use-this */
 
-import { AbstractNamingStrategy } from '@mikro-orm/core';
 import { plural, singular } from 'pluralize';
+import { AbstractNamingStrategy } from '@mikro-orm/core';
 
+/**
+ * Naming strategy for MikroORM to implement with PostgreSQL tables and
+ * columns. This overrides the default naming mechanism.
+ */
 export default class NamingStrategy extends AbstractNamingStrategy {
   /**
    * Returns the pluralized version

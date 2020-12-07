@@ -1,9 +1,3 @@
-/**
- * @fileoverview Config: ESLint
- * @see https://eslint.org/docs/user-guide/configuring
- * @author Rami Abdou
- */
-
 module.exports = {
   env: {
     mocha: true
@@ -38,6 +32,7 @@ module.exports = {
         varsIgnorePattern: '_' // Allow underscores not to be treated as vars.
       }
     ],
+    curly: ['error', 'multi-line'],
     'import/newline-after-import': 2, // Requires a newline after imports.
     'import/no-cycle': 0, // Don't allow cycles in the code.
     'import/no-extraneous-dependencies': 0,
@@ -45,12 +40,31 @@ module.exports = {
     'no-param-reassign': 0, // Allow parameter reassigning in a function.
     'no-plusplus': 0, // Allow the i++ syntax, helpful for manual for-loops.
     'object-curly-newline': 0,
+    'padding-line-between-statements': [
+      'error',
+      { blankLine: 'always', prev: 'multiline-const', next: '*' },
+      {
+        blankLine: 'always',
+        prev: ['block-like', 'multiline-expression'],
+        next: '*'
+      },
+      {
+        blankLine: 'always',
+        prev: '*',
+        next: ['function', 'multiline-const', 'multiline-expression']
+      },
+      {
+        blankLine: 'always',
+        prev: ['multiline-const', 'multiline-expression'],
+        next: 'return'
+      }
+    ],
     semi: 2, // Must have semicolon wherever possible.
     'simple-import-sort/sort': [
       2,
       // This groups 3rd-party packages together, then groups internal @
       // alias modules with "../" type files.
-      { groups: [['^\\u0000'], ['^\\w'], ['^@?\\w', '^\\.']] }
+      { groups: [['^\\u0000'], ['^\\w', '^@mikro-orm'], ['^@?\\w', '^\\.']] }
     ],
     'sort-keys-fix/sort-keys-fix': 2 // Sorts objects keys automatically.
   },

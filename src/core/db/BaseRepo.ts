@@ -1,13 +1,3 @@
-/**
- * @fileoverview Utility: BaseRepo
- * - Extends the MikroORM EntityRepository to include logging capabilities.
- * @author Rami Abdou
- */
-
-/* eslint-disable no-underscore-dangle */
-
-import { LoggerEvent } from '@constants';
-import logger from '@logger';
 import {
   AnyEntity,
   EntityData,
@@ -18,10 +8,16 @@ import {
   Populate,
   QueryOrderMap
 } from '@mikro-orm/core';
-import BloomManager from '@util/db/BloomManager';
+
+import { LoggerEvent } from '@constants';
+import BloomManager from '@core/db/BloomManager';
+import logger from '@util/logger';
 import { buildCacheKey, now } from '@util/util';
 import cache from '../cache';
 
+/**
+ * Extends the MikroORM EntityRepository to include logging capabilities.
+ */
 export default class BaseRepo<T extends AnyEntity<T>> extends EntityRepository<
   T
 > {

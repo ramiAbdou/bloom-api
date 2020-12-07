@@ -1,16 +1,14 @@
-/**
- * @fileoverview Resolver: Membership
- * @author Rami Abdou
- */
-
 import { Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
+import BloomManager from '@core/db/BloomManager';
 import { Membership } from '@entities';
-import BloomManager from '@util/db/BloomManager';
 import {
   ApplyForMembershipArgs,
-  RespondToMembershipsArgs
+  CreateMembershipsArgs,
+  DeleteMembershipsArgs,
+  RespondToMembershipsArgs,
+  ToggleAdminArgs
 } from './Membership.args';
 
 @Resolver()
@@ -37,5 +35,38 @@ export default class MembershipResolver {
     return !!(await new BloomManager()
       .membershipRepo()
       .respondToMemberships(membershipIds, response, communityId));
+  }
+
+  @Authorized('OWNER')
+  @Mutation(() => Boolean, { nullable: true })
+  async toggleAdmins(
+    @Args() { membershipIds }: ToggleAdminArgs,
+    @Ctx() { communityId }: GQLContext
+  ) {
+    return new BloomManager()
+      .membershipRepo()
+      .toggleAdmins(membershipIds, communityId);
+  }
+
+  @Authorized('ADMIN')
+  @Mutation(() => Boolean, { nullable: true })
+  async deleteMemberships(
+    @Args() { membershipIds }: DeleteMembershipsArgs,
+    @Ctx() { communityId }: GQLContext
+  ) {
+    return !!(await new BloomManager()
+      .membershipRepo()
+      .deleteMemberships(membershipIds, communityId));
+  }
+
+  @Authorized('ADMIN')
+  @Mutation(() => [Membership], { nullable: true })
+  async createMemberships(
+    @Args() { members }: CreateMembershipsArgs,
+    @Ctx() { communityId }: GQLContext
+  ) {
+    return new BloomManager()
+      .membershipRepo()
+      .createMemberships(members, communityId);
   }
 }

@@ -1,20 +1,15 @@
-/**
- * @fileoverview Entity: CommunityApplication
- * @author Rami Abdou
- */
-
 import { IsUrl } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
-
-import { Community, MembershipQuestion } from '@entities';
 import {
   Entity,
   EntityRepositoryType,
   OneToOne,
   Property
 } from '@mikro-orm/core';
-import BaseEntity from '@util/db/BaseEntity';
-import BaseRepo from '@util/db/BaseRepo';
+
+import { Community, MembershipQuestion } from '@entities';
+import BaseEntity from '@core/db/BaseEntity';
+import BaseRepo from '@core/db/BaseRepo';
 
 @ObjectType()
 @Entity()

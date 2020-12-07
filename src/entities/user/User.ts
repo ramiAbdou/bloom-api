@@ -1,11 +1,5 @@
-/**
- * @fileoverview Entity: User
- * @author Rami Abdou
- */
-
 import { IsEmail, IsUrl } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
-
 import {
   BeforeCreate,
   Cascade,
@@ -16,7 +10,8 @@ import {
   OneToMany,
   Property
 } from '@mikro-orm/core';
-import BaseEntity from '@util/db/BaseEntity';
+
+import BaseEntity from '@core/db/BaseEntity';
 import Membership from '../membership/Membership';
 import UserRepo from './User.repo';
 
@@ -25,12 +20,7 @@ import UserRepo from './User.repo';
 export default class User extends BaseEntity {
   [EntityRepositoryType]?: UserRepo;
 
-  /* 
-  ___ _     _    _    
- | __(_)___| |__| |___
- | _|| / -_) / _` (_-<
- |_| |_\___|_\__,_/__/
-  */
+  // ## FIELDS
 
   @Field({ nullable: true })
   @Property({ nullable: true })
@@ -99,13 +89,7 @@ export default class User extends BaseEntity {
     return `${this.firstName} ${this.lastName}`;
   }
 
-  /* 
-  ___     _      _   _             _    _         
- | _ \___| |__ _| |_(_)___ _ _  __| |_ (_)_ __ ___
- |   / -_) / _` |  _| / _ \ ' \(_-< ' \| | '_ (_-<
- |_|_\___|_\__,_|\__|_\___/_||_/__/_||_|_| .__/__/
-                                         |_|      
-  */
+  // ## RELATIONSHIPS
 
   @Field(() => [Membership])
   @OneToMany(() => Membership, ({ user }) => user, { cascade: [Cascade.ALL] })

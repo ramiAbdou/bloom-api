@@ -1,14 +1,16 @@
-/**
- * @fileoverview Resolver Arguments: Membership
- * @author Rami Abdou
- */
+import { ArgsType, Field, InputType, ObjectType } from 'type-graphql';
 
-import { ArgsType, Field, ObjectType } from 'type-graphql';
+@InputType()
+export class MembershipDataInput {
+  @Field()
+  questionId: string;
 
-import { MembershipDataInput } from '@util/gql';
-import { MembershipStatus } from '../membership-card-item/MembershipCardItem';
+  @Field(() => [String], { nullable: true })
+  value: string[];
+}
 
 export type MembershipRole = 'ADMIN' | 'OWNER';
+export type MembershipStatus = 'REJECTED' | 'PENDING' | 'INVITED' | 'ACCEPTED';
 
 @ArgsType()
 export class ApplyForMembershipArgs {
@@ -29,6 +31,39 @@ export class RespondToMembershipsArgs {
 
   @Field(() => String)
   response: MembershipStatus;
+}
+
+@ArgsType()
+export class DeleteMembershipsArgs {
+  @Field(() => [String])
+  membershipIds: string[];
+}
+
+@ArgsType()
+export class ToggleAdminArgs {
+  @Field(() => [String])
+  membershipIds: string[];
+}
+
+@InputType()
+export class NewMemberInput {
+  @Field(() => String)
+  email: string;
+
+  @Field(() => String)
+  firstName: string;
+
+  @Field(() => String)
+  lastName: string;
+
+  @Field(() => Boolean)
+  isAdmin: boolean;
+}
+
+@ArgsType()
+export class CreateMembershipsArgs {
+  @Field(() => [NewMemberInput])
+  members: NewMemberInput[];
 }
 
 @ObjectType()

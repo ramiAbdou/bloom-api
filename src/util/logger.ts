@@ -1,10 +1,3 @@
-/**
- * @fileoverview Utility: Logger
- * - Controls all of the logging functionality. Writes the logs to a local
- * file on disk. Writes to a new file every day.
- * @author Rami Abdou
- */
-
 import fs from 'fs';
 import moment from 'moment';
 
@@ -20,6 +13,10 @@ interface LoggerLog extends Record<string, any> {
   timestamp: string;
 }
 
+/**
+ * Controls all of the logging functionality. Writes the logs to a local
+ * file on disk. Writes to a new file every day.
+ */
 class Logger {
   error = (event: LoggerEvent, error?: Error) => {
     // eslint-disable-next-line sort-keys-fix/sort-keys-fix

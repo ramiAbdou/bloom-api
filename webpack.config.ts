@@ -1,8 +1,3 @@
-/**
- * @fileoverview Config: Webpack (Production)
- * @author Rami Abdou
- */
-
 import { TsConfigPathsPlugin } from 'awesome-typescript-loader';
 import Dotenv from 'dotenv-webpack';
 import path from 'path';

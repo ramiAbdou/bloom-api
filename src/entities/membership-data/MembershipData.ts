@@ -1,12 +1,12 @@
-/**
- * @fileoverview Entity: MembershipData
- * @author Rami Abdou
- */
-
-import { Entity, EntityRepositoryType, ManyToOne, Property } from '@mikro-orm/core';
 import { Field, ObjectType } from 'type-graphql';
+import {
+  Entity,
+  EntityRepositoryType,
+  ManyToOne,
+  Property
+} from '@mikro-orm/core';
 
-import BaseEntity from '@util/db/BaseEntity';
+import BaseEntity from '@core/db/BaseEntity';
 import MembershipQuestion from '../membership-question/MembershipQuestion';
 import Membership from '../membership/Membership';
 import MembershipDataRepo from './MembershipData.repo';

@@ -1,7 +1,4 @@
-/**
- * @fileoverview Utility: General
- * @author Rami Abdou
- */
+/* eslint-disable @typescript-eslint/no-use-before-define */
 
 import * as CSV from 'csv-string';
 import { PristineInput } from 'csv-string/dist/types';
@@ -12,6 +9,11 @@ import hash from 'object-hash';
 
 import { AuthTokens, isProduction, JWT } from '@constants';
 
+/**
+ * Creates a hashed key based on the data given. The same exact cache key will
+ * be given for the same object, as the hashing function performs a deep
+ * equality.
+ */
 export const buildCacheKey = (data: Record<string, any>) =>
   hash(
     Object.entries(data).reduce(
@@ -20,6 +22,18 @@ export const buildCacheKey = (data: Record<string, any>) =>
       {}
     )
   );
+
+/**
+ * Returns the decoded information stored inside the JWT token. We first
+ * verify the token to ensure that it is not expired, then decode it.
+ */
+export const decodeToken = (token: string): any => {
+  try {
+    return verifyToken(token) && jwt.decode(token);
+  } catch {
+    return null;
+  }
+};
 
 /**
  * Generates and signs both a token and refreshToken. The refreshToken does
@@ -71,18 +85,6 @@ export const verifyToken = (token: string): boolean => {
 };
 
 /**
- * Returns the decoded information stored inside the JWT token. We first
- * verify the token to ensure that it is not expired, then decode it.
- */
-export const decodeToken = (token: string): any => {
-  try {
-    return verifyToken(token) && jwt.decode(token);
-  } catch {
-    return null;
-  }
-};
-
-/**
  * Sets the appropriate refreshToken and accessToken httpOnly cookies on the
  * Express Response object with the token values passed in.
  */
@@ -92,6 +94,7 @@ export const setHttpOnlyTokens = (
 ) => {
   const options = { httpOnly: true, secure: isProduction };
   res.cookie('refreshToken', refreshToken, options);
+
   res.cookie('accessToken', accessToken, {
     ...options,
     maxAge: JWT.EXPIRES_IN * 1000 // x1000 because represented as milliseconds.

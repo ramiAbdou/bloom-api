@@ -1,14 +1,9 @@
-/**
- * @fileoverview Utility: sendEmail
- * @author Rami Abdou
- */
-
 import { readFileSync } from 'fs';
 import { compile } from 'handlebars';
 import mjml2html from 'mjml';
 
 import { isProduction } from '@constants';
-import logger from '@logger';
+import logger from '@util/logger';
 import sg from '@sendgrid/mail';
 
 sg.setApiKey(process.env.SENDGRID_API_KEY);
@@ -30,13 +25,16 @@ export const sendEmail = async (
   // comment this line out manually each time.
   if (!isProduction) return;
 
-  const pathToFile = `./src/util/emails/${mjml}`;
+  const pathToFile = `./@core/emails/${mjml}`;
   const template = compile(readFileSync(pathToFile, 'utf8'));
   const { html } = mjml2html(template(data));
   try {
     const options = { from: 'rami@bl.community', html, subject, to };
     await sg.send(options);
   } catch (e) {
-    logger.error('EMAIL_SENT', new Error(`Failed to send SendGrid mail: ${e}`));
+    logger.error(
+      'EMAIL_FAILED',
+      new Error(`Failed to send SendGrid mail: ${e}`)
+    );
   }
 };

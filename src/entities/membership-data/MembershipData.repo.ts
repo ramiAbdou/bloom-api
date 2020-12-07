@@ -1,12 +1,7 @@
-/**
- * @fileoverview Repository: MembershipData
- * @author Rami Abdou
- */
-
 import * as CSV from 'csv-string';
 import { EntityData } from '@mikro-orm/core';
 
-import BaseRepo from '@util/db/BaseRepo';
+import BaseRepo from '@core/db/BaseRepo';
 import MembershipData from './MembershipData';
 
 export default class MembershipDataRepo extends BaseRepo<MembershipData> {

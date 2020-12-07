@@ -1,12 +1,5 @@
-/**
- * @fileoverview Entity: Community
- * @author Rami Abdou
- */
-
 import { IsUrl } from 'class-validator';
 import { Authorized, Field, ObjectType } from 'type-graphql';
-
-import { INTEGRATIONS } from '@constants';
 import {
   BeforeCreate,
   Collection,
@@ -17,7 +10,9 @@ import {
   Property,
   QueryOrder
 } from '@mikro-orm/core';
-import BaseEntity from '@util/db/BaseEntity';
+
+import { INTEGRATIONS } from '@constants';
+import BaseEntity from '@core/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
 import CommunityApplication from '../community-application/CommunityApplication';
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';

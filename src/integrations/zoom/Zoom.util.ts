@@ -1,8 +1,3 @@
-/**
- * @fileoverview Service: ZoomAuth
- * @author Rami Abdou
- */
-
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import camelCase from 'camelcase-keys';
 import snakeCase from 'snakecase-keys';

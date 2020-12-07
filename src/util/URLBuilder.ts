@@ -1,9 +1,6 @@
 /**
- * @fileoverview Utility: URLBuilder
- * - Simplifies the process of adding query parameters to a URL.
- * @author Rami Abdou
+ * Simplifies the process of adding query parameters to a URL.
  */
-
 export default class URLBuilder {
   private hasFirstParam = false;
 

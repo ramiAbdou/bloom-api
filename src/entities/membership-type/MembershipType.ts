@@ -1,11 +1,4 @@
-/**
- * @fileoverview Entity: MembershipType
- * @author Rami Abdou
- */
-
 import { Field, Float, ObjectType } from 'type-graphql';
-
-import { Community, Membership } from '@entities';
 import {
   Collection,
   Entity,
@@ -15,8 +8,10 @@ import {
   OneToMany,
   Property
 } from '@mikro-orm/core';
-import BaseEntity from '@util/db/BaseEntity';
-import BaseRepo from '@util/db/BaseRepo';
+
+import { Community, Membership } from '@entities';
+import BaseEntity from '@core/db/BaseEntity';
+import BaseRepo from '@core/db/BaseRepo';
 import MembershipPayment from '../membership-payment/MembershipPayment';
 
 export type MembershipTypeRecurrence = 'MONTHLY' | 'YEARLY' | 'LIFETIME';

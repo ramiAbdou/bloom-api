@@ -1,12 +1,12 @@
-/**
- * @fileoverview Entity: MembershipPayment
- * @author Rami Abdou
- */
-
-import { Entity, EntityRepositoryType, ManyToOne, Property } from '@mikro-orm/core';
+import {
+  Entity,
+  EntityRepositoryType,
+  ManyToOne,
+  Property
+} from '@mikro-orm/core';
 
 import { Membership } from '@entities';
-import BaseEntity from '@util/db/BaseEntity';
+import BaseEntity from '@core/db/BaseEntity';
 import MembershipType from '../membership-type/MembershipType';
 import MembershipPaymentRepo from './MembershipPayment.repo';
 

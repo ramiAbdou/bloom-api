@@ -1,16 +1,8 @@
-/**
- * @fileoverview Entity: MembershipCard
- * - This
- * @author Rami Abdou
- */
-
-import { Entity, Enum, ManyToOne, Property } from '@mikro-orm/core';
 import { Field, Int, ObjectType } from 'type-graphql';
+import { Entity, Enum, ManyToOne, Property } from '@mikro-orm/core';
 
 import { Community, MembershipQuestion } from '@entities';
-import BaseEntity from '@util/db/BaseEntity';
-
-export type MembershipStatus = 'REJECTED' | 'PENDING' | 'ACCEPTED';
+import BaseEntity from '@core/db/BaseEntity';
 
 type CardItemCategory =
   | 'BIO'

@@ -1,11 +1,3 @@
-/**
- * @fileoverview Loader: Express
- * - Initializes and export the Express server. Middleware includes
- * body parsing to JSON, security measures (Helmet), sessions and more.
- * @see https://www.npmjs.com/package/helmet#how-it-works
- * @author Rami Abdou
- */
-
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -13,11 +5,11 @@ import express, { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 
 import { APP } from '@constants';
+import BloomManager from '@core/db/BloomManager';
 import GoogleRouter from '@integrations/google/Google.router';
 import MailchimpRouter from '@integrations/mailchimp/Mailchimp.router';
 import StripeRouter from '@integrations/stripe/Stripe.router';
 import ZoomRouter from '@integrations/zoom/Zoom.router';
-import BloomManager from '@util/db/BloomManager';
 import { decodeToken, verifyToken } from '@util/util';
 
 /**
@@ -36,10 +28,10 @@ const refreshTokenIfExpired = async (
   // the request comes to the /graphql endpoint, we run the refresh flow.
   if (!verifyToken(accessToken) && refreshToken && req.url === '/graphql') {
     const userId: string = decodeToken(refreshToken)?.userId;
-    const tokens = await new BloomManager().userRepo().refreshTokenFlow({
-      res,
-      userId
-    });
+
+    const tokens = await new BloomManager()
+      .userRepo()
+      .refreshTokenFlow({ res, userId });
 
     // We have to update the tokens on the request as well in order to ensure that
     // GraphQL context can set the user ID properly.
@@ -52,6 +44,12 @@ const refreshTokenIfExpired = async (
   return next();
 };
 
+/**
+ * Initializes and export the Express server. Middleware includes
+ * body parsing to JSON, security measures (Helmet), sessions and more.
+ *
+ * @see https://www.npmjs.com/package/helmet#how-it-works
+ */
 export default () => {
   const app = express();
 

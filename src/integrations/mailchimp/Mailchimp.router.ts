@@ -1,13 +1,8 @@
-/**
- * @fileoverview Router: Mailchimp
- * @author Rami Abdou
- */
-
 import { Request, Response } from 'express';
 
-import { APP, Route } from '@constants';
-import BloomManager from '@util/db/BloomManager';
-import Router from '@util/Router';
+import { APP, AuthQueryParams, Route } from '@constants';
+import BloomManager from '@core/db/BloomManager';
+import Router from '@core/Router';
 
 export default class MailchimpRouter extends Router {
   get routes(): Route[] {
@@ -15,11 +10,11 @@ export default class MailchimpRouter extends Router {
   }
 
   private async handleAuth({ query }: Request, res: Response) {
-    const { code, state: encodedUrlName } = query;
+    const { code, state: encodedUrlName } = query as AuthQueryParams;
 
     await new BloomManager()
       .communityIntegrationsRepo()
-      .storeMailchimpTokenFromCode(encodedUrlName as string, code as string);
+      .storeMailchimpTokenFromCode(encodedUrlName, code);
 
     res.redirect(
       `${APP.CLIENT_URL}/${encodedUrlName}/integrations?flow=mailchimp`
