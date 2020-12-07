@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
+
 import * as CSV from 'csv-string';
 import { PristineInput } from 'csv-string/dist/types';
 import { Response } from 'express';
@@ -20,6 +22,18 @@ export const buildCacheKey = (data: Record<string, any>) =>
       {}
     )
   );
+
+/**
+ * Returns the decoded information stored inside the JWT token. We first
+ * verify the token to ensure that it is not expired, then decode it.
+ */
+export const decodeToken = (token: string): any => {
+  try {
+    return verifyToken(token) && jwt.decode(token);
+  } catch {
+    return null;
+  }
+};
 
 /**
  * Generates and signs both a token and refreshToken. The refreshToken does
@@ -67,18 +81,6 @@ export const verifyToken = (token: string): boolean => {
     return !!jwt.verify(token, JWT.SECRET);
   } catch {
     return false;
-  }
-};
-
-/**
- * Returns the decoded information stored inside the JWT token. We first
- * verify the token to ensure that it is not expired, then decode it.
- */
-export const decodeToken = (token: string): any => {
-  try {
-    return verifyToken(token) && jwt.decode(token);
-  } catch {
-    return null;
   }
 };
 

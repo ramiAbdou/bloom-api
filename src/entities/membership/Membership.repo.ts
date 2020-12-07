@@ -2,12 +2,15 @@ import { APP, Event } from '@constants';
 import cache from '@core/cache';
 import BaseRepo from '@core/db/BaseRepo';
 import { sendEmail } from '@core/emails';
-import { MembershipDataInput } from '@util/gql';
 import { now, stringify } from '@util/util';
 import Community from '../community/Community';
 import User from '../user/User';
 import Membership from './Membership';
-import { MembershipStatus, NewMemberInput } from './Membership.args';
+import {
+  MembershipDataInput,
+  MembershipStatus,
+  NewMemberInput
+} from './Membership.args';
 
 export default class MembershipRepo extends BaseRepo<Membership> {
   /**
@@ -33,10 +36,11 @@ export default class MembershipRepo extends BaseRepo<Membership> {
       (await bm.userRepo().findOne({ email })) ??
       bm.userRepo().createAndPersist({ email });
 
-    if (await this.findOne({ community, user }))
+    if (await this.findOne({ community, user })) {
       throw new Error(
         `This email is already registered in the ${community.name} community.`
       );
+    }
 
     const membership: Membership = bm
       .membershipRepo()
@@ -65,8 +69,9 @@ export default class MembershipRepo extends BaseRepo<Membership> {
       else if (category === 'MEMBERSHIP_TYPE') {
         const type = types.find(({ name }) => value === name);
         if (type) membership.type = type;
-      } else
+      } else {
         bm.membershipDataRepo().createData({ membership, question, value });
+      }
     });
 
     await this.persistAndFlush(membership, 'MEMBERSHIP_CREATED');
@@ -82,9 +87,9 @@ export default class MembershipRepo extends BaseRepo<Membership> {
 
     // Send the appropriate emails based on the response.
     setTimeout(async () => {
-      if (community.autoAccept)
+      if (community.autoAccept) {
         await this.sendMembershipAcceptedEmails([membership], community);
-      else await this.sendMembershipReceievedEmail(membership, community);
+      } else await this.sendMembershipReceievedEmail(membership, community);
     }, 0);
 
     return membership;

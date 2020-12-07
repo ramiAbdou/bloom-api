@@ -10,8 +10,8 @@ import {
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
-import { QuestionCategory, QuestionType } from '@util/gql';
 import { Community } from '@entities';
+import { QuestionCategory, QuestionType } from './MembershipQuestion.args';
 import MembershipQuestionRepo from './MembershipQuestion.repo';
 
 @ObjectType()
@@ -90,9 +90,9 @@ export default class MembershipQuestion extends BaseEntity {
 
   @BeforeCreate()
   beforeCreate() {
-    if (['EMAIL', 'FIRST_NAME', 'LAST_NAME'].includes(this.category))
+    if (['EMAIL', 'FIRST_NAME', 'LAST_NAME'].includes(this.category)) {
       this.type = 'SHORT_TEXT';
-    else if (this.category === 'GENDER') {
+    } else if (this.category === 'GENDER') {
       this.type = 'MULTIPLE_CHOICE';
       this.options = ['Male', 'Female', 'Non-Binary', 'Prefer Not to Say'];
     } else if (this.category === 'MEMBERSHIP_TYPE') {

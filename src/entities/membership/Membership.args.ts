@@ -1,6 +1,13 @@
 import { ArgsType, Field, InputType, ObjectType } from 'type-graphql';
 
-import { MembershipDataInput } from '@util/gql';
+@InputType()
+export class MembershipDataInput {
+  @Field()
+  questionId: string;
+
+  @Field(() => [String], { nullable: true })
+  value: string[];
+}
 
 export type MembershipRole = 'ADMIN' | 'OWNER';
 export type MembershipStatus = 'REJECTED' | 'PENDING' | 'INVITED' | 'ACCEPTED';

@@ -32,6 +32,7 @@ module.exports = {
         varsIgnorePattern: '_' // Allow underscores not to be treated as vars.
       }
     ],
+    curly: ['error', 'multi-line'],
     'import/newline-after-import': 2, // Requires a newline after imports.
     'import/no-cycle': 0, // Don't allow cycles in the code.
     'import/no-extraneous-dependencies': 0,
