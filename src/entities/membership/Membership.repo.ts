@@ -110,6 +110,10 @@ export default class MembershipRepo extends BaseRepo<Membership> {
 
     await this.flush('MEMBERSHIP_ADMISSION', memberships);
 
+    if (response === 'ACCEPTED') {
+      cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`], true);
+    }
+
     // Send the appropriate emails based on the response. Also, add the members
     // to the Mailchimp audience.
     setTimeout(async () => {
@@ -144,8 +148,10 @@ export default class MembershipRepo extends BaseRepo<Membership> {
 
     // If any of the members were an ADMIN of the community, then we need to
     // invalidate the GET_ADMINS cache key.
-    if (memberships.some(({ role }) => !!role))
+    if (memberships.some(({ role }) => !!role)) {
       cache.invalidateEntries([`${Event.GET_ADMINS}-${communityId}`], true);
+    }
+
     cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`], true);
 
     return true;
@@ -180,7 +186,7 @@ export default class MembershipRepo extends BaseRepo<Membership> {
   createMemberships = async (
     members: NewMemberInput[],
     communityId: string
-  ) => {
+  ): Promise<Membership[]> => {
     const bm = this.bm();
 
     const community: Community = await bm
@@ -217,8 +223,9 @@ export default class MembershipRepo extends BaseRepo<Membership> {
 
     // Invalidate the cache for the GET_ADMINS call if one of the
     // memberships created was an ADMIN account.
-    if (members.some(({ isAdmin }) => isAdmin))
+    if (members.some(({ isAdmin }) => isAdmin)) {
       cache.invalidateEntries([`${Event.GET_ADMINS}-${communityId}`], true);
+    }
 
     return memberships;
   };
