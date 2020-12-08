@@ -1,7 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { MembershipQuestionInput } from '../membership-question/MembershipQuestion.args';
-import { MembershipTypeInput } from '../membership-type/MembershipType.args';
+import { MemberTypeInput } from '../member-type/MemberType.args';
+import { QuestionInput } from '../question/Question.args';
 
 type CommunityOwnerArgs = {
   email: string;
@@ -20,11 +20,11 @@ export class CreateCommunityArgs {
 
   primaryColor?: string;
 
-  questions: MembershipQuestionInput[];
+  questions: QuestionInput[];
 
   owner: CommunityOwnerArgs;
 
-  types: MembershipTypeInput[];
+  types: MemberTypeInput[];
 }
 
 @ArgsType()

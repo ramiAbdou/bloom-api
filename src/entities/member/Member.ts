@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { Authorized, Field, ObjectType } from 'type-graphql';
 import {
   BeforeCreate,
@@ -8,8 +7,7 @@ import {
   Enum,
   ManyToOne,
   OneToMany,
-  Property,
-  QueryOrder
+  Property
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
@@ -17,22 +15,17 @@ import { now } from '@util/util';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventRSVP from '../event-rsvp/EventRSVP';
-import MembershipData from '../membership-data/MembershipData';
-import MembershipPayment from '../membership-payment/MembershipPayment';
-import MembershipQuestion from '../membership-question/MembershipQuestion';
-import MembershipType from '../membership-type/MembershipType';
+import MemberData from '../member-data/MemberData';
+import MemberType from '../member-type/MemberType';
+import Question from '../question/Question';
 import User from '../user/User';
-import {
-  MemberData,
-  MembershipRole,
-  MembershipStatus
-} from './Membership.args';
-import MembershipRepo from './Membership.repo';
+import { MemberRole, MemberStatus, QuestionValue } from './Member.args';
+import MemberRepo from './Member.repo';
 
 @ObjectType()
-@Entity({ customRepository: () => MembershipRepo })
-export default class Membership extends BaseEntity {
-  [EntityRepositoryType]?: MembershipRepo;
+@Entity({ customRepository: () => MemberRepo })
+export default class Member extends BaseEntity {
+  [EntityRepositoryType]?: MemberRepo;
 
   @Field({ nullable: true })
   @Property({ nullable: true, type: 'text' })
@@ -44,7 +37,7 @@ export default class Membership extends BaseEntity {
   @Property({ type: Boolean })
   emailNotifications = true;
 
-  // Refers to the date that the membership was ACCEPTED.
+  // Refers to the date that the member was ACCEPTED.
   @Field({ nullable: true })
   @Property({ nullable: true })
   joinedOn: string;
@@ -53,11 +46,11 @@ export default class Membership extends BaseEntity {
   // only be one OWNER in a community.
   @Field(() => String, { nullable: true })
   @Enum({ items: ['ADMIN', 'OWNER'], nullable: true, type: String })
-  role: MembershipRole;
+  role: MemberRole;
 
   @Field(() => String)
   @Enum({ items: ['REJECTED', 'PENDING', 'INVITED', 'ACCEPTED'], type: String })
-  status: MembershipStatus = 'PENDING';
+  status: MemberStatus = 'PENDING';
 
   // We don't store any of the customer's financial data in our server. Stripe
   // handles all of that for us, we just need Stripe's customer ID in order
@@ -68,15 +61,53 @@ export default class Membership extends BaseEntity {
 
   // ## MEMBER FUNCTIONS
 
-  @Authorized('ADMIN')
-  @Field(() => [MemberData])
-  allData(): MemberData[] {
+  /**
+   * Returns all of the data associated with this Member formatted in
+   * with questionId and value. Only fetches the questions in where
+   * inExpandedDirectoryCard are true however.
+   *
+   * Used in the GET_DIRECTORY call.
+   */
+  @Authorized()
+  @Field(() => [QuestionValue])
+  cardData(): QuestionValue[] {
     const data = this.data?.getItems();
     const { email, gender, firstName, lastName } = this.user;
 
     return this.community.questions
       .getItems()
-      .map(({ category, id, title }: MembershipQuestion) => {
+      .filter(({ inExpandedDirectoryCard }) => inExpandedDirectoryCard)
+      .map(({ category, id, title }: Question) => {
+        let value: string;
+        const result = data.find(({ question }) => question.title === title);
+
+        if (result) value = result.value;
+        else if (category === 'EMAIL') value = email;
+        else if (category === 'FIRST_NAME') value = firstName;
+        else if (category === 'GENDER') value = gender;
+        else if (category === 'JOINED_ON') value = this.joinedOn;
+        else if (category === 'LAST_NAME') value = lastName;
+        else if (category === 'MEMBERSHIP_TYPE') value = this.type.name;
+
+        return { questionId: id, value };
+      });
+  }
+
+  /**
+   * Returns all of the data associated with this Member formatted in
+   * with questionId and value.
+   *
+   * Used in the GET_DATABASE call.
+   */
+  @Authorized('ADMIN')
+  @Field(() => [QuestionValue])
+  allData(): QuestionValue[] {
+    const data = this.data?.getItems();
+    const { email, gender, firstName, lastName } = this.user;
+
+    return this.community.questions
+      .getItems()
+      .map(({ category, id, title }: Question) => {
         let value: string;
         const result = data.find(({ question }) => question.title === title);
 
@@ -95,10 +126,12 @@ export default class Membership extends BaseEntity {
   /**
    * Returns the pending application data that will allow the ADMIN of the
    * community to accept or reject the application.
+   *
+   * Used in the GET_APPLICANTS call.
    */
   @Authorized('ADMIN')
-  @Field(() => [MemberData])
-  applicantData(): MemberData[] {
+  @Field(() => [QuestionValue])
+  applicantData(): QuestionValue[] {
     // This method is only intended for retrieving pending application data.
     if (this.status !== 'PENDING') return null;
 
@@ -109,8 +142,8 @@ export default class Membership extends BaseEntity {
       this.community.questions
         .getItems()
         // We only need the questions in the application.
-        .filter(({ inApplication }: MembershipQuestion) => inApplication)
-        .map(({ category, id, title }: MembershipQuestion) => {
+        .filter(({ inApplication }: Question) => inApplication)
+        .map(({ category, id, title }: Question) => {
           let value: string;
           const result = data.find(({ question }) => question.title === title);
 
@@ -127,33 +160,6 @@ export default class Membership extends BaseEntity {
     );
   }
 
-  /**
-   * Returns true if the member has paid their dues. If the membership type
-   * is free, automatically returns true.
-   */
-  isActive(): boolean {
-    const { isFree, recurrence } = this.type;
-    if (isFree) return true;
-
-    // If the membership is not free and there's no payments recorded, means
-    // that they haven't paid.
-    const lastPaidDate = this.payments[0]?.createdAt;
-    if (!lastPaidDate) return false;
-
-    // If the membership is a LIFETIME membership and the member has paid
-    // any dues at all, regardless of the date, then they are active.
-    if (recurrence === 'LIFETIME') return true;
-
-    // If the recurrence is MONTHLY, then we grab the date from a month ago.
-    // If the recurrence is YEARLY, then we grab the date from a year ago.
-    const checkAgainstMoment = moment
-      .utc()
-      .subtract(1, recurrence === 'MONTHLY' ? 'month' : 'year');
-
-    // The member is active if they've paid after the date above.
-    return checkAgainstMoment.isBefore(moment.utc(lastPaidDate));
-  }
-
   @BeforeCreate()
   beforeCreate() {
     if (this.role || this.community.autoAccept) {
@@ -161,13 +167,14 @@ export default class Membership extends BaseEntity {
       this.status = 'ACCEPTED';
     }
 
-    // If no membership type is provided, assign them the default membership.
-    // Every community should've assigned one default membership.
-    if (!this.type)
+    // If no member type is provided, assign them the default member.
+    // Every community should've assigned one default member.
+    if (!this.type) {
       // eslint-disable-next-line prefer-destructuring
       this.type = this.community.types
         .getItems()
         .find(({ isDefault }) => isDefault);
+    }
   }
 
   // ## RELATIONSHIPS
@@ -177,28 +184,23 @@ export default class Membership extends BaseEntity {
   community: Community;
 
   // Data will only be populated if a question has ever been answered before.
-  @Field(() => [MembershipData])
-  @OneToMany(() => MembershipData, ({ membership }) => membership)
-  data = new Collection<MembershipData>(this);
+  @Field(() => [MemberData])
+  @OneToMany(() => MemberData, ({ member }) => member)
+  data = new Collection<MemberData>(this);
 
-  @OneToMany(() => EventAttendee, ({ membership }) => membership)
+  @OneToMany(() => EventAttendee, ({ member }) => member)
   eventsAttended = new Collection<EventAttendee>(this);
 
-  @OneToMany(() => EventRSVP, ({ membership }) => membership)
+  @OneToMany(() => EventRSVP, ({ member }) => member)
   eventsRSVPd = new Collection<EventRSVP>(this);
-
-  @OneToMany(() => MembershipPayment, ({ membership }) => membership, {
-    orderBy: { createdAt: QueryOrder.DESC }
-  })
-  payments = new Collection<MembershipPayment>(this);
 
   // 99% of the time, type MUST exist. However, in some communities, the OWNER
   // or ADMINs are not actually general members of the community. For example,
   // in ColorStack, the Community Manager isn't a part of the community, but
   // in MALIK, even the National President is a general dues-paying member.
-  @Field(() => MembershipType)
-  @ManyToOne(() => MembershipType, { nullable: true })
-  type: MembershipType;
+  @Field(() => MemberType)
+  @ManyToOne(() => MemberType, { nullable: true })
+  type: MemberType;
 
   @Field(() => User)
   @ManyToOne(() => User)

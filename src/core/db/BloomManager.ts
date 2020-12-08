@@ -7,11 +7,10 @@ import {
   Event,
   EventAttendee,
   EventRSVP,
-  Membership,
-  MembershipData,
-  MembershipPayment,
-  MembershipQuestion,
-  MembershipType,
+  Member,
+  MemberData,
+  MemberType,
+  Question,
   User
 } from '@entities';
 import db from './db';
@@ -43,15 +42,13 @@ export default class BloomManager {
 
   eventRSVPRepo = () => this.em.getRepository(EventRSVP);
 
-  membershipRepo = () => this.em.getRepository(Membership);
+  memberRepo = () => this.em.getRepository(Member);
 
-  membershipDataRepo = () => this.em.getRepository(MembershipData);
+  memberDataRepo = () => this.em.getRepository(MemberData);
 
-  membershipPaymentRepo = () => this.em.getRepository(MembershipPayment);
+  questionRepo = () => this.em.getRepository(Question);
 
-  membershipQuestionRepo = () => this.em.getRepository(MembershipQuestion);
-
-  membershipTypeRepo = () => this.em.getRepository(MembershipType);
+  memberTypeRepo = () => this.em.getRepository(MemberType);
 
   userRepo = () => this.em.getRepository(User);
 }

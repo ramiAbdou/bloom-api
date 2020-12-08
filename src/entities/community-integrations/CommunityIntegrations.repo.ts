@@ -5,9 +5,9 @@ import { URLSearchParams } from 'url';
 import { APP, AuthTokens, Event, isProduction } from '@constants';
 import cache from '@core/cache';
 import BaseRepo from '@core/db/BaseRepo';
-import logger from '@util/logger';
-import { Community, Membership } from '@entities';
+import { Community, Member } from '@entities';
 import { stripe } from '@integrations/stripe/Stripe.util';
+import logger from '@util/logger';
 import CommunityIntegrations from './CommunityIntegrations';
 
 type RefreshZoomTokensArgs = {
@@ -89,24 +89,21 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
   };
 
   /**
-   * Adds all of the users associated with the memberships to the Mailchimp
+   * Adds all of the users associated with the members to the Mailchimp
    * audience stored in the community.
    */
-  addToMailchimpAudience = async (
-    memberships: Membership[],
-    community: Community
-  ) => {
+  addToMailchimpAudience = async (members: Member[], community: Community) => {
     const { mailchimpAccessToken, mailchimpListId } = community.integrations;
 
     // Format the data that we send to Mailchimp to add users to the audience.
-    const members = memberships.map(({ user }) => ({
+    const mailchimpMembers = members.map(({ user }) => ({
       email_address: user.email,
       merge_fields: { F_NAME: user.firstName, L_NAME: user.lastName },
       status: 'subscribed'
     }));
 
     const options: AxiosRequestConfig = {
-      data: { members },
+      data: { members: mailchimpMembers },
       headers: { Authorization: `OAuth ${mailchimpAccessToken}` },
       method: 'POST',
       url: `https://us2.api.mailchimp.com/3.0/lists/${mailchimpListId}`
@@ -183,11 +180,12 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
       integrations ?? (await this.findOne({ community: { id: communityId } }));
 
     // We don't need to run the refresh flow if the token hasn't expired yet.
-    if (moment.utc().isBefore(moment.utc(integrations.zoomExpiresAt)))
+    if (moment.utc().isBefore(moment.utc(integrations.zoomExpiresAt))) {
       return {
         accessToken: integrations.zoomAccessToken,
         refreshToken: integrations.zoomRefreshToken
       };
+    }
 
     // Create the Base64 token from the Zoom client and secret.
     const base64Token = Buffer.from(

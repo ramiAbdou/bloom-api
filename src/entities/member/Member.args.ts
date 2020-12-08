@@ -1,7 +1,7 @@
 import { ArgsType, Field, InputType, ObjectType } from 'type-graphql';
 
 @InputType()
-export class MembershipDataInput {
+export class MemberDataInput {
   @Field()
   questionId: string;
 
@@ -9,13 +9,13 @@ export class MembershipDataInput {
   value: string[];
 }
 
-export type MembershipRole = 'ADMIN' | 'OWNER';
-export type MembershipStatus = 'REJECTED' | 'PENDING' | 'INVITED' | 'ACCEPTED';
+export type MemberRole = 'ADMIN' | 'OWNER';
+export type MemberStatus = 'REJECTED' | 'PENDING' | 'INVITED' | 'ACCEPTED';
 
 @ArgsType()
-export class ApplyForMembershipArgs {
-  @Field(() => [MembershipDataInput])
-  data: MembershipDataInput[];
+export class ApplyForMemberArgs {
+  @Field(() => [MemberDataInput])
+  data: MemberDataInput[];
 
   @Field()
   email: string;
@@ -25,24 +25,24 @@ export class ApplyForMembershipArgs {
 }
 
 @ArgsType()
-export class RespondToMembershipsArgs {
+export class RespondToMembersArgs {
   @Field(() => [String])
-  membershipIds: string[];
+  memberIds: string[];
 
   @Field(() => String)
-  response: MembershipStatus;
+  response: MemberStatus;
 }
 
 @ArgsType()
-export class DeleteMembershipsArgs {
+export class DeleteMembersArgs {
   @Field(() => [String])
-  membershipIds: string[];
+  memberIds: string[];
 }
 
 @ArgsType()
 export class ToggleAdminArgs {
   @Field(() => [String])
-  membershipIds: string[];
+  memberIds: string[];
 }
 
 @InputType()
@@ -61,13 +61,13 @@ export class NewMemberInput {
 }
 
 @ArgsType()
-export class CreateMembershipsArgs {
+export class CreateMembersArgs {
   @Field(() => [NewMemberInput])
   members: NewMemberInput[];
 }
 
 @ObjectType()
-export class MemberData {
+export class QuestionValue {
   @Field()
   questionId: string;
 

@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import path from 'path'; // Before constants.
-import { MembershipRole } from 'src/entities/membership/Membership.args';
+import { MemberRole } from 'src/entities/member/Member.args';
 
 export const isProduction = process.env.NODE_ENV === 'production';
 export const isTesting = process.env.NODE_ENV === 'testing';
@@ -49,9 +49,9 @@ export type AuthTokens = { accessToken: string; refreshToken: string };
 
 // Used for caching purposes (building the keys).
 export enum Event {
-  GET_ADMINS = 'GET_ADMINS',
   GET_APPLICANTS = 'GET_APPLICANTS',
   GET_APPLICATION = 'GET_APPLICATION',
+  GET_DIRECTORY = 'GET_DIRECTORY',
   GET_MEMBERS = 'GET_MEMBERS',
   GET_INTEGRATIONS = 'GET_INTEGRATIONS'
 }
@@ -86,7 +86,7 @@ export type LoginError =
 export type GQLContext = {
   communityId: string;
   res: Response;
-  role: MembershipRole;
+  role: MemberRole;
   userId: string;
 };
 

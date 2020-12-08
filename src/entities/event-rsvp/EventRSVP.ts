@@ -1,7 +1,7 @@
 import { Entity, ManyToOne, Property } from '@mikro-orm/core';
 
-import { Event, Membership } from '@entities';
 import BaseEntity from '@core/db/BaseEntity';
+import { Event, Member } from '@entities';
 
 @Entity()
 export default class EventRSVP extends BaseEntity {
@@ -22,6 +22,6 @@ export default class EventRSVP extends BaseEntity {
   @ManyToOne(() => Event)
   event: Event;
 
-  @ManyToOne(() => Membership, { nullable: true })
-  membership: Membership;
+  @ManyToOne(() => Member, { nullable: true })
+  member: Member;
 }

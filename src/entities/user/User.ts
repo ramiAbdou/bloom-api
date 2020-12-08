@@ -12,7 +12,7 @@ import {
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
-import Membership from '../membership/Membership';
+import Member from '../member/Member';
 import UserRepo from './User.repo';
 
 @ObjectType()
@@ -46,6 +46,11 @@ export default class User extends BaseEntity {
   @Field()
   @Property()
   lastName: string;
+
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  @IsUrl()
+  pictureUrl: string;
 
   // Server-generated token that we use to keep the user logged-in when sending
   // GraphQL requests.
@@ -91,7 +96,7 @@ export default class User extends BaseEntity {
 
   // ## RELATIONSHIPS
 
-  @Field(() => [Membership])
-  @OneToMany(() => Membership, ({ user }) => user, { cascade: [Cascade.ALL] })
-  memberships: Collection<Membership> = new Collection<Membership>(this);
+  @Field(() => [Member])
+  @OneToMany(() => Member, ({ user }) => user, { cascade: [Cascade.ALL] })
+  members: Collection<Member> = new Collection<Member>(this);
 }

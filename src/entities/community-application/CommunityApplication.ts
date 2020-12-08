@@ -7,9 +7,9 @@ import {
   Property
 } from '@mikro-orm/core';
 
-import { Community, MembershipQuestion } from '@entities';
 import BaseEntity from '@core/db/BaseEntity';
 import BaseRepo from '@core/db/BaseRepo';
+import { Community, Question } from '@entities';
 
 @ObjectType()
 @Entity()
@@ -30,9 +30,9 @@ export default class CommunityApplication extends BaseEntity {
   title: string;
 
   // Filters all of the community questions that should be in the application.
-  @Field(() => [MembershipQuestion])
+  @Field(() => [Question])
   @Property({ persist: false })
-  get questions(): MembershipQuestion[] {
+  get questions(): Question[] {
     return this.community.questions
       .getItems()
       .filter(({ inApplication }) => inApplication);

@@ -1,5 +1,5 @@
 import { IsUrl } from 'class-validator';
-import { Authorized, Field, ObjectType } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
 import {
   BeforeCreate,
   Collection,
@@ -17,10 +17,9 @@ import { toLowerCaseDash } from '@util/util';
 import CommunityApplication from '../community-application/CommunityApplication';
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
 import Event from '../event/Event';
-import MembershipCardItem from '../membership-card-item/MembershipCardItem';
-import MembershipQuestion from '../membership-question/MembershipQuestion';
-import MembershipType from '../membership-type/MembershipType';
-import Membership from '../membership/Membership';
+import MemberType from '../member-type/MemberType';
+import Member from '../member/Member';
+import Question from '../question/Question';
 import CommunityRepo from './Community.repo';
 
 const { DIGITAL_OCEAN_SPACE_URL } = INTEGRATIONS;
@@ -32,7 +31,7 @@ export default class Community extends BaseEntity {
 
   // ## FIELDS
 
-  // True if the membership should be accepted automatically.
+  // True if the member should be accepted automatically.
   @Field(() => Boolean)
   @Property({ type: Boolean })
   autoAccept = false;
@@ -66,19 +65,9 @@ export default class Community extends BaseEntity {
   @BeforeCreate()
   beforeCreate() {
     this.encodedUrlName = toLowerCaseDash(this.name);
-    if (!this.logoUrl)
+    if (!this.logoUrl) {
       this.logoUrl = `${DIGITAL_OCEAN_SPACE_URL}/${this.encodedUrlName}.png`;
-  }
-
-  // ## MEMBER FUNCTIONS
-
-  @Field(() => [Membership])
-  @Authorized('ADMIN')
-  async pendingApplicants(): Promise<Membership[]> {
-    if (!this.memberships.isInitialized())
-      await this.memberships.init({ where: { status: 'PENDING' } });
-    const memberships: Membership[] = this.memberships.getItems();
-    return memberships.filter(({ status }) => status === 'PENDING');
+    }
   }
 
   // ## RELATIONSHIPS
@@ -102,25 +91,20 @@ export default class Community extends BaseEntity {
   })
   integrations: CommunityIntegrations;
 
-  @Field(() => [Membership])
-  @OneToMany(() => Membership, ({ community }) => community)
-  memberships = new Collection<Membership>(this);
-
-  @OneToMany(() => MembershipCardItem, ({ community }) => community, {
-    orderBy: { order: QueryOrder.ASC }
-  })
-  membershipCard = new Collection<MembershipCardItem>(this);
+  @Field(() => [Member])
+  @OneToMany(() => Member, ({ community }) => community)
+  members = new Collection<Member>(this);
 
   // Should get the questions by the order that they are stored in the DB.
-  @Field(() => [MembershipQuestion])
-  @OneToMany(() => MembershipQuestion, ({ community }) => community, {
+  @Field(() => [Question])
+  @OneToMany(() => Question, ({ community }) => community, {
     orderBy: { order: QueryOrder.ASC }
   })
-  questions = new Collection<MembershipQuestion>(this);
+  questions = new Collection<Question>(this);
 
   // Should get the questions by the order that they are stored in the DB.
-  @OneToMany(() => MembershipType, ({ community }) => community, {
+  @OneToMany(() => MemberType, ({ community }) => community, {
     orderBy: { amount: QueryOrder.ASC }
   })
-  types = new Collection<MembershipType>(this);
+  types = new Collection<MemberType>(this);
 }

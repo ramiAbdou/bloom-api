@@ -2,8 +2,8 @@ import csv from 'csvtojson';
 import moment from 'moment';
 
 import BaseRepo from '@core/db/BaseRepo';
-import { Membership, User } from '@entities';
-import { MembershipTypeInput } from '../membership-type/MembershipType.args';
+import { Member, User } from '@entities';
+import { MemberTypeInput } from '../member-type/MemberType.args';
 import Community from './Community';
 import { CreateCommunityArgs, ImportCommunityCSVArgs } from './Community.args';
 
@@ -29,17 +29,17 @@ export default class CommunityRepo extends BaseRepo<Community> {
         ? bm.communityApplicationRepo().create({ description, title })
         : null,
       integrations: bm.communityIntegrationsRepo().create({}),
-      memberships: [
-        bm.membershipRepo().create({
+      members: [
+        bm.memberRepo().create({
           role: 'OWNER',
           user: bm.userRepo().create({ ...owner })
         })
       ],
       questions: questions.map((question, i: number) =>
-        bm.membershipQuestionRepo().create({ ...question, order: i })
+        bm.questionRepo().create({ ...question, order: i })
       ),
-      types: types.map((type: MembershipTypeInput) =>
-        bm.membershipTypeRepo().create(type)
+      types: types.map((type: MemberTypeInput) =>
+        bm.memberTypeRepo().create(type)
       )
     });
 
@@ -50,9 +50,9 @@ export default class CommunityRepo extends BaseRepo<Community> {
   /**
    * This should only be called in the process of creating a community for the
    * first time, NOT updating the community. It first reads the CSV file
-   * with the associated community name, then either creates Memberships with
+   * with the associated community name, then either creates Members with
    * NEW users if the email is not found in the DB based on the CSV row, or
-   * adds a Membership based on the current users in our DB.
+   * adds a Member based on the current users in our DB.
    */
   importCSVDataToCommunity = async ({
     encodedUrlName
@@ -69,12 +69,21 @@ export default class CommunityRepo extends BaseRepo<Community> {
     const questions = community.questions.getItems();
     const types = community.types.getItems();
 
+    const randomPictures = [
+      'https://pbs.twimg.com/profile_images/1309512858951131138/8UACAdfa_400x400.jpg',
+      'https://pbs.twimg.com/profile_images/1303060784289730560/femQ8Zek_400x400.jpg',
+      'https://pbs.twimg.com/profile_images/1216728758473953281/HY15R6ER_400x400.jpg',
+      'https://pbs.twimg.com/profile_images/1322009883596726272/5lguqewe_400x400.jpg',
+      'https://pbs.twimg.com/profile_images/1285792980872429568/BkcFk2jp_400x400.jpg',
+      'https://pbs.twimg.com/profile_images/1289268330088595456/s-5tN4Oi_400x400.jpg'
+    ];
+
     // Adds protection against any emails that are duplicates in the CSV file,
     // INCLUDING case-insensitive duplicates.
     const uniqueEmails = new Set<string>();
 
     await Promise.all(
-      responses.map(async (row: Record<string, any>) => {
+      responses.map(async (row: Record<string, any>, i: number) => {
         // Precondition: Every row (JSON) should have a field called 'EMAIL'.
         const email = row.EMAIL;
         const firstName = row.FIRST_NAME;
@@ -86,24 +95,35 @@ export default class CommunityRepo extends BaseRepo<Community> {
         uniqueEmails.add(email.toLowerCase());
 
         // If the user already exists, fetch it from the DB and if not, create
-        // a new user for the membership.
+        // a new user for the member.
         const user: User =
           (await bm.userRepo().findOne({ email })) ??
-          bm
-            .userRepo()
-            .createAndPersist({ email, firstName, gender, lastName });
+          bm.userRepo().createAndPersist({
+            currentLocation: 'Los Angeles, CA, USA',
+            email,
+            facebookUrl: 'https://www.facebook.com/',
+            firstName,
+            gender,
+            lastName,
+            pictureUrl: randomPictures[i % 6],
+            twitterUrl: 'https://www.twitter.com/'
+          });
 
-        // If a membership already exists for the user, then don't create a new
-        // membership. The likely case for this is for an OWNER of a community.
+        // If a member already exists for the user, then don't create a new
+        // member. The likely case for this is for an OWNER of a community.
         // They will have already been created in a script and might also be
         // in a CSV.
-        if (await bm.membershipRepo().findOne({ community, user })) return;
+        if (await bm.memberRepo().findOne({ community, user })) return;
 
-        // We persist the membership instead of the user since the user can
+        // We persist the member instead of the user since the user can
         // potentially be persisted already.
-        const membership: Membership = bm
-          .membershipRepo()
-          .createAndPersist({ community, status: 'ACCEPTED', user });
+        const member: Member = bm.memberRepo().createAndPersist({
+          bio:
+            'Bio is Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis something like that.',
+          community,
+          status: 'ACCEPTED',
+          user
+        });
 
         // eslint-disable-next-line array-callback-return
         Object.entries(row).map(([key, value]) => {
@@ -111,14 +131,15 @@ export default class CommunityRepo extends BaseRepo<Community> {
           if (
             !value ||
             ['EMAIL', 'FIRST_NAME', 'LAST_NAME', 'GENDER'].includes(key)
-          )
+          ) {
             return;
+          }
 
-          // If no membership type exists in the array, then the default
-          // membership will be set as the membership type.
+          // If no member type exists in the array, then the default
+          // member will be set as the member type.
           if (key === 'MEMBERSHIP_TYPE') {
-            const [type] = types.filter(({ name }) => value === name);
-            if (type) membership.type = type;
+            const type = types.find(({ name }) => value === name);
+            if (type) member.type = type;
           }
 
           // IMPORTANT: The value must be a valid input to the Date constructor
@@ -126,29 +147,16 @@ export default class CommunityRepo extends BaseRepo<Community> {
           else if (key === 'JOINED_ON') {
             const dateValue = new Date(value);
             if (!dateValue) return;
-            membership.joinedOn = moment.utc(dateValue).format();
-          }
-
-          // If the community has stored paid data, we need to check the last
-          // time they paid. It's important that the associated membership
-          // type.
-          else if (key === 'LAST_PAID_AT') {
-            const dateValue = new Date(value);
-            if (dateValue)
-              bm.membershipPaymentRepo().createAndPersist({
-                createdAt: moment.utc(dateValue).format(),
-                membership,
-                updatedAt: moment.utc(dateValue).format()
-              });
+            member.joinedOn = moment.utc(dateValue).format();
           }
 
           // If the question wasn't a special category question, then we find
           // the question with the given key as the title. We proceed to make
-          // the appropriate membership data.
+          // the appropriate member data.
           else {
             const [question] = questions.filter(({ title }) => key === title);
             if (!question) return;
-            bm.membershipDataRepo().createData({ membership, question, value });
+            bm.memberDataRepo().createAndPersist({ member, question, value });
           }
         });
       })

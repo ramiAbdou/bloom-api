@@ -15,7 +15,7 @@ import URLBuilder from '@util/URLBuilder';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventRSVP from '../event-rsvp/EventRSVP';
-import MembershipQuestion from '../membership-question/MembershipQuestion';
+import Question from '../question/Question';
 
 @ObjectType()
 @Entity()
@@ -82,7 +82,7 @@ export default class Event extends BaseEntity {
   }
 
   @Property({ persist: false })
-  get questions(): MembershipQuestion[] {
+  get questions(): Question[] {
     return this.community.questions
       .getItems()
       .filter(({ inApplication }) => inApplication);

@@ -2,19 +2,19 @@ import { Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import MembershipQuestion from './MembershipQuestion';
-import { RenameQuestionArgs } from './MembershipQuestion.args';
+import Question from './Question';
+import { RenameQuestionArgs } from './Question.args';
 
 @Resolver()
-export default class MembershipQuestionResolver {
+export default class QuestionResolver {
   @Authorized('ADMIN')
-  @Mutation(() => MembershipQuestion, { nullable: true })
+  @Mutation(() => Question, { nullable: true })
   async renameQuestion(
     @Args() { id, title, version }: RenameQuestionArgs,
     @Ctx() { communityId }: GQLContext
-  ): Promise<MembershipQuestion> {
+  ): Promise<Question> {
     return new BloomManager()
-      .membershipQuestionRepo()
+      .questionRepo()
       .renameQuestion(id, title, version, communityId);
   }
 }

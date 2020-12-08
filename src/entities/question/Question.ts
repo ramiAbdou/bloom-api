@@ -11,13 +11,13 @@ import {
 
 import BaseEntity from '@core/db/BaseEntity';
 import { Community } from '@entities';
-import { QuestionCategory, QuestionType } from './MembershipQuestion.args';
-import MembershipQuestionRepo from './MembershipQuestion.repo';
+import { QuestionCategory, QuestionType } from './Question.args';
+import QuestionRepo from './Question.repo';
 
 @ObjectType()
-@Entity({ customRepository: () => MembershipQuestionRepo })
-export default class MembershipQuestion extends BaseEntity {
-  [EntityRepositoryType]?: MembershipQuestionRepo;
+@Entity({ customRepository: () => QuestionRepo })
+export default class Question extends BaseEntity {
+  [EntityRepositoryType]?: QuestionRepo;
 
   @Field(() => Number)
   @Property({ version: true })
@@ -25,10 +25,11 @@ export default class MembershipQuestion extends BaseEntity {
 
   // If the question is a special question, we have to store it in a different
   // fashion. For example, 'EMAIL' would be stored on the user, NOT the
-  // membership.
+  // member.
   @Field(() => String, { nullable: true })
   @Enum({
     items: [
+      'CURRENT_LOCATION',
       'EMAIL',
       'FIRST_NAME',
       'GENDER',
@@ -46,7 +47,7 @@ export default class MembershipQuestion extends BaseEntity {
   description: string;
 
   // If set to false, this question will not appear in the community's
-  // membership application form.
+  // member application form.
   @Field(() => Boolean)
   @Property({ type: Boolean })
   inApplication = true;
@@ -57,10 +58,15 @@ export default class MembershipQuestion extends BaseEntity {
   @Property({ type: Boolean })
   inApplicantCard = false;
 
-  @Authorized('ADMIN')
+  @Authorized()
   @Field(() => Boolean)
   @Property({ type: Boolean })
   inDirectoryCard = false;
+
+  @Authorized()
+  @Field(() => Boolean)
+  @Property({ type: Boolean })
+  inExpandedDirectoryCard = false;
 
   // Will only be non-null if the type is MULTIPLE_CHOICE or MULTIPLE_SELECT.
   @Field(() => [String], { nullable: true })
@@ -92,15 +98,27 @@ export default class MembershipQuestion extends BaseEntity {
   beforeCreate() {
     if (['EMAIL', 'FIRST_NAME', 'LAST_NAME'].includes(this.category)) {
       this.type = 'SHORT_TEXT';
-    } else if (this.category === 'GENDER') {
+    }
+
+    if (['FIRST_NAME', 'LAST_NAME'].includes(this.category)) {
+      this.inDirectoryCard = false;
+    }
+
+    if (this.category === 'GENDER') {
       this.type = 'MULTIPLE_CHOICE';
       this.options = ['Male', 'Female', 'Non-Binary', 'Prefer Not to Say'];
-    } else if (this.category === 'MEMBERSHIP_TYPE') {
+    }
+
+    if (this.category === 'MEMBERSHIP_TYPE') {
       this.type = 'MULTIPLE_CHOICE';
       this.options = this.community.types.getItems().map(({ name }) => name);
     }
 
     if (this.category === 'MEMBERSHIP_TYPE') this.inApplicantCard = true;
+
+    // By default, if the question is fit to be in the directory card, it is
+    // fit to be in the expanded card as well.
+    if (this.inDirectoryCard) this.inExpandedDirectoryCard = true;
   }
 
   // ## RELATIONSHIPS

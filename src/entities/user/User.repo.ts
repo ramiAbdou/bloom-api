@@ -5,7 +5,7 @@ import BaseRepo from '@core/db/BaseRepo';
 import { sendEmail } from '@core/emails';
 import URLBuilder from '@util/URLBuilder';
 import { generateTokens, setHttpOnlyTokens } from '@util/util';
-import Membership from '../membership/Membership';
+import Member from '../member/Member';
 import User from './User';
 
 type RefreshTokenFlowArgs = { res?: Response; user?: User; userId?: string };
@@ -58,17 +58,17 @@ export default class UserRepo extends BaseRepo<User> {
   };
 
   /**
-   * Returns the user's login status error based on their memberships and
+   * Returns the user's login status error based on their members and
    * whether or not they've been accepted into a community.
    *
-   * Precondition: Memberships MUST already be populated.
+   * Precondition: Members MUST already be populated.
    */
   getLoginStatusError = async (user: User): Promise<LoginError> =>
     !user
       ? 'USER_NOT_FOUND'
-      : user.memberships
+      : user.members
           .getItems()
-          .reduce((acc: LoginError, { status }: Membership) => {
+          .reduce((acc: LoginError, { status }: Member) => {
             // SUCCESS CASE: If the user has been approved in some community,
             // update the refresh token in the DB.
             if (['ACCEPTED', 'INVITED'].includes(status)) return null;

@@ -24,30 +24,12 @@ export default class CommunityResolver {
 
   @Authorized('ADMIN')
   @Query(() => Community, { nullable: true })
-  async getAdmins(@Ctx() { communityId }: GQLContext): Promise<Community> {
-    return new BloomManager()
-      .communityRepo()
-      .findOne(
-        { id: communityId, memberships: { role: ['ADMIN', 'OWNER'] } },
-        ['memberships.user'],
-        { createdAt: QueryOrder.DESC },
-        `${Event.GET_ADMINS}-${communityId}`
-      );
-  }
-
-  @Authorized('ADMIN')
-  @Query(() => Community, { nullable: true })
   async getApplicants(@Ctx() { communityId }: GQLContext): Promise<Community> {
     return new BloomManager()
       .communityRepo()
       .findOne(
-        { id: communityId, memberships: { status: 'PENDING' } },
-        [
-          'questions',
-          'memberships.data',
-          'memberships.type',
-          'memberships.user'
-        ],
+        { id: communityId, members: { status: 'PENDING' } },
+        ['questions', 'members.data', 'members.type', 'members.user'],
         { createdAt: QueryOrder.DESC },
         `${Event.GET_APPLICANTS}-${communityId}`
       );
@@ -59,15 +41,23 @@ export default class CommunityResolver {
     return new BloomManager()
       .communityRepo()
       .findOne(
-        { id: communityId, memberships: { status: 'ACCEPTED' } },
-        [
-          'questions',
-          'memberships.data',
-          'memberships.type',
-          'memberships.user'
-        ],
+        { id: communityId, members: { status: ['INVITED', 'ACCEPTED'] } },
+        ['questions', 'members.data', 'members.type', 'members.user'],
         null,
         `${Event.GET_MEMBERS}-${communityId}`
+      );
+  }
+
+  @Authorized('ADMIN')
+  @Query(() => Community, { nullable: true })
+  async getDirectory(@Ctx() { communityId }: GQLContext): Promise<Community> {
+    return new BloomManager()
+      .communityRepo()
+      .findOne(
+        { id: communityId, members: { status: 'ACCEPTED' } },
+        ['questions', 'members.data', 'members.type', 'members.user'],
+        null,
+        `${Event.GET_DIRECTORY}-${communityId}`
       );
   }
 

@@ -46,7 +46,7 @@ export default class UserResolver {
   @Mutation(() => Boolean, { nullable: true })
   async sendTemporaryLoginLink(@Arg('email') email: string) {
     const userRepo = new BloomManager().userRepo();
-    const user: User = await userRepo.findOne({ email }, ['memberships']);
+    const user: User = await userRepo.findOne({ email }, ['members']);
 
     // If the user doesn't have a proper login status, we throw an error.
     const loginError: LoginError = await userRepo.getLoginStatusError(user);
@@ -64,8 +64,8 @@ export default class UserResolver {
     return new BloomManager()
       .userRepo()
       .findOne({ id: userId }, [
-        'memberships.community.integrations',
-        'memberships.type'
+        'members.community.integrations',
+        'members.type'
       ]);
   }
 }
