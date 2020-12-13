@@ -9,7 +9,6 @@ import BloomManager from '@core/db/BloomManager';
 import GoogleRouter from '@integrations/google/Google.router';
 import MailchimpRouter from '@integrations/mailchimp/Mailchimp.router';
 import StripeRouter from '@integrations/stripe/Stripe.router';
-import ZoomRouter from '@integrations/zoom/Zoom.router';
 import { decodeToken, verifyToken } from '@util/util';
 
 /**
@@ -66,7 +65,6 @@ export default () => {
   app.use('/google', new GoogleRouter().router);
   app.use('/mailchimp', new MailchimpRouter().router);
   app.use('/stripe', new StripeRouter().router);
-  app.use('/zoom', new ZoomRouter().router);
 
   return app;
 };
