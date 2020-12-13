@@ -74,3 +74,12 @@ export class QuestionValue {
   @Field({ nullable: true })
   value: string;
 }
+
+@ObjectType()
+export class DataSeries {
+  @Field({ nullable: true })
+  name: string;
+
+  @Field()
+  value: number;
+}

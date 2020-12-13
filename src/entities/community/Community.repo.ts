@@ -145,9 +145,12 @@ export default class CommunityRepo extends BaseRepo<Community> {
           // IMPORTANT: The value must be a valid input to the Date constructor
           // or else errors will be thrown!
           else if (key === 'JOINED_ON') {
-            const dateValue = new Date(value);
-            if (!dateValue) return;
-            member.joinedOn = day.utc(dateValue).format();
+            let dayObject = day.utc(value);
+            if (!dayObject.isValid()) dayObject = day.utc();
+
+            member.createdAt = dayObject.format();
+            user.createdAt = dayObject.format();
+            member.joinedOn = dayObject.format();
           }
 
           // If the question wasn't a special category question, then we find

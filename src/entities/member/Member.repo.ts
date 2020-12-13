@@ -1,3 +1,5 @@
+import day from 'dayjs';
+
 import { APP, Event } from '@constants';
 import cache from '@core/cache';
 import BaseRepo from '@core/db/BaseRepo';
@@ -6,7 +8,12 @@ import { now } from '@util/util';
 import Community from '../community/Community';
 import User from '../user/User';
 import Member from './Member';
-import { MemberDataInput, MemberStatus, NewMemberInput } from './Member.args';
+import {
+  DataSeries,
+  MemberDataInput,
+  MemberStatus,
+  NewMemberInput
+} from './Member.args';
 
 export default class MemberRepo extends BaseRepo<Member> {
   /**
@@ -252,10 +259,53 @@ export default class MemberRepo extends BaseRepo<Member> {
     await this.flush('MEMBERSHIPS_INVITED_STATUS_UPDATED', members);
   };
 
-  getTimeSeries = async (communityId: string) => {
+  getTimeSeries = async (communityId: string): Promise<DataSeries[]> => {
+    const endOfToday = day.utc().endOf('day');
+
+    const dataSeries: any[] = Array.from(Array(120).keys()).reduce(
+      (acc: any[], curr: number) => {
+        const dateKey = endOfToday.subtract(120 - curr - 1, 'd').format();
+        return [...acc, { name: dateKey, value: 0 }];
+      },
+      []
+    );
+
     const members = await this.find(
       { community: { id: communityId } },
       { filters: false }
+    );
+
+    members.forEach(({ createdAt, deletedAt }: Member) => {
+      // console.log(createdAt);
+      const createdAtObject = day.utc(createdAt);
+      const deletedAtObject = deletedAt ? day.utc(deletedAt) : null;
+
+      let markedCreated = false;
+
+      dataSeries.some(({ name }, i: number) => {
+        if (createdAtObject.isBefore(day.utc(name))) {
+          dataSeries[i].value++;
+          if (!deletedAtObject) return true;
+          markedCreated = true;
+        }
+
+        if (markedCreated && deletedAtObject.isBefore(day.utc(name))) {
+          dataSeries[i].value--;
+          return true;
+        }
+
+        return false;
+      });
+
+      //
+    });
+
+    return dataSeries.reduce(
+      (acc: DataSeries[], { name, value }: DataSeries, i: number) => {
+        const updatedValue = !i ? value : acc[i - 1].value + value;
+        return [...acc, { name, value: updatedValue }];
+      },
+      []
     );
   };
 

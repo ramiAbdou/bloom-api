@@ -1,4 +1,4 @@
-import { Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
+import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
@@ -6,6 +6,7 @@ import { Member } from '@entities';
 import {
   ApplyForMemberArgs,
   CreateMembersArgs,
+  DataSeries,
   DeleteMembersArgs,
   RespondToMembersArgs,
   ToggleAdminArgs
@@ -64,5 +65,11 @@ export default class MemberResolver {
     @Ctx() { communityId }: GQLContext
   ) {
     return new BloomManager().memberRepo().createMembers(members, communityId);
+  }
+
+  @Authorized('ADMIN')
+  @Query(() => [DataSeries], { nullable: true })
+  async getTimeSeries(@Ctx() { communityId }: GQLContext) {
+    return new BloomManager().memberRepo().getTimeSeries(communityId);
   }
 }
