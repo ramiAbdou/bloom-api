@@ -1,19 +1,13 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import moment from 'moment';
 import { URLSearchParams } from 'url';
 
-import { APP, AuthTokens, Event, isProduction } from '@constants';
+import { APP, Event, isProduction } from '@constants';
 import cache from '@core/cache';
 import BaseRepo from '@core/db/BaseRepo';
 import { Community, Member } from '@entities';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import logger from '@util/logger';
 import CommunityIntegrations from './CommunityIntegrations';
-
-type RefreshZoomTokensArgs = {
-  communityId?: string;
-  integrations?: CommunityIntegrations;
-};
 
 export default class CommunityIntegrationsRepo extends BaseRepo<
   CommunityIntegrations
@@ -111,116 +105,6 @@ export default class CommunityIntegrationsRepo extends BaseRepo<
 
     await axios(options);
     logger.info('MAILCHIMP_LIST_MEMBERS_ADDED');
-  };
-
-  // ## ZOOM
-
-  /**
-   * Stores the Zoom tokens in the database after executing the
-   * OAuth token flow, and returns the community following execution.
-   *
-   * @param code Zoom's API produced authorization code that we exchange for
-   * tokens.
-   */
-  storeZoomTokensFromCode = async (
-    encodedUrlName: string,
-    code: string
-  ): Promise<void> => {
-    const integrations: CommunityIntegrations = await this.findOne(
-      { community: { encodedUrlName } },
-      ['community']
-    );
-
-    // Create the Base64 token from the Zoom client and secret.
-    const base64Token = Buffer.from(
-      `${process.env.ZOOM_CLIENT_ID}:${process.env.ZOOM_CLIENT_SECRET}`
-    ).toString('base64');
-
-    const options: AxiosRequestConfig = {
-      headers: { Authorization: `Basic ${base64Token}` },
-      method: 'POST',
-      params: {
-        code,
-        grant_type: 'authorization_code',
-        redirect_uri: `${APP.SERVER_URL}/zoom/auth`
-      },
-      url: 'https://zoom.us/oauth/token'
-    };
-
-    const { data } = await axios(options);
-
-    integrations.zoomAccessToken = data?.access_token;
-
-    integrations.zoomExpiresAt = moment
-      .utc()
-      .add(data?.expires_in, 'seconds')
-      .format();
-
-    integrations.zoomRefreshToken = data?.refresh_token;
-
-    await this.flush('ZOOM_TOKENS_STORED', integrations);
-
-    // Invalidate the cache for the GET_INTEGRATIONS call.
-    cache.invalidateEntries(
-      `${Event.GET_INTEGRATIONS}-${integrations.community.id}`,
-      true
-    );
-  };
-
-  /**
-   * Refreshes the Zoom tokens for the community with the following ID.
-   *
-   * Precondition: A zoomRefreshToken must already exist in the Community.
-   */
-  refreshZoomTokens = async ({
-    communityId,
-    integrations
-  }: RefreshZoomTokensArgs): Promise<AuthTokens> => {
-    integrations =
-      integrations ?? (await this.findOne({ community: { id: communityId } }));
-
-    // We don't need to run the refresh flow if the token hasn't expired yet.
-    if (moment.utc().isBefore(moment.utc(integrations.zoomExpiresAt))) {
-      return {
-        accessToken: integrations.zoomAccessToken,
-        refreshToken: integrations.zoomRefreshToken
-      };
-    }
-
-    // Create the Base64 token from the Zoom client and secret.
-    const base64Token = Buffer.from(
-      `${process.env.ZOOM_CLIENT_ID}:${process.env.ZOOM_CLIENT_SECRET}`
-    ).toString('base64');
-
-    const options: AxiosRequestConfig = {
-      headers: { Authorization: `Basic ${base64Token}` },
-      method: 'POST',
-      params: {
-        grant_type: 'refresh_token',
-        refresh_token: integrations.zoomRefreshToken
-      },
-      url: 'https://zoom.us/oauth/token'
-    };
-
-    const { data } = await axios(options);
-
-    const {
-      access_token: accessToken,
-      refresh_token: refreshToken,
-      expires_in: expiresIn
-    } = data;
-
-    integrations.zoomAccessToken = accessToken;
-
-    integrations.zoomExpiresAt = moment
-      .utc()
-      .add(expiresIn, 'seconds')
-      .format();
-
-    integrations.zoomRefreshToken = refreshToken;
-
-    await this.flush('ZOOM_TOKENS_REFRESHED', integrations);
-    return { accessToken, refreshToken };
   };
 
   // ## STRIPE

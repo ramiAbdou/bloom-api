@@ -8,9 +8,8 @@ import {
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
-import BloomManager from '@core/db/BloomManager';
 import Community from '../community/Community';
-import { MailchimpLists, ZoomAccountInfo } from './CommunityIntegrations.args';
+import { MailchimpLists } from './CommunityIntegrations.args';
 import CommunityIntegrationsRepo from './CommunityIntegrations.repo';
 
 @ObjectType()
@@ -34,15 +33,6 @@ export default class CommunityIntegrations extends BaseEntity {
 
   @Property({ nullable: true, unique: true })
   zapierApiKey: string;
-
-  @Property({ nullable: true, type: 'text', unique: true })
-  zoomAccessToken: string;
-
-  @Property({ nullable: true })
-  zoomExpiresAt: string;
-
-  @Property({ nullable: true, type: 'text', unique: true })
-  zoomRefreshToken: string;
 
   // ## RELATIONSHIPS
 
@@ -84,32 +74,5 @@ export default class CommunityIntegrations extends BaseEntity {
 
     const { data } = await axios(options);
     return data?.lists?.map(({ id, name }) => ({ id, name }));
-  }
-
-  // ## ZOOM
-
-  @Field(() => Boolean)
-  isZoomAuthenticated(): boolean {
-    return !!this.zoomAccessToken && !!this.zoomRefreshToken;
-  }
-
-  @Field(() => ZoomAccountInfo, { nullable: true })
-  async zoomAccountInfo(): Promise<ZoomAccountInfo> {
-    if (!this.zoomAccessToken || !this.zoomRefreshToken) return null;
-
-    const {
-      accessToken
-    } = await new BloomManager()
-      .communityIntegrationsRepo()
-      .refreshZoomTokens({ integrations: this });
-
-    const options: AxiosRequestConfig = {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      method: 'GET',
-      url: 'https://api.zoom.us/v2/users/me'
-    };
-
-    const { data } = await axios(options);
-    return { email: data?.email, pmi: data?.pmi, userId: data?.id };
   }
 }

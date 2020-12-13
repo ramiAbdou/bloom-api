@@ -1,5 +1,5 @@
 import csv from 'csvtojson';
-import moment from 'moment';
+import day from 'dayjs';
 
 import BaseRepo from '@core/db/BaseRepo';
 import { Member, User } from '@entities';
@@ -147,7 +147,7 @@ export default class CommunityRepo extends BaseRepo<Community> {
           else if (key === 'JOINED_ON') {
             const dateValue = new Date(value);
             if (!dateValue) return;
-            member.joinedOn = moment.utc(dateValue).format();
+            member.joinedOn = day.utc(dateValue).format();
           }
 
           // If the question wasn't a special category question, then we find

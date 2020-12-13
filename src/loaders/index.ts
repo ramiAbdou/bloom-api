@@ -1,10 +1,15 @@
 import 'reflect-metadata'; // Needed for type-graphql compilation.
 
+import day from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
 import { APP } from '@constants';
 import db from '@core/db/db';
 import logger from '@util/logger';
 import apollo from './apollo';
 import express from './express';
+
+day.extend(utc);
 
 /**
  * The entry point of the application. Runs all of the loaders functions

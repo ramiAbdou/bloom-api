@@ -1,5 +1,5 @@
+import day from 'dayjs';
 import fs from 'fs';
-import moment from 'moment';
 
 import { now } from '@util/util';
 import { LoggerEvent } from './constants';
@@ -52,7 +52,7 @@ class Logger {
   private writeToFile = (log: LoggerLog, writeToConsole = false) => {
     const formattedLog = JSON.stringify(log, null, 1).replace(/\s+/g, ' ');
     if (!fs.existsSync('./logs')) fs.mkdirSync('./logs');
-    const filename = `./logs/${moment.utc().format('MM-D-YY')}.txt`;
+    const filename = `./logs/${day.utc().format('MM-D-YY')}.txt`;
     fs.appendFileSync(filename, `${formattedLog}\n\n`);
 
     // eslint-disable-next-line no-console

@@ -8,16 +8,3 @@ export class MailchimpLists {
   @Field()
   name: string;
 }
-
-@ObjectType()
-export class ZoomAccountInfo {
-  @Field()
-  email: string;
-
-  // Personal Meeting ID
-  @Field()
-  pmi: string;
-
-  @Field()
-  userId: string;
-}

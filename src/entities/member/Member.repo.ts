@@ -252,6 +252,13 @@ export default class MemberRepo extends BaseRepo<Member> {
     await this.flush('MEMBERSHIPS_INVITED_STATUS_UPDATED', members);
   };
 
+  getTimeSeries = async (communityId: string) => {
+    const members = await this.find(
+      { community: { id: communityId } },
+      { filters: false }
+    );
+  };
+
   // ## EMAIL HELPERS
 
   /**
