@@ -3,6 +3,8 @@ import { ArgsType, Field, InputType } from 'type-graphql';
 import { Event } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
+import Community from '../../community/Community';
+import MemberData from '../../member-data/MemberData';
 import User from '../../user/User';
 import Member from '../Member';
 
@@ -36,15 +38,11 @@ export default async ({
   email,
   encodedUrlName
 }: ApplyForMembershipArgs): Promise<Member> => {
-  const bm = new BloomManager();
-  const communityRepo = bm.communityRepo();
-  const memberRepo = bm.memberRepo();
-  const memberDataRepo = bm.memberDataRepo();
-  const userRepo = bm.userRepo();
+  const { em, memberRepo } = new BloomManager();
 
   // Populate the questions and types so that we can capture the member
   // data in a relational manner.
-  const community = await communityRepo.findOne({ encodedUrlName }, [
+  const community = await em.findOne(Community, { encodedUrlName }, [
     'integrations',
     'questions',
     'types'
@@ -53,15 +51,21 @@ export default async ({
   // The user can potentially already exist if they are a part of other
   // communities.
   const user: User =
-    (await userRepo.findOne({ email })) ?? userRepo.createAndPersist({ email });
+    (await em.findOne(User, { email })) ??
+    em.create(User, { email }, { managed: true });
 
-  if (await memberRepo.findOne({ community, user })) {
+  if (await em.findOne(Member, { community, user })) {
     throw new Error(
       `This email is already registered in the ${community.name} community.`
     );
   }
 
-  const member: Member = memberRepo.createAndPersist({ community, user });
+  const member: Member = em.create(
+    Member,
+    { community, user },
+    { managed: true }
+  );
+
   const questions = community.questions.getItems();
   const types = community.types.getItems();
 
@@ -86,11 +90,12 @@ export default async ({
       const type = types.find(({ name }) => value === name);
       if (type) member.type = type;
     } else {
-      memberDataRepo.createAndPersist({ member, question, value });
+      em.create(MemberData, { member, question, value }, { managed: true });
     }
   });
 
-  await memberRepo.persistAndFlush(member, 'MEMBERSHIP_CREATED');
+  // 'MEMBERSHIP_CREATED'
+  await em.flush();
 
   // Invalidate the cache for the GET_APPLICANTS call.
   cache.invalidateEntries(
@@ -104,8 +109,8 @@ export default async ({
   // Send the appropriate emails based on the response.
   setTimeout(async () => {
     if (community.autoAccept) {
-      await memberRepo.sendMemberAcceptedEmails([member], community);
-    } else await memberRepo.sendMemberReceievedEmail(member, community);
+      await memberRepo().sendMemberAcceptedEmails([member], community);
+    } else await memberRepo().sendMemberReceievedEmail(member, community);
   }, 0);
 
   return member;
