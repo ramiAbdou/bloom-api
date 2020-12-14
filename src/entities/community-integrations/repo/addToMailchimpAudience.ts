@@ -26,5 +26,5 @@ export default async (members: Member[], community: Community) => {
   };
 
   await axios(options);
-  logger.info('MAILCHIMP_LIST_UPDATED');
+  logger.log({ event: 'MAILCHIMP_LIST_UPDATED' });
 };

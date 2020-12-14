@@ -89,8 +89,7 @@ export default async ({
     }
   });
 
-  // 'MEMBERS_CREATED'
-  await bm.em.flush();
+  await bm.flush('MEMBERS_CREATED');
 
   // Invalidate the cache for the GET_APPLICANTS call.
   cache.invalidateEntries(

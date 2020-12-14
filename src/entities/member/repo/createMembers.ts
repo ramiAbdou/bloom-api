@@ -82,7 +82,5 @@ export default async (
     await addToMailchimpAudience(members, community);
   }, 0);
 
-  console.log(members.map((member) => member.id));
-
   return members;
 };

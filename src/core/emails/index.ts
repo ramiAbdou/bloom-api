@@ -8,6 +8,8 @@ import logger from '@util/logger';
 
 sg.setApiKey(process.env.SENDGRID_API_KEY);
 
+// type EmailType = ''
+
 /**
  * Sends an email using the given MJML template and the data that is needed
  * to render the dynamic data.
@@ -32,9 +34,10 @@ export const sendEmail = async (
     const options = { from: 'rami@bl.community', html, subject, to };
     await sg.send(options);
   } catch (e) {
-    logger.error(
-      'EMAIL_FAILED',
-      new Error(`Failed to send SendGrid mail: ${e}`)
-    );
+    logger.log({
+      error: `Failed to send SendGrid mail: ${e.stack}`,
+      event: 'EMAIL_FAILED',
+      level: 'ERROR'
+    });
   }
 };

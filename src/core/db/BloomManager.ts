@@ -40,18 +40,18 @@ export default class BloomManager {
 
   fork = () => new BloomManager();
 
-  async flush(event?: LoggerEvent) {
-    console.log(event);
-    console.log(this.em.getUnitOfWork().getChangeSets().length);
-    console.log(this.em.getUnitOfWork().getPersistStack().size);
-    console.log(this.em.getUnitOfWork().getRemoveStack().size);
-
+  async flush(event: LoggerEvent) {
     try {
+      logger.log({ contextId: this.em.id, event, level: 'BEFORE_FLUSH' });
       await this.em.flush();
-      if (event) logger.info(event);
+      logger.log({ contextId: this.em.id, event, level: 'FLUSH_SUCCESS' });
     } catch (e) {
-      logger.error(event, e);
-      throw new Error(e);
+      logger.log(
+        { contextId: this.em.id, error: e.stack, event, level: 'FLUSH_ERROR' },
+        true
+      );
+
+      throw e;
     }
   }
 
@@ -118,23 +118,12 @@ export default class BloomManager {
     entities?: AnyEntity<any> | AnyEntity<any>[],
     event?: LoggerEvent
   ) {
-    console.log(event);
-    console.log(this.em.getUnitOfWork().getChangeSets().length);
-    console.log(this.em.getUnitOfWork().getPersistStack().size);
-    console.log(this.em.getUnitOfWork().getRemoveStack().size);
-
     if (Array.isArray(entities)) {
       entities.forEach((entity: AnyEntity<any>) => {
         entity.deletedAt = now();
       });
     } else entities.deletedAt = now();
 
-    try {
-      await this.flush(event);
-      if (event) logger.info(event);
-      cache.invalidateEntries(entities.map(({ id }) => id));
-    } catch (e) {
-      logger.error(event, new Error(e));
-    }
+    await this.flush(event);
   }
 }

@@ -21,7 +21,10 @@ const startServer = async () => {
   const app = express();
   const [apolloServer] = await Promise.all([apollo(), db.createConnection()]);
   apolloServer.applyMiddleware({ app, cors: false, path: '/graphql' });
-  app.listen(APP.PORT, () => logger.info('SERVER_STARTED'));
+
+  app.listen(APP.PORT, () =>
+    logger.log({ event: 'SERVER_STARTED', level: 'INFO' })
+  );
 };
 
 startServer();
