@@ -9,6 +9,7 @@ import CommunityIntegrations from '../entities/community-integrations/CommunityI
 import CommunityResolver from '../entities/community/Community.resolver';
 import MemberResolver from '../entities/member/Member.resolver';
 import QuestionResolver from '../entities/question/Question.resolver';
+import User from '../entities/user/User';
 import UserResolver from '../entities/user/User.resolver';
 
 /**
@@ -22,10 +23,7 @@ const authChecker: AuthChecker<GQLContext> = async (
 ) => {
   // If the userId isn't present or the userId doesn't exist in the DB, then
   // the user isn't authenticated.
-  if (
-    !userId ||
-    !(await new BloomManager().userRepo().findOne({ id: userId }))
-  ) {
+  if (!userId || !(await new BloomManager().findOne(User, { id: userId }))) {
     return false;
   }
 

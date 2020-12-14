@@ -5,6 +5,8 @@ import BloomManager from '@core/db/BloomManager';
 import Router from '@core/Router';
 import { Member, User } from '@entities/entities';
 import updateInvitedStatuses from '@entities/member/repo/updateInvitedStatus';
+import getLoginError from '@entities/user/repo/getLoginError';
+import refreshToken from '@entities/user/repo/refreshToken';
 import { getEmailFromCode } from './Google.util';
 
 export default class GoogleRouter extends Router {
@@ -14,10 +16,16 @@ export default class GoogleRouter extends Router {
 
   private async handleAuth({ query }: Request, res: Response) {
     const bm = new BloomManager();
-    const userRepo = bm.userRepo();
+
     const email = await getEmailFromCode(query.code as string);
-    const user: User = await userRepo.findOne({ email }, ['members']);
-    const loginError: LoginError = await userRepo.getLoginStatusError(user);
+
+    const user: User = await bm.findOne(
+      User,
+      { email },
+      { populate: ['members'] }
+    );
+
+    const loginError: LoginError = await getLoginError(user);
 
     if (loginError) res.cookie('LOGIN_ERROR', loginError);
     else {
@@ -30,7 +38,7 @@ export default class GoogleRouter extends Router {
         await updateInvitedStatuses(members);
       }
 
-      await userRepo.refreshTokenFlow({ res, user });
+      await refreshToken({ res, user });
     }
 
     res.redirect(APP.CLIENT_URL);

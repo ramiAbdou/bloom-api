@@ -5,7 +5,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 
 import { APP } from '@constants';
-import BloomManager from '@core/db/BloomManager';
+import refreshTokenFlow from '@entities/user/repo/refreshToken';
 import GoogleRouter from '@integrations/google/Google.router';
 import MailchimpRouter from '@integrations/mailchimp/Mailchimp.router';
 import StripeRouter from '@integrations/stripe/Stripe.router';
@@ -28,9 +28,7 @@ const refreshTokenIfExpired = async (
   if (!verifyToken(accessToken) && refreshToken && req.url === '/graphql') {
     const userId: string = decodeToken(refreshToken)?.userId;
 
-    const tokens = await new BloomManager()
-      .userRepo()
-      .refreshTokenFlow({ res, userId });
+    const tokens = await refreshTokenFlow({ res, userId });
 
     // We have to update the tokens on the request as well in order to ensure that
     // GraphQL context can set the user ID properly.
