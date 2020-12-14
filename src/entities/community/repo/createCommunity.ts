@@ -1,17 +1,15 @@
 import BloomManager from '@core/db/BloomManager';
-import { Member, Question, User } from '@entities/entities';
 import CommunityApplication from '../../community-application/CommunityApplication';
 import CommunityIntegrations from '../../community-integrations/CommunityIntegrations';
 import MemberType from '../../member-type/MemberType';
 import { MemberTypeInput } from '../../member-type/MemberType.types';
+import Member from '../../member/Member';
+import Question from '../../question/Question';
 import { QuestionInput } from '../../question/Question.types';
+import User from '../../user/User';
 import Community from '../Community';
 
-type CommunityOwnerArgs = {
-  email: string;
-  firstName: string;
-  lastName: string;
-};
+type CommunityOwnerArgs = Pick<User, 'email' | 'firstName' | 'lastName'>;
 
 export class CreateCommunityArgs {
   applicationDescription?: string;
