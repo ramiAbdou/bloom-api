@@ -3,7 +3,9 @@ import { ArgsType, Field, InputType } from 'type-graphql';
 import { Event, GQLContext } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
+import addToMailchimpAudience from '@entities/community-integrations/repo/addToMailchimpAudience';
 import Community from '../../community/Community';
+import User from '../../user/User';
 import Member from '../Member';
 
 @InputType()
@@ -36,12 +38,12 @@ export default async (
   { communityId }: GQLContext
 ): Promise<Member[]> => {
   const bm = new BloomManager();
-  const communityIntegrationsRepo = bm.communityIntegrationsRepo();
-  const memberRepo = bm.memberRepo();
 
-  const community: Community = await bm
-    .communityRepo()
-    .findOne({ id: communityId }, ['integrations', 'types']);
+  const community = await bm.findOne(
+    Community,
+    { id: communityId },
+    { populate: ['integrations', 'types'] }
+  );
 
   const existingMembers: Member[] = await bm.memberRepo().find({
     community,
@@ -56,20 +58,20 @@ export default async (
 
   const members: Member[] = await Promise.all(
     inputs.map(async ({ isAdmin, email, firstName, lastName }) =>
-      bm.memberRepo().createAndPersist({
+      bm.create(Member, {
         community,
         role: isAdmin ? 'ADMIN' : null,
         status: 'INVITED',
         // The user can potentially already exist if they are a part of other
         // communities.
         user:
-          (await bm.userRepo().findOne({ email })) ??
-          bm.userRepo().createAndPersist({ email, firstName, lastName })
+          (await bm.findOne(User, { email })) ??
+          bm.create(User, { email, firstName, lastName })
       })
     )
   );
 
-  await memberRepo.flush('MEMBERSHIPS_CREATED', members);
+  await bm.flush('MEMBERSHIPS_CREATED');
   cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`], true);
 
   await bm.em.populate(members, ['community.questions', 'data']);
@@ -77,7 +79,7 @@ export default async (
   // Send the appropriate emails based on the response. Also, add the members
   // to the Mailchimp audience.
   setTimeout(async () => {
-    await communityIntegrationsRepo.addToMailchimpAudience(members, community);
+    await addToMailchimpAudience(members, community);
   }, 0);
 
   return members;

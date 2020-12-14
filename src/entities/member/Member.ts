@@ -16,8 +16,7 @@ import MemberData from '../member-data/MemberData';
 import MemberType from '../member-type/MemberType';
 import Question from '../question/Question';
 import User from '../user/User';
-import { QuestionValue } from './Member.args';
-import { MemberRole, MemberStatus } from './Member.types';
+import { MemberRole, MemberStatus, QuestionValue } from './Member.types';
 
 @ObjectType()
 @Entity()

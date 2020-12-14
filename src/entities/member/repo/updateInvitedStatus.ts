@@ -7,7 +7,6 @@ import Member from '../Member';
  */
 export default async (members: Member[]) => {
   const bm = new BloomManager();
-  const memberRepo = bm.memberRepo();
 
   await Promise.all(
     members.map(async (member: Member) => {
@@ -15,5 +14,5 @@ export default async (members: Member[]) => {
     })
   );
 
-  await memberRepo.flush('MEMBERSHIPS_INVITED_STATUS_UPDATED', members);
+  await bm.flush('MEMBERSHIPS_INVITED_STATUS_UPDATED');
 };

@@ -4,9 +4,11 @@ import { Event, GQLContext } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import { now } from '@util/util';
-import Community from '../../community/Community';
 import Member from '../Member';
 import { MemberStatus } from '../Member.types';
+
+// import addToMailchimpAudience from '@entities/community-integrations/repo/addToMailchimpAudience';
+// import Community from '../../community/Community';
 
 @ArgsType()
 export class RespondToApplicantsArgs {
@@ -26,18 +28,19 @@ export default async (
   { communityId }: GQLContext
 ): Promise<Member[]> => {
   const bm = new BloomManager();
-  const communityRepo = bm.communityRepo();
-  const communityIntegrationsRepo = bm.communityIntegrationsRepo();
-  const memberRepo = bm.memberRepo();
 
-  const members: Member[] = await memberRepo.find({ id: memberIds }, ['user']);
+  const members: Member[] = await bm.find(
+    Member,
+    { id: memberIds },
+    { populate: ['user'] }
+  );
 
   members.forEach((member: Member) => {
     member.joinedOn = now();
     member.status = response;
   });
 
-  await memberRepo.flush('MEMBERSHIP_ADMISSION', members);
+  await bm.flush('MEMBERSHIP_ADMISSION');
 
   cache.invalidateEntries([`${Event.GET_APPLICANTS}-${communityId}`], true);
 
@@ -48,19 +51,14 @@ export default async (
   // Send the appropriate emails based on the response. Also, add the members
   // to the Mailchimp audience.
   setTimeout(async () => {
-    const community: Community = await communityRepo.findOne(
-      { id: communityId },
-      ['integrations']
-    );
-
-    if (response === 'ACCEPTED') {
-      await memberRepo.sendMemberAcceptedEmails(members, community);
-
-      await communityIntegrationsRepo.addToMailchimpAudience(
-        members,
-        community
-      );
-    } else await memberRepo.sendMemberIgnoredEmails(members, community);
+    // const community: Community = await communityRepo.findOne(
+    //   { id: communityId },
+    //   ['integrations']
+    // );
+    // if (response === 'ACCEPTED') {
+    //   await memberRepo.sendMemberAcceptedEmails(members, community);
+    //   await addToMailchimpAudience(members, community);
+    // } else await memberRepo.sendMemberIgnoredEmails(members, community);
   }, 0);
 
   return members;

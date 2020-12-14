@@ -4,7 +4,6 @@ import {
   BeforeCreate,
   Collection,
   Entity,
-  EntityRepositoryType,
   OneToMany,
   OneToOne,
   Property,
@@ -19,15 +18,12 @@ import CommunityIntegrations from '../community-integrations/CommunityIntegratio
 import MemberType from '../member-type/MemberType';
 import Member from '../member/Member';
 import Question from '../question/Question';
-import CommunityRepo from './Community.repo';
 
 const { DIGITAL_OCEAN_SPACE_URL } = INTEGRATIONS;
 
 @ObjectType()
-@Entity({ customRepository: () => CommunityRepo })
+@Entity()
 export default class Community extends BaseEntity {
-  [EntityRepositoryType]?: CommunityRepo;
-
   // ## FIELDS
 
   // True if the member should be accepted automatically.

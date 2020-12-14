@@ -20,16 +20,15 @@ export default async (
   { communityId }: GQLContext
 ): Promise<Member[]> => {
   const bm = new BloomManager();
-  const memberRepo = bm.memberRepo();
 
-  const members: Member[] = await memberRepo.find({ id: memberIds });
+  const members: Member[] = await bm.find(Member, { id: memberIds });
 
   members.forEach((member: Member) => {
     if (!member.role) member.role = 'ADMIN';
     else member.role = null;
   });
 
-  await memberRepo.flush('MEMBERSHIPS_ADMIN_STATUS_UPDATED', members);
+  await bm.flush('MEMBERSHIPS_ADMIN_STATUS_UPDATED');
 
   // Invalidate the cache for the GET_MEMBERS call.
   cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`], true);

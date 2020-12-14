@@ -103,9 +103,9 @@ export default async ({
 
   // Send the appropriate emails based on the response.
   setTimeout(async () => {
-    if (community.autoAccept) {
-      await bm.memberRepo().sendMemberAcceptedEmails([member], community);
-    } else await bm.memberRepo().sendMemberReceievedEmail(member, community);
+    // if (community.autoAccept) {
+    //   await bm.memberRepo().sendMemberAcceptedEmails([member], community);
+    // } else await bm.memberRepo().sendMemberReceievedEmail(member, community);
   }, 0);
 
   return member;

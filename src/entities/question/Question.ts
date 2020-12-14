@@ -3,7 +3,6 @@ import {
   ArrayType,
   BeforeCreate,
   Entity,
-  EntityRepositoryType,
   Enum,
   ManyToOne,
   Property
@@ -11,14 +10,11 @@ import {
 
 import BaseEntity from '@core/db/BaseEntity';
 import { Community } from '@entities/entities';
-import { QuestionCategory, QuestionType } from './Question.args';
-import QuestionRepo from './Question.repo';
+import { QuestionCategory, QuestionType } from './Question.types';
 
 @ObjectType()
-@Entity({ customRepository: () => QuestionRepo })
+@Entity()
 export default class Question extends BaseEntity {
-  [EntityRepositoryType]?: QuestionRepo;
-
   @Field(() => Number)
   @Property({ version: true })
   version!: number;

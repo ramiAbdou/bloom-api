@@ -1,14 +1,13 @@
 import { APP } from '@constants';
-import BloomManager from '@core/db/BloomManager';
 import URLBuilder from '@util/URLBuilder';
 import User from '../User';
+import refreshToken from './refreshToken';
 
 /**
  * Generates a temporary loginToken based on the user. Runs the refresh
  * flow with the user.
  */
 export default async (user: User) => {
-  const bm = new BloomManager();
-  const { accessToken: token } = await bm.refreshTokenFlow({ user });
+  const { accessToken: token } = await refreshToken({ user });
   return new URLBuilder(APP.CLIENT_URL).addParam('loginToken', token).url;
 };

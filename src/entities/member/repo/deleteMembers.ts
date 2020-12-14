@@ -20,7 +20,7 @@ export default async (
 
   const members: Member[] = await memberRepo.find({ id: memberIds }, ['user']);
 
-  await memberRepo.deleteAndFlush(members, 'MEMBERSHIPS_DELETED');
+  await bm.deleteAndFlush(members);
   cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`], true);
 
   // If any of the members were an ADMIN of the community, then we need to
