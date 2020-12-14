@@ -38,33 +38,28 @@ export default async ({
   email,
   encodedUrlName
 }: ApplyForMembershipArgs): Promise<Member> => {
-  const { em, memberRepo } = new BloomManager();
+  const bm = new BloomManager();
 
   // Populate the questions and types so that we can capture the member
   // data in a relational manner.
-  const community = await em.findOne(Community, { encodedUrlName }, [
-    'integrations',
-    'questions',
-    'types'
-  ]);
+  const community = await bm.findOne(
+    Community,
+    { encodedUrlName },
+    { populate: ['integrations', 'questions', 'types'] }
+  );
 
   // The user can potentially already exist if they are a part of other
   // communities.
   const user: User =
-    (await em.findOne(User, { email })) ??
-    em.create(User, { email }, { managed: true });
+    (await bm.findOne(User, { email })) ?? bm.create(User, { email });
 
-  if (await em.findOne(Member, { community, user })) {
+  if (await bm.findOne(Member, { community, user })) {
     throw new Error(
       `This email is already registered in the ${community.name} community.`
     );
   }
 
-  const member: Member = em.create(
-    Member,
-    { community, user },
-    { managed: true }
-  );
+  const member: Member = bm.create(Member, { community, user });
 
   const questions = community.questions.getItems();
   const types = community.types.getItems();
@@ -90,12 +85,12 @@ export default async ({
       const type = types.find(({ name }) => value === name);
       if (type) member.type = type;
     } else {
-      em.create(MemberData, { member, question, value }, { managed: true });
+      bm.create(MemberData, { member, question, value });
     }
   });
 
   // 'MEMBERSHIP_CREATED'
-  await em.flush();
+  await bm.em.flush();
 
   // Invalidate the cache for the GET_APPLICANTS call.
   cache.invalidateEntries(
@@ -109,8 +104,8 @@ export default async ({
   // Send the appropriate emails based on the response.
   setTimeout(async () => {
     if (community.autoAccept) {
-      await memberRepo().sendMemberAcceptedEmails([member], community);
-    } else await memberRepo().sendMemberReceievedEmail(member, community);
+      await bm.memberRepo().sendMemberAcceptedEmails([member], community);
+    } else await bm.memberRepo().sendMemberReceievedEmail(member, community);
   }, 0);
 
   return member;
