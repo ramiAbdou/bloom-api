@@ -4,7 +4,7 @@ import { URLSearchParams } from 'url';
 import { APP, Event, isProduction } from '@constants';
 import cache from '@core/cache';
 import BaseRepo from '@core/db/BaseRepo';
-import { Community, Member } from '@entities';
+import { Community, Member } from '@entities/entities';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import logger from '@util/logger';
 import CommunityIntegrations from './CommunityIntegrations';
@@ -12,8 +12,6 @@ import CommunityIntegrations from './CommunityIntegrations';
 export default class CommunityIntegrationsRepo extends BaseRepo<
   CommunityIntegrations
 > {
-  // ## MAILCHIMP
-
   /**
    * Returns the updated community after updating it's Mailchimp token. If
    * no community was found based on the encodedUrlName, returns null.

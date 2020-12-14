@@ -2,7 +2,7 @@ import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext, LoginError } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { User } from '@entities';
+import { User } from '@entities/entities';
 import { decodeToken } from '@util/util';
 
 @Resolver()

@@ -10,7 +10,7 @@ import {
 
 import BaseEntity from '@core/db/BaseEntity';
 import BaseRepo from '@core/db/BaseRepo';
-import { Community, Member } from '@entities';
+import { Community, Member } from '@entities/entities';
 
 @ObjectType()
 @Entity()

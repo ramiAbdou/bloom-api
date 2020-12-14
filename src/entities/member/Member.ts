@@ -19,8 +19,9 @@ import MemberData from '../member-data/MemberData';
 import MemberType from '../member-type/MemberType';
 import Question from '../question/Question';
 import User from '../user/User';
-import { MemberRole, MemberStatus, QuestionValue } from './Member.args';
+import { QuestionValue } from './Member.args';
 import MemberRepo from './Member.repo';
+import { MemberRole, MemberStatus } from './Member.types';
 
 @ObjectType()
 @Entity({ customRepository: () => MemberRepo })

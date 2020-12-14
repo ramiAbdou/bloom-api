@@ -18,7 +18,7 @@ module.exports = {
     { files: ['*.router.ts'], rules: { 'class-methods-use-this': 0 } },
     {
       files: ['*.args.ts', '*.types.ts', '*.util.ts'],
-      rules: { 'max-classes-per-file': 0, 'import/prefer-default-export': 0 }
+      rules: { 'import/prefer-default-export': 0 }
     }
   ],
   rules: {
@@ -36,6 +36,7 @@ module.exports = {
     'import/newline-after-import': 2, // Requires a newline after imports.
     'import/no-cycle': 0, // Don't allow cycles in the code.
     'import/no-extraneous-dependencies': 0,
+    'max-classes-per-file': 0,
     'newline-per-chained-call': 2,
     'no-param-reassign': 0, // Allow parameter reassigning in a function.
     'no-plusplus': 0, // Allow the i++ syntax, helpful for manual for-loops.

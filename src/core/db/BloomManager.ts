@@ -12,7 +12,7 @@ import {
   MemberType,
   Question,
   User
-} from '@entities';
+} from '@entities/entities';
 import db from './db';
 
 export default class BloomManager {

@@ -9,7 +9,7 @@ import {
 
 import BaseEntity from '@core/db/BaseEntity';
 import BaseRepo from '@core/db/BaseRepo';
-import { Community, Question } from '@entities';
+import { Community, Question } from '@entities/entities';
 
 @ObjectType()
 @Entity()
@@ -38,13 +38,7 @@ export default class CommunityApplication extends BaseEntity {
       .filter(({ inApplication }) => inApplication);
   }
 
-  /* 
-  ___     _      _   _             _    _         
- | _ \___| |__ _| |_(_)___ _ _  __| |_ (_)_ __ ___
- |   / -_) / _` |  _| / _ \ ' \(_-< ' \| | '_ (_-<
- |_|_\___|_\__,_|\__|_\___/_||_/__/_||_|_| .__/__/
-                                         |_|      
-  */
+  // ## RELATIONSHIPS
 
   @OneToOne(() => Community, ({ application }) => application)
   community: Community;

@@ -10,7 +10,7 @@ import {
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
-import { Community } from '@entities';
+import { Community } from '@entities/entities';
 import { QuestionCategory, QuestionType } from './Question.args';
 import QuestionRepo from './Question.repo';
 

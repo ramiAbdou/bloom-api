@@ -2,7 +2,7 @@ import csv from 'csvtojson';
 import day from 'dayjs';
 
 import BaseRepo from '@core/db/BaseRepo';
-import { Member, User } from '@entities';
+import { Member, User } from '@entities/entities';
 import { MemberTypeInput } from '../member-type/MemberType.args';
 import Community from './Community';
 import { CreateCommunityArgs, ImportCommunityCSVArgs } from './Community.args';

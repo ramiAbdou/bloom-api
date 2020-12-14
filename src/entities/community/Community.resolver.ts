@@ -3,7 +3,7 @@ import { QueryOrder } from '@mikro-orm/core';
 
 import { Event, GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { Community } from '@entities';
+import { Community } from '@entities/entities';
 import { GetCommunityArgs } from './Community.args';
 
 @Resolver()
