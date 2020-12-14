@@ -89,7 +89,7 @@ export default async ({
     }
   });
 
-  // 'MEMBERSHIP_CREATED'
+  // 'MEMBERS_CREATED'
   await bm.em.flush();
 
   // Invalidate the cache for the GET_APPLICANTS call.

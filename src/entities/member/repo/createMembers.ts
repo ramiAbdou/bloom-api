@@ -71,7 +71,7 @@ export default async (
     )
   );
 
-  await bm.flush('MEMBERSHIPS_CREATED');
+  await bm.flush('MEMBERS_CREATED');
   cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`], true);
 
   await bm.em.populate(members, ['community.questions', 'data']);
@@ -81,6 +81,8 @@ export default async (
   setTimeout(async () => {
     await addToMailchimpAudience(members, community);
   }, 0);
+
+  console.log(members.map((member) => member.id));
 
   return members;
 };

@@ -41,6 +41,11 @@ export default class BloomManager {
   fork = () => new BloomManager();
 
   async flush(event?: LoggerEvent) {
+    console.log(event);
+    console.log(this.em.getUnitOfWork().getChangeSets().length);
+    console.log(this.em.getUnitOfWork().getPersistStack().size);
+    console.log(this.em.getUnitOfWork().getRemoveStack().size);
+
     try {
       await this.em.flush();
       if (event) logger.info(event);
@@ -98,10 +103,8 @@ export default class BloomManager {
     entityName: EntityName<T>,
     data: EntityData<T>
   ): New<T, P> {
-    const entity: New<T, P> = this.em.create(entityName, data, {
-      managed: true
-    });
-
+    const entity: New<T, P> = this.em.create(entityName, data);
+    this.em.persist(entity);
     return entity;
   }
 
@@ -115,6 +118,11 @@ export default class BloomManager {
     entities?: AnyEntity<any> | AnyEntity<any>[],
     event?: LoggerEvent
   ) {
+    console.log(event);
+    console.log(this.em.getUnitOfWork().getChangeSets().length);
+    console.log(this.em.getUnitOfWork().getPersistStack().size);
+    console.log(this.em.getUnitOfWork().getRemoveStack().size);
+
     if (Array.isArray(entities)) {
       entities.forEach((entity: AnyEntity<any>) => {
         entity.deletedAt = now();

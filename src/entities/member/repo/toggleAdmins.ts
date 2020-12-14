@@ -28,7 +28,7 @@ export default async (
     else member.role = null;
   });
 
-  await bm.flush('MEMBERSHIPS_ADMIN_STATUS_UPDATED');
+  await bm.flush('MEMBERS_ADMIN_UPDATE');
 
   // Invalidate the cache for the GET_MEMBERS call.
   cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`], true);

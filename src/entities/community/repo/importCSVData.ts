@@ -127,6 +127,6 @@ export default async (encodedUrlName: string) => {
     })
   );
 
-  await bm.flush('COMMUNITY_CSV_PROCESSED');
+  await bm.flush('COMMUNITY_CSV_IMPORTED');
   return community;
 };

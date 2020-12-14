@@ -40,7 +40,7 @@ export default async (
     member.status = response;
   });
 
-  await bm.flush('MEMBERSHIP_ADMISSION');
+  await bm.flush('MEMBERS_ACCEPTED');
 
   cache.invalidateEntries([`${Event.GET_APPLICANTS}-${communityId}`], true);
 

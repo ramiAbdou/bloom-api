@@ -14,5 +14,5 @@ export default async (members: Member[]) => {
     })
   );
 
-  await bm.flush('MEMBERSHIPS_INVITED_STATUS_UPDATED');
+  await bm.flush('INVITED_MEMBER_ACCEPTED');
 };
