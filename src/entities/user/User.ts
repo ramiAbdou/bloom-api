@@ -5,7 +5,6 @@ import {
   Cascade,
   Collection,
   Entity,
-  EntityRepositoryType,
   Enum,
   OneToMany,
   Property
@@ -13,13 +12,10 @@ import {
 
 import BaseEntity from '@core/db/BaseEntity';
 import Member from '../member/Member';
-import UserRepo from './User.repo';
 
 @ObjectType()
-@Entity({ customRepository: () => UserRepo })
+@Entity()
 export default class User extends BaseEntity {
-  [EntityRepositoryType]?: UserRepo;
-
   // ## FIELDS
 
   @Field({ nullable: true })
