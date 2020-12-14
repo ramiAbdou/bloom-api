@@ -16,7 +16,6 @@ import BaseEntity from '@core/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
 import CommunityApplication from '../community-application/CommunityApplication';
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
-import Event from '../event/Event';
 import MemberType from '../member-type/MemberType';
 import Member from '../member/Member';
 import Question from '../question/Question';
@@ -80,9 +79,6 @@ export default class Community extends BaseEntity {
     owner: true
   })
   application: CommunityApplication;
-
-  @OneToMany(() => Event, ({ community }) => community)
-  events = new Collection<Event>(this);
 
   @Field(() => CommunityIntegrations, { nullable: true })
   @OneToOne(() => CommunityIntegrations, ({ community }) => community, {

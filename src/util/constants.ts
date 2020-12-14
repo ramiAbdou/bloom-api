@@ -1,7 +1,8 @@
 import dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import path from 'path'; // Before constants.
-import { MemberRole } from 'src/entities/member/Member.args';
+
+import { MemberRole } from '@entities/member/Member.types';
 
 export const isProduction = process.env.NODE_ENV === 'production';
 export const isTesting = process.env.NODE_ENV === 'testing';

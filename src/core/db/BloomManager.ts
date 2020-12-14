@@ -4,9 +4,6 @@ import {
   Community,
   CommunityApplication,
   CommunityIntegrations,
-  Event,
-  EventAttendee,
-  EventRSVP,
   Member,
   MemberData,
   MemberType,
@@ -35,12 +32,6 @@ export default class BloomManager {
 
   communityIntegrationsRepo = () =>
     this.em.getRepository(CommunityIntegrations);
-
-  eventRepo = () => this.em.getRepository(Event);
-
-  eventAttendeeRepo = () => this.em.getRepository(EventAttendee);
-
-  eventRSVPRepo = () => this.em.getRepository(EventRSVP);
 
   memberRepo = () => this.em.getRepository(Member);
 

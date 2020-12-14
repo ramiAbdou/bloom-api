@@ -13,8 +13,6 @@ import {
 import BaseEntity from '@core/db/BaseEntity';
 import { now } from '@util/util';
 import Community from '../community/Community';
-import EventAttendee from '../event-attendee/EventAttendee';
-import EventRSVP from '../event-rsvp/EventRSVP';
 import MemberData from '../member-data/MemberData';
 import MemberType from '../member-type/MemberType';
 import Question from '../question/Question';
@@ -188,12 +186,6 @@ export default class Member extends BaseEntity {
   @Field(() => [MemberData])
   @OneToMany(() => MemberData, ({ member }) => member)
   data = new Collection<MemberData>(this);
-
-  @OneToMany(() => EventAttendee, ({ member }) => member)
-  eventsAttended = new Collection<EventAttendee>(this);
-
-  @OneToMany(() => EventRSVP, ({ member }) => member)
-  eventsRSVPd = new Collection<EventRSVP>(this);
 
   // 99% of the time, type MUST exist. However, in some communities, the OWNER
   // or ADMINs are not actually general members of the community. For example,
