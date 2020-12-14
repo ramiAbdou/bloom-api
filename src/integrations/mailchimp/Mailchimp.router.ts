@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
-import { APP, AuthQueryParams, Route } from '@constants';
-import Router from '@core/Router';
+import { APP, AuthQueryParams } from '@constants';
+import Router, { Route } from '@core/Router';
 import storeMailchimpToken from '@entities/community-integrations/repo/storeMailchimpToken';
 
 export default class MailchimpRouter extends Router {

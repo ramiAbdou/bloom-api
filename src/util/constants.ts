@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import path from 'path'; // Before constants.
 
 import { MemberRole } from '@entities/member/Member.types';
@@ -73,20 +73,9 @@ export type LoggerEvent =
   | 'SERVER_STARTED'
   | 'STRIPE_ACCOUNT_STORED';
 
-export type LoginError =
-  | 'APPLICATION_PENDING'
-  | 'APPLICATION_REJECTED'
-  | 'USER_NOT_FOUND';
-
 export type GQLContext = {
   communityId: string;
   res: Response;
   role: MemberRole;
   userId: string;
-};
-
-export type Route = {
-  callback: (request: Request, response: Response) => any;
-  method: 'GET' | 'POST' | 'DELETE' | 'PUT';
-  route: string;
 };

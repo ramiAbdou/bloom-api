@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 
-import { APP, LoginError, Route } from '@constants';
+import { APP } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import Router from '@core/Router';
+import Router, { Route } from '@core/Router';
 import { Member, User } from '@entities/entities';
 import updateInvitedStatuses from '@entities/member/repo/updateInvitedStatus';
-import getLoginError from '@entities/user/repo/getLoginError';
+import getLoginError, { LoginError } from '@entities/user/repo/getLoginError';
 import refreshToken from '@entities/user/repo/refreshToken';
 import { getEmailFromCode } from './Google.util';
 

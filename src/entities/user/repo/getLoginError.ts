@@ -1,6 +1,10 @@
-import { LoginError } from '@constants';
 import Member from '../../member/Member';
 import User from '../User';
+
+export type LoginError =
+  | 'APPLICATION_PENDING'
+  | 'APPLICATION_REJECTED'
+  | 'USER_NOT_FOUND';
 
 /**
  * Returns the user's login status error based on their members and

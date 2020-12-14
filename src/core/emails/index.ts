@@ -3,8 +3,8 @@ import { compile } from 'handlebars';
 import mjml2html from 'mjml';
 
 import { isProduction } from '@constants';
-import logger from '@util/logger';
 import sg from '@sendgrid/mail';
+import logger from '@util/logger';
 
 sg.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -25,7 +25,7 @@ export const sendEmail = async (
   // comment this line out manually each time.
   if (!isProduction) return;
 
-  const pathToFile = `./@core/emails/${mjml}`;
+  const pathToFile = `./src/core/emails/templates/${mjml}`;
   const template = compile(readFileSync(pathToFile, 'utf8'));
   const { html } = mjml2html(template(data));
   try {

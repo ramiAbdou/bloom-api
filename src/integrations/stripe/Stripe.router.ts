@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
-import { APP, AuthQueryParams, Route } from '@constants';
-import Router from '@core/Router';
+import { APP, AuthQueryParams } from '@constants';
+import Router, { Route } from '@core/Router';
 import storeStripeTokens from '@entities/community-integrations/repo/storeStripeTokens';
 
 export default class StripeRouter extends Router {
