@@ -3,7 +3,6 @@ import {
   BeforeCreate,
   Collection,
   Entity,
-  EntityRepositoryType,
   Enum,
   ManyToOne,
   OneToMany,
@@ -18,14 +17,11 @@ import MemberType from '../member-type/MemberType';
 import Question from '../question/Question';
 import User from '../user/User';
 import { QuestionValue } from './Member.args';
-import MemberRepo from './Member.repo';
 import { MemberRole, MemberStatus } from './Member.types';
 
 @ObjectType()
-@Entity({ customRepository: () => MemberRepo })
+@Entity()
 export default class Member extends BaseEntity {
-  [EntityRepositoryType]?: MemberRepo;
-
   @Field({ nullable: true })
   @Property({ nullable: true, type: 'text' })
   bio: string;

@@ -4,7 +4,7 @@ import { APP, LoginError, Route } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Router from '@core/Router';
 import { Member, User } from '@entities/entities';
-import updateInvitedStatuses from '@entities/member/actions/updateInvitedStatus';
+import updateInvitedStatuses from '@entities/member/repo/updateInvitedStatus';
 import { getEmailFromCode } from './Google.util';
 
 export default class GoogleRouter extends Router {

@@ -1,22 +1,14 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { Field, ObjectType } from 'type-graphql';
-import {
-  Entity,
-  EntityRepositoryType,
-  OneToOne,
-  Property
-} from '@mikro-orm/core';
+import { Entity, OneToOne, Property } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
 import Community from '../community/Community';
-import { MailchimpLists } from './CommunityIntegrations.args';
-import CommunityIntegrationsRepo from './CommunityIntegrations.repo';
+import { MailchimpLists } from './CommunityIntegrations.types';
 
 @ObjectType()
-@Entity({ customRepository: () => CommunityIntegrationsRepo })
+@Entity()
 export default class CommunityIntegrations extends BaseEntity {
-  [EntityRepositoryType]?: CommunityIntegrationsRepo;
-
   // This access token doesn't expire, and does not have a refresh flow.
   @Property({ nullable: true, unique: true })
   mailchimpAccessToken: string;

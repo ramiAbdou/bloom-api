@@ -1,21 +1,13 @@
 import { IsUrl } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
-import {
-  Entity,
-  EntityRepositoryType,
-  OneToOne,
-  Property
-} from '@mikro-orm/core';
+import { Entity, OneToOne, Property } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
-import BaseRepo from '@core/db/BaseRepo';
 import { Community, Question } from '@entities/entities';
 
 @ObjectType()
 @Entity()
 export default class CommunityApplication extends BaseEntity {
-  [EntityRepositoryType]?: BaseRepo<CommunityApplication>;
-
   @Field()
   @Property({ type: 'text' })
   description: string;

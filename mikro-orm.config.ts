@@ -4,7 +4,6 @@ import { Connection, IDatabaseDriver, Options } from '@mikro-orm/core';
 import { APP, isProduction } from '@constants';
 import * as entities from '@entities/entities';
 import BaseEntity from '@core/db/BaseEntity';
-import BaseRepo from '@core/db/BaseRepo';
 import NamingStrategy from '@core/db/NamingStrategy';
 
 /**
@@ -18,7 +17,6 @@ export default {
   discovery: { disableDynamicFileAccess: true },
   driverOptions: { connection: { ssl: isProduction } },
   entities: [BaseEntity, ...Object.values(entities)],
-  entityRepository: BaseRepo,
   filters: { notDeleted: { args: false, cond: { deletedAt: null } } },
   namingStrategy: NamingStrategy,
   type: 'postgresql'

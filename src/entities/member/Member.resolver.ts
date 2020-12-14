@@ -4,14 +4,14 @@ import { GQLContext } from '@constants';
 import { Member } from '@entities/entities';
 import applyForMembership, {
   ApplyForMembershipArgs
-} from './actions/applyForMembership';
-import createMembers, { CreateMembersArgs } from './actions/createMembers';
-import deleteMembers, { DeleteMembersArgs } from './actions/deleteMembers';
-import getTimeSeries, { TimeSeriesData } from './actions/getTimeSeries';
+} from './repo/applyForMembership';
+import createMembers, { CreateMembersArgs } from './repo/createMembers';
+import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
+import getTimeSeries, { TimeSeriesData } from './repo/getTimeSeries';
 import respondToApplicants, {
   RespondToApplicantsArgs
-} from './actions/respondToApplicants';
-import toggleAdmins, { ToggleAdminArgs } from './actions/toggleAdmins';
+} from './repo/respondToApplicants';
+import toggleAdmins, { ToggleAdminArgs } from './repo/toggleAdmins';
 
 @Resolver()
 export default class MemberResolver {

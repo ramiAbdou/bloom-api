@@ -10,6 +10,7 @@ import {
   Populate
 } from '@mikro-orm/core';
 
+import { LoggerEvent } from '@constants';
 import {
   Community,
   CommunityApplication,
@@ -20,6 +21,7 @@ import {
   Question,
   User
 } from '@entities/entities';
+import logger from '@util/logger';
 import { buildCacheKey } from '@util/util';
 import cache from '../cache';
 import db from './db';
@@ -42,6 +44,16 @@ export default class BloomManager {
   }
 
   fork = () => new BloomManager();
+
+  async flush(event?: LoggerEvent) {
+    try {
+      await this.em.flush();
+      if (event) logger.info(event);
+    } catch (e) {
+      logger.error(event, e);
+      throw new Error(e);
+    }
+  }
 
   async findOne<T, P>(
     entityName: EntityName<T>,
