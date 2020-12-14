@@ -45,15 +45,17 @@ class Logger {
    * current UTC date. Adds a newline character as well.
    */
   private writeToFile = (log: Partial<LoggerLog>, writeToConsole: boolean) => {
-    const baseLog: Pick<LoggerLog, 'timestamp'> = { timestamp: now() };
-    const formattedLog = JSON.stringify({ ...baseLog, ...log }, null, 2);
+    setTimeout(() => {
+      const baseLog: Pick<LoggerLog, 'timestamp'> = { timestamp: now() };
+      const formattedLog = JSON.stringify({ ...baseLog, ...log }, null, 2);
 
-    if (!fs.existsSync('./logs')) fs.mkdirSync('./logs');
-    const filename = `./logs/${day.utc().format('MM-D-YY')}.txt`;
-    fs.appendFileSync(filename, `${formattedLog}\n\n`);
+      if (!fs.existsSync('./logs')) fs.mkdirSync('./logs');
+      const filename = `./logs/${day.utc().format('MM-D-YY')}.txt`;
+      fs.appendFileSync(filename, `${formattedLog}\n\n`);
 
-    // eslint-disable-next-line no-console
-    if (writeToConsole) console.log(`${formattedLog}\n\n`);
+      // eslint-disable-next-line no-console
+      if (writeToConsole) console.log(`${formattedLog}\n\n`);
+    }, 0);
   };
 }
 
