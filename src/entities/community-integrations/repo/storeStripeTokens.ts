@@ -17,7 +17,7 @@ export default async (encodedUrlName: string, code: string): Promise<void> => {
   const integrations = await bm.findOne(
     CommunityIntegrations,
     { community: { encodedUrlName } },
-    ['community']
+    { populate: ['community'] }
   );
 
   const { stripe_user_id } = await stripe.oauth.token({

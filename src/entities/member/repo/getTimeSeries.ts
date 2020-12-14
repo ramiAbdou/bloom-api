@@ -18,7 +18,6 @@ export default async ({
   communityId
 }: GQLContext): Promise<TimeSeriesData[]> => {
   const bm = new BloomManager();
-  const memberRepo = bm.memberRepo();
 
   const endOfToday = day.utc().endOf('day');
 
@@ -30,7 +29,8 @@ export default async ({
     []
   );
 
-  const members = await memberRepo.find(
+  const members = await bm.find(
+    Member,
     { community: { id: communityId } },
     { filters: false }
   );

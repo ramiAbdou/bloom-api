@@ -16,9 +16,12 @@ export default async (
   { communityId }: GQLContext
 ): Promise<boolean> => {
   const bm = new BloomManager();
-  const memberRepo = bm.memberRepo();
 
-  const members: Member[] = await memberRepo.find({ id: memberIds }, ['user']);
+  const members: Member[] = await bm.find(
+    Member,
+    { id: memberIds },
+    { populate: ['user'] }
+  );
 
   await bm.deleteAndFlush(members);
   cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`], true);

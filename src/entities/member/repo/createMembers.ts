@@ -45,7 +45,7 @@ export default async (
     { populate: ['integrations', 'types'] }
   );
 
-  const existingMembers: Member[] = await bm.memberRepo().find({
+  const existingMembers: Member[] = await bm.find(Member, {
     community,
     user: { email: inputs.map(({ email }) => email.toLowerCase()) }
   });

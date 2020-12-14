@@ -18,7 +18,7 @@ export default async (encodedUrlName: string, code: string): Promise<void> => {
   const integrations = await bm.findOne(
     CommunityIntegrations,
     { community: { encodedUrlName } },
-    ['community']
+    { populate: ['community'] }
   );
 
   // All the other redirect URIs use localhost when in development, but

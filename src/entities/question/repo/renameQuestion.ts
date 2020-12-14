@@ -38,7 +38,10 @@ export default async (
   }
 
   question.title = title;
-  await bm.flush('QUESTION_RENAMED', question, true);
+
+  // COME BACK TO THIS!
+  // await bm.flush('QUESTION_RENAMED', question, true);
+  await bm.flush('QUESTION_RENAMED');
 
   // Invalidate GET_APPLICATION since we fetch the member questions
   // there as well.
