@@ -15,19 +15,20 @@ type LoggerLevel =
   | 'INFO'
   | 'ON_FLUSH';
 
-export type LoggerChangeType = {};
+export type LoggerChangeType = 'CREATE' | 'DELETE' | 'UPDATE' | 'OTHER_UPDATE';
+
 export type LoggerChangeSet = {
   id: string;
   payload: EntityData<AnyEntity<any>>;
   table: string;
-  type: 'CREATE' | 'UPDATE' | 'OTHER_UPDATE';
+  type: LoggerChangeType;
 };
 
 type LoggerLog = {
   changes?: LoggerChangeSet[];
   contextId?: number;
   error?: string;
-  event: LoggerEvent;
+  event?: LoggerEvent;
   level: LoggerLevel;
   timestamp: string;
 };

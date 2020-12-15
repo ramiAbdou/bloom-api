@@ -41,8 +41,6 @@ export default async (encodedUrlName: string, code: string): Promise<void> => {
   const { data } = await axios(options);
   integrations.mailchimpAccessToken = data?.access_token;
 
-  // console.log(bm.em.getUnitOfWork().getIdentityMap().values());
-
   await bm.flush('MAILCHIMP_TOKEN_STORED');
 
   // Invalidate the cache for the GET_INTEGRATIONS call.

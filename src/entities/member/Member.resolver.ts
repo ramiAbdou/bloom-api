@@ -7,7 +7,9 @@ import applyForMembership, {
 } from './repo/applyForMembership';
 import createMembers, { CreateMembersArgs } from './repo/createMembers';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
-import getTimeSeries, { TimeSeriesData } from './repo/getTimeSeries';
+import getMemberAnalytics, {
+  GetMemberAnalyticsResult
+} from './repo/getAnalytics';
 import respondToApplicants, {
   RespondToApplicantsArgs
 } from './repo/respondToApplicants';
@@ -39,9 +41,9 @@ export default class MemberResolver {
   }
 
   @Authorized('ADMIN')
-  @Query(() => [TimeSeriesData], { nullable: true })
-  async getTimeSeries(@Ctx() ctx: GQLContext) {
-    return getTimeSeries(ctx);
+  @Query(() => GetMemberAnalyticsResult, { nullable: true })
+  async getMemberAnalytics(@Ctx() ctx: GQLContext) {
+    return getMemberAnalytics(ctx);
   }
 
   @Authorized('ADMIN')

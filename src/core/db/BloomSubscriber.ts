@@ -8,7 +8,7 @@ import {
   FlushEventArgs
 } from '@mikro-orm/core';
 
-import logger, { LoggerChangeSet } from '@util/logger';
+import logger, { LoggerChangeSet, LoggerChangeType } from '@util/logger';
 
 export default class BloomSubscriber implements EventSubscriber {
   async onFlush<T>({ em, uow }: FlushEventArgs): Promise<void> {
@@ -16,15 +16,19 @@ export default class BloomSubscriber implements EventSubscriber {
       .getChangeSets()
       .map((changeSet: ChangeSet<AnyEntity<any>>) => {
         const { collection, entity, payload, type } = changeSet;
+
+        let changeType: LoggerChangeType = 'CREATE';
+        if (payload?.deletedAt) changeType = 'DELETE';
+        else if (type === 'update') changeType = 'UPDATE';
+
         return {
           id: entity.id,
           table: collection,
-          type: type === 'create' ? 'CREATE' : 'UPDATE',
+          type: changeType,
           payload
         };
       });
 
-    // eslint-disable-next-line sort-keys-fix/sort-keys-fix
     logger.log({ contextId: em.id, level: 'ON_FLUSH', changes });
   }
 }
