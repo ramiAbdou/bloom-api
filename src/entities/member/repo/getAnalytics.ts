@@ -36,8 +36,10 @@ export default async ({
   const bm = new BloomManager();
   const endOfToday = day.utc().endOf('day');
 
+  // Build an array of member count over the last 120 days.
   const totalChartData: TimeSeriesData[] = await Promise.all(
     Array.from(Array(120).keys()).map(async (i: number) => {
+      // The name key is the stringified datetime.
       const dateKey = endOfToday.subtract(120 - i - 1, 'd').format();
 
       return {
@@ -52,7 +54,17 @@ export default async ({
     })
   );
 
-  const result: GetMemberAnalyticsResult = { totalChartData, totalGrowth: 8 };
+  // To calculate the totalGrowth, we do a simple subtraction of the count
+  // over the last 30 days.
+  const { length } = totalChartData;
+  const lastTally = totalChartData[length - 1].value;
+  const thirtyDaysAgoTally = totalChartData[length - 30 - 1].value;
+
+  const totalGrowth = parseFloat(
+    (((lastTally - thirtyDaysAgoTally) / lastTally) * 100).toFixed(1)
+  );
+
+  const result: GetMemberAnalyticsResult = { totalChartData, totalGrowth };
   cache.set(cacheKey, result);
 
   return result;
