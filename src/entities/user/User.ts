@@ -11,7 +11,6 @@ import {
 
 import BaseEntity from '@core/db/BaseEntity';
 import Member from '../member/Member';
-import UserRefresh from '../user-refresh/UserRefresh';
 
 @ObjectType()
 @Entity()
@@ -95,7 +94,4 @@ export default class User extends BaseEntity {
   @Field(() => [Member])
   @OneToMany(() => Member, ({ user }) => user)
   members: Collection<Member> = new Collection<Member>(this);
-
-  @OneToMany(() => UserRefresh, ({ user }) => user)
-  refreshes: Collection<UserRefresh> = new Collection<UserRefresh>(this);
 }

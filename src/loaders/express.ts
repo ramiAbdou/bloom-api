@@ -21,12 +21,12 @@ const refreshTokenIfExpired = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { accessToken, refreshToken } = req.cookies;
+  const { accessToken, communityId, refreshToken } = req.cookies;
 
   // If the accessToken has expired, but there is a valid refreshToken and
   // the request comes to the /graphql endpoint, we run the refresh flow.
   if (!verifyToken(accessToken) && refreshToken && req.url === '/graphql') {
-    const tokens = await refreshTokenFlow({ refreshToken, res });
+    const tokens = await refreshTokenFlow({ communityId, refreshToken, res });
 
     // We have to update the tokens on the request as well in order to ensure
     // that GraphQL context can set the user ID properly.

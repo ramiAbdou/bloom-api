@@ -7,9 +7,12 @@ import applyForMembership, {
 } from './repo/applyForMembership';
 import createMembers, { CreateMembersArgs } from './repo/createMembers';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
-import getMemberAnalytics, {
-  GetMemberAnalyticsResult
-} from './repo/getAnalytics';
+import getActiveMemberAnalytics, {
+  GetActiveMemberAnalyticsResult
+} from './repo/getActiveAnalytics';
+import getTotalMemberAnalytics, {
+  GetTotalMemberAnalyticsResult
+} from './repo/getTotalAnalytics';
 import respondToApplicants, {
   RespondToApplicantsArgs
 } from './repo/respondToApplicants';
@@ -41,9 +44,15 @@ export default class MemberResolver {
   }
 
   @Authorized('ADMIN')
-  @Query(() => GetMemberAnalyticsResult, { nullable: true })
-  async getMemberAnalytics(@Ctx() ctx: GQLContext) {
-    return getMemberAnalytics(ctx);
+  @Query(() => GetActiveMemberAnalyticsResult, { nullable: true })
+  async getActiveMemberAnalytics(@Ctx() ctx: GQLContext) {
+    return getActiveMemberAnalytics(ctx);
+  }
+
+  @Authorized('ADMIN')
+  @Query(() => GetTotalMemberAnalyticsResult, { nullable: true })
+  async getTotalMemberAnalytics(@Ctx() ctx: GQLContext) {
+    return getTotalMemberAnalytics(ctx);
   }
 
   @Authorized('ADMIN')

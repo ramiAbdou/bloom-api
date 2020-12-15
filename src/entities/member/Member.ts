@@ -13,6 +13,7 @@ import BaseEntity from '@core/db/BaseEntity';
 import { now } from '@util/util';
 import Community from '../community/Community';
 import MemberData from '../member-data/MemberData';
+import MemberRefresh from '../member-refresh/MemberRefresh';
 import MemberType from '../member-type/MemberType';
 import Question from '../question/Question';
 import User from '../user/User';
@@ -181,6 +182,9 @@ export default class Member extends BaseEntity {
   @Field(() => [MemberData])
   @OneToMany(() => MemberData, ({ member }) => member)
   data = new Collection<MemberData>(this);
+
+  @OneToMany(() => MemberRefresh, ({ member }) => member)
+  refreshes: Collection<MemberRefresh> = new Collection<MemberRefresh>(this);
 
   // 99% of the time, type MUST exist. However, in some communities, the OWNER
   // or ADMINs are not actually general members of the community. For example,

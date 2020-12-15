@@ -3,10 +3,11 @@ import { Response } from 'express';
 import { AuthTokens } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { generateTokens, setHttpOnlyTokens } from '@util/util';
-import UserRefresh from '../../user-refresh/UserRefresh';
+import MemberRefresh from '../../member-refresh/MemberRefresh';
 import User from '../User';
 
-type RefreshTokenFlowArgs = {
+type RefreshTokenArgs = {
+  communityId?: string;
   refreshToken?: string;
   res?: Response;
   user?: User;
@@ -18,11 +19,12 @@ type RefreshTokenFlowArgs = {
  * res object is provided. If the refreshing succeeds, the tokenw il
  */
 export default async ({
+  communityId,
   refreshToken,
   res,
   user,
   userId
-}: RefreshTokenFlowArgs): Promise<AuthTokens> => {
+}: RefreshTokenArgs): Promise<AuthTokens> => {
   const bm = new BloomManager();
 
   if (user) bm.em.merge(user);
@@ -42,7 +44,18 @@ export default async ({
 
   // Update the refreshToken in the DB, and create a refresh entity.
   user.refreshToken = tokens.refreshToken;
-  bm.create(UserRefresh, { user });
+
+  if (communityId) {
+    await bm.em.populate(user, 'members', {
+      members: { community: { id: communityId } }
+    });
+  } else if (!user.members.isInitialized()) {
+    await bm.em.populate(user, 'members');
+  }
+
+  const member = user.members[0];
+  bm.create(MemberRefresh, { member });
+
   await bm.flush('REFRESH_TOKEN_UPDATED');
 
   return tokens;
