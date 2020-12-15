@@ -116,7 +116,7 @@ const getActiveMembersAnalytics = async (
   const thirtyDaysAgoTally = activeChartData[length - 30 - 1].value;
 
   const activeGrowth = parseFloat(
-    (((lastTally - thirtyDaysAgoTally) / lastTally) * 100).toFixed(1)
+    (((lastTally - thirtyDaysAgoTally) / (lastTally || 1)) * 100).toFixed(1)
   );
 
   return { activeChartData, activeGrowth };
@@ -132,8 +132,6 @@ export default async ({
     getTotalMembersAnalytics(communityId),
     getActiveMembersAnalytics(communityId)
   ]);
-
-  console.log(activeResult);
 
   const result: GetMemberAnalyticsResult = { ...totalResult, ...activeResult };
   cache.set(cacheKey, result);
