@@ -50,7 +50,7 @@ export default class User extends BaseEntity {
 
   // Server-generated token that we use to keep the user logged-in when sending
   // GraphQL requests.
-  @Property({ nullable: true, type: 'text' })
+  @Property({ nullable: true, type: 'text', unique: true })
   refreshToken: string;
 
   /**

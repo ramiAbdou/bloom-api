@@ -18,12 +18,16 @@ import UserResolver from '../entities/user/User.resolver';
  * idToken using the refreshToken if it is invalid.
  */
 const authChecker: AuthChecker<GQLContext> = async (
-  { context: { role, userId } },
+  { context: { refreshToken, role, userId } },
   roles: string[]
 ) => {
   // If the userId isn't present or the userId doesn't exist in the DB, then
   // the user isn't authenticated.
-  if (!userId || !(await new BloomManager().findOne(User, { id: userId }))) {
+  if (
+    !refreshToken ||
+    !userId ||
+    !(await new BloomManager().findOne(User, { id: userId, refreshToken }))
+  ) {
     return false;
   }
 
@@ -61,6 +65,7 @@ export default async () => {
   const config: ApolloServerExpressConfig = {
     context: ({ req, res }) => ({
       communityId: req.cookies.communityId,
+      refreshToken: req.cookies.refreshToken,
       res,
       role: req.cookies.role, // Saves DB call on every GraphQL query.
       userId: decodeToken(req.cookies.accessToken)?.userId

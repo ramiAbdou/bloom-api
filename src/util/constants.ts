@@ -71,12 +71,13 @@ export type LoggerEvent =
   | 'MEMBERS_CREATED'
   | 'ON_FLUSH'
   | 'QUESTION_RENAMED'
-  | 'REFRESH_TOKEN_STORED'
+  | 'REFRESH_TOKEN_UPDATED'
   | 'SERVER_STARTED'
   | 'STRIPE_ACCOUNT_STORED';
 
 export type GQLContext = {
   communityId: string;
+  refreshToken: string;
   res: Response;
   role: MemberRole;
   userId: string;

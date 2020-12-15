@@ -3,6 +3,7 @@ import { Response } from 'express';
 import { AuthTokens } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { generateTokens, setHttpOnlyTokens } from '@util/util';
+import UserRefresh from '../../user-refresh/UserRefresh';
 import User from '../User';
 
 type RefreshTokenFlowArgs = { res?: Response; user?: User; userId?: string };
@@ -31,8 +32,10 @@ export default async ({
   // If an Express Response object is passed in, set the HTTP only cookies.
   if (res) setHttpOnlyTokens(res, tokens);
 
-  // Update the refreshToken in the DB.
+  // Update the refreshToken in the DB, and create a refresh entity.
   user.refreshToken = tokens.refreshToken;
-  await bm.flush('REFRESH_TOKEN_STORED');
+  bm.create(UserRefresh, { user });
+  await bm.flush('REFRESH_TOKEN_UPDATED');
+
   return tokens;
 };

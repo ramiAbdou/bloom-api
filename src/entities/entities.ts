@@ -6,3 +6,4 @@ export { default as MemberData } from './member-data/MemberData';
 export { default as Question } from './question/Question';
 export { default as MemberType } from './member-type/MemberType';
 export { default as User } from './user/User';
+export { default as UserRefresh } from './user-refresh/UserRefresh';
