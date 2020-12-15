@@ -17,7 +17,9 @@ export default async ({
   userId
 }: RefreshTokenFlowArgs): Promise<AuthTokens> => {
   const bm = new BloomManager();
-  user = user ?? (await bm.findOne(User, { id: userId }));
+
+  if (user) bm.em.merge(user);
+  else user = await bm.findOne(User, { id: userId });
 
   // If no user found with the given arguments or a user is found and
   // the access token is expired, then exit. Also, if there is a loginToken
@@ -32,6 +34,5 @@ export default async ({
   // Update the refreshToken in the DB.
   user.refreshToken = tokens.refreshToken;
   await bm.flush('REFRESH_TOKEN_STORED');
-
   return tokens;
 };

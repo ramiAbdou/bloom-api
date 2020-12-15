@@ -37,24 +37,21 @@ type LoggerLog = {
  * file on disk. Writes to a new file every day.
  */
 class Logger {
-  log = (input: Partial<LoggerLog>, writeToConsole = false) =>
-    this.writeToFile(input, writeToConsole);
-
   /**
    * Writes the given message to a file in the ./logs/ folder based on the
    * current UTC date. Adds a newline character as well.
    */
-  private writeToFile = (log: Partial<LoggerLog>, writeToConsole: boolean) => {
+  log = (input: Partial<LoggerLog>) => {
     setTimeout(() => {
       const baseLog: Pick<LoggerLog, 'timestamp'> = { timestamp: now() };
-      const formattedLog = JSON.stringify({ ...baseLog, ...log }, null, 2);
+      const formattedLog = JSON.stringify({ ...baseLog, ...input }, null, 2);
 
       if (!fs.existsSync('./logs')) fs.mkdirSync('./logs');
       const filename = `./logs/${day.utc().format('MM-D-YY')}.txt`;
       fs.appendFileSync(filename, `${formattedLog}\n\n`);
 
       // eslint-disable-next-line no-console
-      if (writeToConsole) console.log(`${formattedLog}\n\n`);
+      if (input.error) console.log(input.error);
     }, 0);
   };
 }

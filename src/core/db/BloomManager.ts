@@ -46,10 +46,12 @@ export default class BloomManager {
       await this.em.flush();
       logger.log({ contextId: this.em.id, event, level: 'FLUSH_SUCCESS' });
     } catch (e) {
-      logger.log(
-        { contextId: this.em.id, error: e.stack, event, level: 'FLUSH_ERROR' },
-        true
-      );
+      logger.log({
+        contextId: this.em.id,
+        error: e.stack,
+        event,
+        level: 'FLUSH_ERROR'
+      });
 
       throw e;
     }
@@ -64,7 +66,12 @@ export default class BloomManager {
     // a resolved Promise to ensure type safety.
     const { cacheKey } = options ?? {};
     const key = cacheKey ?? buildCacheKey({ entityName, where, ...options });
-    if (cache.has(key)) return cache.get(key) as Promise<Loaded<T, P> | null>;
+
+    if (cache.has(key)) {
+      const entity = cache.get(key);
+      // this.em.merge(entity);
+      return entity as Promise<Loaded<T, P> | null>;
+    }
 
     // If not found, get it from the DB.
     const result = await this.em.findOne<T, P>(entityName, where, {
@@ -85,7 +92,11 @@ export default class BloomManager {
     // a resolved Promise to ensure type safety.
     const { cacheKey } = options ?? {};
     const key = cacheKey ?? buildCacheKey({ entityName, where, ...options });
-    if (cache.has(key)) return cache.get(key) as Promise<Loaded<T, P>[]>;
+    if (cache.has(key)) {
+      const result = cache.get(key);
+      // this.em.merge(result);
+      return result as Promise<Loaded<T, P>[]>;
+    }
 
     // If not found, get it from the DB.
     const result = await this.em.find<T, P>(entityName, where, { ...options });
