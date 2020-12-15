@@ -67,9 +67,11 @@ export default class BloomManager {
     const { cacheKey } = options ?? {};
     const key = cacheKey ?? buildCacheKey({ entityName, where, ...options });
 
+    // If we grab the entity from the cache, we need to merge it to the current
+    // entity manager, as a normal findOne would do.
     if (cache.has(key)) {
       const entity = cache.get(key);
-      // this.em.merge(entity);
+      this.em.merge(entity);
       return entity as Promise<Loaded<T, P> | null>;
     }
 
@@ -92,9 +94,12 @@ export default class BloomManager {
     // a resolved Promise to ensure type safety.
     const { cacheKey } = options ?? {};
     const key = cacheKey ?? buildCacheKey({ entityName, where, ...options });
+
+    // If we grab the entity from the cache, we need to merge it to the current
+    // entity manager, as a normal findOne would do.
     if (cache.has(key)) {
       const result = cache.get(key);
-      // this.em.merge(result);
+      result.forEach((entity) => this.em.merge(entity));
       return result as Promise<Loaded<T, P>[]>;
     }
 
