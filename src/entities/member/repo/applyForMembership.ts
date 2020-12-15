@@ -64,12 +64,9 @@ export default async ({
   const questions = community.questions.getItems();
   const types = community.types.getItems();
 
-  // console.log(types);
-
   // Some data we store on the user entity, and some we store as member
   // data.
   data.forEach(({ questionId, value: valueArray }) => {
-    // console.log(valueArray);
     // If there's no value, then short circuit. Because for the initial
     // creation of data, it must exist.
     if (!valueArray || !valueArray.length) return;
@@ -88,7 +85,7 @@ export default async ({
       const type = types.find(({ name }) => value === name);
       if (type) member.type = type;
     } else {
-      bm.create(MemberData, { member, question, value });
+      bm.create(MemberData, { member, question, value: value.toString() });
     }
   });
 
