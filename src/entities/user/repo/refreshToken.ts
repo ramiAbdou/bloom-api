@@ -6,13 +6,19 @@ import { generateTokens, setHttpOnlyTokens } from '@util/util';
 import UserRefresh from '../../user-refresh/UserRefresh';
 import User from '../User';
 
-type RefreshTokenFlowArgs = { res?: Response; user?: User; userId?: string };
+type RefreshTokenFlowArgs = {
+  refreshToken?: string;
+  res?: Response;
+  user?: User;
+  userId?: string;
+};
 
 /**
  * Refreshes the user's tokens and sets the HTTP only cookies if Express
  * res object is provided. If the refreshing succeeds, the tokenw il
  */
 export default async ({
+  refreshToken,
   res,
   user,
   userId
@@ -20,7 +26,9 @@ export default async ({
   const bm = new BloomManager();
 
   if (user) bm.em.merge(user);
-  else user = await bm.findOne(User, { id: userId });
+  else {
+    user = await bm.findOne(User, { $or: [{ id: userId }, { refreshToken }] });
+  }
 
   // If no user found with the given arguments or a user is found and
   // the access token is expired, then exit. Also, if there is a loginToken

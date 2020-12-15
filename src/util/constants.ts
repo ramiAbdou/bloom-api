@@ -77,7 +77,6 @@ export type LoggerEvent =
 
 export type GQLContext = {
   communityId: string;
-  refreshToken: string;
   res: Response;
   role: MemberRole;
   userId: string;
