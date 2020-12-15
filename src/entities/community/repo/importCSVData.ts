@@ -31,21 +31,12 @@ export default async (encodedUrlName: string) => {
   const questions = community.questions.getItems();
   const types = community.types.getItems();
 
-  const randomPictures = [
-    'https://pbs.twimg.com/profile_images/1309512858951131138/8UACAdfa_400x400.jpg',
-    'https://pbs.twimg.com/profile_images/1303060784289730560/femQ8Zek_400x400.jpg',
-    'https://pbs.twimg.com/profile_images/1216728758473953281/HY15R6ER_400x400.jpg',
-    'https://pbs.twimg.com/profile_images/1322009883596726272/5lguqewe_400x400.jpg',
-    'https://pbs.twimg.com/profile_images/1285792980872429568/BkcFk2jp_400x400.jpg',
-    'https://pbs.twimg.com/profile_images/1289268330088595456/s-5tN4Oi_400x400.jpg'
-  ];
-
   // Adds protection against any emails that are duplicates in the CSV file,
   // INCLUDING case-insensitive duplicates.
   const uniqueEmails = new Set<string>();
 
   await Promise.all(
-    responses.map(async (row: Record<string, any>, i: number) => {
+    responses.map(async (row: Record<string, any>) => {
       // Precondition: Every row (JSON) should have a field called 'EMAIL'.
       const email = row.EMAIL;
       const firstName = row.FIRST_NAME;
@@ -60,16 +51,7 @@ export default async (encodedUrlName: string) => {
       // a new user for the member.
       const user: User =
         (await bm.findOne(User, { email })) ??
-        bm.create(User, {
-          currentLocation: 'Los Angeles, CA, USA',
-          email,
-          facebookUrl: 'https://www.facebook.com/',
-          firstName,
-          gender,
-          lastName,
-          pictureUrl: randomPictures[i % 6],
-          twitterUrl: 'https://www.twitter.com/'
-        });
+        bm.create(User, { email, firstName, gender, lastName });
 
       // If a member already exists for the user, then don't create a new
       // member. The likely case for this is for an OWNER of a community.
@@ -80,8 +62,6 @@ export default async (encodedUrlName: string) => {
       // We persist the member instead of the user since the user can
       // potentially be persisted already.
       const member: Member = bm.create(Member, {
-        bio:
-          'Bio is Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis something like that.',
         community,
         status: 'ACCEPTED',
         user
