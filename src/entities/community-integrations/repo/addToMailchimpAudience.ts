@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
+import { isProduction } from '@constants';
 import logger from '@util/logger';
 import Community from '../../community/Community';
 import Member from '../../member/Member';
@@ -9,6 +10,7 @@ import Member from '../../member/Member';
  * audience stored in the community.
  */
 export default async (members: Member[], community: Community) => {
+  if (!isProduction) return;
   const { mailchimpAccessToken, mailchimpListId } = community.integrations;
 
   // Format the data that we send to Mailchimp to add users to the audience.
@@ -26,5 +28,15 @@ export default async (members: Member[], community: Community) => {
   };
 
   await axios(options);
-  logger.log({ event: 'MAILCHIMP_LIST_UPDATED' });
+
+  logger.log({
+    changes: members.map(({ id }) => ({
+      id,
+      payload: [],
+      table: 'members',
+      type: 'OTHER_UPDATE'
+    })),
+    event: 'MAILCHIMP_LIST_UPDATED',
+    level: 'INFO'
+  });
 };

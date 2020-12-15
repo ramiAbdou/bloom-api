@@ -20,12 +20,12 @@ export type LoggerChangeSet = {
   id: string;
   payload: EntityData<AnyEntity<any>>;
   table: string;
-  type: 'CREATE' | 'UPDATE';
+  type: 'CREATE' | 'UPDATE' | 'OTHER_UPDATE';
 };
 
 type LoggerLog = {
   changes?: LoggerChangeSet[];
-  contextId: number;
+  contextId?: number;
   error?: string;
   event: LoggerEvent;
   level: LoggerLevel;
@@ -41,10 +41,31 @@ class Logger {
    * Writes the given message to a file in the ./logs/ folder based on the
    * current UTC date. Adds a newline character as well.
    */
-  log = (input: Partial<LoggerLog>) => {
+  log = (input: Omit<LoggerLog, 'timestamp'>) => {
     setTimeout(() => {
-      const baseLog: Pick<LoggerLog, 'timestamp'> = { timestamp: now() };
-      const formattedLog = JSON.stringify({ ...baseLog, ...input }, null, 2);
+      const { changes, contextId, error, event, level } = input;
+
+      const formatedChanges = !changes
+        ? null
+        : changes.map(({ id, payload, table, type }) => ({
+            id,
+            table,
+            type,
+            ...(payload ? { payload } : {})
+          }));
+
+      const formattedLog = JSON.stringify(
+        {
+          timestamp: now(),
+          ...(contextId ? { contextId } : {}),
+          ...(level ? { level } : {}),
+          ...(event ? { event } : {}),
+          ...(changes ? { changes: formatedChanges } : {}),
+          ...(error ? { error } : {})
+        },
+        null,
+        2
+      );
 
       if (!fs.existsSync('./logs')) fs.mkdirSync('./logs');
       const filename = `./logs/${day.utc().format('MM-D-YY')}.txt`;
