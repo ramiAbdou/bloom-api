@@ -55,7 +55,6 @@ export default async ({
 
   const member = user.members[0];
   bm.create(MemberRefresh, { member });
-
   await bm.flush('REFRESH_TOKEN_UPDATED');
 
   return tokens;

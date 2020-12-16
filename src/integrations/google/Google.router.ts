@@ -29,6 +29,7 @@ export default class GoogleRouter extends Router {
 
     if (loginError) res.cookie('LOGIN_ERROR', loginError);
     else {
+      await refreshToken({ res, user });
       const members: Member[] = user.members.getItems();
 
       // If when trying to login, the user has some a status of INVITED (only
@@ -37,8 +38,6 @@ export default class GoogleRouter extends Router {
       if (members.some(({ status }) => status === 'INVITED')) {
         await updateInvitedStatuses(members);
       }
-
-      await refreshToken({ res, user });
     }
 
     res.redirect(APP.CLIENT_URL);

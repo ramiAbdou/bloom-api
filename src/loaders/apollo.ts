@@ -9,7 +9,9 @@ import CommunityIntegrations from '../entities/community-integrations/CommunityI
 import CommunityResolver from '../entities/community/Community.resolver';
 import Member from '../entities/member/Member';
 import MemberResolver from '../entities/member/Member.resolver';
+import { MemberRole } from '../entities/member/Member.types';
 import QuestionResolver from '../entities/question/Question.resolver';
+import User from '../entities/user/User';
 import UserResolver from '../entities/user/User.resolver';
 
 /**
@@ -21,17 +23,31 @@ const authChecker: AuthChecker<GQLContext> = async (
   { context: { communityId, userId } },
   roles: string[]
 ) => {
+  if (!userId) return false;
+
+  const bm = new BloomManager();
+  let role: MemberRole = null;
+
   // If the userId isn't present or the userId doesn't exist in the DB, then
   // the user isn't authenticated.
-  if (!userId || !communityId) return false;
+  if (!communityId) {
+    const user = await bm.findOne(
+      User,
+      { id: userId },
+      { populate: ['members'] }
+    );
 
-  const member = await new BloomManager().findOne(Member, {
-    community: { id: communityId },
-    user: { id: userId }
-  });
+    if (!user) return false;
+    role = user.members[0]?.role;
+  } else {
+    const member = await new BloomManager().findOne(Member, {
+      community: { id: communityId },
+      user: { id: userId }
+    });
 
-  if (!member) return false;
-  const { role } = member;
+    if (!member) return false;
+    role = member.role;
+  }
 
   // If no roles are specified, we return true b/c only no roles would be
   // specified if we wanted ANY logged-in user to be authorized. And, we have

@@ -13,6 +13,7 @@ import BaseEntity from '@core/db/BaseEntity';
 import { now } from '@util/util';
 import Community from '../community/Community';
 import MemberData from '../member-data/MemberData';
+import MemberPayment from '../member-payment/MemberPayment';
 import MemberRefresh from '../member-refresh/MemberRefresh';
 import MemberType from '../member-type/MemberType';
 import Question from '../question/Question';
@@ -182,6 +183,9 @@ export default class Member extends BaseEntity {
   @Field(() => [MemberData])
   @OneToMany(() => MemberData, ({ member }) => member)
   data = new Collection<MemberData>(this);
+
+  @OneToMany(() => MemberPayment, ({ member }) => member)
+  payments: Collection<MemberPayment> = new Collection<MemberPayment>(this);
 
   @OneToMany(() => MemberRefresh, ({ member }) => member)
   refreshes: Collection<MemberRefresh> = new Collection<MemberRefresh>(this);
