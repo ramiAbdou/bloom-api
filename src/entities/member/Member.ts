@@ -40,7 +40,7 @@ export default class Member extends BaseEntity {
   // If the member has a role, it will either be ADMIN or OWNER. There should
   // only be one OWNER in a community.
   @Field(() => String, { nullable: true })
-  @Enum({ items: ['ADMIN', 'OWNER'], nullable: true, type: String })
+  @Enum({ items: () => MemberRole, nullable: true, type: String })
   role: MemberRole;
 
   @Field(() => String)

@@ -1,6 +1,10 @@
 import { ArgsType, Field, ObjectType } from 'type-graphql';
 
-export type MemberRole = 'ADMIN' | 'OWNER';
+export enum MemberRole {
+  ADMIN = 'ADMIN',
+  OWNER = 'OWNER'
+}
+
 export type MemberStatus = 'REJECTED' | 'PENDING' | 'INVITED' | 'ACCEPTED';
 
 @ArgsType()

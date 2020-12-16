@@ -2,8 +2,6 @@ import dotenv from 'dotenv';
 import { Response } from 'express';
 import path from 'path'; // Before constants.
 
-import { MemberRole } from '@entities/member/Member.types';
-
 export const isProduction = process.env.NODE_ENV === 'production';
 export const isTesting = process.env.NODE_ENV === 'testing';
 
@@ -77,9 +75,4 @@ export type LoggerEvent =
   | 'SERVER_STARTED'
   | 'STRIPE_ACCOUNT_STORED';
 
-export type GQLContext = {
-  communityId: string;
-  res: Response;
-  role: MemberRole;
-  userId: string;
-};
+export type GQLContext = { communityId: string; res: Response; userId: string };
