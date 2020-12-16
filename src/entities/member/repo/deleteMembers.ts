@@ -17,11 +17,7 @@ export default async (
 ): Promise<boolean> => {
   const bm = new BloomManager();
 
-  const members: Member[] = await bm.find(
-    Member,
-    { id: memberIds },
-    { populate: ['user'] }
-  );
+  const members: Member[] = await bm.find(Member, { id: memberIds });
 
   await bm.deleteAndFlush(members);
   cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`], true);

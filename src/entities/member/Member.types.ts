@@ -1,7 +1,13 @@
-import { Field, ObjectType } from 'type-graphql';
+import { ArgsType, Field, ObjectType } from 'type-graphql';
 
 export type MemberRole = 'ADMIN' | 'OWNER';
 export type MemberStatus = 'REJECTED' | 'PENDING' | 'INVITED' | 'ACCEPTED';
+
+@ArgsType()
+export class AdminArgs {
+  @Field(() => [String])
+  memberIds: string[];
+}
 
 @ObjectType()
 export class QuestionValue {
