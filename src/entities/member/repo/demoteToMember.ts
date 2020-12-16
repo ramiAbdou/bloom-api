@@ -20,6 +20,6 @@ export default async (
   );
 
   // Invalidate the cache for the GET_MEMBERS call.
-  cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`], true);
+  cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`]);
   return members;
 };

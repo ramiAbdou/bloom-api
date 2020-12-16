@@ -72,7 +72,7 @@ export default async (
   );
 
   await bm.flush('MEMBERS_CREATED');
-  cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`], true);
+  cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`]);
 
   await bm.em.populate(members, ['community.questions', 'data']);
 

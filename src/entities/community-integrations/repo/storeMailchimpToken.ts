@@ -40,5 +40,5 @@ export default async (encodedUrlName: string, code: string): Promise<void> => {
   );
 
   // Invalidate the cache for the GET_INTEGRATIONS call.
-  cache.invalidateEntries(`${Event.GET_INTEGRATIONS}-${community.id}`, true);
+  cache.invalidateEntries([`${Event.GET_INTEGRATIONS}-${community.id}`]);
 };

@@ -92,13 +92,10 @@ export default async ({
   await bm.flush('MEMBERS_CREATED');
 
   // Invalidate the cache for the GET_APPLICANTS call.
-  cache.invalidateEntries(
-    [
-      `${Event.GET_APPLICANTS}-${community.id}`,
-      `${Event.GET_MEMBERS}-${community.id}`
-    ],
-    true
-  );
+  cache.invalidateEntries([
+    `${Event.GET_APPLICANTS}-${community.id}`,
+    `${Event.GET_MEMBERS}-${community.id}`
+  ]);
 
   // Send the appropriate emails based on the response.
   setTimeout(async () => {

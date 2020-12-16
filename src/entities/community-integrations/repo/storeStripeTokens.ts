@@ -29,8 +29,7 @@ export default async (encodedUrlName: string, code: string): Promise<void> => {
   await bm.flush('STRIPE_ACCOUNT_STORED');
 
   // Invalidate the cache for the GET_INTEGRATIONS call.
-  cache.invalidateEntries(
-    `${Event.GET_INTEGRATIONS}-${integrations.community.id}`,
-    true
-  );
+  cache.invalidateEntries([
+    `${Event.GET_INTEGRATIONS}-${integrations.community.id}`
+  ]);
 };
