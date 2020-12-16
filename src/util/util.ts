@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
+import day from 'dayjs';
 import { Response } from 'express';
 import jwt from 'jsonwebtoken';
-import moment from 'moment';
 import hash from 'object-hash';
 
 import { AuthTokens, isProduction, JWT } from '@constants';
@@ -61,7 +61,7 @@ export const toLowerCaseDash = (str: string) =>
  *
  * @example now() => '2020-08-31T23:17:20Z'
  */
-export const now = () => moment.utc().format();
+export const now = () => day.utc().format();
 
 /**
  * Returns true if the token is both a valid JWT token and if it has not yet

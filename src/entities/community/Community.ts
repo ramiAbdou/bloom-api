@@ -4,7 +4,6 @@ import {
   BeforeCreate,
   Collection,
   Entity,
-  EntityRepositoryType,
   OneToMany,
   OneToOne,
   Property,
@@ -16,19 +15,15 @@ import BaseEntity from '@core/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
 import CommunityApplication from '../community-application/CommunityApplication';
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
-import Event from '../event/Event';
 import MemberType from '../member-type/MemberType';
 import Member from '../member/Member';
 import Question from '../question/Question';
-import CommunityRepo from './Community.repo';
 
 const { DIGITAL_OCEAN_SPACE_URL } = INTEGRATIONS;
 
 @ObjectType()
-@Entity({ customRepository: () => CommunityRepo })
+@Entity()
 export default class Community extends BaseEntity {
-  [EntityRepositoryType]?: CommunityRepo;
-
   // ## FIELDS
 
   // True if the member should be accepted automatically.
@@ -80,9 +75,6 @@ export default class Community extends BaseEntity {
     owner: true
   })
   application: CommunityApplication;
-
-  @OneToMany(() => Event, ({ community }) => community)
-  events = new Collection<Event>(this);
 
   @Field(() => CommunityIntegrations, { nullable: true })
   @OneToOne(() => CommunityIntegrations, ({ community }) => community, {

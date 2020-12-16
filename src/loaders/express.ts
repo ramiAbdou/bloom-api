@@ -5,12 +5,11 @@ import express, { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 
 import { APP } from '@constants';
-import BloomManager from '@core/db/BloomManager';
+import refreshTokenFlow from '@entities/user/repo/refreshToken';
 import GoogleRouter from '@integrations/google/Google.router';
 import MailchimpRouter from '@integrations/mailchimp/Mailchimp.router';
 import StripeRouter from '@integrations/stripe/Stripe.router';
-import ZoomRouter from '@integrations/zoom/Zoom.router';
-import { decodeToken, verifyToken } from '@util/util';
+import { verifyToken } from '@util/util';
 
 /**
  * When a user is sending a request to the GraphQL resolvers, they pass along
@@ -22,19 +21,15 @@ const refreshTokenIfExpired = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { accessToken, refreshToken } = req.cookies;
+  const { accessToken, communityId, refreshToken } = req.cookies;
 
   // If the accessToken has expired, but there is a valid refreshToken and
   // the request comes to the /graphql endpoint, we run the refresh flow.
   if (!verifyToken(accessToken) && refreshToken && req.url === '/graphql') {
-    const userId: string = decodeToken(refreshToken)?.userId;
+    const tokens = await refreshTokenFlow({ communityId, refreshToken, res });
 
-    const tokens = await new BloomManager()
-      .userRepo()
-      .refreshTokenFlow({ res, userId });
-
-    // We have to update the tokens on the request as well in order to ensure that
-    // GraphQL context can set the user ID properly.
+    // We have to update the tokens on the request as well in order to ensure
+    // that GraphQL context can set the user ID properly.
     if (tokens) {
       req.cookies.accessToken = tokens.accessToken;
       req.cookies.refreshToken = tokens.refreshToken;
@@ -66,7 +61,6 @@ export default () => {
   app.use('/google', new GoogleRouter().router);
   app.use('/mailchimp', new MailchimpRouter().router);
   app.use('/stripe', new StripeRouter().router);
-  app.use('/zoom', new ZoomRouter().router);
 
   return app;
 };

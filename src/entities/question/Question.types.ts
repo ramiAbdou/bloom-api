@@ -1,5 +1,3 @@
-import { ArgsType, Field, Int } from 'type-graphql';
-
 import Question from './Question';
 
 export type QuestionType =
@@ -16,18 +14,6 @@ export type QuestionCategory =
   | 'JOINED_ON'
   | 'LAST_NAME'
   | 'MEMBERSHIP_TYPE';
-
-@ArgsType()
-export class RenameQuestionArgs {
-  @Field()
-  id: string;
-
-  @Field()
-  title: string;
-
-  @Field(() => Int)
-  version: number;
-}
 
 export class QuestionInput implements Partial<Question> {
   // If the question is a special question, we have to store it in a different

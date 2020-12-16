@@ -3,7 +3,6 @@ import {
   BeforeCreate,
   Collection,
   Entity,
-  EntityRepositoryType,
   Enum,
   ManyToOne,
   OneToMany,
@@ -13,20 +12,16 @@ import {
 import BaseEntity from '@core/db/BaseEntity';
 import { now } from '@util/util';
 import Community from '../community/Community';
-import EventAttendee from '../event-attendee/EventAttendee';
-import EventRSVP from '../event-rsvp/EventRSVP';
 import MemberData from '../member-data/MemberData';
+import MemberRefresh from '../member-refresh/MemberRefresh';
 import MemberType from '../member-type/MemberType';
 import Question from '../question/Question';
 import User from '../user/User';
-import { MemberRole, MemberStatus, QuestionValue } from './Member.args';
-import MemberRepo from './Member.repo';
+import { MemberRole, MemberStatus, QuestionValue } from './Member.types';
 
 @ObjectType()
-@Entity({ customRepository: () => MemberRepo })
+@Entity()
 export default class Member extends BaseEntity {
-  [EntityRepositoryType]?: MemberRepo;
-
   @Field({ nullable: true })
   @Property({ nullable: true, type: 'text' })
   bio: string;
@@ -188,11 +183,8 @@ export default class Member extends BaseEntity {
   @OneToMany(() => MemberData, ({ member }) => member)
   data = new Collection<MemberData>(this);
 
-  @OneToMany(() => EventAttendee, ({ member }) => member)
-  eventsAttended = new Collection<EventAttendee>(this);
-
-  @OneToMany(() => EventRSVP, ({ member }) => member)
-  eventsRSVPd = new Collection<EventRSVP>(this);
+  @OneToMany(() => MemberRefresh, ({ member }) => member)
+  refreshes: Collection<MemberRefresh> = new Collection<MemberRefresh>(this);
 
   // 99% of the time, type MUST exist. However, in some communities, the OWNER
   // or ADMINs are not actually general members of the community. For example,

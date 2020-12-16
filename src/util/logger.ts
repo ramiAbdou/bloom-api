@@ -1,62 +1,80 @@
+/* eslint-disable sort-keys-fix/sort-keys-fix */
+
+import day from 'dayjs';
 import fs from 'fs';
-import moment from 'moment';
+import { AnyEntity, EntityData } from '@mikro-orm/core';
 
 import { now } from '@util/util';
 import { LoggerEvent } from './constants';
 
-type LoggerLevel = 'INFO' | 'ERROR' | 'WARN';
+type LoggerLevel =
+  | 'BEFORE_FLUSH'
+  | 'ERROR'
+  | 'FLUSH_ERROR'
+  | 'FLUSH_SUCCESS'
+  | 'INFO'
+  | 'ON_FLUSH';
 
-interface LoggerLog extends Record<string, any> {
-  error?: Error;
-  event: LoggerEvent;
+export type LoggerChangeType = 'CREATE' | 'DELETE' | 'UPDATE' | 'OTHER_UPDATE';
+
+export type LoggerChangeSet = {
+  id: string;
+  payload: EntityData<AnyEntity<any>>;
+  table: string;
+  type: LoggerChangeType;
+};
+
+type LoggerLog = {
+  changes?: LoggerChangeSet[];
+  contextId?: number;
+  error?: string;
+  event?: LoggerEvent;
   level: LoggerLevel;
   timestamp: string;
-}
+};
 
 /**
  * Controls all of the logging functionality. Writes the logs to a local
  * file on disk. Writes to a new file every day.
  */
 class Logger {
-  error = (event: LoggerEvent, error?: Error) => {
-    // eslint-disable-next-line sort-keys-fix/sort-keys-fix
-    const baseLog: LoggerLog = { level: 'ERROR', event, timestamp: now() };
-    const log: LoggerLog = error ? { ...baseLog, error } : baseLog;
-    this.writeToFile(log, true);
-  };
-
-  info = (event: LoggerEvent, entityIds?: string[]) => {
-    // eslint-disable-next-line sort-keys-fix/sort-keys-fix
-    const baseLog: LoggerLog = { level: 'INFO', event, timestamp: now() };
-    if (!entityIds || !entityIds.length) return this.writeToFile(baseLog);
-
-    const log: LoggerLog =
-      entityIds.length >= 2
-        ? { ...baseLog, entities: entityIds }
-        : { ...baseLog, entity: entityIds[0] };
-
-    return this.writeToFile(log);
-  };
-
-  warn = (event: LoggerEvent, error?: Error) => {
-    // eslint-disable-next-line sort-keys-fix/sort-keys-fix
-    const baseLog: LoggerLog = { level: 'WARN', event, timestamp: now() };
-    const log: LoggerLog = error ? { ...baseLog, error } : baseLog;
-    this.writeToFile(log, true);
-  };
-
   /**
    * Writes the given message to a file in the ./logs/ folder based on the
    * current UTC date. Adds a newline character as well.
    */
-  private writeToFile = (log: LoggerLog, writeToConsole = false) => {
-    const formattedLog = JSON.stringify(log, null, 1).replace(/\s+/g, ' ');
-    if (!fs.existsSync('./logs')) fs.mkdirSync('./logs');
-    const filename = `./logs/${moment.utc().format('MM-D-YY')}.txt`;
-    fs.appendFileSync(filename, `${formattedLog}\n\n`);
+  log = (input: Omit<LoggerLog, 'timestamp'>) => {
+    setTimeout(() => {
+      const { changes, contextId, error, event, level } = input;
 
-    // eslint-disable-next-line no-console
-    if (writeToConsole) console.log(`${formattedLog}\n\n`);
+      const formatedChanges = !changes
+        ? null
+        : changes.map(({ id, payload, table, type }) => ({
+            id,
+            table,
+            type,
+            ...(payload ? { payload } : {})
+          }));
+
+      const formattedLog = JSON.stringify(
+        {
+          timestamp: now(),
+          ...(contextId ? { contextId } : {}),
+          ...(level ? { level } : {}),
+          ...(event ? { event } : {}),
+          ...(changes ? { changes: formatedChanges } : {}),
+          ...(error ? { error } : {})
+        },
+        null,
+        2
+      );
+
+      if (!fs.existsSync('./logs')) fs.mkdirSync('./logs');
+      const filename = `./logs/${day.utc().format('MM-D-YY')}.txt`;
+      fs.appendFileSync(filename, `${formattedLog}\n\n`);
+
+      // eslint-disable-next-line no-console
+      if (input.error) console.log(input.error);
+    }, 0);
   };
 }
 

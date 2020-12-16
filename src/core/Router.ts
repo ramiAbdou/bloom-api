@@ -1,6 +1,10 @@
-import { Router as ExpressRouter } from 'express';
+import { Request, Response, Router as ExpressRouter } from 'express';
 
-import { Route } from '@constants';
+export type Route = {
+  callback: (request: Request, response: Response) => any;
+  method: 'GET' | 'POST' | 'DELETE' | 'PUT';
+  route: string;
+};
 
 /**
  * Binds the given routes to the Express Router. Must override the routes

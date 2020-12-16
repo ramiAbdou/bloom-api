@@ -1,9 +1,10 @@
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { GQLContext, LoginError } from '@constants';
+import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { User } from '@entities';
+import { User } from '@entities/entities';
 import { decodeToken } from '@util/util';
+import refreshToken from './repo/refreshToken';
 
 @Resolver()
 export default class UserResolver {
@@ -33,9 +34,7 @@ export default class UserResolver {
   ) {
     const userId: string = decodeToken(loginToken)?.userId;
 
-    if (
-      !(await new BloomManager().userRepo().refreshTokenFlow({ res, userId }))
-    ) {
+    if (!(await refreshToken({ res, userId }))) {
       res.cookie('LOGIN_LINK_ERROR', 'TOKEN_EXPIRED');
       return false;
     }
@@ -43,29 +42,13 @@ export default class UserResolver {
     return true;
   }
 
-  @Mutation(() => Boolean, { nullable: true })
-  async sendTemporaryLoginLink(@Arg('email') email: string) {
-    const userRepo = new BloomManager().userRepo();
-    const user: User = await userRepo.findOne({ email }, ['members']);
-
-    // If the user doesn't have a proper login status, we throw an error.
-    const loginError: LoginError = await userRepo.getLoginStatusError(user);
-    if (loginError) throw new Error(loginError);
-
-    // Sends the email with the token-populated URL.
-    await userRepo.sendTemporaryLoginEmail(user);
-
-    return true;
-  }
-
   @Authorized()
   @Query(() => User, { nullable: true })
   async getUser(@Ctx() { userId }: GQLContext) {
-    return new BloomManager()
-      .userRepo()
-      .findOne({ id: userId }, [
-        'members.community.integrations',
-        'members.type'
-      ]);
+    return new BloomManager().findOne(
+      User,
+      { id: userId },
+      { populate: ['members.community.integrations', 'members.type'] }
+    );
   }
 }

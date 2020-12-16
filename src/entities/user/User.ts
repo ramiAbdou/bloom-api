@@ -2,10 +2,8 @@ import { IsEmail, IsUrl } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
 import {
   BeforeCreate,
-  Cascade,
   Collection,
   Entity,
-  EntityRepositoryType,
   Enum,
   OneToMany,
   Property
@@ -13,13 +11,10 @@ import {
 
 import BaseEntity from '@core/db/BaseEntity';
 import Member from '../member/Member';
-import UserRepo from './User.repo';
 
 @ObjectType()
-@Entity({ customRepository: () => UserRepo })
+@Entity()
 export default class User extends BaseEntity {
-  [EntityRepositoryType]?: UserRepo;
-
   // ## FIELDS
 
   @Field({ nullable: true })
@@ -54,7 +49,7 @@ export default class User extends BaseEntity {
 
   // Server-generated token that we use to keep the user logged-in when sending
   // GraphQL requests.
-  @Property({ nullable: true })
+  @Property({ nullable: true, type: 'text', unique: true })
   refreshToken: string;
 
   /**
@@ -97,6 +92,6 @@ export default class User extends BaseEntity {
   // ## RELATIONSHIPS
 
   @Field(() => [Member])
-  @OneToMany(() => Member, ({ user }) => user, { cascade: [Cascade.ALL] })
+  @OneToMany(() => Member, ({ user }) => user)
   members: Collection<Member> = new Collection<Member>(this);
 }

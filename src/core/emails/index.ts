@@ -3,10 +3,12 @@ import { compile } from 'handlebars';
 import mjml2html from 'mjml';
 
 import { isProduction } from '@constants';
-import logger from '@util/logger';
 import sg from '@sendgrid/mail';
+import logger from '@util/logger';
 
 sg.setApiKey(process.env.SENDGRID_API_KEY);
+
+// type EmailType = ''
 
 /**
  * Sends an email using the given MJML template and the data that is needed
@@ -25,16 +27,17 @@ export const sendEmail = async (
   // comment this line out manually each time.
   if (!isProduction) return;
 
-  const pathToFile = `./@core/emails/${mjml}`;
+  const pathToFile = `./src/core/emails/templates/${mjml}`;
   const template = compile(readFileSync(pathToFile, 'utf8'));
   const { html } = mjml2html(template(data));
   try {
     const options = { from: 'rami@bl.community', html, subject, to };
     await sg.send(options);
   } catch (e) {
-    logger.error(
-      'EMAIL_FAILED',
-      new Error(`Failed to send SendGrid mail: ${e}`)
-    );
+    logger.log({
+      error: `Failed to send SendGrid mail: ${e.stack}`,
+      event: 'EMAIL_FAILED',
+      level: 'ERROR'
+    });
   }
 };

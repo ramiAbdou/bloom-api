@@ -1,20 +1,36 @@
-import { EntityManager } from '@mikro-orm/core';
-
 import {
-  Community,
-  CommunityApplication,
-  CommunityIntegrations,
-  Event,
-  EventAttendee,
-  EventRSVP,
-  Member,
-  MemberData,
-  MemberType,
-  Question,
-  User
-} from '@entities';
+  AnyEntity,
+  EntityData,
+  EntityManager,
+  EntityName,
+  FilterQuery,
+  FindOneOptions,
+  FindOptions,
+  Loaded,
+  New,
+  Populate
+} from '@mikro-orm/core';
+
+import { LoggerEvent } from '@constants';
+import logger from '@util/logger';
+import { buildCacheKey, now } from '@util/util';
+import cache from '../cache';
 import db from './db';
 
+interface BloomFindOneOptions<T, P> extends FindOneOptions<T, P> {
+  cacheKey?: string;
+}
+
+interface BloomFindOptions<T, P> extends FindOptions<T, P> {
+  cacheKey?: string;
+}
+
+/**
+ * Recreates some of the Entity Manager functionality in order to handle
+ * functionality such as our custom built-in caching mechanism, as well as
+ * other utility methods like deleteAndPersist, which only mark an entity
+ * as deleted, instead of actually deleting it.
+ */
 export default class BloomManager {
   em: EntityManager;
 
@@ -24,31 +40,106 @@ export default class BloomManager {
 
   fork = () => new BloomManager();
 
+  async flush(event: LoggerEvent) {
+    try {
+      logger.log({ contextId: this.em.id, event, level: 'BEFORE_FLUSH' });
+      await this.em.flush();
+      logger.log({ contextId: this.em.id, event, level: 'FLUSH_SUCCESS' });
+    } catch (e) {
+      logger.log({
+        contextId: this.em.id,
+        error: e.stack,
+        event,
+        level: 'FLUSH_ERROR'
+      });
+
+      throw e;
+    }
+  }
+
+  async findOne<T, P>(
+    entityName: EntityName<T>,
+    where: FilterQuery<T>,
+    options?: BloomFindOneOptions<T, P>
+  ): Promise<Loaded<T, P>> {
+    // Try to find and return the entity from the cache. We must return it as
+    // a resolved Promise to ensure type safety.
+    const { cacheKey } = options ?? {};
+    const key = cacheKey ?? buildCacheKey({ entityName, where, ...options });
+
+    // If we grab the entity from the cache, we need to merge it to the current
+    // entity manager, as a normal findOne would do.
+    if (cache.has(key)) {
+      const entity = cache.get(key);
+      this.em.merge(entity);
+      return entity as Promise<Loaded<T, P> | null>;
+    }
+
+    // If not found, get it from the DB.
+    const result = await this.em.findOne<T, P>(entityName, where, {
+      ...options
+    });
+
+    // Update the cache after fetching from the DB.
+    cache.set(key, result);
+    return result;
+  }
+
+  async find<T, P>(
+    entityName: EntityName<T>,
+    where: FilterQuery<T>,
+    options?: BloomFindOptions<T, P>
+  ): Promise<Loaded<T, P>[]> {
+    // Try to find and return the entity from the cache. We must return it as
+    // a resolved Promise to ensure type safety.
+    const { cacheKey } = options ?? {};
+    const key = cacheKey ?? buildCacheKey({ entityName, where, ...options });
+
+    // If we grab the entity from the cache, we need to merge it to the current
+    // entity manager, as a normal findOne would do.
+    if (cache.has(key)) {
+      const result = cache.get(key);
+      result.forEach((entity) => this.em.merge(entity));
+      return result as Promise<Loaded<T, P>[]>;
+    }
+
+    // If not found, get it from the DB.
+    const result = await this.em.find<T, P>(entityName, where, { ...options });
+
+    // Update the cache after fetching from the DB.
+    cache.set(key, result);
+    return result;
+  }
+
   /**
-   * REPOSITORIES - Exports all of the entity repositories. They are already
-   * type-casted (defined in the entity definition itself).
+   * Persists the newly created entity. Replaces the old BloomManager function
+   * called createAndPersist.
    */
+  create<T extends AnyEntity<T>, P extends Populate<T> = any>(
+    entityName: EntityName<T>,
+    data: EntityData<T>
+  ): New<T, P> {
+    const entity: New<T, P> = this.em.create(entityName, data);
+    this.em.persist(entity);
+    return entity;
+  }
 
-  communityRepo = () => this.em.getRepository(Community);
+  /**
+   * Instead of actually removing and flushing the entity(s), this function
+   * acts as a SOFT DELETE and simply sets the deletedAt column within the
+   * table. There is a global filter that gets all entities that have a
+   * deletedAt = null.
+   */
+  async deleteAndFlush(
+    entities?: AnyEntity<any> | AnyEntity<any>[],
+    event?: LoggerEvent
+  ) {
+    if (Array.isArray(entities)) {
+      entities.forEach((entity: AnyEntity<any>) => {
+        entity.deletedAt = now();
+      });
+    } else entities.deletedAt = now();
 
-  communityApplicationRepo = () => this.em.getRepository(CommunityApplication);
-
-  communityIntegrationsRepo = () =>
-    this.em.getRepository(CommunityIntegrations);
-
-  eventRepo = () => this.em.getRepository(Event);
-
-  eventAttendeeRepo = () => this.em.getRepository(EventAttendee);
-
-  eventRSVPRepo = () => this.em.getRepository(EventRSVP);
-
-  memberRepo = () => this.em.getRepository(Member);
-
-  memberDataRepo = () => this.em.getRepository(MemberData);
-
-  questionRepo = () => this.em.getRepository(Question);
-
-  memberTypeRepo = () => this.em.getRepository(MemberType);
-
-  userRepo = () => this.em.getRepository(User);
+    await this.flush(event);
+  }
 }
