@@ -1,13 +1,13 @@
-import { Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
+import { Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
-import chargePayment, { ChargePaymentArgs } from './repo/chargePayment';
+import getPaymentClientSecret from './repo/getPaymentClientSecret';
 
 @Resolver()
 export default class MemberPaymentResolver {
   @Authorized()
-  @Mutation(() => Boolean, { nullable: true })
-  async chargePayment(@Args() args: ChargePaymentArgs, @Ctx() ctx: GQLContext) {
-    return chargePayment(args, ctx);
+  @Mutation(() => String, { nullable: true })
+  async getPaymentClientSecret(@Ctx() ctx: GQLContext) {
+    return getPaymentClientSecret(ctx);
   }
 }

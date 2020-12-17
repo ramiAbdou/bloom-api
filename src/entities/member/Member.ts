@@ -48,13 +48,6 @@ export default class Member extends BaseEntity {
   @Enum({ items: ['REJECTED', 'PENDING', 'INVITED', 'ACCEPTED'], type: String })
   status: MemberStatus = 'PENDING';
 
-  // We don't store any of the customer's financial data in our server. Stripe
-  // handles all of that for us, we just need Stripe's customer ID in order
-  // to use recurring payments.
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  stripeCustomerId: string;
-
   // ## MEMBER FUNCTIONS
 
   /**
