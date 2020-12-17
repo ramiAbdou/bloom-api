@@ -60,7 +60,11 @@ export default async ({
     defaultType: defaultType.id,
     integrations: bm.create(CommunityIntegrations, {}),
     members: [
-      bm.create(Member, { role: 'OWNER', user: bm.create(User, { ...owner }) })
+      bm.create(Member, {
+        role: 'OWNER',
+        type: defaultType.id,
+        user: bm.create(User, { ...owner })
+      })
     ],
     questions: questions.map((question, i: number) =>
       bm.create(Question, { ...question, order: i })
