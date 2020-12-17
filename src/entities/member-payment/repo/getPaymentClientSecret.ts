@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import { wrap } from '@mikro-orm/core';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
@@ -22,7 +23,8 @@ export default async ({ communityId, memberId, userId }: GQLContext) => {
       name: fullName
     });
 
-    user.stripeCustomerId = stripeCustomer.id;
+    wrap(user).assign({ stripeCustomerId: stripeCustomer.id });
+    await bm.flush();
   }
 
   const idempotencyKey = nanoid();
