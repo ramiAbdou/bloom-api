@@ -158,12 +158,7 @@ export default class Member extends BaseEntity {
 
     // If no member type is provided, assign them the default member.
     // Every community should've assigned one default member.
-    if (!this.type) {
-      // eslint-disable-next-line prefer-destructuring
-      this.type = this.community.types
-        .getItems()
-        .find(({ isDefault }) => isDefault);
-    }
+    if (!this.type) this.type = this.community.defaultType;
   }
 
   // ## RELATIONSHIPS

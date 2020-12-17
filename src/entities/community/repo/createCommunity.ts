@@ -49,6 +49,7 @@ export default async ({
     application: title
       ? bm.create(CommunityApplication, { description, title })
       : null,
+    defaultType: types.find(({ isDefault }) => isDefault),
     integrations: bm.create(CommunityIntegrations, {}),
     members: [
       bm.create(Member, { role: 'OWNER', user: bm.create(User, { ...owner }) })
@@ -56,7 +57,9 @@ export default async ({
     questions: questions.map((question, i: number) =>
       bm.create(Question, { ...question, order: i })
     ),
-    types: types.map((type: MemberTypeInput) => bm.create(MemberType, type))
+    types: types.map((type: Omit<MemberTypeInput, 'isDefault'>) => {
+      return bm.create(MemberType, type);
+    })
   });
 
   await bm.flush('COMMUNITY_CREATED');

@@ -4,6 +4,7 @@ import {
   Entity,
   ManyToOne,
   OneToMany,
+  OneToOne,
   Property
 } from '@mikro-orm/core';
 
@@ -17,10 +18,6 @@ export default class MemberType extends BaseEntity {
   @Property({ type: Number })
   amount = 0.0;
 
-  @Field(() => Boolean)
-  @Property({ type: Boolean })
-  isDefault = false;
-
   @Field()
   @Property()
   name: string;
@@ -30,6 +27,9 @@ export default class MemberType extends BaseEntity {
   get isFree(): boolean {
     return this.amount > 0.0;
   }
+
+  // @OneToOne(() => Community, ({ application }) => application)
+  // comm: Community;
 
   @ManyToOne(() => Community)
   community: Community;
