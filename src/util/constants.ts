@@ -75,4 +75,9 @@ export type LoggerEvent =
   | 'SERVER_STARTED'
   | 'STRIPE_ACCOUNT_STORED';
 
-export type GQLContext = { communityId: string; res: Response; userId: string };
+export type GQLContext = {
+  communityId: string;
+  memberId: string;
+  res: Response;
+  userId: string;
+};

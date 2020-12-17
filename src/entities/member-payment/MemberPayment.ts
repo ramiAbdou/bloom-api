@@ -10,6 +10,9 @@ export default class MemberPayment extends BaseEntity {
   @Property()
   amount: number;
 
+  @Property()
+  idempotencyKey: string;
+
   @ManyToOne(() => Member)
   member: Member;
 }

@@ -48,7 +48,7 @@ export default class CommunityResolver {
     );
   }
 
-  @Authorized('ADMIN')
+  @Authorized()
   @Query(() => Community, { nullable: true })
   async getDirectory(@Ctx() { communityId }: GQLContext): Promise<Community> {
     return new BloomManager().findOne(
