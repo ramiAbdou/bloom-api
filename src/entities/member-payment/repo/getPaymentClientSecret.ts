@@ -1,17 +1,29 @@
 import { nanoid } from 'nanoid';
+import { ArgsType, Field } from 'type-graphql';
 import { wrap } from '@mikro-orm/core';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { MemberType } from '@entities/entities';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import Community from '../../community/Community';
 import User from '../../user/User';
 
-export default async ({ communityId, memberId, userId }: GQLContext) => {
+@ArgsType()
+export class GetPaymentClientSecretArgs {
+  @Field()
+  memberTypeId: string;
+}
+
+export default async (
+  { memberTypeId }: GetPaymentClientSecretArgs,
+  { communityId, memberId, userId }: GQLContext
+) => {
   const bm = new BloomManager();
 
-  const [{ integrations, name }, user] = await Promise.all([
+  const [{ integrations, name }, { amount }, user] = await Promise.all([
     bm.findOne(Community, { id: communityId }, { populate: ['integrations'] }),
+    bm.findOne(MemberType, { id: memberTypeId }),
     bm.findOne(User, { id: userId })
   ]);
 
@@ -32,7 +44,7 @@ export default async ({ communityId, memberId, userId }: GQLContext) => {
   try {
     const payment = await stripe.paymentIntents.create(
       {
-        amount: 1099,
+        amount: amount * 100,
         currency: 'usd',
         description: `${name} Dues`,
         metadata: { idempotencyKey, memberId },
