@@ -4,25 +4,27 @@ import { wrap } from '@mikro-orm/core';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { MemberType } from '@entities/entities';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import Community from '../../community/Community';
+import MemberType from '../../member-type/MemberType';
+import Member from '../../member/Member';
 import User from '../../user/User';
 
 @ArgsType()
-export class GetPaymentClientSecretArgs {
-  @Field()
+export class CreatePaymentIntentArgs {
+  @Field({ nullable: true })
   memberTypeId: string;
 }
 
 export default async (
-  { memberTypeId }: GetPaymentClientSecretArgs,
+  { memberTypeId }: CreatePaymentIntentArgs,
   { communityId, memberId, userId }: GQLContext
 ) => {
   const bm = new BloomManager();
 
-  const [{ integrations, name }, { amount }, user] = await Promise.all([
+  const [{ integrations, name }, member, type, user] = await Promise.all([
     bm.findOne(Community, { id: communityId }, { populate: ['integrations'] }),
+    bm.findOne(Member, { id: memberId }),
     bm.findOne(MemberType, { id: memberTypeId }),
     bm.findOne(User, { id: userId })
   ]);
@@ -41,10 +43,12 @@ export default async (
 
   const idempotencyKey = nanoid();
 
+  if (type) member.type = type;
+
   try {
     const payment = await stripe.paymentIntents.create(
       {
-        amount: amount * 100,
+        amount: type.amount * 100,
         currency: 'usd',
         description: `${name} Dues`,
         metadata: { idempotencyKey, memberId },
