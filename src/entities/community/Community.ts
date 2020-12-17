@@ -78,7 +78,7 @@ export default class Community extends BaseEntity {
 
   // If the community is invite-only, there will be no application. The only
   // way for someone to join is if the admin adds them manually.
-  @OneToOne()
+  @OneToOne({ nullable: true })
   defaultType: MemberType;
 
   @Field(() => CommunityIntegrations, { nullable: true })

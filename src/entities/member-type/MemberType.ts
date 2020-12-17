@@ -2,14 +2,15 @@ import { Field, Float, ObjectType } from 'type-graphql';
 import {
   Collection,
   Entity,
+  Enum,
   ManyToOne,
   OneToMany,
-  OneToOne,
   Property
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
 import { Community, Member } from '@entities/entities';
+import { RecurrenceType } from './MemberType.types';
 
 @ObjectType()
 @Entity()
@@ -22,14 +23,19 @@ export default class MemberType extends BaseEntity {
   @Property()
   name: string;
 
+  @Field(() => String)
+  @Enum({
+    default: RecurrenceType.YEARLY,
+    items: () => RecurrenceType,
+    type: String
+  })
+  recurrence: RecurrenceType;
+
   @Field()
   @Property({ persist: false })
   get isFree(): boolean {
     return this.amount > 0.0;
   }
-
-  // @OneToOne(() => Community, ({ application }) => application)
-  // comm: Community;
 
   @ManyToOne(() => Community)
   community: Community;

@@ -1,5 +1,10 @@
 import MemberType from './MemberType';
 
+export enum RecurrenceType {
+  MONTHLY = 'MONTHLY',
+  YEARLY = 'YEARLY'
+}
+
 // Note that for InputType, we still have to had the "?" for fields that have
 // a default value in order to run scripts without type errors.
 

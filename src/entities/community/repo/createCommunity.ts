@@ -44,12 +44,20 @@ export default async ({
 }: CreateCommunityArgs): Promise<Community> => {
   const bm = new BloomManager();
 
+  const persistedTypes: MemberType[] = types.map(
+    (type: Omit<MemberTypeInput, 'isDefault'>) => bm.create(MemberType, type)
+  );
+
+  const defaultType = persistedTypes.find(({ name }) => {
+    return types.find((type) => type.name === name).isDefault;
+  });
+
   const community = bm.create(Community, {
     ...data,
     application: title
       ? bm.create(CommunityApplication, { description, title })
       : null,
-    defaultType: types.find(({ isDefault }) => isDefault),
+    defaultType: defaultType.id,
     integrations: bm.create(CommunityIntegrations, {}),
     members: [
       bm.create(Member, { role: 'OWNER', user: bm.create(User, { ...owner }) })
@@ -57,9 +65,7 @@ export default async ({
     questions: questions.map((question, i: number) =>
       bm.create(Question, { ...question, order: i })
     ),
-    types: types.map((type: Omit<MemberTypeInput, 'isDefault'>) => {
-      return bm.create(MemberType, type);
-    })
+    types: persistedTypes
   });
 
   await bm.flush('COMMUNITY_CREATED');
