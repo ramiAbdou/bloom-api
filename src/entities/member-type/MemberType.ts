@@ -24,12 +24,8 @@ export default class MemberType extends BaseEntity {
   name: string;
 
   @Field(() => String)
-  @Enum({
-    default: RecurrenceType.YEARLY,
-    items: () => RecurrenceType,
-    type: String
-  })
-  recurrence: RecurrenceType;
+  @Enum({ items: () => RecurrenceType, type: String })
+  recurrence: RecurrenceType = RecurrenceType.YEARLY;
 
   @Field()
   @Property({ persist: false })

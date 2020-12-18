@@ -168,6 +168,7 @@ export default class Member extends BaseEntity {
     // If no member type is provided, assign them the default member.
     // Every community should've assigned one default member.
     if (!this.type) this.type = this.community.defaultType;
+    if (this.type.isFree) this.duesStatus = MemberDuesStatus.ACTIVE;
   }
 
   // ## RELATIONSHIPS
