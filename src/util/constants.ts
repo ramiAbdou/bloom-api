@@ -49,7 +49,7 @@ export type AuthQueryParams = { code: string; state: string };
 export type AuthTokens = { accessToken: string; refreshToken: string };
 
 // Used for caching purposes (building the keys).
-export enum Event {
+export enum QueryEvent {
   GET_ACTIVE_MEMBER_ANALYTICS = 'GET_ACTIVE_MEMBER_ANALYTICS',
   GET_APPLICANTS = 'GET_APPLICANTS',
   GET_APPLICATION = 'GET_APPLICATION',

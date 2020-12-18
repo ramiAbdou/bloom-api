@@ -1,4 +1,4 @@
-import { Event, GQLContext } from '@constants';
+import { GQLContext, QueryEvent } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '../CommunityIntegrations';
@@ -22,7 +22,7 @@ export default async (
 
   // Invalidate the cache for the GET_INTEGRATIONS call.
   cache.invalidateEntries([
-    `${Event.GET_INTEGRATIONS}-${integrations.community.id}`
+    `${QueryEvent.GET_INTEGRATIONS}-${integrations.community.id}`
   ]);
 
   return integrations;

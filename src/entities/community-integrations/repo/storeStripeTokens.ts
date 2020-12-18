@@ -1,4 +1,4 @@
-import { Event } from '@constants';
+import { QueryEvent } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import { stripe } from '@integrations/stripe/Stripe.util';
@@ -30,6 +30,6 @@ export default async (encodedUrlName: string, code: string): Promise<void> => {
 
   // Invalidate the cache for the GET_INTEGRATIONS call.
   cache.invalidateEntries([
-    `${Event.GET_INTEGRATIONS}-${integrations.community.id}`
+    `${QueryEvent.GET_INTEGRATIONS}-${integrations.community.id}`
   ]);
 };

@@ -1,6 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { Event, GQLContext } from '@constants';
+import { GQLContext, QueryEvent } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import { now } from '@util/util';
@@ -34,10 +34,10 @@ export default async (
     { event: 'MEMBERS_ACCEPTED' }
   );
 
-  cache.invalidateEntries([`${Event.GET_APPLICANTS}-${communityId}`]);
+  cache.invalidateEntries([`${QueryEvent.GET_APPLICANTS}-${communityId}`]);
 
   if (response === 'ACCEPTED') {
-    cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`]);
+    cache.invalidateEntries([`${QueryEvent.GET_MEMBERS}-${communityId}`]);
   }
 
   // Send the appropriate emails based on the response. Also, add the members

@@ -49,6 +49,7 @@ export default class UserResolver {
       User,
       { id: userId },
       {
+        // cacheKey: Event
         populate: [
           'members.community.integrations',
           'members.community.types',

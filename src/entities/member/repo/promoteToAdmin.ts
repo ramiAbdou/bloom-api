@@ -1,4 +1,4 @@
-import { Event, GQLContext } from '@constants';
+import { GQLContext, QueryEvent } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../Member';
@@ -20,6 +20,6 @@ export default async (
   );
 
   // Invalidate the cache for the GET_MEMBERS call.
-  cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`]);
+  cache.invalidateEntries([`${QueryEvent.GET_MEMBERS}-${communityId}`]);
   return members;
 };

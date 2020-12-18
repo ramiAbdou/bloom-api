@@ -1,6 +1,6 @@
 import { ArgsType, Field, InputType } from 'type-graphql';
 
-import { Event } from '@constants';
+import { QueryEvent } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import Community from '../../community/Community';
@@ -93,8 +93,8 @@ export default async ({
 
   // Invalidate the cache for the GET_APPLICANTS call.
   cache.invalidateEntries([
-    `${Event.GET_APPLICANTS}-${community.id}`,
-    `${Event.GET_MEMBERS}-${community.id}`
+    `${QueryEvent.GET_APPLICANTS}-${community.id}`,
+    `${QueryEvent.GET_MEMBERS}-${community.id}`
   ]);
 
   // Send the appropriate emails based on the response.

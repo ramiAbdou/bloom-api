@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { URLSearchParams } from 'url';
 
-import { APP, Event, isProduction } from '@constants';
+import { APP, isProduction, QueryEvent } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '../CommunityIntegrations';
@@ -40,5 +40,5 @@ export default async (encodedUrlName: string, code: string): Promise<void> => {
   );
 
   // Invalidate the cache for the GET_INTEGRATIONS call.
-  cache.invalidateEntries([`${Event.GET_INTEGRATIONS}-${community.id}`]);
+  cache.invalidateEntries([`${QueryEvent.GET_INTEGRATIONS}-${community.id}`]);
 };

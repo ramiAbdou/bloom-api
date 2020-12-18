@@ -1,6 +1,6 @@
 import { ArgsType, Field, InputType } from 'type-graphql';
 
-import { Event, GQLContext } from '@constants';
+import { GQLContext, QueryEvent } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import addToMailchimpAudience from '@entities/community-integrations/repo/addToMailchimpAudience';
@@ -72,7 +72,7 @@ export default async (
   );
 
   await bm.flush('MEMBERS_CREATED');
-  cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`]);
+  cache.invalidateEntries([`${QueryEvent.GET_MEMBERS}-${communityId}`]);
 
   await bm.em.populate(members, ['community.questions', 'data']);
 
