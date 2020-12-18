@@ -83,7 +83,7 @@ export default class BloomManager {
     // entity manager, as a normal findOne would do.
     if (cache.has(key)) {
       const entity = cache.get(key);
-      this.em.merge(entity);
+      if (entity) this.em.merge(entity);
       return entity as Promise<Loaded<T, P> | null>;
     }
 
@@ -137,7 +137,7 @@ export default class BloomManager {
     // entity manager, as a normal findOne would do.
     if (cache.has(key)) {
       const result = cache.get(key);
-      result.forEach((entity) => this.em.merge(entity));
+      result.forEach((entity) => entity && this.em.merge(entity));
       return result as Promise<Loaded<T, P>[]>;
     }
 

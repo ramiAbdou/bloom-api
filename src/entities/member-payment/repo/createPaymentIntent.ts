@@ -26,12 +26,14 @@ interface CreateStripeCustomerArgs {
 interface GetExistingClientSecretArgs extends BloomManagerArgs {
   member: Member;
   stripeAccountId: string;
+  type: MemberType;
 }
 
 interface CreatePaymentRecordArgs extends BloomManagerArgs {
   name: string;
   member: Member;
   stripeAccountId: string;
+  type: MemberType;
   user: User;
 }
 
@@ -65,7 +67,8 @@ const createStripeCustomerIfNeeded = async ({
 const getExistingClientSecret = async ({
   bm,
   member,
-  stripeAccountId
+  stripeAccountId,
+  type
 }: GetExistingClientSecretArgs): Promise<string> => {
   const fetchedPayment: MemberPayment = await bm.findOne(MemberPayment, {
     member,
@@ -76,8 +79,8 @@ const getExistingClientSecret = async ({
   // object, so exit.
   if (!fetchedPayment) return null;
 
-  const amount = member.type.amount * 100;
-  wrap(fetchedPayment).assign({ amount });
+  const amount = type.amount * 100;
+  wrap(fetchedPayment).assign({ amount, type });
 
   // Have to update Stripe's records of the amount as well.
   const existingIntent = await stripe.paymentIntents.update(
@@ -101,12 +104,14 @@ const createClientSecret = async ({
   member,
   name,
   stripeAccountId,
+  type,
   user
 }: CreatePaymentRecordArgs): Promise<string> => {
   const payment: MemberPayment = bm.create(MemberPayment, {
-    amount: member.type.amount * 100,
+    amount: type.amount * 100,
     idempotencyKey: nanoid(),
-    member
+    member,
+    type
   });
 
   try {
@@ -161,15 +166,19 @@ export default async (
     bm.findOne(User, { id: userId })
   ]);
 
-  wrap(member).assign({ type });
-
   // Need to merge the user because we could've potentially updated the Stripe
   // customer ID if it wasn't stored.
   const updatedUser = await createStripeCustomerIfNeeded({ community, user });
 
   const { name, integrations } = community;
   const { stripeAccountId } = integrations;
-  const baseArgs: GetExistingClientSecretArgs = { bm, member, stripeAccountId };
+
+  const baseArgs: GetExistingClientSecretArgs = {
+    bm,
+    member,
+    stripeAccountId,
+    type
+  };
 
   const clientSecret: string =
     (await getExistingClientSecret(baseArgs)) ??

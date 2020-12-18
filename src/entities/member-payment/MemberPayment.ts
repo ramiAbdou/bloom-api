@@ -2,6 +2,7 @@ import { ObjectType } from 'type-graphql';
 import { Entity, Enum, ManyToOne, Property } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
+import MemberType from '../member-type/MemberType';
 import Member from '../member/Member';
 import { MemberPaymentStatus } from './MemberPayment.types';
 
@@ -22,4 +23,7 @@ export default class MemberPayment extends BaseEntity {
 
   @ManyToOne(() => Member)
   member: Member;
+
+  @ManyToOne(() => MemberType, { nullable: true })
+  type: MemberType;
 }

@@ -1,6 +1,7 @@
 import { Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
+import Member from '../member/Member';
 import confirmPaymentIntent, {
   ConfirmPaymentIntentArgs
 } from './repo/confirmPaymentIntent';
@@ -20,7 +21,7 @@ export default class MemberPaymentResolver {
   }
 
   @Authorized()
-  @Mutation(() => Boolean, { nullable: true })
+  @Mutation(() => Member, { nullable: true })
   async confirmPaymentIntent(@Args() args: ConfirmPaymentIntentArgs) {
     return confirmPaymentIntent(args);
   }
