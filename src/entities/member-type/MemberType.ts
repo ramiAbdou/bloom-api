@@ -34,7 +34,7 @@ export default class MemberType extends BaseEntity {
   @Field()
   @Property({ persist: false })
   get isFree(): boolean {
-    return this.amount > 0.0;
+    return !this.amount;
   }
 
   @ManyToOne(() => Community)

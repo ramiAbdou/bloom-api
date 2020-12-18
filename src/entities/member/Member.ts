@@ -18,7 +18,12 @@ import MemberRefresh from '../member-refresh/MemberRefresh';
 import MemberType from '../member-type/MemberType';
 import Question from '../question/Question';
 import User from '../user/User';
-import { MemberRole, MemberStatus, QuestionValue } from './Member.types';
+import {
+  MemberDuesStatus,
+  MemberRole,
+  MemberStatus,
+  QuestionValue
+} from './Member.types';
 
 @ObjectType()
 @Entity()
@@ -26,6 +31,10 @@ export default class Member extends BaseEntity {
   @Field({ nullable: true })
   @Property({ nullable: true, type: 'text' })
   bio: string;
+
+  @Field(() => String)
+  @Enum({ items: () => MemberDuesStatus, type: String })
+  duesStatus: MemberDuesStatus = MemberDuesStatus.INACTIVE;
 
   // Member is allowed to opt-out of email notifications that send after an
   // event gets posted.
@@ -45,8 +54,8 @@ export default class Member extends BaseEntity {
   role: MemberRole;
 
   @Field(() => String)
-  @Enum({ items: ['REJECTED', 'PENDING', 'INVITED', 'ACCEPTED'], type: String })
-  status: MemberStatus = 'PENDING';
+  @Enum({ items: () => MemberStatus, type: String })
+  status: MemberStatus = MemberStatus.PENDING;
 
   // ## MEMBER FUNCTIONS
 
@@ -153,7 +162,7 @@ export default class Member extends BaseEntity {
   beforeCreate() {
     if (this.role || this.community.autoAccept) {
       this.joinedOn = now();
-      this.status = 'ACCEPTED';
+      this.status = MemberStatus.ACCEPTED;
     }
 
     // If no member type is provided, assign them the default member.

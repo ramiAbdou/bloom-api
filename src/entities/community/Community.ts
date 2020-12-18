@@ -100,6 +100,7 @@ export default class Community extends BaseEntity {
   questions = new Collection<Question>(this);
 
   // Should get the questions by the order that they are stored in the DB.
+  @Field(() => [MemberType])
   @OneToMany(() => MemberType, ({ community }) => community, {
     orderBy: { amount: QueryOrder.ASC }
   })

@@ -48,7 +48,13 @@ export default class UserResolver {
     return new BloomManager().findOne(
       User,
       { id: userId },
-      { populate: ['members.community.integrations', 'members.type'] }
+      {
+        populate: [
+          'members.community.integrations',
+          'members.community.types',
+          'members.type'
+        ]
+      }
     );
   }
 }
