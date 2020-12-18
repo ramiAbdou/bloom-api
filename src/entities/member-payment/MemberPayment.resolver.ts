@@ -1,6 +1,9 @@
 import { Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
+import confirmPaymentIntent, {
+  ConfirmPaymentIntentArgs
+} from './repo/confirmPaymentIntent';
 import createPaymentIntent, {
   CreatePaymentIntentArgs
 } from './repo/createPaymentIntent';
@@ -14,5 +17,11 @@ export default class MemberPaymentResolver {
     @Ctx() ctx: GQLContext
   ) {
     return createPaymentIntent(args, ctx);
+  }
+
+  @Authorized()
+  @Mutation(() => Boolean, { nullable: true })
+  async confirmPaymentIntent(@Args() args: ConfirmPaymentIntentArgs) {
+    return confirmPaymentIntent(args);
   }
 }

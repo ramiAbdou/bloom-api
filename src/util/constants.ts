@@ -2,6 +2,8 @@ import dotenv from 'dotenv';
 import { Response } from 'express';
 import path from 'path'; // Before constants.
 
+import BloomManager from '@core/db/BloomManager';
+
 export const isProduction = process.env.NODE_ENV === 'production';
 export const isTesting = process.env.NODE_ENV === 'testing';
 
@@ -73,7 +75,9 @@ export type LoggerEvent =
   | 'QUESTION_RENAMED'
   | 'REFRESH_TOKEN_UPDATED'
   | 'SERVER_STARTED'
-  | 'STRIPE_ACCOUNT_STORED';
+  | 'STRIPE_ACCOUNT_STORED'
+  | 'STRIPE_INTENT_FLOW_RAN'
+  | 'STRIPE_PAYMENT_CONFIRMED';
 
 export type GQLContext = {
   communityId: string;
@@ -81,3 +85,5 @@ export type GQLContext = {
   res: Response;
   userId: string;
 };
+
+export type BloomManagerArgs = { bm: BloomManager };

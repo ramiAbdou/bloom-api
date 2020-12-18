@@ -106,7 +106,7 @@ export default class BloomManager {
     // If not found, get it from the DB.
     const result = await this.findOne<T, P>(entityName, where, { ...options });
     wrap(result).assign(data);
-    await this.flush();
+    await this.flush(options.event);
 
     // Update the cache after fetching from the DB.
     const key = buildCacheKey({
@@ -162,7 +162,7 @@ export default class BloomManager {
       wrap(entity).assign(data);
     });
 
-    await this.flush();
+    await this.flush(options.event);
 
     // Update the cache after fetching from the DB.
     const key = buildCacheKey({
