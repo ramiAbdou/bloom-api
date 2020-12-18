@@ -1,6 +1,6 @@
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { User } from '@entities/entities';
 import { decodeToken } from '@util/util';
@@ -49,7 +49,7 @@ export default class UserResolver {
       User,
       { id: userId },
       {
-        // cacheKey: Event
+        cacheKey: `${QueryEvent.GET_USER}-${userId}`,
         populate: [
           'members.community.integrations',
           'members.community.types',
