@@ -8,8 +8,6 @@ import logger from '@util/logger';
 
 sg.setApiKey(process.env.SENDGRID_API_KEY);
 
-// type EmailType = ''
-
 /**
  * Sends an email using the given MJML template and the data that is needed
  * to render the dynamic data.
