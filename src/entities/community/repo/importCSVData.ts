@@ -97,7 +97,7 @@ const processRow = async ({
     // member will be set as the member type.
     if (key === 'MEMBERSHIP_TYPE') {
       const type = types.find(({ name }) => value === name);
-      if (type) wrap(member).assign({ type });
+      if (type) wrap(member).assign({ type }, { em: bm.em });
     }
 
     // IMPORTANT: The value must be a valid input to the Date constructor
@@ -110,8 +110,8 @@ const processRow = async ({
         ? dayObject.format()
         : day.utc().format();
 
-      wrap(member).assign({ createdAt, joinedAt: createdAt });
-      wrap(user).assign({ createdAt });
+      wrap(member).assign({ createdAt, joinedAt: createdAt }, { em: bm.em });
+      wrap(user).assign({ createdAt }, { em: bm.em });
     }
 
     // If the question wasn't a special category question, then we find
