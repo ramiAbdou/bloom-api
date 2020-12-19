@@ -11,14 +11,12 @@ export default async (
   mailchimpListId: string,
   { communityId }: GQLContext
 ): Promise<CommunityIntegrations> => {
-  const bm = new BloomManager();
-
-  const integrations = await bm.findOne(CommunityIntegrations, {
-    community: { id: communityId }
-  });
-
-  integrations.mailchimpListId = mailchimpListId;
-  await bm.flush('MAILCHIMP_LIST_STORED');
+  const integrations = await new BloomManager().findOneAndUpdate(
+    CommunityIntegrations,
+    { community: { id: communityId } },
+    { mailchimpListId },
+    { event: 'MAILCHIMP_LIST_STORED' }
+  );
 
   // Invalidate the cache for the GET_INTEGRATIONS call.
   cache.invalidateEntries([
