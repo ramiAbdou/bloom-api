@@ -97,6 +97,16 @@ export default class BloomManager {
     return result;
   }
 
+  async findOneOrCreate<T, P>(
+    entityName: EntityName<T>,
+    data: EntityData<T>,
+    options?: BloomFindOneAndUpdateOptions<T, P>
+  ): Promise<Loaded<T, P> | T> {
+    const where = data as FilterQuery<T>;
+    const result = await this.findOne<T, P>(entityName, where, { ...options });
+    return result ?? this.create(entityName, data);
+  }
+
   async findOneAndUpdate<T, P>(
     entityName: EntityName<T>,
     where: FilterQuery<T>,

@@ -23,19 +23,7 @@ export default class Question extends BaseEntity {
   // fashion. For example, 'EMAIL' would be stored on the user, NOT the
   // member.
   @Field(() => String, { nullable: true })
-  @Enum({
-    items: [
-      'CURRENT_LOCATION',
-      'EMAIL',
-      'FIRST_NAME',
-      'GENDER',
-      'JOINED_ON',
-      'LAST_NAME',
-      'MEMBERSHIP_TYPE'
-    ],
-    nullable: true,
-    type: String
-  })
+  @Enum({ items: () => QuestionCategory, nullable: true, type: String })
   category: QuestionCategory;
 
   @Field({ nullable: true })
@@ -83,17 +71,13 @@ export default class Question extends BaseEntity {
   title: string;
 
   @Field(() => String, { nullable: true })
-  @Enum({
-    items: ['SHORT_TEXT', 'LONG_TEXT', 'MULTIPLE_CHOICE', 'MULTIPLE_SELECT'],
-    nullable: true,
-    type: String
-  })
+  @Enum({ items: () => QuestionType, nullable: true, type: String })
   type: QuestionType;
 
   @BeforeCreate()
   beforeCreate() {
     if (['EMAIL', 'FIRST_NAME', 'LAST_NAME'].includes(this.category)) {
-      this.type = 'SHORT_TEXT';
+      this.type = QuestionType.SHORT_TEXT;
     }
 
     if (['FIRST_NAME', 'LAST_NAME'].includes(this.category)) {
@@ -101,12 +85,12 @@ export default class Question extends BaseEntity {
     }
 
     if (this.category === 'GENDER') {
-      this.type = 'MULTIPLE_CHOICE';
+      this.type = QuestionType.MULTIPLE_CHOICE;
       this.options = ['Male', 'Female', 'Non-Binary', 'Prefer Not to Say'];
     }
 
     if (this.category === 'MEMBERSHIP_TYPE') {
-      this.type = 'MULTIPLE_CHOICE';
+      this.type = QuestionType.MULTIPLE_CHOICE;
       this.options = this.community.types.getItems().map(({ name }) => name);
     }
 
