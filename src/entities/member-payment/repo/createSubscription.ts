@@ -144,10 +144,10 @@ const createMemberPaymentFromSubscription = ({
   }
 };
 
-export default async (
+export default async function createSubscription(
   { memberTypeId, paymentMethodId }: CreateSubsciptionArgs,
   { communityId, memberId, userId }: GQLContext
-) => {
+) {
   const bm = new BloomManager();
 
   const [community, member, type, user]: [
@@ -193,4 +193,4 @@ export default async (
 
   await bm.flush('STRIPE_SUBSCRIPTION_CREATED');
   return updatedMember;
-};
+}
