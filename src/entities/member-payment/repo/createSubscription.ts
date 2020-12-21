@@ -1,14 +1,17 @@
+import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
 import { ArgsType, Field } from 'type-graphql';
 import { wrap } from '@mikro-orm/core';
 
-import { GQLContext } from '@constants';
+import { BloomManagerArgs, GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import Community from '../../community/Community';
 import MemberType from '../../member-type/MemberType';
 import Member from '../../member/Member';
+import { MemberDuesStatus } from '../../member/Member.types';
 import User from '../../user/User';
+import MemberPayment from '../MemberPayment';
 
 @ArgsType()
 export class CreateSubsciptionArgs {
@@ -27,6 +30,12 @@ interface CreateStripeSubscriptionArgs extends CreateSubsciptionArgs {
   stripePriceId: string;
 }
 
+interface CreateMemberPaymentArgs extends BloomManagerArgs {
+  member: Member;
+  type: MemberType;
+  subscription: Stripe.Response<Stripe.Subscription>;
+}
+
 /**
  * If the user does not have an associated Stripe customer object, create
  * that object and store it on the user entity.
@@ -37,18 +46,32 @@ const createStripeCustomerIfNeeded = async ({
   stripeAccountId,
   user
 }: CreateStripeCustomerArgs): Promise<User> => {
-  const { email, fullName, stripeCustomerId } = user;
+  const { email, fullName } = user;
 
   // If the stripeCustomerId already exists, there's no need create a new
   // customer.
-  if (stripeCustomerId) return user;
+  if (user.stripeCustomerId) return user;
 
-  const stripeCustomer = await stripe.customers.create(
-    { email, name: fullName },
-    { stripeAccount: stripeAccountId }
-  );
+  const existingStripeCustomers = (
+    await stripe.customers.list(
+      { email, limit: 1 },
+      { stripeAccount: stripeAccountId }
+    )
+  )?.data;
 
-  wrap(user).assign({ stripeCustomerId: stripeCustomer.id });
+  // If for whatever reason there is a customer that already exists with the
+  // user's email, just update the User with that Stripe customer ID, no need
+  // to create another one.
+  const stripeCustomerId: string = existingStripeCustomers.length
+    ? existingStripeCustomers[0].id
+    : (
+        await stripe.customers.create(
+          { email, name: fullName },
+          { stripeAccount: stripeAccountId }
+        )
+      ).id;
+
+  wrap(user).assign({ stripeCustomerId });
   return user;
 };
 
@@ -62,36 +85,63 @@ const createStripeSubscription = async ({
   stripeAccountId,
   stripeCustomerId,
   stripePriceId
-}: CreateStripeSubscriptionArgs): Promise<void> => {
-  const options: Stripe.RequestOptions = { stripeAccount: stripeAccountId };
+}: CreateStripeSubscriptionArgs): Promise<
+  Stripe.Response<Stripe.Subscription>
+> => {
+  // Attaches the PaymentMethod to the customer.
+  await stripe.paymentMethods.attach(
+    paymentMethodId,
+    { customer: stripeCustomerId },
+    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
+  );
 
-  await Promise.all([
-    // Attaches the PaymentMethod to the customer.
-    stripe.paymentMethods.attach(
-      paymentMethodId,
-      { customer: stripeCustomerId },
-      options
-    ),
+  // Sets the PaymentMethod to be the default method for the customer. Will
+  // be used in future subscription payments.
+  await stripe.customers.update(
+    stripeCustomerId,
+    { invoice_settings: { default_payment_method: paymentMethodId } },
+    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
+  );
 
-    // Sets the PaymentMethod to be the default method for the customer. Will
-    // be used in future subscription payments.
-    stripe.customers.update(
-      stripeCustomerId,
-      { invoice_settings: { default_payment_method: paymentMethodId } },
-      options
-    ),
+  // Creates the subscription with the associated product price for the
+  // MemberType. Must execute this after so user has default payment method.
+  const subscription = await stripe.subscriptions.create(
+    {
+      customer: stripeCustomerId,
+      expand: ['latest_invoice.payment_intent'],
+      items: [{ price: stripePriceId }]
+    },
+    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
+  );
 
-    // Creates the subscription with the associated product price for the
-    // MemberType.
-    stripe.subscriptions.create(
-      {
-        customer: stripeCustomerId,
-        expand: ['latest_invoice.payment_intent'],
-        items: [{ price: stripePriceId }]
-      },
-      options
-    )
-  ]);
+  return subscription;
+};
+
+/**
+ * Creates MemberPayment record if the subscription was successful and is now
+ * active. All other invoices should be handled via webhooks, except for this
+ * initial time, since we want to update our UI immediately.
+ */
+const createMemberPaymentFromSubscription = ({
+  bm,
+  member,
+  subscription,
+  type
+}: CreateMemberPaymentArgs) => {
+  const { latest_invoice, status } = subscription;
+  const lastestInvoice = latest_invoice as Stripe.Invoice;
+
+  // Only if the subscription worked should the MemberPayment be created.
+  if (status === 'active' && lastestInvoice.status === 'paid') {
+    bm.create(MemberPayment, {
+      amount: lastestInvoice.amount_paid,
+      member,
+      stripeInvoiceId: lastestInvoice.id,
+      type
+    });
+
+    wrap(member).assign({ duesStatus: MemberDuesStatus.ACTIVE });
+  }
 };
 
 export default async (
@@ -126,7 +176,7 @@ export default async (
 
   // Updates the default payment method for the customer and creates the
   // recurring subscription.
-  await createStripeSubscription({
+  const subscription = await createStripeSubscription({
     memberTypeId,
     paymentMethodId,
     stripeAccountId,
@@ -134,6 +184,13 @@ export default async (
     stripePriceId: type.stripePriceId
   });
 
-  await bm.flush('STRIPE_INTENT_FLOW_RAN');
+  createMemberPaymentFromSubscription({
+    bm,
+    member: updatedMember,
+    subscription,
+    type
+  });
+
+  await bm.flush('STRIPE_SUBSCRIPTION_CREATED');
   return updatedMember;
 };

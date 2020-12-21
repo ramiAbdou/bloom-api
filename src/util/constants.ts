@@ -77,8 +77,7 @@ export type LoggerEvent =
   | 'REFRESH_TOKEN_UPDATED'
   | 'SERVER_STARTED'
   | 'STRIPE_ACCOUNT_STORED'
-  | 'STRIPE_INTENT_FLOW_RAN'
-  | 'STRIPE_PAYMENT_CONFIRMED';
+  | 'STRIPE_SUBSCRIPTION_CREATED';
 
 export type GQLContext = {
   communityId: string;

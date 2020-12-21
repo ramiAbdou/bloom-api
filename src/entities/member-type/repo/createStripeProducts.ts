@@ -51,7 +51,7 @@ const createStripeProduct = async ({
       ...recurring,
       currency: 'usd',
       product: stripeProductId,
-      unit_amount: amount * 100
+      unit_amount: amount
     },
     { stripeAccount: stripeAccountId }
   );
