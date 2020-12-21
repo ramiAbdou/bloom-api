@@ -3,7 +3,6 @@ import { Connection, IDatabaseDriver, Options } from '@mikro-orm/core';
 
 import { APP, isProduction } from '@constants';
 import * as entities from '@entities/entities';
-import MemberTypeSubscriber from '@entities/member-type/MemberType.subscriber';
 import BaseEntity from '@core/db/BaseEntity';
 import BloomSubscriber from '@core/db/BloomSubscriber';
 import NamingStrategy from '@core/db/NamingStrategy';
@@ -21,6 +20,6 @@ export default {
   entities: [BaseEntity, ...Object.values(entities)],
   filters: { notDeleted: { args: false, cond: { deletedAt: null } } },
   namingStrategy: NamingStrategy,
-  subscribers: [new BloomSubscriber(), new MemberTypeSubscriber()],
+  subscribers: [new BloomSubscriber()],
   type: 'postgresql'
 } as Options<IDatabaseDriver<Connection>>;
