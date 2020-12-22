@@ -1,0 +1,20 @@
+<mj-section padding="24px 0">
+  <mj-column >
+    <mj-divider padding="0" border-width="1px" padding-bottom="8px" border-color="#E0E0E0" />
+    <mj-image align="left" alt="Bloom Logo" padding="8px 0" src="https://sfo2.digitaloceanspaces.com/bl.community/bloom.png" width="50px" />
+    
+    <mj-text font-family="Helvetica" font-size="10px" font-weight="300" line-height="16px" padding="0">
+      With &hearts; from the Bloom Team
+    </mj-text>
+
+    <mj-text font-family="Helvetica" font-size="10px" font-weight="300" line-height="16px" padding="0">
+      The Future of Community Building
+    </mj-text>
+
+    <mj-text font-family="Helvetica" font-size="10px" font-weight="300" padding="0" line-height="16px">
+      © Bloom Connect Inc. 20620 Hollow Pine Drive, Walnut, CA 91789 USA
+    </mj-text>
+
+    <mj-button background-color="#FBFBFB" inner-padding="0" color="#018A8A" align="left" padding="0" href="https://www.linkedin.com/company/bloom-university" padding-top="6px" font-family="Helvetica Neue, Helvetica" font-size="10px">LinkedIn</mj-button>
+  </mj-column>
+</mj-section>
