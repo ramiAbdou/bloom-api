@@ -11,7 +11,7 @@ export default class MemberPayment extends BaseEntity {
   @Property()
   amount: number;
 
-  @Property()
+  @Property({ unique: true })
   stripeInvoiceId: string;
 
   @ManyToOne(() => Member)

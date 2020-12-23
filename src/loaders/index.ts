@@ -1,5 +1,4 @@
 import 'reflect-metadata'; // Needed for type-graphql compilation.
-import '../core/emails/index';
 
 import day from 'dayjs';
 import utc from 'dayjs/plugin/utc';

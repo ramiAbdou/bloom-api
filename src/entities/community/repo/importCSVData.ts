@@ -54,7 +54,7 @@ const processRow = async ({
 
   // If the user already exists, fetch it from the DB and if not, create
   // a new user for the member.
-  const user: User = await bm.findOneOrCreate(User, {
+  const [user] = await bm.findOneOrCreate(User, {
     email,
     firstName,
     gender,

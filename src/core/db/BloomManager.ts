@@ -101,10 +101,10 @@ export default class BloomManager {
     entityName: EntityName<T>,
     data: EntityData<T>,
     options?: BloomFindOneAndUpdateOptions<T, P>
-  ): Promise<Loaded<T, P> | T> {
+  ): Promise<[Loaded<T, P> | T, boolean]> {
     const where = data as FilterQuery<T>;
     const result = await this.findOne<T, P>(entityName, where, { ...options });
-    return result ?? this.create(entityName, data);
+    return [result ?? this.create(entityName, data), !!result];
   }
 
   async findOneAndUpdate<T, P>(
