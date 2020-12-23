@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Types: Emails
+ * - Constructs all of the base email types as well as email-specific types
+ * including the variables to replace using the Handlebars templating engine.
+ */
+
 export interface EmailAttachment {
   content: any;
   filename: string;
@@ -5,14 +11,17 @@ export interface EmailAttachment {
   disposition: 'attachment';
 }
 
-export enum EmailTemplate {
-  APPLICATION_RECEIVED = 'APPLICATION_RECEIVED',
-  PAYMENT_RECEIPT = 'PAYMENT_RECEIPT'
-}
 type EmailBaseArgs = {
   attachments?: EmailAttachment[];
   to: string;
 };
+
+export enum EmailTemplate {
+  APPLICATION_RECEIVED = 'APPLICATION_RECEIVED',
+  PAYMENT_RECEIPT = 'PAYMENT_RECEIPT'
+}
+
+// ## APPLICATION RECEIVED
 
 type ApplicationReceivedVars = { firstName: string };
 
@@ -20,6 +29,8 @@ interface ApplicationReceivedTemplate extends EmailBaseArgs {
   template: EmailTemplate.APPLICATION_RECEIVED;
   variables: ApplicationReceivedVars;
 }
+
+// ## PAYMENT RECEIPT
 
 export type PaymentReceiptVars = {
   amount: number;
@@ -42,11 +53,14 @@ export type SendEmailArgs =
   | ApplicationReceivedTemplate
   | PaymentReceiptTemplate;
 
-// Maps the enum value to the file name where the template exists.
+// ## EMAIL TEMPLATE FILE MAP
+
 export const emailTemplateFiles: Record<EmailTemplate, string> = {
   APPLICATION_RECEIVED: 'application-received',
   PAYMENT_RECEIPT: 'payment-receipt'
 };
+
+// ## EMAIL SUBJECT MAP
 
 export const emailSubjectFns: Record<
   EmailTemplate,
