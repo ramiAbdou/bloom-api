@@ -24,7 +24,9 @@ export class CreateSubsciptionArgs {
 
 type CreateStripeCustomerArgs = { stripeAccountId: string; user: User };
 
-interface CreateStripeSubscriptionArgs extends CreateSubsciptionArgs {
+interface CreateStripeSubscriptionArgs
+  extends Pick<CreateSubsciptionArgs, 'paymentMethodId'> {
+  memberId: string;
   stripeAccountId: string;
   stripeCustomerId: string;
   stripePriceId: string;
@@ -81,6 +83,7 @@ const createStripeCustomerIfNeeded = async ({
  * the Stripe subscription with thei given Stripe price.
  */
 const createStripeSubscription = async ({
+  memberId,
   paymentMethodId,
   stripeAccountId,
   stripeCustomerId,
@@ -109,7 +112,8 @@ const createStripeSubscription = async ({
     {
       customer: stripeCustomerId,
       expand: ['latest_invoice.payment_intent'],
-      items: [{ price: stripePriceId }]
+      items: [{ price: stripePriceId }],
+      metadata: { memberId }
     },
     { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
@@ -177,7 +181,7 @@ export default async function createSubscription(
   // Updates the default payment method for the customer and creates the
   // recurring subscription.
   const subscription = await createStripeSubscription({
-    memberTypeId,
+    memberId,
     paymentMethodId,
     stripeAccountId,
     stripeCustomerId: updatedUser.stripeCustomerId,
@@ -194,3 +198,8 @@ export default async function createSubscription(
   await bm.flush('STRIPE_SUBSCRIPTION_CREATED');
   return updatedMember;
 }
+
+// export type PaymentReceiptVars = {
+//   cardCompany: string;       in payment method of customer
+//   lastFourDigits: number;    in payment method of customer
+// };

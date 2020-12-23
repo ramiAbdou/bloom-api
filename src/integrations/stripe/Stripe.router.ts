@@ -5,7 +5,8 @@ import Stripe from 'stripe';
 import { APP, AuthQueryParams, isProduction } from '@constants';
 import storeStripeTokens from '@entities/community-integrations/repo/storeStripeTokens';
 import logger from '@logger';
-import { handleInvoicePaid, stripe } from './Stripe.util';
+import { stripe } from './Stripe.util';
+import handleInvoicePaid from './webhooks/handleInvoicePaid';
 
 const router = Router();
 
@@ -23,16 +24,11 @@ router.post(
       ? process.env.STRIPE_WEBHOOK_SECRET
       : process.env.STRIPE_TEST_WEBHOOK_SECRET;
 
-    console.log(req.headers['stripe-signature']);
-    console.log(req.body);
-
     const event: Stripe.Event = stripe.webhooks.constructEvent(
       req.body,
       req.headers['stripe-signature'],
       secret
     );
-
-    console.log(event.type);
 
     switch (event.type) {
       case 'invoice.paid':

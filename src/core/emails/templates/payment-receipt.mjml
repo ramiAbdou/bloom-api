@@ -57,7 +57,7 @@
         </mj-text>
 
         <mj-text font-size="13px" line-height="20px">
-          Payment Source: {{cardCompany}} &bull; {{lastFourDigits}}
+          Payment Source: {{cardCompany}} &bull; {{last4}}
         </mj-text>
 
         <mj-text font-size="13px" line-height="20px">

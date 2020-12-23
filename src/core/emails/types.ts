@@ -37,7 +37,7 @@ export type PaymentReceiptVars = {
   cardCompany: string;
   communityName: string;
   firstName: string;
-  lastFourDigits: number;
+  last4: string;
   paymentDate: string;
   paymentDateAndTime: string;
   renewalDate: string;
