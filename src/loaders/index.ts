@@ -1,6 +1,7 @@
 import 'reflect-metadata'; // Needed for type-graphql compilation.
 
 import day from 'dayjs';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 
@@ -10,6 +11,7 @@ import logger from '@util/logger';
 import apollo from './apollo';
 import express from './express';
 
+day.extend(advancedFormat);
 day.extend(utc);
 day.extend(timezone);
 
