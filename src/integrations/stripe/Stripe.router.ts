@@ -1,33 +1,42 @@
-import { Request, Response } from 'express';
+import bodyParser from 'body-parser';
+import { Request, Response, Router } from 'express';
+import Stripe from 'stripe';
 
-import { APP, AuthQueryParams } from '@constants';
-import Router, { Route } from '@core/Router';
+import { APP, AuthQueryParams, isProduction } from '@constants';
 import storeStripeTokens from '@entities/community-integrations/repo/storeStripeTokens';
 import logger from '@logger';
+import { handleInvoicePaid, stripe } from './Stripe.util';
 
-export default class StripeRouter extends Router {
-  get routes(): Route[] {
-    return [
-      { callback: this.handleAuth, method: 'GET', route: '/auth' },
-      { callback: this.handleWebhook, method: 'POST', route: '/webhook' }
-    ];
-  }
+const router = Router();
 
-  private async handleAuth({ query }: Request, res: Response) {
-    const { code, state: encodedUrlName } = query as AuthQueryParams;
-    await storeStripeTokens(encodedUrlName, code);
-    res.redirect(`${APP.CLIENT_URL}/${encodedUrlName}/integrations`);
-  }
+router.get('/auth', async ({ query }: Request, res: Response) => {
+  const { code, state: encodedUrlName } = query as AuthQueryParams;
+  await storeStripeTokens(encodedUrlName, code);
+  res.redirect(`${APP.CLIENT_URL}/${encodedUrlName}/integrations`);
+});
 
-  private async handleWebhook({ body }: Request, res: Response) {
-    const {
-      data: { object: data },
-      type
-    } = body;
+router.post(
+  '/webhook',
+  bodyParser.raw({ type: 'application/json' }),
+  async (req: Request, res: Response) => {
+    const secret = isProduction
+      ? process.env.STRIPE_WEBHOOK_SECRET
+      : process.env.STRIPE_TEST_WEBHOOK_SECRET;
 
-    console.log(data, type);
-    switch (body.type) {
+    console.log(req.headers['stripe-signature']);
+    console.log(req.body);
+
+    const event: Stripe.Event = stripe.webhooks.constructEvent(
+      req.body,
+      req.headers['stripe-signature'],
+      secret
+    );
+
+    console.log(event.type);
+
+    switch (event.type) {
       case 'invoice.paid':
+        await handleInvoicePaid(event);
         // Send an email about the paid Stripe invoice.
         break;
 
@@ -37,7 +46,7 @@ export default class StripeRouter extends Router {
 
       default:
         logger.log({
-          error: `Unhandled Stripe event: ${type}.`,
+          error: `Unhandled Stripe event: ${event.type}.`,
           level: 'ERROR'
         });
     }
@@ -45,4 +54,6 @@ export default class StripeRouter extends Router {
     // Let Stripe know that the webhook was received.
     res.sendStatus(200);
   }
-}
+);
+
+export default router;
