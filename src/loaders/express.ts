@@ -6,9 +6,9 @@ import helmet from 'helmet';
 
 import { APP } from '@constants';
 import refreshTokenFlow from '@entities/user/repo/refreshToken';
-import GoogleRouter from '@integrations/google/Google.router';
-import MailchimpRouter from '@integrations/mailchimp/Mailchimp.router';
-import StripeRouter from '@integrations/stripe/Stripe.router';
+import googleRouter from '@integrations/google/Google.router';
+import mailchimpRouter from '@integrations/mailchimp/Mailchimp.router';
+import stripeRouter from '@integrations/stripe/Stripe.router';
 import { verifyToken } from '@util/util';
 
 /**
@@ -50,7 +50,20 @@ export default () => {
 
   // Limit urlencoded and json body sizes to 10 KB.
   app.use(bodyParser.urlencoded({ extended: true, limit: '10kb' }));
-  app.use(bodyParser.json({ limit: '10kb' }));
+
+  // Stripe route needs to use the bodyParser's rawBody, not the JSON body,
+  // so only enable if it isn't that.
+  app.use(
+    (
+      req: express.Request,
+      res: express.Response,
+      next: express.NextFunction
+    ) => {
+      if (req.originalUrl === '/stripe/webhook') next();
+      else bodyParser.json({ limit: '10kb' })(req, res, next);
+    }
+  );
+
   app.use(cors({ credentials: true, origin: APP.CLIENT_URL }));
   app.use(cookieParser());
   app.use(helmet()); // Sets various HTTP response headers to prevent exploits.
@@ -58,9 +71,9 @@ export default () => {
 
   // ## EXPRESS ROUTERS
 
-  app.use('/google', new GoogleRouter().router);
-  app.use('/mailchimp', new MailchimpRouter().router);
-  app.use('/stripe', new StripeRouter().router);
+  app.use('/google', googleRouter);
+  app.use('/mailchimp', mailchimpRouter);
+  app.use('/stripe', stripeRouter);
 
   return app;
 };
