@@ -1,31 +1,6 @@
 <mjml>
   <mj-head>
-    <mj-attributes>
-      <mj-all
-        align="left"
-        font-family="Helvetica"
-        inner-padding="0"
-        padding="0"
-      />
-
-      <mj-button 
-        background-color="#F58023"
-        border-radius="8px" 
-        color="#FFFFFF"
-        inner-padding="0px 16px"
-        height="48px"
-        font-size="13px"
-        font-weight="500px"
-        text-transform="uppercase"
-      />
-
-      <mj-text
-        font-size="16px"
-        font-weight="300"
-        line-height="24px"
-        padding="0"
-      />
-    </mj-attributes>
+    <mj-include path="./attributes.mjml" />
   </mj-head>
   
   <mj-body background-color="#FBFBFB">

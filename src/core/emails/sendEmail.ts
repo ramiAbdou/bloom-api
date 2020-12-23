@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs';
 import { compile } from 'handlebars';
 import mjml2html from 'mjml';
+import path from 'path';
 
 import { isProduction } from '@constants';
 import sg from '@sendgrid/mail';
@@ -28,7 +29,11 @@ export default async function sendEmail({
   const templateFileName = emailTemplateFiles[template];
   const pathToFile = `./src/core/emails/templates/${templateFileName}.mjml`;
   const hbsTemplate = compile(readFileSync(pathToFile, 'utf8'));
-  const { html } = mjml2html(hbsTemplate(variables));
+
+  const { html } = mjml2html(hbsTemplate(variables), {
+    // Needed to use mj-include with relative paths.
+    filePath: path.join(__dirname, 'templates')
+  });
 
   try {
     const options = {
