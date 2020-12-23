@@ -1,5 +1,5 @@
-<mj-section>
+<mj-section padding="24px 0">
   <mj-column>
-    <mj-image padding-left="0" width="75px" src="https://sfo2.digitaloceanspaces.com/bl.community/bloom.png" align="left" alt="Bloom Logo" />
+    <mj-image width="75px" src="https://sfo2.digitaloceanspaces.com/bl.community/bloom.png" align="left" alt="Bloom Logo" />
   </mj-column>
 </mj-section>
