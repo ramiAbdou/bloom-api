@@ -52,9 +52,7 @@ export default class User extends BaseEntity {
   @Property({ nullable: true, type: 'text', unique: true })
   refreshToken: string;
 
-  /**
-   * SOCIAL MEDIA INFORMATION
-   */
+  // ## SOCIAL MEDIA INFORMATION
 
   @Field({ nullable: true })
   @Property({ nullable: true })
@@ -76,8 +74,15 @@ export default class User extends BaseEntity {
   @IsUrl()
   twitterUrl: string;
 
+  // We don't store any of the customer's financial data in our server. Stripe
+  // handles all of that for us, we just need Stripe's customer ID in order
+  // to use recurring payments.
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  stripeCustomerId: string;
+
   @BeforeCreate()
-  beforeCreate() {
+  async beforeCreate() {
     this.email = this.email.toLowerCase();
     this.firstName = this.firstName.trim();
     this.lastName = this.lastName.trim();

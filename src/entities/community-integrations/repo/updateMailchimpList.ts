@@ -1,4 +1,4 @@
-import { Event, GQLContext } from '@constants';
+import { GQLContext, QueryEvent } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '../CommunityIntegrations';
@@ -11,20 +11,17 @@ export default async (
   mailchimpListId: string,
   { communityId }: GQLContext
 ): Promise<CommunityIntegrations> => {
-  const bm = new BloomManager();
-
-  const integrations = await bm.findOne(CommunityIntegrations, {
-    community: { id: communityId }
-  });
-
-  integrations.mailchimpListId = mailchimpListId;
-  await bm.flush('MAILCHIMP_LIST_STORED');
+  const integrations = await new BloomManager().findOneAndUpdate(
+    CommunityIntegrations,
+    { community: { id: communityId } },
+    { mailchimpListId },
+    { event: 'MAILCHIMP_LIST_STORED' }
+  );
 
   // Invalidate the cache for the GET_INTEGRATIONS call.
-  cache.invalidateEntries(
-    `${Event.GET_INTEGRATIONS}-${integrations.community.id}`,
-    true
-  );
+  cache.invalidateEntries([
+    `${QueryEvent.GET_INTEGRATIONS}-${integrations.community.id}`
+  ]);
 
   return integrations;
 };

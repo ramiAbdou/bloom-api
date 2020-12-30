@@ -1,6 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { Event, GQLContext } from '@constants';
+import { GQLContext, QueryEvent } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../Member';
@@ -17,19 +17,15 @@ export default async (
 ): Promise<boolean> => {
   const bm = new BloomManager();
 
-  const members: Member[] = await bm.find(
-    Member,
-    { id: memberIds },
-    { populate: ['user'] }
-  );
+  const members: Member[] = await bm.find(Member, { id: memberIds });
 
   await bm.deleteAndFlush(members);
-  cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`], true);
+  cache.invalidateEntries([`${QueryEvent.GET_MEMBERS}-${communityId}`]);
 
   // If any of the members were an ADMIN of the community, then we need to
   // invalidate the GET_ADMINS cache key.
   if (members.some(({ role }) => !!role)) {
-    cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`], true);
+    cache.invalidateEntries([`${QueryEvent.GET_MEMBERS}-${communityId}`]);
   }
 
   return true;

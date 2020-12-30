@@ -1,7 +1,7 @@
 import day from 'dayjs';
 import { Field, ObjectType } from 'type-graphql';
 
-import { Event, GQLContext } from '@constants';
+import { GQLContext, QueryEvent } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import MemberRefresh from '../../member-refresh/MemberRefresh';
@@ -22,7 +22,7 @@ export class GetActiveMemberAnalyticsResult {
 export default async ({
   communityId
 }: GQLContext): Promise<GetActiveMemberAnalyticsResult> => {
-  const cacheKey = `${Event.GET_ACTIVE_MEMBER_ANALYTICS}-${communityId}`;
+  const cacheKey = `${QueryEvent.GET_ACTIVE_MEMBER_ANALYTICS}-${communityId}`;
   if (cache.has(cacheKey)) return cache.get(cacheKey);
 
   const bm = new BloomManager();

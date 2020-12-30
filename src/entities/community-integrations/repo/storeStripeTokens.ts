@@ -1,6 +1,9 @@
-import { Event } from '@constants';
+import { wrap } from '@mikro-orm/core';
+
+import { QueryEvent } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
+import createStripeProducts from '@entities/member-type/repo/createStripeProducts';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import CommunityIntegrations from '../CommunityIntegrations';
 
@@ -17,20 +20,24 @@ export default async (encodedUrlName: string, code: string): Promise<void> => {
   const integrations = await bm.findOne(
     CommunityIntegrations,
     { community: { encodedUrlName } },
-    { populate: ['community'] }
+    { populate: ['community.types'] }
   );
 
-  const { stripe_user_id } = await stripe.oauth.token({
+  const { stripe_user_id: stripeAccountId } = await stripe.oauth.token({
     code,
     grant_type: 'authorization_code'
   });
 
-  integrations.stripeAccountId = stripe_user_id;
+  await createStripeProducts({
+    stripeAccountId,
+    types: integrations.community.types.getItems()
+  });
+
+  wrap(integrations).assign({ stripeAccountId });
   await bm.flush('STRIPE_ACCOUNT_STORED');
 
   // Invalidate the cache for the GET_INTEGRATIONS call.
-  cache.invalidateEntries(
-    `${Event.GET_INTEGRATIONS}-${integrations.community.id}`,
-    true
-  );
+  cache.invalidateEntries([
+    `${QueryEvent.GET_INTEGRATIONS}-${integrations.community.id}`
+  ]);
 };

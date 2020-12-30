@@ -2,6 +2,7 @@ import { Field, Float, ObjectType } from 'type-graphql';
 import {
   Collection,
   Entity,
+  Enum,
   ManyToOne,
   OneToMany,
   Property
@@ -9,6 +10,7 @@ import {
 
 import BaseEntity from '@core/db/BaseEntity';
 import { Community, Member } from '@entities/entities';
+import { RecurrenceType } from './MemberType.types';
 
 @ObjectType()
 @Entity()
@@ -17,18 +19,24 @@ export default class MemberType extends BaseEntity {
   @Property({ type: Number })
   amount = 0.0;
 
-  @Field(() => Boolean)
-  @Property({ type: Boolean })
-  isDefault = false;
-
   @Field()
   @Property()
   name: string;
 
+  @Field(() => String)
+  @Enum({ items: () => RecurrenceType, type: String })
+  recurrence: RecurrenceType = RecurrenceType.YEARLY;
+
+  @Property({ nullable: true })
+  stripePriceId: string;
+
+  @Property({ nullable: true })
+  stripeProductId: string;
+
   @Field()
   @Property({ persist: false })
   get isFree(): boolean {
-    return this.amount > 0.0;
+    return !this.amount;
   }
 
   @ManyToOne(() => Community)

@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { Response } from 'express';
 import path from 'path'; // Before constants.
 
-import { MemberRole } from '@entities/member/Member.types';
+import BloomManager from '@core/db/BloomManager';
 
 export const isProduction = process.env.NODE_ENV === 'production';
 export const isTesting = process.env.NODE_ENV === 'testing';
@@ -49,14 +49,15 @@ export type AuthQueryParams = { code: string; state: string };
 export type AuthTokens = { accessToken: string; refreshToken: string };
 
 // Used for caching purposes (building the keys).
-export enum Event {
+export enum QueryEvent {
   GET_ACTIVE_MEMBER_ANALYTICS = 'GET_ACTIVE_MEMBER_ANALYTICS',
   GET_APPLICANTS = 'GET_APPLICANTS',
   GET_APPLICATION = 'GET_APPLICATION',
   GET_DIRECTORY = 'GET_DIRECTORY',
   GET_INTEGRATIONS = 'GET_INTEGRATIONS',
   GET_MEMBERS = 'GET_MEMBERS',
-  GET_TOTAL_MEMBER_ANALYTICS = 'GET_TOTAL_MEMBER_ANALYTICS'
+  GET_TOTAL_MEMBER_ANALYTICS = 'GET_TOTAL_MEMBER_ANALYTICS',
+  GET_USER = 'GET_USER'
 }
 
 export type LoggerEvent =
@@ -68,17 +69,21 @@ export type LoggerEvent =
   | 'MAILCHIMP_LIST_UPDATED'
   | 'MAILCHIMP_TOKEN_STORED'
   | 'MEMBERS_ACCEPTED'
-  | 'MEMBERS_ADMIN_UPDATE'
   | 'MEMBERS_CREATED'
+  | 'MEMBERS_DEMOTED'
+  | 'MEMBERS_PROMOTED'
   | 'ON_FLUSH'
   | 'QUESTION_RENAMED'
   | 'REFRESH_TOKEN_UPDATED'
   | 'SERVER_STARTED'
-  | 'STRIPE_ACCOUNT_STORED';
+  | 'STRIPE_ACCOUNT_STORED'
+  | 'STRIPE_SUBSCRIPTION_CREATED';
 
 export type GQLContext = {
   communityId: string;
+  memberId: string;
   res: Response;
-  role: MemberRole;
   userId: string;
 };
+
+export type BloomManagerArgs = { bm: BloomManager };

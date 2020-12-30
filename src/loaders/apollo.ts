@@ -7,9 +7,10 @@ import BloomManager from '@core/db/BloomManager';
 import { decodeToken } from '@util/util';
 import CommunityIntegrations from '../entities/community-integrations/CommunityIntegrations.resolver';
 import CommunityResolver from '../entities/community/Community.resolver';
+import MemberPaymentResolver from '../entities/member-payment/MemberPayment.resolver';
+import Member from '../entities/member/Member';
 import MemberResolver from '../entities/member/Member.resolver';
 import QuestionResolver from '../entities/question/Question.resolver';
-import User from '../entities/user/User';
 import UserResolver from '../entities/user/User.resolver';
 
 /**
@@ -18,14 +19,11 @@ import UserResolver from '../entities/user/User.resolver';
  * idToken using the refreshToken if it is invalid.
  */
 const authChecker: AuthChecker<GQLContext> = async (
-  { context: { role, userId } },
+  { context: { memberId } },
   roles: string[]
 ) => {
-  // If the userId isn't present or the userId doesn't exist in the DB, then
-  // the user isn't authenticated.
-  if (!userId || !(await new BloomManager().findOne(User, { id: userId }))) {
-    return false;
-  }
+  if (!memberId) return false;
+  const { role } = await new BloomManager().findOne(Member, { id: memberId });
 
   // If no roles are specified, we return true b/c only no roles would be
   // specified if we wanted ANY logged-in user to be authorized. And, we have
@@ -46,6 +44,7 @@ export const createSchema = async (): Promise<GraphQLSchema> =>
       CommunityIntegrations,
       QuestionResolver,
       MemberResolver,
+      MemberPaymentResolver,
       UserResolver
     ]
   });
@@ -59,12 +58,12 @@ export default async () => {
   // Set the playground to false so that's it's not accessible to the outside
   // world. Also handles the request context.
   const config: ApolloServerExpressConfig = {
-    context: ({ req, res }) => ({
-      communityId: req.cookies.communityId,
-      res,
-      role: req.cookies.role, // Saves DB call on every GraphQL query.
-      userId: decodeToken(req.cookies.accessToken)?.userId
-    }),
+    context: ({ req, res }) => {
+      const { communityId, memberId, userId } =
+        decodeToken(req.cookies.accessToken) ?? {};
+
+      return { communityId, memberId, res, userId };
+    },
     playground: false,
     schema: await createSchema()
   };

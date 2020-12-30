@@ -8,7 +8,7 @@ module.exports = {
     // For the GraphQL resolver files, we don't need to use this because
     // the type-graphql package doesn't encourage it.
     {
-      files: ['*.resolver.ts', '*.repo.ts'],
+      files: ['*.resolver.ts', '*.repo.ts', '*.subscriber.ts'],
       rules: { 'class-methods-use-this': 0 }
     },
     {

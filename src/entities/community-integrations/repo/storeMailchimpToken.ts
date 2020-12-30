@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { URLSearchParams } from 'url';
 
-import { APP, Event, isProduction } from '@constants';
+import { APP, isProduction, QueryEvent } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '../CommunityIntegrations';
@@ -13,14 +13,6 @@ import CommunityIntegrations from '../CommunityIntegrations';
  * Precondition: The community ID must represent a community.
  */
 export default async (encodedUrlName: string, code: string): Promise<void> => {
-  const bm = new BloomManager();
-
-  const integrations = await bm.findOne(
-    CommunityIntegrations,
-    { community: { encodedUrlName } },
-    { populate: ['community'] }
-  );
-
   // All the other redirect URIs use localhost when in development, but
   // Mailchimp forces us to use 127.0.0.1 instead, so we can't use the
   // APP.SERVER_URL local URL.
@@ -39,13 +31,14 @@ export default async (encodedUrlName: string, code: string): Promise<void> => {
   };
 
   const { data } = await axios(options);
-  integrations.mailchimpAccessToken = data?.access_token;
 
-  await bm.flush('MAILCHIMP_TOKEN_STORED');
+  const { community } = await new BloomManager().findOneAndUpdate(
+    CommunityIntegrations,
+    { community: { encodedUrlName } },
+    { mailchimpAccessToken: data?.access_token },
+    { event: 'MAILCHIMP_TOKEN_STORED' }
+  );
 
   // Invalidate the cache for the GET_INTEGRATIONS call.
-  cache.invalidateEntries(
-    `${Event.GET_INTEGRATIONS}-${integrations.community.id}`,
-    true
-  );
+  cache.invalidateEntries([`${QueryEvent.GET_INTEGRATIONS}-${community.id}`]);
 };

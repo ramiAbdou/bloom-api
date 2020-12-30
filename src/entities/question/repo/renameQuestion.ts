@@ -1,6 +1,6 @@
 import { ArgsType, Field, Int } from 'type-graphql';
 
-import { Event, GQLContext } from '@constants';
+import { GQLContext, QueryEvent } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import Question from '../Question';
@@ -45,14 +45,11 @@ export default async (
 
   // Invalidate GET_APPLICATION since we fetch the member questions
   // there as well.
-  cache.invalidateEntries(
-    [
-      `${Event.GET_APPLICATION}-${encodedUrlName}`,
-      `${Event.GET_DIRECTORY}-${communityId}`,
-      `${Event.GET_MEMBERS}-${communityId}`
-    ],
-    true
-  );
+  cache.invalidateEntries([
+    `${QueryEvent.GET_APPLICATION}-${encodedUrlName}`,
+    `${QueryEvent.GET_DIRECTORY}-${communityId}`,
+    `${QueryEvent.GET_MEMBERS}-${communityId}`
+  ]);
 
   return question;
 };

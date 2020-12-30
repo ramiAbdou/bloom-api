@@ -2,21 +2,23 @@ import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import { Member } from '@entities/entities';
+import { AdminArgs } from './Member.types';
 import applyForMembership, {
   ApplyForMembershipArgs
 } from './repo/applyForMembership';
 import createMembers, { CreateMembersArgs } from './repo/createMembers';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
+import demoteToMember from './repo/demoteToMember';
 import getActiveMemberAnalytics, {
   GetActiveMemberAnalyticsResult
 } from './repo/getActiveAnalytics';
 import getTotalMemberAnalytics, {
   GetTotalMemberAnalyticsResult
 } from './repo/getTotalAnalytics';
+import promoteToAdmin from './repo/promoteToAdmin';
 import respondToApplicants, {
   RespondToApplicantsArgs
 } from './repo/respondToApplicants';
-import toggleAdmins, { ToggleAdminArgs } from './repo/toggleAdmins';
 
 @Resolver()
 export default class MemberResolver {
@@ -43,6 +45,12 @@ export default class MemberResolver {
     return !!deleteMembers(args, ctx);
   }
 
+  @Authorized('OWNER')
+  @Mutation(() => [Member], { nullable: true })
+  async demoteToMember(@Args() args: AdminArgs, @Ctx() ctx: GQLContext) {
+    return demoteToMember(args, ctx);
+  }
+
   @Authorized('ADMIN')
   @Query(() => GetActiveMemberAnalyticsResult, { nullable: true })
   async getActiveMemberAnalytics(@Ctx() ctx: GQLContext) {
@@ -55,6 +63,12 @@ export default class MemberResolver {
     return getTotalMemberAnalytics(ctx);
   }
 
+  @Authorized('OWNER')
+  @Mutation(() => [Member], { nullable: true })
+  async promoteToAdmin(@Args() args: AdminArgs, @Ctx() ctx: GQLContext) {
+    return promoteToAdmin(args, ctx);
+  }
+
   @Authorized('ADMIN')
   @Mutation(() => Boolean, { nullable: true })
   async respondToMembers(
@@ -62,11 +76,5 @@ export default class MemberResolver {
     @Ctx() ctx: GQLContext
   ) {
     return !!(await respondToApplicants(args, ctx));
-  }
-
-  @Authorized('OWNER')
-  @Mutation(() => [Member], { nullable: true })
-  async toggleAdmins(@Args() args: ToggleAdminArgs, @Ctx() ctx: GQLContext) {
-    return toggleAdmins(args, ctx);
   }
 }

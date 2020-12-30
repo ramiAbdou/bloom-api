@@ -13,11 +13,17 @@ import BaseEntity from '@core/db/BaseEntity';
 import { now } from '@util/util';
 import Community from '../community/Community';
 import MemberData from '../member-data/MemberData';
+import MemberPayment from '../member-payment/MemberPayment';
 import MemberRefresh from '../member-refresh/MemberRefresh';
 import MemberType from '../member-type/MemberType';
 import Question from '../question/Question';
 import User from '../user/User';
-import { MemberRole, MemberStatus, QuestionValue } from './Member.types';
+import {
+  MemberDuesStatus,
+  MemberRole,
+  MemberStatus,
+  QuestionValue
+} from './Member.types';
 
 @ObjectType()
 @Entity()
@@ -25,6 +31,10 @@ export default class Member extends BaseEntity {
   @Field({ nullable: true })
   @Property({ nullable: true, type: 'text' })
   bio: string;
+
+  @Field(() => String)
+  @Enum({ items: () => MemberDuesStatus, type: String })
+  duesStatus: MemberDuesStatus = MemberDuesStatus.INACTIVE;
 
   // Member is allowed to opt-out of email notifications that send after an
   // event gets posted.
@@ -40,19 +50,12 @@ export default class Member extends BaseEntity {
   // If the member has a role, it will either be ADMIN or OWNER. There should
   // only be one OWNER in a community.
   @Field(() => String, { nullable: true })
-  @Enum({ items: ['ADMIN', 'OWNER'], nullable: true, type: String })
+  @Enum({ items: () => MemberRole, nullable: true, type: String })
   role: MemberRole;
 
   @Field(() => String)
-  @Enum({ items: ['REJECTED', 'PENDING', 'INVITED', 'ACCEPTED'], type: String })
-  status: MemberStatus = 'PENDING';
-
-  // We don't store any of the customer's financial data in our server. Stripe
-  // handles all of that for us, we just need Stripe's customer ID in order
-  // to use recurring payments.
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  stripeCustomerId: string;
+  @Enum({ items: () => MemberStatus, type: String })
+  status: MemberStatus = MemberStatus.PENDING;
 
   // ## MEMBER FUNCTIONS
 
@@ -159,17 +162,13 @@ export default class Member extends BaseEntity {
   beforeCreate() {
     if (this.role || this.community.autoAccept) {
       this.joinedOn = now();
-      this.status = 'ACCEPTED';
+      this.status = MemberStatus.ACCEPTED;
     }
 
     // If no member type is provided, assign them the default member.
     // Every community should've assigned one default member.
-    if (!this.type) {
-      // eslint-disable-next-line prefer-destructuring
-      this.type = this.community.types
-        .getItems()
-        .find(({ isDefault }) => isDefault);
-    }
+    if (!this.type) this.type = this.community.defaultType;
+    if (this.type.isFree) this.duesStatus = MemberDuesStatus.ACTIVE;
   }
 
   // ## RELATIONSHIPS
@@ -182,6 +181,9 @@ export default class Member extends BaseEntity {
   @Field(() => [MemberData])
   @OneToMany(() => MemberData, ({ member }) => member)
   data = new Collection<MemberData>(this);
+
+  @OneToMany(() => MemberPayment, ({ member }) => member)
+  payments: Collection<MemberPayment> = new Collection<MemberPayment>(this);
 
   @OneToMany(() => MemberRefresh, ({ member }) => member)
   refreshes: Collection<MemberRefresh> = new Collection<MemberRefresh>(this);

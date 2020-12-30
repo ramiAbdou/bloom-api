@@ -1,0 +1,56 @@
+<mjml>
+  <mj-head>
+    <mj-include path="./attributes.mjml" />
+  </mj-head>
+  
+  <mj-body background-color="#FBFBFB">
+    <mj-include path="./header.mjml" />
+
+    <mj-section background-color="#E0E0E0" border-radius="8px" padding="1px">
+      <mj-column
+        background-color="#FFFFFF"
+        padding="8px 8px 16px 8px"
+        border-radius="8px"
+      >
+        <mj-text padding="8px 0 16px 0">
+          Hi {{firstName}},
+        </mj-text>
+
+        <mj-text padding-bottom="16px">
+          We received your payment of ${{amount}} USD to {{communityName}} on
+          {{paymentDate}}. You are now an active member and
+          your membership will auto-renew on {{renewalDate}}.
+        </mj-text>
+
+        <mj-text
+          font-size="13px"
+          line-height="20px"
+          font-weight="500"
+          padding-bottom="4px"
+        >
+          Transaction Details
+        </mj-text>
+
+        <mj-text font-size="13px" line-height="20px">
+          Payment Source: {{cardCompany}} &bull; {{last4}}
+        </mj-text>
+
+        <mj-text font-size="13px" line-height="20px">
+          Invoice ID: {{stripeInvoiceId}}
+        </mj-text>
+
+        <mj-text font-size="13px" line-height="20px" padding-bottom="16px">
+          Date of Payment: {{paymentDateAndTime}}
+        </mj-text>
+
+        <mj-text font-size="13px" line-height="20px">
+          If you believe this was a mistake, you can dispute this with the
+          administrators of {{communityName}}, where they will be able to issue
+          you a refund if needed.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    <mj-include path="./footer.mjml" />
+  </mj-body>
+</mjml>

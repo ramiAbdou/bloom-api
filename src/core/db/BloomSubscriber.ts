@@ -1,4 +1,3 @@
-/* eslint-disable sort-keys-fix/sort-keys-fix */
 /* eslint-disable class-methods-use-this */
 
 import {
@@ -8,6 +7,7 @@ import {
   FlushEventArgs
 } from '@mikro-orm/core';
 
+import cache from '@core/cache';
 import logger, { LoggerChangeSet, LoggerChangeType } from '@util/logger';
 
 export default class BloomSubscriber implements EventSubscriber {
@@ -15,20 +15,26 @@ export default class BloomSubscriber implements EventSubscriber {
     const changes: LoggerChangeSet[] = uow
       .getChangeSets()
       .map((changeSet: ChangeSet<AnyEntity<any>>) => {
-        const { collection, entity, payload, type } = changeSet;
+        const { collection: table, entity, payload, type } = changeSet;
 
         let changeType: LoggerChangeType = 'CREATE';
         if (payload?.deletedAt) changeType = 'DELETE';
         else if (type === 'update') changeType = 'UPDATE';
-
-        return {
-          id: entity.id,
-          table: collection,
-          type: changeType,
-          payload
-        };
+        return { id: entity.id, payload, table, type: changeType };
       });
 
-    logger.log({ contextId: em.id, level: 'ON_FLUSH', changes });
+    logger.log({ changes, contextId: em.id, level: 'ON_FLUSH' });
+  }
+
+  /**
+   * If a flush was successful, then we grab the change sets and invalidate
+   * every value in the cache who has dependencies that were just updated.
+   */
+  async afterFlush<T>({ uow }: FlushEventArgs): Promise<void> {
+    const idsToInvalidate = uow
+      .getChangeSets()
+      .map(({ entity }: ChangeSet<AnyEntity<any>>) => entity.id);
+
+    cache.invalidateEntriesByDependencies(idsToInvalidate);
   }
 }

@@ -1,0 +1,9 @@
+<mj-section padding="24px 0">
+  <mj-column>
+    <mj-image
+      alt="Bloom Logo"
+      src="https://sfo2.digitaloceanspaces.com/bl.community/bloom.png"
+      width="75px" 
+    />
+  </mj-column>
+</mj-section>

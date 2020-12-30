@@ -1,6 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { Event, GQLContext } from '@constants';
+import { GQLContext, QueryEvent } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import { now } from '@util/util';
@@ -27,25 +27,17 @@ export default async (
   { memberIds, response }: RespondToApplicantsArgs,
   { communityId }: GQLContext
 ): Promise<Member[]> => {
-  const bm = new BloomManager();
-
-  const members: Member[] = await bm.find(
+  const members: Member[] = await new BloomManager().findAndUpdate(
     Member,
     { id: memberIds },
-    { populate: ['user'] }
+    { joinedOn: now(), status: response },
+    { event: 'MEMBERS_ACCEPTED' }
   );
 
-  members.forEach((member: Member) => {
-    member.joinedOn = now();
-    member.status = response;
-  });
-
-  await bm.flush('MEMBERS_ACCEPTED');
-
-  cache.invalidateEntries([`${Event.GET_APPLICANTS}-${communityId}`], true);
+  cache.invalidateEntries([`${QueryEvent.GET_APPLICANTS}-${communityId}`]);
 
   if (response === 'ACCEPTED') {
-    cache.invalidateEntries([`${Event.GET_MEMBERS}-${communityId}`], true);
+    cache.invalidateEntries([`${QueryEvent.GET_MEMBERS}-${communityId}`]);
   }
 
   // Send the appropriate emails based on the response. Also, add the members
