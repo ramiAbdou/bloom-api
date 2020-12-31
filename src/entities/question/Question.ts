@@ -36,6 +36,11 @@ export default class Question extends BaseEntity {
   @Property({ type: Boolean })
   inApplication = true;
 
+  // True if this is only needed for the application decision.
+  @Field(() => Boolean)
+  @Property({ type: Boolean })
+  onlyInApplication = false;
+
   // In the applicant card if it's important to the ADMIN.
   @Authorized('ADMIN')
   @Field(() => Boolean)

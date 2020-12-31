@@ -105,6 +105,7 @@ export default class Member extends BaseEntity {
 
     return this.community.questions
       .getItems()
+      .filter(({ onlyInApplication }) => !onlyInApplication)
       .map(({ category, id, title }: Question) => {
         let value: string;
         const result = data.find(({ question }) => question.title === title);

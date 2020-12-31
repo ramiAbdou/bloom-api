@@ -7,7 +7,7 @@ import MemberType from '../../member-type/MemberType';
 
 @ObjectType()
 export class GetDuesInformationResult {
-  @Field()
+  @Field({ nullable: true })
   stripeAccountId: string;
 
   @Field(() => [MemberType])
