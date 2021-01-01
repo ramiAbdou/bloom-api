@@ -45,6 +45,8 @@ const updatePaymentMethod = async (
 
   wrap(member).assign({ stripePaymentMethodId: paymentMethodId });
   await bm.flush('PAYMENT_METHOD_UPDATED');
+
+  return member;
 };
 
 export default updatePaymentMethod;

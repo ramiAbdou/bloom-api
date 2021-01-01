@@ -20,6 +20,9 @@ import promoteToAdmin from './repo/promoteToAdmin';
 import respondToApplicants, {
   RespondToApplicantsArgs
 } from './repo/respondToApplicants';
+import updatePaymentMethod, {
+  UpdatePaymentMethodArgs
+} from './repo/updatePaymentMethod';
 
 @Resolver()
 export default class MemberResolver {
@@ -83,5 +86,14 @@ export default class MemberResolver {
     @Ctx() ctx: GQLContext
   ) {
     return !!(await respondToApplicants(args, ctx));
+  }
+
+  @Authorized()
+  @Mutation(() => Member, { nullable: true })
+  async updatePaymentMethod(
+    @Args() args: UpdatePaymentMethodArgs,
+    @Ctx() ctx: GQLContext
+  ) {
+    return updatePaymentMethod(args, ctx);
   }
 }
