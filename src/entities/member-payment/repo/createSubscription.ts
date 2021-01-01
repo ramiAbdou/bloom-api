@@ -23,11 +23,6 @@ export class CreateSubsciptionArgs {
   paymentMethodId: string;
 }
 
-interface CreateStripeCustomerArgs {
-  memberId: string;
-  stripeAccountId: string;
-}
-
 interface CreateMemberPaymentArgs extends BloomManagerArgs {
   member: Member;
   type: MemberType;
@@ -54,6 +49,7 @@ const createMemberPaymentFromSubscription = ({
       amount: lastestInvoice.amount_paid,
       member,
       stripeInvoiceId: lastestInvoice.id,
+      stripeInvoicePdf: lastestInvoice.invoice_pdf,
       type
     });
 
@@ -105,5 +101,6 @@ export default async function createSubscription(
   });
 
   await bm.flush('STRIPE_SUBSCRIPTION_CREATED');
+
   return updatedMember;
 }

@@ -1,3 +1,4 @@
+import { IsUrl } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
 import { Entity, ManyToOne, Property } from '@mikro-orm/core';
 
@@ -14,6 +15,10 @@ export default class MemberPayment extends BaseEntity {
 
   @Property({ unique: true })
   stripeInvoiceId: string;
+
+  @Property({ unique: true })
+  @IsUrl()
+  stripeInvoicePdf: string;
 
   @ManyToOne(() => Member)
   member: Member;
