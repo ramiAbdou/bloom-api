@@ -1,6 +1,7 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
+import BloomManager from '@core/db/BloomManager';
 import { Member } from '@entities/entities';
 import { AdminArgs } from './Member.types';
 import applyForMembership, {
@@ -12,9 +13,6 @@ import demoteToMember from './repo/demoteToMember';
 import getActiveMemberAnalytics, {
   GetActiveMemberAnalyticsResult
 } from './repo/getActiveAnalytics';
-import getPaymentMethod, {
-  GetPaymentMethodResult
-} from './repo/getPaymentMethod';
 import getTotalMemberAnalytics, {
   GetTotalMemberAnalyticsResult
 } from './repo/getTotalAnalytics';
@@ -61,9 +59,9 @@ export default class MemberResolver {
   }
 
   @Authorized()
-  @Query(() => GetPaymentMethodResult, { nullable: true })
-  async getPaymentMethod(@Ctx() ctx: GQLContext) {
-    return getPaymentMethod(ctx);
+  @Query(() => Member, { nullable: true })
+  async getMember(@Ctx() { memberId }: GQLContext) {
+    return new BloomManager().findOne(Member, { id: memberId });
   }
 
   @Authorized('ADMIN')

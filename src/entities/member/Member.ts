@@ -24,6 +24,9 @@ import {
   MemberStatus,
   QuestionValue
 } from './Member.types';
+import getPaymentMethod, {
+  GetPaymentMethodResult
+} from './repo/getPaymentMethod';
 
 @ObjectType()
 @Entity()
@@ -170,6 +173,12 @@ export default class Member extends BaseEntity {
           return { questionId: id, value };
         })
     );
+  }
+
+  @Authorized()
+  @Field(() => GetPaymentMethodResult, { nullable: true })
+  async paymentMethod() {
+    return getPaymentMethod(this.id);
   }
 
   @BeforeCreate()

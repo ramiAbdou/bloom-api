@@ -1,6 +1,5 @@
 import { Field, ObjectType } from 'type-graphql';
 
-import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import Member from '../Member';
@@ -20,9 +19,9 @@ export class GetPaymentMethodResult {
   zipCode: string;
 }
 
-const getPaymentMethod = async ({
-  memberId
-}: Pick<GQLContext, 'memberId'>): Promise<GetPaymentMethodResult> => {
+const getPaymentMethod = async (
+  memberId: string
+): Promise<GetPaymentMethodResult> => {
   const { community, stripePaymentMethodId } = await new BloomManager().findOne(
     Member,
     { id: memberId },
