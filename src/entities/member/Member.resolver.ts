@@ -12,6 +12,9 @@ import demoteToMember from './repo/demoteToMember';
 import getActiveMemberAnalytics, {
   GetActiveMemberAnalyticsResult
 } from './repo/getActiveAnalytics';
+import getPaymentMethod, {
+  GetPaymentMethodResult
+} from './repo/getPaymentMethod';
 import getTotalMemberAnalytics, {
   GetTotalMemberAnalyticsResult
 } from './repo/getTotalAnalytics';
@@ -55,6 +58,12 @@ export default class MemberResolver {
   @Query(() => GetActiveMemberAnalyticsResult, { nullable: true })
   async getActiveMemberAnalytics(@Ctx() ctx: GQLContext) {
     return getActiveMemberAnalytics(ctx);
+  }
+
+  @Authorized()
+  @Query(() => GetPaymentMethodResult, { nullable: true })
+  async getPaymentMethod(@Ctx() ctx: GQLContext) {
+    return getPaymentMethod(ctx);
   }
 
   @Authorized('ADMIN')

@@ -8,6 +8,23 @@ import refreshToken from './repo/refreshToken';
 
 @Resolver()
 export default class UserResolver {
+  @Authorized()
+  @Query(() => User, { nullable: true })
+  async getUser(@Ctx() { userId }: GQLContext) {
+    return new BloomManager().findOne(
+      User,
+      { id: userId },
+      {
+        cacheKey: `${QueryEvent.GET_USER}-${userId}`,
+        populate: [
+          'members.community.integrations',
+          'members.community.types',
+          'members.type'
+        ]
+      }
+    );
+  }
+
   /**
    * Called when a user hits the React /login route. We can't access HTTP only
    * cookies on the front-end b/c no JS access, so this GQL resolver exists.
@@ -40,22 +57,5 @@ export default class UserResolver {
     }
 
     return true;
-  }
-
-  @Authorized()
-  @Query(() => User, { nullable: true })
-  async getUser(@Ctx() { userId }: GQLContext) {
-    return new BloomManager().findOne(
-      User,
-      { id: userId },
-      {
-        cacheKey: `${QueryEvent.GET_USER}-${userId}`,
-        populate: [
-          'members.community.integrations',
-          'members.community.types',
-          'members.type'
-        ]
-      }
-    );
   }
 }

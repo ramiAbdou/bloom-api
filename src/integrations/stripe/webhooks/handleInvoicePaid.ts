@@ -4,7 +4,7 @@ import Stripe from 'stripe';
 import BloomManager from '@core/db/BloomManager';
 import sendEmail from '@core/emails/sendEmail';
 import { EmailTemplate, PaymentReceiptVars } from '@core/emails/types';
-import { Community, User } from '@entities/entities';
+import { Community, Member } from '@entities/entities';
 import { stripe } from '../Stripe.util';
 
 export default async function handleInvoicePaid(event: Stripe.Event) {
@@ -28,9 +28,9 @@ export default async function handleInvoicePaid(event: Stripe.Event) {
 
   const bm = new BloomManager();
 
-  const [community, user]: [Community, User] = await Promise.all([
+  const [community, member]: [Community, Member] = await Promise.all([
     bm.findOne(Community, { integrations: { stripeAccountId } }),
-    bm.findOne(User, { stripeCustomerId })
+    bm.findOne(Member, { stripeCustomerId }, { populate: ['user'] })
   ]);
 
   // Retrieves the next invoice date for the current subscription.
@@ -45,7 +45,7 @@ export default async function handleInvoicePaid(event: Stripe.Event) {
   const paymentDate: Dayjs = day.utc(event.created * 1000);
   const renewalDate: Dayjs = day.utc(nextInvoiceDate * 1000);
 
-  const { firstName, email } = user;
+  const { firstName, email } = member.user;
 
   const emailOpts: PaymentReceiptVars = {
     amount: amountPaid / 100,
