@@ -12,17 +12,17 @@ import getDuesInformation, {
 @Resolver()
 export default class MemberPaymentResolver {
   @Authorized()
-  @Query(() => GetDuesInformationResult)
-  async getDuesInformation(@Ctx() ctx: GQLContext) {
-    return getDuesInformation(ctx);
-  }
-
-  @Authorized()
   @Mutation(() => Member, { nullable: true })
   async createSubscription(
     @Args() args: CreateSubsciptionArgs,
     @Ctx() ctx: GQLContext
   ) {
     return createSubscription(args, ctx);
+  }
+
+  @Authorized()
+  @Query(() => GetDuesInformationResult)
+  async getDuesInformation(@Ctx() ctx: GQLContext) {
+    return getDuesInformation(ctx);
   }
 }

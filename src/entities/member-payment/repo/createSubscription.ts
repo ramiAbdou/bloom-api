@@ -11,8 +11,8 @@ import MemberType from '../../member-type/MemberType';
 import Member from '../../member/Member';
 import { MemberDuesStatus } from '../../member/Member.types';
 import createStripeCustomer from '../../member/repo/createStripeCustomer';
+import updatePaymentMethod from '../../member/repo/updatePaymentMethod';
 import MemberPayment from '../MemberPayment';
-import updatePaymentMethod from './updatePaymentMethod';
 
 @ArgsType()
 export class CreateSubsciptionArgs {

@@ -6,7 +6,7 @@ import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import Community from '../../community/Community';
-import Member from '../../member/Member';
+import Member from '../Member';
 
 @ArgsType()
 export class UpdatePaymentMethodArgs {
