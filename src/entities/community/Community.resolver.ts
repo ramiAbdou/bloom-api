@@ -11,7 +11,7 @@ export default class CommunityResolver {
   async getApplication(
     @Arg('encodedUrlName') encodedUrlName: string
   ): Promise<Community> {
-    return new BloomManager().findOne(
+    return new BloomManager().findOneOrFail(
       Community,
       { encodedUrlName },
       {

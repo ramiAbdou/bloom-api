@@ -3,6 +3,7 @@ import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { Member } from '@entities/entities';
+import { PopulateArgs } from '../../util/gql.types';
 import { AdminArgs } from './Member.types';
 import applyForMembership, {
   ApplyForMembershipArgs
@@ -63,8 +64,11 @@ export default class MemberResolver {
 
   @Authorized()
   @Query(() => Member, { nullable: true })
-  async getMember(@Ctx() { memberId }: GQLContext) {
-    return new BloomManager().findOne(Member, { id: memberId });
+  async getMember(
+    @Args() { populate }: PopulateArgs,
+    @Ctx() { memberId }: GQLContext
+  ) {
+    return new BloomManager().findOne(Member, { id: memberId }, { populate });
   }
 
   @Authorized('ADMIN')
