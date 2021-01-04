@@ -11,8 +11,8 @@
     "test": "NODE_ENV=testing mocha --timeout 10000 --exit -r ts-node/register -r tsconfig-paths/register src/**/*.test.ts"
   },
   "engines": {
-    "node": "10.13.0",
-    "npm": "6.9.0"
+    "node": "12.16.3",
+    "npm": "7.3.0"
   },
   "dependencies": {
     "@mikro-orm/core": "^4.3.2",
