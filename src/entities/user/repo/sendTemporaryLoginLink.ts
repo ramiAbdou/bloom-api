@@ -19,13 +19,13 @@ export class SendTemporaryLoginLinkArgs {
  * Generates a temporary login URL with token for the User with the given email.
  * Runs the refresh flow for the user.
  */
-const sendTemporaryLoginEmail = async ({
+const sendTemporaryLoginLink = async ({
   email
 }: SendTemporaryLoginLinkArgs) => {
   const user: User = await new BloomManager().findOne(
     User,
     { email },
-    { populate: ['memberships'] }
+    { populate: ['members'] }
   );
 
   // If the User hasn't been accepted into any community, throw an error.
@@ -53,4 +53,4 @@ const sendTemporaryLoginEmail = async ({
   });
 };
 
-export default sendTemporaryLoginEmail;
+export default sendTemporaryLoginLink;

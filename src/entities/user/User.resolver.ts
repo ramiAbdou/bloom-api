@@ -13,7 +13,7 @@ import BloomManager from '@core/db/BloomManager';
 import { User } from '@entities/entities';
 import { decodeToken } from '@util/util';
 import refreshToken from './repo/refreshToken';
-import sendTemporaryLoginEmail, {
+import sendTemporaryLoginLink, {
   SendTemporaryLoginLinkArgs
 } from './repo/sendTemporaryLoginLink';
 
@@ -57,7 +57,7 @@ export default class UserResolver {
 
   @Mutation(() => Boolean, { nullable: true })
   async sendTemporaryLoginLink(@Args() args: SendTemporaryLoginLinkArgs) {
-    return sendTemporaryLoginEmail(args);
+    return sendTemporaryLoginLink(args);
   }
 
   @Query(() => Boolean)
