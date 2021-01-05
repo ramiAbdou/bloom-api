@@ -1,10 +1,21 @@
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Authorized,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver
+} from 'type-graphql';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { User } from '@entities/entities';
 import { decodeToken } from '@util/util';
 import refreshToken from './repo/refreshToken';
+import sendTemporaryLoginEmail, {
+  SendTemporaryLoginLinkArgs
+} from './repo/sendTemporaryLoginLink';
 
 @Resolver()
 export default class UserResolver {
@@ -42,6 +53,11 @@ export default class UserResolver {
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
     return true;
+  }
+
+  @Mutation(() => Boolean, { nullable: true })
+  async sendTemporaryLoginLink(@Args() args: SendTemporaryLoginLinkArgs) {
+    return sendTemporaryLoginEmail(args);
   }
 
   @Query(() => Boolean)

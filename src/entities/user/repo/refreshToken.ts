@@ -18,8 +18,8 @@ type RefreshTokenArgs = {
  * Refreshes the user's tokens and sets the HTTP only cookies if Express
  * res object is provided. If the refreshing succeeds, the tokenw il
  */
-export default async ({
-  refreshToken,
+const refreshToken = async ({
+  refreshToken: rToken,
   res,
   user,
   userId
@@ -30,7 +30,7 @@ export default async ({
   else {
     user = await bm.findOne(
       User,
-      { $or: [{ id: userId }, { refreshToken }] },
+      { $or: [{ id: userId }, { refreshToken: rToken }] },
       { populate: ['members'] }
     );
   }
@@ -61,3 +61,5 @@ export default async ({
 
   return tokens;
 };
+
+export default refreshToken;
