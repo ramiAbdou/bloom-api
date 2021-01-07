@@ -39,12 +39,6 @@ export default class Member extends BaseEntity {
   @Enum({ items: () => MemberDuesStatus, type: String })
   duesStatus: MemberDuesStatus = MemberDuesStatus.INACTIVE;
 
-  // Member is allowed to opt-out of email notifications that send after an
-  // event gets posted.
-  @Field(() => Boolean)
-  @Property({ type: Boolean })
-  emailNotifications = true;
-
   // Refers to the date that the member was ACCEPTED.
   @Field({ nullable: true })
   @Property({ nullable: true })

@@ -1,7 +1,9 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
+import BloomManager from '@core/db/BloomManager';
 import Member from '../member/Member';
+import MemberPayment from './MemberPayment';
 import createSubscription, {
   CreateSubsciptionArgs
 } from './repo/createSubscription';
@@ -24,5 +26,11 @@ export default class MemberPaymentResolver {
   @Query(() => GetDuesInformationResult)
   async getDuesInformation(@Ctx() ctx: GQLContext) {
     return getDuesInformation(ctx);
+  }
+
+  @Authorized()
+  @Query(() => [MemberPayment])
+  async getPaymentHistory(@Ctx() { memberId }: GQLContext) {
+    return new BloomManager().find(MemberPayment, { member: { id: memberId } });
   }
 }

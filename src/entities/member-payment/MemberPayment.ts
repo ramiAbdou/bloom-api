@@ -16,13 +16,16 @@ export default class MemberPayment extends BaseEntity {
   @Property({ unique: true })
   stripeInvoiceId: string;
 
+  @Field()
   @Property({ unique: true })
   @IsUrl()
-  stripeInvoicePdf: string;
+  stripeInvoiceUrl: string;
 
+  @Field(() => Member)
   @ManyToOne(() => Member)
   member: Member;
 
-  @ManyToOne(() => MemberType, { nullable: true })
+  @Field(() => MemberType)
+  @ManyToOne(() => MemberType)
   type: MemberType;
 }

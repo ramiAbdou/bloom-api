@@ -11,16 +11,12 @@ import MemberType from '../../member-type/MemberType';
 import Member from '../../member/Member';
 import { MemberDuesStatus } from '../../member/Member.types';
 import createStripeCustomer from '../../member/repo/createStripeCustomer';
-import updatePaymentMethod from '../../member/repo/updatePaymentMethod';
 import MemberPayment from '../MemberPayment';
 
 @ArgsType()
 export class CreateSubsciptionArgs {
   @Field()
   memberTypeId: string;
-
-  @Field()
-  paymentMethodId: string;
 }
 
 interface CreateMemberPaymentArgs extends BloomManagerArgs {
@@ -49,7 +45,7 @@ const createMemberPaymentFromSubscription = ({
       amount: lastestInvoice.amount_paid,
       member,
       stripeInvoiceId: lastestInvoice.id,
-      stripeInvoicePdf: lastestInvoice.invoice_pdf,
+      stripeInvoiceUrl: lastestInvoice.hosted_invoice_url,
       type
     });
 
@@ -57,10 +53,10 @@ const createMemberPaymentFromSubscription = ({
   }
 };
 
-export default async function createSubscription(
-  { memberTypeId, paymentMethodId }: CreateSubsciptionArgs,
+const createSubscription = async (
+  { memberTypeId }: CreateSubsciptionArgs,
   { communityId, memberId }: GQLContext
-) {
+) => {
   const bm = new BloomManager();
 
   const [community, type]: [Community, MemberType] = await Promise.all([
@@ -74,8 +70,6 @@ export default async function createSubscription(
   // customer ID if it wasn't stored.
   const member = await createStripeCustomer({ memberId });
 
-  await updatePaymentMethod({ paymentMethodId }, { communityId, memberId });
-
   // Creates the recurring subscription.
   const subscription = await stripe.subscriptions.create(
     {
@@ -88,10 +82,7 @@ export default async function createSubscription(
 
   // If the Stripe subscription succeeds, attach the payment method to the
   // user.
-  const updatedMember = wrap(member).assign({
-    stripePaymentMethodId: paymentMethodId,
-    type
-  });
+  const updatedMember = wrap(member).assign({ type });
 
   createMemberPaymentFromSubscription({
     bm,
@@ -103,4 +94,6 @@ export default async function createSubscription(
   await bm.flush('STRIPE_SUBSCRIPTION_CREATED');
 
   return updatedMember;
-}
+};
+
+export default createSubscription;

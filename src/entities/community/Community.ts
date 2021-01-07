@@ -59,7 +59,7 @@ export default class Community extends BaseEntity {
 
   @BeforeCreate()
   beforeCreate() {
-    this.encodedUrlName = toLowerCaseDash(this.name);
+    if (!this.encodedUrlName) this.encodedUrlName = toLowerCaseDash(this.name);
     if (!this.logoUrl) {
       this.logoUrl = `${DIGITAL_OCEAN_SPACE_URL}/${this.encodedUrlName}.png`;
     }

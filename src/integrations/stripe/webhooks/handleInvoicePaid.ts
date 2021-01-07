@@ -7,7 +7,7 @@ import { EmailTemplate, PaymentReceiptVars } from '@core/emails/types';
 import { Community, Member } from '@entities/entities';
 import { stripe } from '../Stripe.util';
 
-export default async function handleInvoicePaid(event: Stripe.Event) {
+const handleInvoicePaid = async (event: Stripe.Event) => {
   const stripeAccountId: string = event.account;
   const invoice = event.data.object as Stripe.Invoice;
 
@@ -66,4 +66,6 @@ export default async function handleInvoicePaid(event: Stripe.Event) {
     to: email,
     variables: emailOpts
   });
-}
+};
+
+export default handleInvoicePaid;

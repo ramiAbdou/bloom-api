@@ -1,4 +1,3 @@
-import { IsUrl } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
 import { Entity, OneToOne, Property } from '@mikro-orm/core';
 
@@ -11,11 +10,6 @@ export default class CommunityApplication extends BaseEntity {
   @Field()
   @Property({ type: 'text' })
   description: string;
-
-  @Field({ nullable: true })
-  @Property({ nullable: true, type: 'text' })
-  @IsUrl()
-  imageUrl: string;
 
   @Field()
   @Property()
