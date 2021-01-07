@@ -21,6 +21,7 @@ import promoteToAdmin from './repo/promoteToAdmin';
 import respondToApplicants, {
   RespondToApplicantsArgs
 } from './repo/respondToApplicants';
+import updateAutoRenew, { UpdateAutoRenewArgs } from './repo/updateAutoRenew';
 import updatePaymentMethod, {
   UpdatePaymentMethodArgs
 } from './repo/updatePaymentMethod';
@@ -90,6 +91,15 @@ export default class MemberResolver {
     @Ctx() ctx: GQLContext
   ) {
     return !!(await respondToApplicants(args, ctx));
+  }
+
+  @Authorized()
+  @Mutation(() => Member, { nullable: true })
+  async updateAutoRenew(
+    @Args() args: UpdateAutoRenewArgs,
+    @Ctx() ctx: GQLContext
+  ) {
+    return updateAutoRenew(args, ctx);
   }
 
   @Authorized()

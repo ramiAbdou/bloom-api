@@ -62,6 +62,10 @@ export default class Member extends BaseEntity {
 
   // ## STRIPE INFORMATION
 
+  @Field(() => Boolean)
+  @Property({ type: Boolean })
+  autoRenew = true;
+
   // We don't store any of the customer's financial data in our server. Stripe
   // handles all of that for us, we just need Stripe's customer ID in order
   // to use recurring payments.

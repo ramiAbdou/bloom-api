@@ -61,6 +61,7 @@ export enum QueryEvent {
 }
 
 export type LoggerEvent =
+  | 'AUTO_RENEW_UPDATED'
   | 'COMMUNITY_CREATED'
   | 'COMMUNITY_CSV_IMPORTED'
   | 'EMAIL_FAILED'
