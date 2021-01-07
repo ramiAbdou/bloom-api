@@ -7,6 +7,7 @@ import BloomManager from '@core/db/BloomManager';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import Community from '../../community/Community';
 import Member from '../Member';
+import createStripeCustomer from './createStripeCustomer';
 
 @ArgsType()
 export class UpdatePaymentMethodArgs {
@@ -26,7 +27,14 @@ const updatePaymentMethod = async (
   ]);
 
   const { stripeAccountId } = community.integrations;
-  const { stripeCustomerId } = member;
+  let { stripeCustomerId } = member;
+
+  // If no Stripe customer ID exists on the member, create and attach the
+  // stripeCustomerId to the member.
+  if (!stripeCustomerId) {
+    const updatedMember: Member = await createStripeCustomer({ memberId });
+    stripeCustomerId = updatedMember.stripeCustomerId;
+  }
 
   // Attaches the PaymentMethod to the customer.
   await stripe.paymentMethods.attach(

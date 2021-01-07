@@ -23,6 +23,7 @@ const createStripeCustomer = async ({
   if (member.stripeCustomerId) return member;
 
   await bm.em.populate(member, ['community.integrations', 'user']);
+
   const { email, fullName } = member.user;
   const { stripeAccountId } = member.community.integrations;
 
