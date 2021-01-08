@@ -95,7 +95,7 @@ const createSubscription = async (
   await bm.flush('STRIPE_SUBSCRIPTION_CREATED');
 
   cache.invalidateEntries([
-    `${QueryEvent.GET_PAYMENT_HISTORY}-${memberId}`,
+    `${QueryEvent.GET_PAYMENT_HISTORY}-${communityId}`,
     `${QueryEvent.GET_PAYMENTS}-${memberId}`
   ]);
 
