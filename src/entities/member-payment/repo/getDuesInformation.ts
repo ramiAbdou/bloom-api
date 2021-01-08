@@ -14,9 +14,7 @@ export class GetDuesInformationResult {
   types: MemberType[];
 }
 
-export default async function getDuesInformation({
-  communityId
-}: GQLContext): Promise<GetDuesInformationResult> {
+const getDuesInformation = async ({ communityId }: GQLContext) => {
   const { integrations, types }: Community = await new BloomManager().findOne(
     Community,
     { id: communityId },
@@ -27,4 +25,6 @@ export default async function getDuesInformation({
     stripeAccountId: integrations.stripeAccountId,
     types: types.getItems()
   };
-}
+};
+
+export default getDuesInformation;
