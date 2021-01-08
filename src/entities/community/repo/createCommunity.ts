@@ -12,7 +12,7 @@ import Community from '../Community';
  * of a logo. For now, the community should send Bloom a square logo that
  * we will manually add to the Digital Ocean space.
  */
-export default async ({
+const createCommunity = async ({
   application,
   questions,
   types,
@@ -45,8 +45,4 @@ export default async ({
   return community;
 };
 
-// bm.create(Member, {
-//   role: 'OWNER',
-//   type: defaultType.id,
-//   user: bm.create(User, { ...owner })
-// })
+export default createCommunity;
