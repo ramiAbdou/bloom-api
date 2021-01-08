@@ -1,6 +1,6 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../member/Member';
 import MemberPayment from './MemberPayment';
@@ -28,9 +28,29 @@ export default class MemberPaymentResolver {
     return getDuesInformation(ctx);
   }
 
+  @Authorized('ADMIN')
+  @Query(() => [MemberPayment])
+  async getDuesHistory(@Ctx() { communityId }: GQLContext) {
+    return new BloomManager().find(
+      MemberPayment,
+      { member: { community: { id: communityId } } },
+      {
+        cacheKey: `${QueryEvent.GET_PAYMENTS}-${communityId}`,
+        populate: ['member.user', 'type']
+      }
+    );
+  }
+
   @Authorized()
   @Query(() => [MemberPayment])
   async getPaymentHistory(@Ctx() { memberId }: GQLContext) {
-    return new BloomManager().find(MemberPayment, { member: { id: memberId } });
+    return new BloomManager().find(
+      MemberPayment,
+      { member: { id: memberId } },
+      {
+        cacheKey: `${QueryEvent.GET_PAYMENT_HISTORY}-${memberId}`,
+        populate: ['member']
+      }
+    );
   }
 }

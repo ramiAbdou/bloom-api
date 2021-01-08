@@ -203,6 +203,7 @@ export default class Member extends BaseEntity {
   @OneToMany(() => MemberData, ({ member }) => member)
   data = new Collection<MemberData>(this);
 
+  @Field(() => [MemberPayment])
   @OneToMany(() => MemberPayment, ({ member }) => member)
   payments: Collection<MemberPayment> = new Collection<MemberPayment>(this);
 

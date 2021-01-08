@@ -3,7 +3,8 @@ import Stripe from 'stripe';
 import { ArgsType, Field } from 'type-graphql';
 import { wrap } from '@mikro-orm/core';
 
-import { BloomManagerArgs, GQLContext } from '@constants';
+import { BloomManagerArgs, GQLContext, QueryEvent } from '@constants';
+import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import Community from '../../community/Community';
@@ -92,6 +93,11 @@ const createSubscription = async (
   });
 
   await bm.flush('STRIPE_SUBSCRIPTION_CREATED');
+
+  cache.invalidateEntries([
+    `${QueryEvent.GET_PAYMENT_HISTORY}-${memberId}`,
+    `${QueryEvent.GET_PAYMENTS}-${memberId}`
+  ]);
 
   return updatedMember;
 };
