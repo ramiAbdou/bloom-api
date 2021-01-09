@@ -26,10 +26,6 @@ const createStripeProduct = async ({
 }: CreateStripeProductParams) => {
   const { amount, id, name, recurrence } = type;
 
-  // If the membership is free, no need to create a Stripe subscription
-  // product and price.
-  if (!amount) return;
-
   // Create the subscription even if the product is LIFETIME fulfilled
   // subscription.
   const { id: stripeProductId } = await stripe.products.create(
@@ -63,7 +59,7 @@ const createStripeProduct = async ({
  * Creates the corresponding Stripe products and prices for every MemberType
  * that isn't free. Updates the MemberType entity as well.
  */
-export default async ({
+const createStripeProducts = async ({
   stripeAccountId,
   types
 }: CreateStripeProductsParams) => {
@@ -73,3 +69,5 @@ export default async ({
     )
   );
 };
+
+export default createStripeProducts;

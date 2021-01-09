@@ -16,6 +16,9 @@ import MemberPayment from '../MemberPayment';
 
 @ArgsType()
 export class CreateSubsciptionArgs {
+  @Field({ defaultValue: true })
+  autoRenew: boolean;
+
   @Field()
   memberTypeId: string;
 }
@@ -55,7 +58,7 @@ const createMemberPaymentFromSubscription = ({
 };
 
 const createSubscription = async (
-  { memberTypeId }: CreateSubsciptionArgs,
+  { autoRenew, memberTypeId }: CreateSubsciptionArgs,
   { communityId, memberId }: GQLContext
 ) => {
   const bm = new BloomManager();
@@ -83,7 +86,7 @@ const createSubscription = async (
 
   // If the Stripe subscription succeeds, attach the payment method to the
   // user.
-  const updatedMember = wrap(member).assign({ type });
+  const updatedMember = wrap(member).assign({ autoRenew, type });
 
   createMemberPaymentFromSubscription({
     bm,
@@ -95,8 +98,8 @@ const createSubscription = async (
   await bm.flush('STRIPE_SUBSCRIPTION_CREATED');
 
   cache.invalidateEntries([
-    `${QueryEvent.GET_PAYMENT_HISTORY}-${communityId}`,
-    `${QueryEvent.GET_PAYMENTS}-${memberId}`
+    `${QueryEvent.GET_PAYMENT_HISTORY}-${memberId}`,
+    `${QueryEvent.GET_PAYMENTS}-${communityId}`
   ]);
 
   return updatedMember;
