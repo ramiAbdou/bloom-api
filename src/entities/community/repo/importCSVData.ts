@@ -102,7 +102,7 @@ const processRow = async ({
 
     // IMPORTANT: The value must be a valid input to the Date constructor
     // or else errors will be thrown!
-    else if (key === 'JOINED_ON') {
+    else if (key === 'JOINED_AT') {
       const dayObject = day.utc(value);
 
       // Safety check to ensure the date is formatted correctly.

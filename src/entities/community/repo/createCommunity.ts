@@ -20,24 +20,34 @@ const createCommunity = async ({
 }: EntityData<Community>): Promise<Community> => {
   const bm = new BloomManager();
 
-  const persistedTypes: MemberType[] = types.map((type) =>
-    bm.create(MemberType, type)
-  );
+  let defaultTypeId: string = null;
 
-  const defaultType = persistedTypes.find(({ name }) => {
-    return types.find((type) => type.name === name).isDefault;
+  const persistedTypes: MemberType[] = types.map((type) => {
+    const persistedType: MemberType = bm.create(MemberType, type);
+    if (type.isDefault) defaultTypeId = persistedType.id;
+    return persistedTypes;
   });
+
+  // Add the first name, last name and joined at dates to array of questions.
+  const questionsWithDefaults: EntityData<Question>[] = [
+    { category: 'FIRST_NAME', title: 'First Name' },
+    { category: 'LAST_NAME', title: 'Last Name' },
+    ...questions,
+    { category: 'JOINED_AT', title: 'Joined On' }
+  ];
+
+  const persistedQuestions = questionsWithDefaults.map((question, i: number) =>
+    bm.create(Question, { ...question, order: i })
+  );
 
   const community = bm.create(Community, {
     ...data,
     application: application
       ? bm.create(CommunityApplication, application)
       : null,
-    defaultType: defaultType.id,
+    defaultType: defaultTypeId,
     integrations: bm.create(CommunityIntegrations, {}),
-    questions: questions.map((question, i: number) =>
-      bm.create(Question, { ...question, order: i })
-    ),
+    questions: persistedQuestions,
     types: persistedTypes
   });
 

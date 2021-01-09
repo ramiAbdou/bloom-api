@@ -97,7 +97,7 @@ export default class Member extends BaseEntity {
         else if (category === 'EMAIL') value = email;
         else if (category === 'FIRST_NAME') value = firstName;
         else if (category === 'GENDER') value = gender;
-        else if (category === 'JOINED_ON') value = this.joinedOn;
+        else if (category === 'JOINED_AT') value = this.joinedOn;
         else if (category === 'LAST_NAME') value = lastName;
         else if (category === 'MEMBERSHIP_TYPE') value = this.type.name;
 
@@ -128,7 +128,7 @@ export default class Member extends BaseEntity {
         else if (category === 'EMAIL') value = email;
         else if (category === 'FIRST_NAME') value = firstName;
         else if (category === 'GENDER') value = gender;
-        else if (category === 'JOINED_ON') value = this.joinedOn;
+        else if (category === 'JOINED_AT') value = this.joinedOn;
         else if (category === 'LAST_NAME') value = lastName;
         else if (category === 'MEMBERSHIP_TYPE') value = this.type.name;
 
@@ -161,7 +161,7 @@ export default class Member extends BaseEntity {
           const result = data.find(({ question }) => question.title === title);
 
           if (result) value = result.value;
-          else if (category === 'JOINED_ON') value = this.joinedOn;
+          else if (category === 'JOINED_AT') value = this.joinedOn;
           else if (category === 'EMAIL') value = email;
           else if (category === 'FIRST_NAME') value = firstName;
           else if (category === 'GENDER') value = gender;
