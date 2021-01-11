@@ -89,6 +89,10 @@ export default class Question extends BaseEntity {
       this.inDirectoryCard = false;
     }
 
+    if (this.category === QuestionCategory.JOINED_AT) {
+      this.inApplication = false;
+    }
+
     if (this.category === 'GENDER') {
       this.type = QuestionType.MULTIPLE_CHOICE;
       this.options = ['Male', 'Female', 'Non-Binary', 'Prefer Not to Say'];

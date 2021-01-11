@@ -10,8 +10,7 @@ import {
 
 import { GQLContext } from '@constants';
 import { decodeToken } from '@util/util';
-import changeCommunity, { ChangeCommunityArgs } from './repo/changeCommunity';
-import getUser, { GetUserResult } from './repo/getUser';
+import getUser, { GetUserArgs, GetUserResult } from './repo/getUser';
 import refreshToken from './repo/refreshToken';
 import sendTemporaryLoginLink, {
   SendTemporaryLoginLinkArgs
@@ -19,22 +18,16 @@ import sendTemporaryLoginLink, {
 
 @Resolver()
 export default class UserResolver {
-  /**
-   * Logs a user out of the session by removing the HTTP only cookies.
-   */
   @Authorized()
-  @Mutation(() => Boolean, { nullable: true })
-  async changeCommunity(
-    @Args() args: ChangeCommunityArgs,
-    @Ctx() ctx: GQLContext
-  ) {
-    return changeCommunity(args, ctx);
+  @Query(() => GetUserResult, { nullable: true })
+  async getActiveCommunity(@Args() args: GetUserArgs, @Ctx() ctx: GQLContext) {
+    return getUser(args, ctx);
   }
 
   @Authorized()
   @Query(() => GetUserResult, { nullable: true })
-  async getUser(@Ctx() ctx: GQLContext) {
-    return getUser(ctx);
+  async getUser(@Args() args: GetUserArgs, @Ctx() ctx: GQLContext) {
+    return getUser(args, ctx);
   }
 
   /**
