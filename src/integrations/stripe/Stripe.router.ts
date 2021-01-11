@@ -11,9 +11,9 @@ import handleInvoicePaid from './webhooks/handleInvoicePaid';
 const router = Router();
 
 router.get('/auth', async ({ query }: Request, res: Response) => {
-  const { code, state: encodedUrlName } = query as AuthQueryParams;
-  await storeStripeTokens(encodedUrlName, code);
-  res.redirect(`${APP.CLIENT_URL}/${encodedUrlName}/integrations`);
+  const { code, state: urlName } = query as AuthQueryParams;
+  await storeStripeTokens(urlName, code);
+  res.redirect(`${APP.CLIENT_URL}/${urlName}/integrations`);
 });
 
 router.post(

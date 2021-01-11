@@ -37,6 +37,8 @@ const refreshToken = async ({
   // present, then we verify that before proceeding.
   if (!user?.id) return null;
 
+  await user.members.init();
+
   const member: Member = memberId
     ? user.members.getItems().find(({ id }) => id === memberId)
     : user.members[0];

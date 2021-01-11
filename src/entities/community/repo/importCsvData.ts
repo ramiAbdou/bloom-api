@@ -24,7 +24,7 @@ interface ProcessRowArgs extends BloomManagerArgs {
 }
 
 interface ImportCsvDataArgs {
-  encodedUrlName: string;
+  urlName: string;
   ownerEmail: string;
 }
 
@@ -62,8 +62,7 @@ const processRow = async ({
   const [user, wasFound] = await bm.findOneOrCreate(
     User,
     { email },
-    { email, firstName, gender, lastName },
-    { cache: false }
+    { email, firstName, gender, lastName }
   );
 
   // If a member already exists for the user, then don't create a new
@@ -87,9 +86,11 @@ const processRow = async ({
     if (!value) return;
 
     if (key === QuestionCategory.MEMBERSHIP_TYPE) {
-      const type = types.find(({ name }) => value === name);
-      if (type) member.type = type;
-    } else if (key === QuestionCategory.JOINED_AT) {
+      member.type = types.find(({ name }) => value === name);
+      return;
+    }
+
+    if (key === QuestionCategory.JOINED_AT) {
       const dayObject = day.utc(value);
 
       // Safety check to ensure the date is formatted correctly.
@@ -99,16 +100,16 @@ const processRow = async ({
 
       member.createdAt = createdAt;
       member.joinedAt = createdAt;
+      return;
     }
 
     // If the question wasn't a special category question, then we find
     // the question with the given key as the title. We proceed to make
     // the appropriate member data.
-    else {
-      const question = questions.find(({ title }) => key === title);
-      if (question) {
-        bm.create(MemberData, { member, question, value });
-      }
+
+    const question = questions.find(({ title }) => key === title);
+    if (question) {
+      bm.create(MemberData, { member, question, value });
     }
   });
 };
@@ -120,22 +121,15 @@ const processRow = async ({
  * NEW users if the email is not found in the DB based on the CSV row, or
  * adds a Member based on the current users in our DB.
  */
-const importCsvData = async ({
-  encodedUrlName,
-  ownerEmail
-}: ImportCsvDataArgs) => {
+const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
   const bm = new BloomManager();
 
   const [community, responses]: [
     Community,
     Record<string, any>[]
   ] = await Promise.all([
-    bm.findOne(
-      Community,
-      { encodedUrlName },
-      { populate: ['questions', 'types'] }
-    ),
-    csv().fromFile(`./membership-csv/${encodedUrlName}.csv`)
+    bm.findOne(Community, { urlName }, { populate: ['questions', 'types'] }),
+    csv().fromFile(`./membership-csv/${urlName}.csv`)
   ]);
 
   const questions = community.questions.getItems();

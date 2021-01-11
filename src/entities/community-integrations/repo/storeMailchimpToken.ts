@@ -8,11 +8,11 @@ import CommunityIntegrations from '../CommunityIntegrations';
 
 /**
  * Returns the updated community after updating it's Mailchimp token. If
- * no community was found based on the encodedUrlName, returns null.
+ * no community was found based on the urlName, returns null.
  *
  * Precondition: The community ID must represent a community.
  */
-export default async (encodedUrlName: string, code: string): Promise<void> => {
+export default async (urlName: string, code: string): Promise<void> => {
   // All the other redirect URIs use localhost when in development, but
   // Mailchimp forces us to use 127.0.0.1 instead, so we can't use the
   // APP.SERVER_URL local URL.
@@ -34,7 +34,7 @@ export default async (encodedUrlName: string, code: string): Promise<void> => {
 
   const { community } = await new BloomManager().findOneAndUpdate(
     CommunityIntegrations,
-    { community: { encodedUrlName } },
+    { community: { urlName } },
     { mailchimpAccessToken: data?.access_token },
     { event: 'MAILCHIMP_TOKEN_STORED' }
   );

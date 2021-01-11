@@ -8,11 +8,10 @@ import {
   Resolver
 } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
-import BloomManager from '@core/db/BloomManager';
-import { User } from '@entities/entities';
+import { GQLContext } from '@constants';
 import { decodeToken } from '@util/util';
 import changeCommunity, { ChangeCommunityArgs } from './repo/changeCommunity';
+import getUser, { GetUserResult } from './repo/getUser';
 import refreshToken from './repo/refreshToken';
 import sendTemporaryLoginLink, {
   SendTemporaryLoginLinkArgs
@@ -33,20 +32,9 @@ export default class UserResolver {
   }
 
   @Authorized()
-  @Query(() => User, { nullable: true })
-  async getUser(@Ctx() { userId }: GQLContext) {
-    return new BloomManager().findOne(
-      User,
-      { id: userId },
-      {
-        cacheKey: `${QueryEvent.GET_USER}-${userId}`,
-        populate: [
-          'members.community.integrations',
-          'members.community.types',
-          'members.type'
-        ]
-      }
-    );
+  @Query(() => GetUserResult, { nullable: true })
+  async getUser(@Ctx() ctx: GQLContext) {
+    return getUser(ctx);
   }
 
   /**

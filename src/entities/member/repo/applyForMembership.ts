@@ -26,7 +26,7 @@ export class ApplyForMembershipArgs {
   email: string;
 
   @Field()
-  encodedUrlName: string;
+  urlName: string;
 }
 
 /**
@@ -36,7 +36,7 @@ export class ApplyForMembershipArgs {
 export default async ({
   data,
   email,
-  encodedUrlName
+  urlName
 }: ApplyForMembershipArgs): Promise<Member> => {
   const bm = new BloomManager();
 
@@ -44,7 +44,7 @@ export default async ({
   // data in a relational manner.
   const community = await bm.findOne(
     Community,
-    { encodedUrlName },
+    { urlName },
     { populate: ['integrations', 'questions', 'types'] }
   );
 
