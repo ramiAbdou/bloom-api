@@ -64,8 +64,10 @@
     "validator": "^13.0.0"
   },
   "devDependencies": {
+    "@types/deline": "^1.0.1",
     "@types/dotenv-webpack": "^1.8.0",
     "awesome-typescript-loader": "^5.2.1",
+    "deline": "^1.0.4",
     "dotenv-webpack": "^1.8.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-typescript-prettier": "^2.1.1",

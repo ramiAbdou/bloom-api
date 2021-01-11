@@ -25,7 +25,7 @@ const createCommunity = async ({
   const persistedTypes: MemberType[] = types.map((type) => {
     const persistedType: MemberType = bm.create(MemberType, type);
     if (type.isDefault) defaultTypeId = persistedType.id;
-    return persistedTypes;
+    return persistedType;
   });
 
   // Add the first name, last name and joined at dates to array of questions.
