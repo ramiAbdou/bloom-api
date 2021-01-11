@@ -12,6 +12,7 @@ import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { User } from '@entities/entities';
 import { decodeToken } from '@util/util';
+import changeCommunity, { ChangeCommunityArgs } from './repo/changeCommunity';
 import refreshToken from './repo/refreshToken';
 import sendTemporaryLoginLink, {
   SendTemporaryLoginLinkArgs
@@ -19,6 +20,18 @@ import sendTemporaryLoginLink, {
 
 @Resolver()
 export default class UserResolver {
+  /**
+   * Logs a user out of the session by removing the HTTP only cookies.
+   */
+  @Authorized()
+  @Mutation(() => Boolean, { nullable: true })
+  async changeCommunity(
+    @Args() args: ChangeCommunityArgs,
+    @Ctx() ctx: GQLContext
+  ) {
+    return changeCommunity(args, ctx);
+  }
+
   @Authorized()
   @Query(() => User, { nullable: true })
   async getUser(@Ctx() { userId }: GQLContext) {
