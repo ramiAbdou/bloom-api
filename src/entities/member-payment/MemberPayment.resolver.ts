@@ -1,4 +1,5 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { QueryOrder } from '@mikro-orm/core';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
@@ -61,6 +62,7 @@ export default class MemberPaymentResolver {
       { member: { id: memberId } },
       {
         cacheKey: `${QueryEvent.GET_PAYMENT_HISTORY}-${memberId}`,
+        orderBy: { createdAt: QueryOrder.DESC },
         populate: ['member']
       }
     );
