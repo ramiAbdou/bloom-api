@@ -52,6 +52,7 @@ const createSubscription = async (
   // If the Stripe subscription succeeds, attach the payment method to the
   // user.
   member.autoRenew = autoRenew;
+  member.stripeSubscriptionId = subscription.id;
 
   const payment: MemberPayment = await createMemberPayment({
     bm,

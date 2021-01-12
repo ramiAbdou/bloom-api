@@ -71,6 +71,10 @@ export default class Member extends BaseEntity {
   @Property({ nullable: true })
   stripePaymentMethodId: string;
 
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  stripeSubscriptionId: string;
+
   // ## MEMBER FUNCTIONS
 
   /**
