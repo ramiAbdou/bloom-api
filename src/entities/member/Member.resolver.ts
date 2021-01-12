@@ -11,9 +11,6 @@ import applyForMembership, {
 import createMembers, { CreateMembersArgs } from './repo/createMembers';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import demoteToMember from './repo/demoteToMember';
-import getActiveMemberAnalytics, {
-  GetActiveMemberAnalyticsResult
-} from './repo/getActiveAnalytics';
 import getTotalMemberAnalytics, {
   GetTotalMemberAnalyticsResult
 } from './repo/getTotalAnalytics';
@@ -55,12 +52,6 @@ export default class MemberResolver {
   @Mutation(() => [Member], { nullable: true })
   async demoteToMember(@Args() args: AdminArgs, @Ctx() ctx: GQLContext) {
     return demoteToMember(args, ctx);
-  }
-
-  @Authorized('ADMIN')
-  @Query(() => GetActiveMemberAnalyticsResult, { nullable: true })
-  async getActiveMemberAnalytics(@Ctx() ctx: GQLContext) {
-    return getActiveMemberAnalytics(ctx);
   }
 
   @Authorized()

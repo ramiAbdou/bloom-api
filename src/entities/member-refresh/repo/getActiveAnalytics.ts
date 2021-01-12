@@ -4,8 +4,8 @@ import { Field, ObjectType } from 'type-graphql';
 import { GQLContext, QueryEvent } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
-import MemberRefresh from '../../member-refresh/MemberRefresh';
-import { TimeSeriesData } from '../Member.types';
+import { TimeSeriesData } from '../../member/Member.types';
+import MemberRefresh from '../MemberRefresh';
 
 @ObjectType()
 export class GetActiveMemberAnalyticsResult {
@@ -19,31 +19,38 @@ export class GetActiveMemberAnalyticsResult {
   activeGrowth: number;
 }
 
-export default async ({
+const getActiveAnalytics = async ({
   communityId
 }: GQLContext): Promise<GetActiveMemberAnalyticsResult> => {
+  // Attempt to pull from the cache first.
   const cacheKey = `${QueryEvent.GET_ACTIVE_MEMBER_ANALYTICS}-${communityId}`;
   if (cache.has(cacheKey)) return cache.get(cacheKey);
 
-  const bm = new BloomManager();
-  const startOfToday = day.utc().startOf('day');
-  const endOfToday = day.utc().endOf('day');
+  const startOfToday = day.utc().startOf('d');
+  const endOfToday = day.utc().endOf('d');
 
-  const refreshes: MemberRefresh[] = await bm.find(MemberRefresh, {
-    createdAt: { $gte: endOfToday.subtract(90, 'd').format() },
-    member: { community: { id: communityId } }
-  });
+  const refreshes: MemberRefresh[] = await new BloomManager().find(
+    MemberRefresh,
+    {
+      createdAt: { $gte: endOfToday.subtract(90, 'd').format() },
+      member: { community: { id: communityId } }
+    }
+  );
 
   // Build an array of member count over the last 120 days.
-  const activeChartData: TimeSeriesData[] = await Promise.all(
+  const timeSeriesData: TimeSeriesData[] = await Promise.all(
     Array.from(Array(90).keys()).map(async (i: number) => {
       // The name key is the stringified datetime.
       const dateKey = endOfToday.subtract(90 - i - 1, 'd').format();
       const startKey = startOfToday.subtract(90 - i - 1, 'd').format();
 
-      const value = refreshes.filter(
-        ({ createdAt }) => createdAt >= startKey && createdAt <= dateKey
-      ).length;
+      const members: Set<string> = new Set<string>();
+
+      const value = refreshes.filter(({ createdAt, member }) => {
+        if (members.has(member.id)) return false;
+        members.add(member.id);
+        return createdAt >= startKey && createdAt <= dateKey;
+      }).length;
 
       return { name: dateKey, value };
     })
@@ -51,19 +58,21 @@ export default async ({
 
   // To calculate the totalGrowth, we do a simple subtraction of the count
   // over the last 30 days.
-  const { length } = activeChartData;
-  const lastTally = activeChartData[length - 1].value;
-  const thirtyDaysAgoTally = activeChartData[length - 30 - 1].value;
+  const { length } = timeSeriesData;
+  const lastTally = timeSeriesData[length - 1].value;
+  const thirtyDaysAgoTally = timeSeriesData[length - 30 - 1].value;
 
   const activeGrowth = parseFloat(
     (((lastTally - thirtyDaysAgoTally) / (lastTally || 1)) * 100).toFixed(1)
   );
 
   const result: GetActiveMemberAnalyticsResult = {
-    activeChartData,
+    activeChartData: timeSeriesData,
     activeGrowth
   };
 
   cache.set(cacheKey, result);
   return result;
 };
+
+export default getActiveAnalytics;
