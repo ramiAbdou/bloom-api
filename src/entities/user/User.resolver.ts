@@ -15,6 +15,10 @@ import refreshToken from './repo/refreshToken';
 import sendTemporaryLoginLink, {
   SendTemporaryLoginLinkArgs
 } from './repo/sendTemporaryLoginLink';
+import updateUser, {
+  UpdateUserArgs,
+  UpdateUserResult
+} from './repo/updateUser';
 
 @Resolver()
 export default class UserResolver {
@@ -52,6 +56,12 @@ export default class UserResolver {
   @Mutation(() => Boolean, { nullable: true })
   async sendTemporaryLoginLink(@Args() args: SendTemporaryLoginLinkArgs) {
     return sendTemporaryLoginLink(args);
+  }
+
+  @Authorized()
+  @Mutation(() => UpdateUserResult)
+  async updateUser(@Args() args: UpdateUserArgs, @Ctx() ctx: GQLContext) {
+    return updateUser(args, ctx);
   }
 
   @Query(() => Boolean)
