@@ -49,6 +49,7 @@ export default class MemberPaymentResolver {
       { member: { community: { id: communityId } } },
       {
         cacheKey: `${QueryEvent.GET_PAYMENTS}-${communityId}`,
+        orderBy: { createdAt: QueryOrder.DESC },
         populate: ['member.user', 'type']
       }
     );
