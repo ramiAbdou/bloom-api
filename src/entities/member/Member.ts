@@ -24,6 +24,7 @@ import {
   MemberStatus,
   QuestionValue
 } from './Member.types';
+import getNextPaymentDate from './repo/getNextPaymentDate';
 import getPaymentMethod, {
   GetPaymentMethodResult
 } from './repo/getPaymentMethod';
@@ -177,10 +178,18 @@ export default class Member extends BaseEntity {
     );
   }
 
+  // ## STRIPE RELATED MEMBER FUNCTIONS
+
   @Authorized()
   @Field(() => GetPaymentMethodResult, { nullable: true })
   async paymentMethod() {
     return getPaymentMethod(this.id);
+  }
+
+  @Authorized()
+  @Field(() => String, { nullable: true })
+  async nextPaymentDate() {
+    return getNextPaymentDate(this.id);
   }
 
   @BeforeCreate()
