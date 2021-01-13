@@ -12,7 +12,7 @@ import Community from '../Community';
  * of a logo. For now, the community should send Bloom a square logo that
  * we will manually add to the Digital Ocean space.
  */
-export default async ({
+const createCommunity = async ({
   application,
   questions,
   types,
@@ -20,24 +20,34 @@ export default async ({
 }: EntityData<Community>): Promise<Community> => {
   const bm = new BloomManager();
 
-  const persistedTypes: MemberType[] = types.map((type) =>
-    bm.create(MemberType, type)
-  );
+  let defaultTypeId: string = null;
 
-  const defaultType = persistedTypes.find(({ name }) => {
-    return types.find((type) => type.name === name).isDefault;
+  const persistedTypes: MemberType[] = types.map((type) => {
+    const persistedType: MemberType = bm.create(MemberType, type);
+    if (type.isDefault) defaultTypeId = persistedType.id;
+    return persistedType;
   });
+
+  // Add the first name, last name and joined at dates to array of questions.
+  const questionsWithDefaults: EntityData<Question>[] = [
+    { category: 'FIRST_NAME', title: 'First Name' },
+    { category: 'LAST_NAME', title: 'Last Name' },
+    ...questions,
+    { category: 'JOINED_AT', title: 'Joined On' }
+  ];
+
+  const persistedQuestions = questionsWithDefaults.map((question, i: number) =>
+    bm.create(Question, { ...question, order: i })
+  );
 
   const community = bm.create(Community, {
     ...data,
     application: application
       ? bm.create(CommunityApplication, application)
       : null,
-    defaultType: defaultType.id,
+    defaultType: defaultTypeId,
     integrations: bm.create(CommunityIntegrations, {}),
-    questions: questions.map((question, i: number) =>
-      bm.create(Question, { ...question, order: i })
-    ),
+    questions: persistedQuestions,
     types: persistedTypes
   });
 
@@ -45,8 +55,4 @@ export default async ({
   return community;
 };
 
-// bm.create(Member, {
-//   role: 'OWNER',
-//   type: defaultType.id,
-//   user: bm.create(User, { ...owner })
-// })
+export default createCommunity;

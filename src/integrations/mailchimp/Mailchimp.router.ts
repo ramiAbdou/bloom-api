@@ -6,13 +6,9 @@ import storeMailchimpToken from '@entities/community-integrations/repo/storeMail
 const router = Router();
 
 router.get('/auth', async ({ query }: Request, res: Response) => {
-  const { code, state: encodedUrlName } = query as AuthQueryParams;
-
-  await storeMailchimpToken(encodedUrlName, code);
-
-  res.redirect(
-    `${APP.CLIENT_URL}/${encodedUrlName}/integrations?flow=mailchimp`
-  );
+  const { code, state: urlName } = query as AuthQueryParams;
+  await storeMailchimpToken(urlName, code);
+  res.redirect(`${APP.CLIENT_URL}/${urlName}/integrations?flow=mailchimp`);
 });
 
 export default router;

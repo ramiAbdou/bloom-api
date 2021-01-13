@@ -8,14 +8,12 @@ import Community from './Community';
 @Resolver()
 export default class CommunityResolver {
   @Query(() => Community, { nullable: true })
-  async getApplication(
-    @Arg('encodedUrlName') encodedUrlName: string
-  ): Promise<Community> {
-    return new BloomManager().findOne(
+  async getApplication(@Arg('urlName') urlName: string): Promise<Community> {
+    return new BloomManager().findOneOrFail(
       Community,
-      { encodedUrlName },
+      { urlName },
       {
-        cacheKey: `${QueryEvent.GET_APPLICATION}-${encodedUrlName}`,
+        cacheKey: `${QueryEvent.GET_APPLICATION}-${urlName}`,
         populate: ['application', 'questions']
       }
     );

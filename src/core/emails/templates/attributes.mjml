@@ -8,12 +8,12 @@
 
   <mj-button 
     background-color="#F58023"
-    border-radius="8px" 
+    border-radius="4px" 
     color="#FFFFFF"
     inner-padding="0px 16px"
     height="48px"
     font-size="13px"
-    font-weight="500px"
+    font-weight="500"
     text-transform="uppercase"
   />
 

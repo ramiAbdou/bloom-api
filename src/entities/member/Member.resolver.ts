@@ -1,7 +1,9 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
+import BloomManager from '@core/db/BloomManager';
 import { Member } from '@entities/entities';
+import { PopulateArgs } from '../../util/gql.types';
 import { AdminArgs } from './Member.types';
 import applyForMembership, {
   ApplyForMembershipArgs
@@ -9,9 +11,6 @@ import applyForMembership, {
 import createMembers, { CreateMembersArgs } from './repo/createMembers';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import demoteToMember from './repo/demoteToMember';
-import getActiveMemberAnalytics, {
-  GetActiveMemberAnalyticsResult
-} from './repo/getActiveAnalytics';
 import getTotalMemberAnalytics, {
   GetTotalMemberAnalyticsResult
 } from './repo/getTotalAnalytics';
@@ -19,6 +18,10 @@ import promoteToAdmin from './repo/promoteToAdmin';
 import respondToApplicants, {
   RespondToApplicantsArgs
 } from './repo/respondToApplicants';
+import updateAutoRenew, { UpdateAutoRenewArgs } from './repo/updateAutoRenew';
+import updatePaymentMethod, {
+  UpdatePaymentMethodArgs
+} from './repo/updatePaymentMethod';
 
 @Resolver()
 export default class MemberResolver {
@@ -51,10 +54,13 @@ export default class MemberResolver {
     return demoteToMember(args, ctx);
   }
 
-  @Authorized('ADMIN')
-  @Query(() => GetActiveMemberAnalyticsResult, { nullable: true })
-  async getActiveMemberAnalytics(@Ctx() ctx: GQLContext) {
-    return getActiveMemberAnalytics(ctx);
+  @Authorized()
+  @Query(() => Member, { nullable: true })
+  async getMember(
+    @Args() { populate }: PopulateArgs,
+    @Ctx() { memberId }: GQLContext
+  ) {
+    return new BloomManager().findOne(Member, { id: memberId }, { populate });
   }
 
   @Authorized('ADMIN')
@@ -76,5 +82,23 @@ export default class MemberResolver {
     @Ctx() ctx: GQLContext
   ) {
     return !!(await respondToApplicants(args, ctx));
+  }
+
+  @Authorized()
+  @Mutation(() => Member, { nullable: true })
+  async updateAutoRenew(
+    @Args() args: UpdateAutoRenewArgs,
+    @Ctx() ctx: GQLContext
+  ) {
+    return updateAutoRenew(args, ctx);
+  }
+
+  @Authorized()
+  @Mutation(() => Member, { nullable: true })
+  async updatePaymentMethod(
+    @Args() args: UpdatePaymentMethodArgs,
+    @Ctx() ctx: GQLContext
+  ) {
+    return updatePaymentMethod(args, ctx);
   }
 }

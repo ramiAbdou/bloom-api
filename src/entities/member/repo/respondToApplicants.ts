@@ -30,7 +30,7 @@ export default async (
   const members: Member[] = await new BloomManager().findAndUpdate(
     Member,
     { id: memberIds },
-    { joinedOn: now(), status: response },
+    { joinedAt: now(), status: response },
     { event: 'MEMBERS_ACCEPTED' }
   );
 

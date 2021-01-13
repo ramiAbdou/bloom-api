@@ -29,7 +29,7 @@ export default async (
     { populate: ['community'] }
   );
 
-  const { encodedUrlName } = question.community;
+  const { urlName } = question.community;
 
   if (version < question.version) {
     throw new Error(
@@ -46,7 +46,7 @@ export default async (
   // Invalidate GET_APPLICATION since we fetch the member questions
   // there as well.
   cache.invalidateEntries([
-    `${QueryEvent.GET_APPLICATION}-${encodedUrlName}`,
+    `${QueryEvent.GET_APPLICATION}-${urlName}`,
     `${QueryEvent.GET_DIRECTORY}-${communityId}`,
     `${QueryEvent.GET_MEMBERS}-${communityId}`
   ]);

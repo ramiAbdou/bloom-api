@@ -31,17 +31,6 @@ export default class Community extends BaseEntity {
   @Property({ type: Boolean })
   autoAccept = false;
 
-  /**
-   * We have to persist this in the DB because we have use cases in which we
-   * need to query the DB by the encodedUrlName, which we wouldn't be able to
-   * do if it wasn't persisted.
-   *
-   * @example ColorStack => colorstack
-   */
-  @Field()
-  @Property({ unique: true })
-  encodedUrlName: string;
-
   @Field({ nullable: true })
   @Property({ nullable: true, unique: true })
   @IsUrl()
@@ -55,13 +44,26 @@ export default class Community extends BaseEntity {
   @Property({ nullable: true })
   primaryColor: string;
 
+  /**
+   * We have to persist this in the DB because we have use cases in which we
+   * need to query the DB by the urlName, which we wouldn't be able to
+   * do if it wasn't persisted.
+   *
+   * @example ColorStack => colorstack
+   * @example CBAA => cbaa
+   * @example MALIK Fraternity, Inc. => malik
+   */
+  @Field()
+  @Property({ unique: true })
+  urlName: string;
+
   // ## LIFECYCLE HOOKS
 
   @BeforeCreate()
   beforeCreate() {
-    this.encodedUrlName = toLowerCaseDash(this.name);
+    if (!this.urlName) this.urlName = toLowerCaseDash(this.name);
     if (!this.logoUrl) {
-      this.logoUrl = `${DIGITAL_OCEAN_SPACE_URL}/${this.encodedUrlName}.png`;
+      this.logoUrl = `${DIGITAL_OCEAN_SPACE_URL}/${this.urlName}.png`;
     }
   }
 

@@ -1,13 +1,35 @@
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Authorized,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver
+} from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
-import BloomManager from '@core/db/BloomManager';
-import { User } from '@entities/entities';
+import { GQLContext } from '@constants';
 import { decodeToken } from '@util/util';
+import getUser, { GetUserArgs, GetUserResult } from './repo/getUser';
 import refreshToken from './repo/refreshToken';
+import sendTemporaryLoginLink, {
+  SendTemporaryLoginLinkArgs
+} from './repo/sendTemporaryLoginLink';
 
 @Resolver()
 export default class UserResolver {
+  @Authorized()
+  @Query(() => GetUserResult, { nullable: true })
+  async getActiveCommunity(@Args() args: GetUserArgs, @Ctx() ctx: GQLContext) {
+    return getUser(args, ctx);
+  }
+
+  @Authorized()
+  @Query(() => GetUserResult, { nullable: true })
+  async getUser(@Args() args: GetUserArgs, @Ctx() ctx: GQLContext) {
+    return getUser(args, ctx);
+  }
+
   /**
    * Called when a user hits the React /login route. We can't access HTTP only
    * cookies on the front-end b/c no JS access, so this GQL resolver exists.
@@ -27,6 +49,11 @@ export default class UserResolver {
     return true;
   }
 
+  @Mutation(() => Boolean, { nullable: true })
+  async sendTemporaryLoginLink(@Args() args: SendTemporaryLoginLinkArgs) {
+    return sendTemporaryLoginLink(args);
+  }
+
   @Query(() => Boolean)
   async verifyLoginToken(
     @Arg('loginToken') loginToken: string,
@@ -40,22 +67,5 @@ export default class UserResolver {
     }
 
     return true;
-  }
-
-  @Authorized()
-  @Query(() => User, { nullable: true })
-  async getUser(@Ctx() { userId }: GQLContext) {
-    return new BloomManager().findOne(
-      User,
-      { id: userId },
-      {
-        cacheKey: `${QueryEvent.GET_USER}-${userId}`,
-        populate: [
-          'members.community.integrations',
-          'members.community.types',
-          'members.type'
-        ]
-      }
-    );
   }
 }

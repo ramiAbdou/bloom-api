@@ -7,19 +7,21 @@ import MemberRefresh from '../../member-refresh/MemberRefresh';
 import Member from '../../member/Member';
 import User from '../User';
 
-type RefreshTokenArgs = {
-  refreshToken?: string;
+interface RefreshTokenArgs {
+  memberId?: string;
+  rToken?: string;
   res?: Response;
   user?: User;
   userId?: string;
-};
+}
 
 /**
  * Refreshes the user's tokens and sets the HTTP only cookies if Express
  * res object is provided. If the refreshing succeeds, the tokenw il
  */
-export default async ({
-  refreshToken,
+const refreshToken = async ({
+  memberId,
+  rToken,
   res,
   user,
   userId
@@ -27,22 +29,22 @@ export default async ({
   const bm = new BloomManager();
 
   if (user) bm.em.merge(user);
-  else {
-    user = await bm.findOne(
-      User,
-      { $or: [{ id: userId }, { refreshToken }] },
-      { populate: ['members'] }
-    );
-  }
-
-  const member: Member = user.members[0];
-  await bm.em.populate(member, 'community');
-  const communityId = member.community.id;
+  else if (userId) user = await bm.findOne(User, { id: userId });
+  else if (rToken) user = await bm.findOne(User, { refreshToken: rToken });
 
   // If no user found with the given arguments or a user is found and
   // the access token is expired, then exit. Also, if there is a loginToken
   // present, then we verify that before proceeding.
   if (!user?.id) return null;
+
+  if (!user.members.isInitialized()) await user.members.init();
+
+  const member: Member = memberId
+    ? user.members.getItems().find(({ id }) => id === memberId)
+    : user.members[0];
+
+  await bm.em.populate(member, 'community');
+  const communityId = member.community.id;
 
   const tokens = generateTokens({
     communityId,
@@ -61,3 +63,5 @@ export default async ({
 
   return tokens;
 };
+
+export default refreshToken;

@@ -14,12 +14,12 @@ import CommunityIntegrations from '../CommunityIntegrations';
  * @param code Stripe's API produced authorization code that we exchange for
  * tokens.
  */
-export default async (encodedUrlName: string, code: string): Promise<void> => {
+export default async (urlName: string, code: string): Promise<void> => {
   const bm = new BloomManager();
 
   const integrations = await bm.findOne(
     CommunityIntegrations,
-    { community: { encodedUrlName } },
+    { community: { urlName } },
     { populate: ['community.types'] }
   );
 

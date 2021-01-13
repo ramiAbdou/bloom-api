@@ -24,6 +24,10 @@ import {
   MemberStatus,
   QuestionValue
 } from './Member.types';
+import getNextPaymentDate from './repo/getNextPaymentDate';
+import getPaymentMethod, {
+  GetPaymentMethodResult
+} from './repo/getPaymentMethod';
 
 @ObjectType()
 @Entity()
@@ -36,16 +40,10 @@ export default class Member extends BaseEntity {
   @Enum({ items: () => MemberDuesStatus, type: String })
   duesStatus: MemberDuesStatus = MemberDuesStatus.INACTIVE;
 
-  // Member is allowed to opt-out of email notifications that send after an
-  // event gets posted.
-  @Field(() => Boolean)
-  @Property({ type: Boolean })
-  emailNotifications = true;
-
   // Refers to the date that the member was ACCEPTED.
   @Field({ nullable: true })
   @Property({ nullable: true })
-  joinedOn: string;
+  joinedAt: string;
 
   // If the member has a role, it will either be ADMIN or OWNER. There should
   // only be one OWNER in a community.
@@ -56,6 +54,27 @@ export default class Member extends BaseEntity {
   @Field(() => String)
   @Enum({ items: () => MemberStatus, type: String })
   status: MemberStatus = MemberStatus.PENDING;
+
+  // ## STRIPE INFORMATION
+
+  @Field(() => Boolean)
+  @Property({ type: Boolean })
+  autoRenew = true;
+
+  // We don't store any of the customer's financial data in our server. Stripe
+  // handles all of that for us, we just need Stripe's customer ID in order
+  // to use recurring payments.
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  stripeCustomerId: string;
+
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  stripePaymentMethodId: string;
+
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  stripeSubscriptionId: string;
 
   // ## MEMBER FUNCTIONS
 
@@ -83,7 +102,7 @@ export default class Member extends BaseEntity {
         else if (category === 'EMAIL') value = email;
         else if (category === 'FIRST_NAME') value = firstName;
         else if (category === 'GENDER') value = gender;
-        else if (category === 'JOINED_ON') value = this.joinedOn;
+        else if (category === 'JOINED_AT') value = this.joinedAt;
         else if (category === 'LAST_NAME') value = lastName;
         else if (category === 'MEMBERSHIP_TYPE') value = this.type.name;
 
@@ -105,6 +124,7 @@ export default class Member extends BaseEntity {
 
     return this.community.questions
       .getItems()
+      .filter(({ onlyInApplication }) => !onlyInApplication)
       .map(({ category, id, title }: Question) => {
         let value: string;
         const result = data.find(({ question }) => question.title === title);
@@ -113,7 +133,7 @@ export default class Member extends BaseEntity {
         else if (category === 'EMAIL') value = email;
         else if (category === 'FIRST_NAME') value = firstName;
         else if (category === 'GENDER') value = gender;
-        else if (category === 'JOINED_ON') value = this.joinedOn;
+        else if (category === 'JOINED_AT') value = this.joinedAt;
         else if (category === 'LAST_NAME') value = lastName;
         else if (category === 'MEMBERSHIP_TYPE') value = this.type.name;
 
@@ -146,7 +166,7 @@ export default class Member extends BaseEntity {
           const result = data.find(({ question }) => question.title === title);
 
           if (result) value = result.value;
-          else if (category === 'JOINED_ON') value = this.joinedOn;
+          else if (category === 'JOINED_AT') value = this.joinedAt;
           else if (category === 'EMAIL') value = email;
           else if (category === 'FIRST_NAME') value = firstName;
           else if (category === 'GENDER') value = gender;
@@ -158,10 +178,24 @@ export default class Member extends BaseEntity {
     );
   }
 
+  // ## STRIPE RELATED MEMBER FUNCTIONS
+
+  @Authorized()
+  @Field(() => GetPaymentMethodResult, { nullable: true })
+  async paymentMethod() {
+    return getPaymentMethod(this.id);
+  }
+
+  @Authorized()
+  @Field(() => String, { nullable: true })
+  async nextPaymentDate() {
+    return getNextPaymentDate(this.id);
+  }
+
   @BeforeCreate()
   beforeCreate() {
     if (this.role || this.community.autoAccept) {
-      this.joinedOn = now();
+      this.joinedAt = now();
       this.status = MemberStatus.ACCEPTED;
     }
 
@@ -182,6 +216,7 @@ export default class Member extends BaseEntity {
   @OneToMany(() => MemberData, ({ member }) => member)
   data = new Collection<MemberData>(this);
 
+  @Field(() => [MemberPayment])
   @OneToMany(() => MemberPayment, ({ member }) => member)
   payments: Collection<MemberPayment> = new Collection<MemberPayment>(this);
 
