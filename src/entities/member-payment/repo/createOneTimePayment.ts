@@ -10,6 +10,7 @@ import CommunityIntegrations from '../../community-integrations/CommunityIntegra
 import MemberType from '../../member-type/MemberType';
 import createStripeCustomer from '../../member/repo/createStripeCustomer';
 import MemberPayment from '../MemberPayment';
+import cancelStripeSubscription from './cancelStripeSubscription';
 import createMemberPayment from './createMemberPayment';
 
 @ArgsType()
@@ -38,7 +39,17 @@ const createOneTimePayment = async (
     bm.findOne(MemberType, { id: memberTypeId })
   ]);
 
-  const { stripeCustomerId }: Member = await createStripeCustomer({ memberId });
+  const {
+    stripeCustomerId,
+    stripeSubscriptionId
+  }: Member = await createStripeCustomer({ memberId });
+
+  if (stripeSubscriptionId) {
+    await cancelStripeSubscription(
+      { bm, subscriptionId: stripeSubscriptionId },
+      { communityId }
+    );
+  }
 
   await stripe.invoiceItems.create(
     { customer: stripeCustomerId, price: type.stripePriceId },
