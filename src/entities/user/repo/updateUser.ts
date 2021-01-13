@@ -59,10 +59,12 @@ const updateUser = async (
   ]);
 
   if (bio) member.bio = bio;
-  if (facebookUrl) user.facebookUrl = facebookUrl;
+
   if (firstName) user.firstName = firstName;
-  if (instagramUrl) user.instagramUrl = instagramUrl;
   if (lastName) user.lastName = lastName;
+
+  if (facebookUrl) user.facebookUrl = facebookUrl;
+  if (instagramUrl) user.instagramUrl = instagramUrl;
   if (linkedInUrl) user.linkedInUrl = linkedInUrl;
   if (twitterUrl) user.twitterUrl = twitterUrl;
 
