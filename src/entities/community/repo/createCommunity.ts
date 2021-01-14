@@ -22,11 +22,13 @@ const createCommunity = async ({
 
   let defaultTypeId: string = null;
 
-  const persistedTypes: MemberType[] = types.map((type) => {
-    const persistedType: MemberType = bm.create(MemberType, type);
-    if (type.isDefault) defaultTypeId = persistedType.id;
-    return persistedType;
-  });
+  const persistedTypes: MemberType[] = types.map(
+    (type: EntityData<MemberType>) => {
+      const persistedType: MemberType = bm.create(MemberType, type);
+      if (type.isDefault) defaultTypeId = persistedType.id;
+      return persistedType;
+    }
+  );
 
   // Add the first name, last name and joined at dates to array of questions.
   const questionsWithDefaults: EntityData<Question>[] = [

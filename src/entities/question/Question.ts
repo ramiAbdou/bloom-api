@@ -99,11 +99,10 @@ export default class Question extends BaseEntity {
     }
 
     if (this.category === 'MEMBERSHIP_TYPE') {
-      this.type = QuestionType.MULTIPLE_CHOICE;
+      this.inApplicantCard = false;
       this.options = this.community.types.getItems().map(({ name }) => name);
+      this.type = QuestionType.MULTIPLE_CHOICE;
     }
-
-    if (this.category === 'MEMBERSHIP_TYPE') this.inApplicantCard = true;
 
     // By default, if the question is fit to be in the directory card, it is
     // fit to be in the expanded card as well.
