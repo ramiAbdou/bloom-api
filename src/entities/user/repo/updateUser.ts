@@ -27,6 +27,9 @@ export class UpdateUserArgs {
   linkedInUrl?: string;
 
   @Field({ nullable: true })
+  pictureUrl?: string;
+
+  @Field({ nullable: true })
   twitterUrl?: string;
 }
 
@@ -47,6 +50,7 @@ const updateUser = async (
     instagramUrl,
     lastName,
     linkedInUrl,
+    pictureUrl,
     twitterUrl
   }: UpdateUserArgs,
   { communityId, memberId, userId }: GQLContext
@@ -66,6 +70,7 @@ const updateUser = async (
   if (facebookUrl) user.facebookUrl = facebookUrl;
   if (instagramUrl) user.instagramUrl = instagramUrl;
   if (linkedInUrl) user.linkedInUrl = linkedInUrl;
+  if (pictureUrl) user.pictureUrl = pictureUrl;
   if (twitterUrl) user.twitterUrl = twitterUrl;
 
   await bm.flush('UPDATE_USER');
