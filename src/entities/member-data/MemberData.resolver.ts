@@ -8,7 +8,7 @@ import updateMemberData, {
 
 @Resolver()
 export default class MemberDataResolver {
-  @Authorized('ADMIN')
+  @Authorized()
   @Mutation(() => [MemberData])
   async updateMemberData(
     @Args() args: UpdateMemberDataArgs,
