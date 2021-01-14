@@ -22,18 +22,31 @@ export class UpdateMemberDataArgs {
 
 const updateMemberData = async (
   { items }: UpdateMemberDataArgs,
-  { communityId, userId }: GQLContext
+  { communityId, memberId, userId }: GQLContext
 ): Promise<MemberData[]> => {
   const bm = new BloomManager();
 
   const data: MemberData[] = await bm.find(MemberData, {
-    id: items.map(({ id }) => id)
+    member: { id: memberId },
+    question: { id: items.map(({ id }) => id) }
   });
 
-  data.forEach((d: MemberData) => {
-    const value = items.find((item) => item.id === d.id)?.value;
-    d.value = value.toString();
-  });
+  const updatedData: MemberData[] = items.reduce(
+    (acc: MemberData[], item: MemberDataArgs) => {
+      const value = item.value?.toString();
+
+      const dataPoint: MemberData =
+        data.find((element: MemberData) => element.question.id === item.id) ??
+        bm.create(MemberData, {
+          member: { id: memberId },
+          question: { id: item.id }
+        });
+
+      dataPoint.value = value;
+      return [...acc, dataPoint];
+    },
+    data
+  );
 
   await bm.flush();
 
@@ -43,7 +56,7 @@ const updateMemberData = async (
     `${QueryEvent.GET_USER}-${userId}`
   ]);
 
-  return data;
+  return updatedData;
 };
 
 export default updateMemberData;
