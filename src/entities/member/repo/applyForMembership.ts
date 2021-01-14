@@ -69,7 +69,7 @@ export default async ({
   data.forEach(({ questionId, value: valueArray }) => {
     // If there's no value, then short circuit. Because for the initial
     // creation of data, it must exist.
-    if (!valueArray || !valueArray.length) return;
+    if (!valueArray?.length) return;
 
     const question = questions.find(({ id }) => questionId === id);
     const { category } = question;

@@ -19,20 +19,18 @@ router.get('/auth', async ({ query }: Request, res: Response) => {
     { populate: ['members'] }
   );
 
-  const loginError: LoginError = await getLoginError(user);
+  const members: Member[] = user.members.getItems();
 
-  if (loginError) res.cookie('LOGIN_ERROR', loginError);
-  else {
-    await refreshToken({ res, user });
-    const members: Member[] = user.members.getItems();
-
-    // If when trying to login, the user has some a status of INVITED (only
-    // possible if an admin added them manually), then we should set those
-    // statuses to be ACCEPTED.
-    if (members.some(({ status }) => status === 'INVITED')) {
-      await updateInvitedStatuses(members);
-    }
+  // If when trying to login, the user has some a status of INVITED (only
+  // possible if an admin added them manually), then we should set those
+  // statuses to be ACCEPTED.
+  if (members.some(({ status }) => status === 'INVITED')) {
+    await updateInvitedStatuses(members);
   }
+
+  const loginError: LoginError = await getLoginError(user);
+  if (loginError) res.cookie('LOGIN_ERROR', loginError);
+  else await refreshToken({ res, user });
 
   res.redirect(APP.CLIENT_URL);
 });

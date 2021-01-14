@@ -83,7 +83,8 @@ export type LoggerEvent =
   | 'SERVER_STARTED'
   | 'STRIPE_ACCOUNT_STORED'
   | 'STRIPE_CUSTOMER_CREATED'
-  | 'STRIPE_SUBSCRIPTION_CREATED';
+  | 'STRIPE_SUBSCRIPTION_CREATED'
+  | 'UPDATE_USER';
 
 export type GQLContext = {
   communityId: string;
