@@ -24,7 +24,7 @@ export class CreateSubsciptionArgs {
 
 const createSubscription = async (
   { autoRenew, memberTypeId }: CreateSubsciptionArgs,
-  { communityId, memberId }: GQLContext
+  { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<Member> => {
   const bm = new BloomManager();
 

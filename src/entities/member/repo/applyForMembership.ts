@@ -5,9 +5,11 @@ import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import Community from '../../community/Community';
 import MemberData from '../../member-data/MemberData';
+import createSubscription from '../../member-payment/repo/createSubscription';
 import { QuestionCategory } from '../../question/Question.types';
 import User from '../../user/User';
 import Member from '../Member';
+import updatePaymentMethod from './updatePaymentMethod';
 
 @InputType()
 export class MemberDataInput {
@@ -29,6 +31,12 @@ export class ApplyForMembershipArgs {
   @Field()
   email: string;
 
+  @Field({ nullable: true })
+  memberTypeId?: string;
+
+  @Field({ nullable: true })
+  paymentMethodId?: string;
+
   @Field()
   urlName: string;
 }
@@ -37,9 +45,11 @@ export class ApplyForMembershipArgs {
  * Applies for member in the community using the given email and data.
  * A user is either created OR fetched based on the email.
  */
-export default async ({
+const applyForMembership = async ({
   data,
   email,
+  memberTypeId,
+  paymentMethodId,
   urlName
 }: ApplyForMembershipArgs): Promise<Member> => {
   const bm = new BloomManager();
@@ -100,6 +110,16 @@ export default async ({
     `${QueryEvent.GET_MEMBERS}-${community.id}`
   ]);
 
+  await updatePaymentMethod(
+    { paymentMethodId },
+    { communityId: community.id, memberId: member.id }
+  );
+
+  await createSubscription(
+    { autoRenew: true, memberTypeId },
+    { communityId: community.id, memberId: member.id }
+  );
+
   // Send the appropriate emails based on the response.
   setTimeout(async () => {
     // if (community.autoAccept) {
@@ -109,3 +129,5 @@ export default async ({
 
   return member;
 };
+
+export default applyForMembership;
