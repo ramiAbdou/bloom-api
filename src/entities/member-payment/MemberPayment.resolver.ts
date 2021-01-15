@@ -14,6 +14,9 @@ import createSubscription, {
 import getDuesInformation, {
   GetDuesInformationResult
 } from './repo/getDuesInformation';
+import getTotalDuesCollected, {
+  GetTotalDuesCollectedResult
+} from './repo/getTotalDuesCollected';
 
 @Resolver()
 export default class MemberPaymentResolver {
@@ -67,5 +70,11 @@ export default class MemberPaymentResolver {
         populate: ['member']
       }
     );
+  }
+
+  @Authorized('ADMIN')
+  @Query(() => GetTotalDuesCollectedResult)
+  async getTotalDuesCollected(@Ctx() ctx: GQLContext) {
+    return getTotalDuesCollected(ctx);
   }
 }

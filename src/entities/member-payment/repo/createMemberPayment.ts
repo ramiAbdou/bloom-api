@@ -34,6 +34,7 @@ const createMemberPayment = async ({
 
   const payment: MemberPayment = bm.create(MemberPayment, {
     amount: amount_paid,
+    community: { id: communityId },
     member,
     stripeInvoiceId: id,
     stripeInvoiceUrl: hosted_invoice_url,
@@ -47,7 +48,8 @@ const createMemberPayment = async ({
 
   cache.invalidateEntries([
     `${QueryEvent.GET_PAYMENT_HISTORY}-${member.id}`,
-    `${QueryEvent.GET_PAYMENTS}-${communityId}`
+    `${QueryEvent.GET_PAYMENTS}-${communityId}`,
+    `${QueryEvent.GET_TOTAL_DUES_COLLECTED}-${communityId}`
   ]);
 
   return payment;

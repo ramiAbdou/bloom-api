@@ -64,7 +64,8 @@ const createSubscription = async (
 
   cache.invalidateEntries([
     `${QueryEvent.GET_PAYMENT_HISTORY}-${member.id}`,
-    `${QueryEvent.GET_PAYMENTS}-${communityId}`
+    `${QueryEvent.GET_PAYMENTS}-${communityId}`,
+    `${QueryEvent.GET_TOTAL_DUES_COLLECTED}-${communityId}`
   ]);
 
   return payment.member;
