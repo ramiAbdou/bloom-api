@@ -5,12 +5,16 @@ import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import Community from '../../community/Community';
 import MemberData from '../../member-data/MemberData';
+import { QuestionCategory } from '../../question/Question.types';
 import User from '../../user/User';
 import Member from '../Member';
 
 @InputType()
 export class MemberDataInput {
-  @Field()
+  @Field(() => String, { nullable: true })
+  category?: QuestionCategory;
+
+  @Field({ nullable: true })
   questionId: string;
 
   @Field(() => [String], { nullable: true })
@@ -50,8 +54,7 @@ export default async ({
 
   // The user can potentially already exist if they are a part of other
   // communities.
-  const user: User =
-    (await bm.findOne(User, { email })) ?? bm.create(User, { email });
+  const [user] = await bm.findOneOrCreate(User, { email }, { email });
 
   if (await bm.findOne(Member, { community, user })) {
     throw new Error(
@@ -66,16 +69,16 @@ export default async ({
 
   // Some data we store on the user entity, and some we store as member
   // data.
-  data.forEach(({ questionId, value: valueArray }) => {
+  data.forEach(({ category, questionId, value: valueArray }) => {
     // If there's no value, then short circuit. Because for the initial
     // creation of data, it must exist.
     if (!valueArray?.length) return;
 
     const question = questions.find(({ id }) => questionId === id);
-    const { category } = question;
+    category = category ?? question.category;
 
     const value =
-      question.type === 'MULTIPLE_SELECT' ? valueArray : valueArray[0];
+      question?.type === 'MULTIPLE_SELECT' ? valueArray : valueArray[0];
 
     if (category === 'EMAIL') user.email = value as string;
     else if (category === 'FIRST_NAME') user.firstName = value as string;

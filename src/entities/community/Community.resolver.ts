@@ -14,7 +14,7 @@ export default class CommunityResolver {
       { urlName },
       {
         cacheKey: `${QueryEvent.GET_APPLICATION}-${urlName}`,
-        populate: ['application', 'questions']
+        populate: ['application', 'integrations', 'questions', 'types']
       }
     );
   }
