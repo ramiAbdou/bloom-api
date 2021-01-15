@@ -1,6 +1,6 @@
 import { ArgsType, Field, InputType } from 'type-graphql';
 
-import { QueryEvent } from '@constants';
+import { GQLContext, QueryEvent } from '@constants';
 import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import Community from '../../community/Community';
@@ -45,13 +45,16 @@ export class ApplyForMembershipArgs {
  * Applies for member in the community using the given email and data.
  * A user is either created OR fetched based on the email.
  */
-const applyForMembership = async ({
-  data,
-  email,
-  memberTypeId,
-  paymentMethodId,
-  urlName
-}: ApplyForMembershipArgs): Promise<Member> => {
+const applyForMembership = async (
+  {
+    data,
+    email,
+    memberTypeId,
+    paymentMethodId,
+    urlName
+  }: ApplyForMembershipArgs,
+  { res }: Pick<GQLContext, 'res'>
+): Promise<Member> => {
   const bm = new BloomManager();
 
   // Populate the questions and types so that we can capture the member
@@ -126,6 +129,9 @@ const applyForMembership = async ({
     //   await bm.memberRepo().sendMemberAcceptedEmails([member], community);
     // } else await bm.memberRepo().sendMemberReceievedEmail(member, community);
   }, 0);
+
+  res.clearCookie('accessToken');
+  res.clearCookie('refreshToken');
 
   return member;
 };

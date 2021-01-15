@@ -38,9 +38,10 @@ export default class CommunityResolver {
   async getDatabase(@Ctx() { communityId }: GQLContext): Promise<Community> {
     return new BloomManager().findOne(
       Community,
-      { id: communityId, members: { status: ['INVITED', 'ACCEPTED'] } },
+      { id: communityId, members: { status: ['ACCEPTED'] } },
       {
         cacheKey: `${QueryEvent.GET_MEMBERS}-${communityId}`,
+        orderBy: { members: { createdAt: QueryOrder.DESC } },
         populate: ['questions', 'members.data', 'members.type', 'members.user']
       }
     );
@@ -54,6 +55,9 @@ export default class CommunityResolver {
       { id: communityId, members: { status: 'ACCEPTED' } },
       {
         cacheKey: `${QueryEvent.GET_DIRECTORY}-${communityId}`,
+        orderBy: {
+          members: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC }
+        },
         populate: ['questions', 'members.data', 'members.type', 'members.user']
       }
     );
@@ -70,6 +74,19 @@ export default class CommunityResolver {
       {
         cacheKey: `${QueryEvent.GET_INTEGRATIONS}-${communityId}`,
         populate: ['integrations']
+      }
+    );
+  }
+
+  @Authorized('ADMIN')
+  @Query(() => Community, { nullable: true })
+  async getPayments(@Ctx() { communityId }: GQLContext): Promise<Community> {
+    return new BloomManager().findOne(
+      Community,
+      { id: communityId },
+      {
+        cacheKey: `${QueryEvent.GET_PAYMENTS}-${communityId}`,
+        populate: ['payments.member.user', 'payments.type']
       }
     );
   }

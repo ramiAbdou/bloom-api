@@ -31,9 +31,10 @@ export default class MemberResolver {
    */
   @Mutation(() => Member, { nullable: true })
   async applyForMembership(
-    @Args() args: ApplyForMembershipArgs
+    @Args() args: ApplyForMembershipArgs,
+    @Ctx() ctx: GQLContext
   ): Promise<Member> {
-    return applyForMembership(args);
+    return applyForMembership(args, ctx);
   }
 
   @Authorized('ADMIN')

@@ -44,20 +44,6 @@ export default class MemberPaymentResolver {
     return getDuesInformation(ctx);
   }
 
-  @Authorized('ADMIN')
-  @Query(() => [MemberPayment])
-  async getDuesHistory(@Ctx() { communityId }: GQLContext) {
-    return new BloomManager().find(
-      MemberPayment,
-      { member: { community: { id: communityId } } },
-      {
-        cacheKey: `${QueryEvent.GET_PAYMENTS}-${communityId}`,
-        orderBy: { createdAt: QueryOrder.DESC },
-        populate: ['member.user', 'type']
-      }
-    );
-  }
-
   @Authorized()
   @Query(() => [MemberPayment])
   async getPaymentHistory(@Ctx() { memberId }: GQLContext) {
