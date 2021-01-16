@@ -69,7 +69,6 @@ class Cache extends LRUCache<string, any> {
       });
 
       this.dependencies = merge({}, this.dependencies, { [key]: dependencies });
-      console.log(Object.keys(this.dependencies));
     };
 
     setTimeout(processFunc, 0);
