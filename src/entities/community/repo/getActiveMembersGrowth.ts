@@ -8,7 +8,7 @@ import Member from '../../member/Member';
 const getActiveGrowth = async ({
   communityId
 }: GQLContext): Promise<number[]> => {
-  const cacheKey = `${QueryEvent.GET_ACTIVE_GROWTH}-${communityId}`;
+  const cacheKey = `${QueryEvent.GET_ACTIVE_MEMBERS_GROWTH}-${communityId}`;
   if (cache.has(cacheKey)) return cache.get(cacheKey);
 
   const bm = new BloomManager();

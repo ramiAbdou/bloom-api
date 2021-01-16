@@ -5,25 +5,26 @@ import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { TimeSeriesData } from '../member/Member.types';
 import Community from './Community';
-import getActiveGrowth from './repo/getActiveGrowth';
-import getActiveGrowthSeries from './repo/getActiveGrowthSeries';
-import getTotalGrowth from './repo/getTotalGrowth';
-import getTotalGrowthSeries from './repo/getTotalGrowthSeries';
+import getActiveMembersGrowth from './repo/getActiveMembersGrowth';
+import getActiveMembersSeries from './repo/getActiveMembersSeries';
+import getTotalDuesGrowth from './repo/getTotalDuesGrowth';
+import getTotalMembersGrowth from './repo/getTotalMembersGrowth';
+import getTotalMembersSeries from './repo/getTotalMembersSeries';
 
 @Resolver()
 export default class CommunityResolver {
   @Authorized('ADMIN')
   @Query(() => [Number, Number])
-  async getActiveGrowth(@Ctx() ctx: GQLContext): Promise<number[]> {
-    return getActiveGrowth(ctx);
+  async getActiveMembersGrowth(@Ctx() ctx: GQLContext): Promise<number[]> {
+    return getActiveMembersGrowth(ctx);
   }
 
   @Authorized('ADMIN')
   @Query(() => [TimeSeriesData])
-  async getActiveGrowthSeries(
+  async getActiveMembersSeries(
     @Ctx() ctx: GQLContext
   ): Promise<TimeSeriesData[]> {
-    return getActiveGrowthSeries(ctx);
+    return getActiveMembersSeries(ctx);
   }
 
   @Query(() => Community, { nullable: true })
@@ -112,15 +113,21 @@ export default class CommunityResolver {
 
   @Authorized('ADMIN')
   @Query(() => [Number, Number])
-  async getTotalGrowth(@Ctx() ctx: GQLContext): Promise<number[]> {
-    return getTotalGrowth(ctx);
+  async getTotalDuesGrowth(@Ctx() ctx: GQLContext): Promise<number[]> {
+    return getTotalDuesGrowth(ctx);
+  }
+
+  @Authorized('ADMIN')
+  @Query(() => [Number, Number])
+  async getTotalMembersGrowth(@Ctx() ctx: GQLContext): Promise<number[]> {
+    return getTotalMembersGrowth(ctx);
   }
 
   @Authorized('ADMIN')
   @Query(() => [TimeSeriesData])
-  async getTotalGrowthSeries(
+  async getTotalMembersSeries(
     @Ctx() ctx: GQLContext
   ): Promise<TimeSeriesData[]> {
-    return getTotalGrowthSeries(ctx);
+    return getTotalMembersSeries(ctx);
   }
 }

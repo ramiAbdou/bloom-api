@@ -10,7 +10,7 @@ import { TimeSeriesData } from '../../member/Member.types';
 const getActiveGrowthSeries = async ({
   communityId
 }: Pick<GQLContext, 'communityId'>): Promise<TimeSeriesData[]> => {
-  const cacheKey = `${QueryEvent.GET_ACTIVE_GROWTH_SERIES}-${communityId}`;
+  const cacheKey = `${QueryEvent.GET_ACTIVE_MEMBERS_SERIES}-${communityId}`;
   if (cache.has(cacheKey)) return cache.get(cacheKey);
 
   const bm = new BloomManager();
