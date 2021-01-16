@@ -47,8 +47,8 @@ export default async (
   // there as well.
   cache.invalidateEntries([
     `${QueryEvent.GET_APPLICATION}-${urlName}`,
-    `${QueryEvent.GET_DIRECTORY}-${communityId}`,
-    `${QueryEvent.GET_MEMBERS}-${communityId}`
+    `${QueryEvent.GET_DATABASE}-${communityId}`,
+    `${QueryEvent.GET_DIRECTORY}-${communityId}`
   ]);
 
   return question;

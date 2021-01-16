@@ -37,7 +37,7 @@ export default async (
   cache.invalidateEntries([`${QueryEvent.GET_APPLICANTS}-${communityId}`]);
 
   if (response === 'ACCEPTED') {
-    cache.invalidateEntries([`${QueryEvent.GET_MEMBERS}-${communityId}`]);
+    cache.invalidateEntries([`${QueryEvent.GET_DATABASE}-${communityId}`]);
   }
 
   // Send the appropriate emails based on the response. Also, add the members

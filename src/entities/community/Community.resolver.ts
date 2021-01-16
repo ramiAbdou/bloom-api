@@ -68,7 +68,7 @@ export default class CommunityResolver {
       Community,
       { id: communityId, members: { status: ['ACCEPTED'] } },
       {
-        cacheKey: `${QueryEvent.GET_MEMBERS}-${communityId}`,
+        cacheKey: `${QueryEvent.GET_DATABASE}-${communityId}`,
         orderBy: { members: { createdAt: QueryOrder.DESC } },
         populate: ['questions', 'members.data', 'members.type', 'members.user']
       }

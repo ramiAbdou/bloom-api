@@ -110,7 +110,7 @@ const applyForMembership = async (
   // Invalidate the cache for the GET_APPLICANTS call.
   cache.invalidateEntries([
     `${QueryEvent.GET_APPLICANTS}-${community.id}`,
-    `${QueryEvent.GET_MEMBERS}-${community.id}`
+    `${QueryEvent.GET_DATABASE}-${community.id}`
   ]);
 
   if (paymentMethodId) {

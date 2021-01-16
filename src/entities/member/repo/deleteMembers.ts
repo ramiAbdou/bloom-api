@@ -20,12 +20,12 @@ export default async (
   const members: Member[] = await bm.find(Member, { id: memberIds });
 
   await bm.deleteAndFlush(members);
-  cache.invalidateEntries([`${QueryEvent.GET_MEMBERS}-${communityId}`]);
+  cache.invalidateEntries([`${QueryEvent.GET_DATABASE}-${communityId}`]);
 
   // If any of the members were an ADMIN of the community, then we need to
   // invalidate the GET_ADMINS cache key.
   if (members.some(({ role }) => !!role)) {
-    cache.invalidateEntries([`${QueryEvent.GET_MEMBERS}-${communityId}`]);
+    cache.invalidateEntries([`${QueryEvent.GET_DATABASE}-${communityId}`]);
   }
 
   return true;

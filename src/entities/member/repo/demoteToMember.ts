@@ -19,7 +19,7 @@ export default async (
     { event: 'MEMBERS_DEMOTED' }
   );
 
-  // Invalidate the cache for the GET_MEMBERS call.
-  cache.invalidateEntries([`${QueryEvent.GET_MEMBERS}-${communityId}`]);
+  // Invalidate the cache for the GET_DATABASE call.
+  cache.invalidateEntries([`${QueryEvent.GET_DATABASE}-${communityId}`]);
   return members;
 };
