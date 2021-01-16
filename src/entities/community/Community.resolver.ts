@@ -4,6 +4,7 @@ import { QueryOrder } from '@mikro-orm/core';
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Community from './Community';
+import getTotalGrowth from './repo/getTotalGrowth';
 
 @Resolver()
 export default class CommunityResolver {
@@ -89,5 +90,11 @@ export default class CommunityResolver {
         populate: ['payments.member.user', 'payments.type']
       }
     );
+  }
+
+  @Authorized('ADMIN')
+  @Query(() => [Number, Number])
+  async getTotalGrowth(@Ctx() ctx: GQLContext): Promise<number[]> {
+    return getTotalGrowth(ctx);
   }
 }
