@@ -3,7 +3,7 @@ import Stripe from 'stripe';
 import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache';
+import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import Community from '../../community/Community';

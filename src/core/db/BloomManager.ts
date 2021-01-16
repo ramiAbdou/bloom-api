@@ -13,7 +13,7 @@ import {
 import { LoggerEvent } from '@constants';
 import logger from '@util/logger';
 import { now } from '@util/util';
-import cache from '../cache';
+import cache from '../cache/cache';
 import {
   BloomFindAndUpdateOptions,
   BloomFindOneAndUpdateOptions,

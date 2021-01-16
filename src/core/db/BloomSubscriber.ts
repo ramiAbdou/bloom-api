@@ -7,7 +7,7 @@ import {
   FlushEventArgs
 } from '@mikro-orm/core';
 
-import cache from '@core/cache';
+import cache from '@core/cache/cache';
 import logger, { LoggerChangeSet, LoggerChangeType } from '@util/logger';
 
 export default class BloomSubscriber implements EventSubscriber {

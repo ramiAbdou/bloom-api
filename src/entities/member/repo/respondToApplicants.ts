@@ -1,7 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache';
+import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
 import { now } from '@util/util';
 import Member from '../Member';

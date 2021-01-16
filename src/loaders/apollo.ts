@@ -9,7 +9,6 @@ import CommunityIntegrations from '../entities/community-integrations/CommunityI
 import CommunityResolver from '../entities/community/Community.resolver';
 import MemberDataResolver from '../entities/member-data/MemberData.resolver';
 import MemberPaymentResolver from '../entities/member-payment/MemberPayment.resolver';
-import MemberRefreshResolver from '../entities/member-refresh/MemberRefresh.resolver';
 import Member from '../entities/member/Member';
 import MemberResolver from '../entities/member/Member.resolver';
 import QuestionResolver from '../entities/question/Question.resolver';
@@ -48,7 +47,6 @@ export const createSchema = async (): Promise<GraphQLSchema> =>
       MemberResolver,
       MemberDataResolver,
       MemberPaymentResolver,
-      MemberRefreshResolver,
       UserResolver
     ]
   });

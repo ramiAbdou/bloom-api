@@ -1,7 +1,7 @@
 import day, { Dayjs } from 'dayjs';
 
 import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache';
+import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../../member/Member';
 

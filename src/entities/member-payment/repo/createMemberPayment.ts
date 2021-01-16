@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 
 import { BloomManagerArgs, QueryEvent } from '@constants';
-import cache from '@core/cache';
+import cache from '@core/cache/cache';
 import MemberType from '../../member-type/MemberType';
 import Member from '../../member/Member';
 import { MemberDuesStatus } from '../../member/Member.types';

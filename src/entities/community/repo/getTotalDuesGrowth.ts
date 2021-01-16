@@ -2,7 +2,7 @@ import day from 'dayjs';
 import { QueryOrder } from '@mikro-orm/core';
 
 import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache';
+import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
 import MemberPayment from '../../member-payment/MemberPayment';
 

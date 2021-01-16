@@ -5,14 +5,22 @@ import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { TimeSeriesData } from '../member/Member.types';
 import Community from './Community';
+import getActiveDuesGrowth from './repo/getActiveDuesGrowth';
 import getActiveMembersGrowth from './repo/getActiveMembersGrowth';
 import getActiveMembersSeries from './repo/getActiveMembersSeries';
 import getTotalDuesGrowth from './repo/getTotalDuesGrowth';
+import getTotalDuesSeries from './repo/getTotalDuesSeries';
 import getTotalMembersGrowth from './repo/getTotalMembersGrowth';
 import getTotalMembersSeries from './repo/getTotalMembersSeries';
 
 @Resolver()
 export default class CommunityResolver {
+  @Authorized('ADMIN')
+  @Query(() => Number)
+  async getActiveDuesGrowth(@Ctx() ctx: GQLContext): Promise<number> {
+    return getActiveDuesGrowth(ctx);
+  }
+
   @Authorized('ADMIN')
   @Query(() => [Number, Number])
   async getActiveMembersGrowth(@Ctx() ctx: GQLContext): Promise<number[]> {
@@ -115,6 +123,12 @@ export default class CommunityResolver {
   @Query(() => [Number, Number])
   async getTotalDuesGrowth(@Ctx() ctx: GQLContext): Promise<number[]> {
     return getTotalDuesGrowth(ctx);
+  }
+
+  @Authorized('ADMIN')
+  @Query(() => [TimeSeriesData])
+  async getTotalDuesSeries(@Ctx() ctx: GQLContext): Promise<TimeSeriesData[]> {
+    return getTotalDuesSeries(ctx);
   }
 
   @Authorized('ADMIN')

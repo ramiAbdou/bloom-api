@@ -1,5 +1,5 @@
 import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache';
+import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../Member';
 import { AdminArgs } from '../Member.types';
