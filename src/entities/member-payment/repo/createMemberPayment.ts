@@ -2,6 +2,7 @@ import Stripe from 'stripe';
 
 import { BloomManagerArgs, QueryEvent } from '@constants';
 import cache from '@core/cache/cache';
+import { getPaymentCacheKeys } from '../../../core/cache/cacheUtil';
 import MemberType from '../../member-type/MemberType';
 import Member from '../../member/Member';
 import { MemberDuesStatus } from '../../member/Member.types';
@@ -46,11 +47,8 @@ const createMemberPayment = async ({
 
   await bm.flush();
 
-  cache.invalidateEntries([
-    `${QueryEvent.GET_PAYMENT_HISTORY}-${member.id}`,
-    `${QueryEvent.GET_PAYMENTS}-${communityId}`,
-    `${QueryEvent.GET_TOTAL_DUES_COLLECTED}-${communityId}`
-  ]);
+  const memberId = member.id;
+  cache.invalidateEntries(getPaymentCacheKeys({ communityId, memberId }));
 
   return payment;
 };
