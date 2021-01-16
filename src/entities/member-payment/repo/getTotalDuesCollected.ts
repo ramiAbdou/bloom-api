@@ -20,8 +20,8 @@ export class GetTotalDuesCollectedResult {
 export default async ({
   communityId
 }: GQLContext): Promise<GetTotalDuesCollectedResult> => {
-  const cacheKey = `${QueryEvent.GET_TOTAL_DUES_COLLECTED}-${communityId}`;
-  if (cache.has(cacheKey)) return cache.get(cacheKey);
+  // const cacheKey = `${QueryEvent.GET_TOTAL_DUES_COLLECTED}-${communityId}`;
+  // if (cache.has(cacheKey)) return cache.get(cacheKey);
 
   const bm = new BloomManager();
 
@@ -59,6 +59,6 @@ export default async ({
     (amount + amountBeforeYearAgo) / (amountBeforeYearAgo || 1);
 
   const result: GetTotalDuesCollectedResult = { amount, percentage };
-  cache.set(cacheKey, result);
+  // cache.set(cacheKey, result);
   return result;
 };

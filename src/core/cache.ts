@@ -17,8 +17,8 @@ class Cache extends LRUCache<string, any> {
    *
    * Precondition: value must be populated with some values.
    */
-  invalidateEntries = (value: string[]) => {
-    value.forEach((key: string) => this.del(key));
+  invalidateEntries = (cacheKeys: string[]) => {
+    cacheKeys.forEach((key: string) => this.del(key));
   };
 
   /**
@@ -45,6 +45,8 @@ class Cache extends LRUCache<string, any> {
   };
 
   set = (key: string, value: any) => {
+    if (key === undefined) return false;
+
     super.set(key, value);
     this.processDependencies(key, value);
     return true;
@@ -67,6 +69,7 @@ class Cache extends LRUCache<string, any> {
       });
 
       this.dependencies = merge({}, this.dependencies, { [key]: dependencies });
+      console.log(Object.keys(this.dependencies));
     };
 
     setTimeout(processFunc, 0);
