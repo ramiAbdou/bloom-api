@@ -43,12 +43,12 @@ export default class MemberPaymentResolver {
 
   @Authorized()
   @Query(() => [MemberPayment])
-  async getPaymentHistory(@Ctx() { memberId }: GQLContext) {
+  async getMemberPayments(@Ctx() { memberId }: GQLContext) {
     return new BloomManager().find(
       MemberPayment,
       { member: { id: memberId } },
       {
-        cacheKey: `${QueryEvent.GET_PAYMENT_HISTORY}-${memberId}`,
+        cacheKey: `${QueryEvent.GET_MEMBER_PAYMENTS}-${memberId}`,
         orderBy: { createdAt: QueryOrder.DESC },
         populate: ['member']
       }

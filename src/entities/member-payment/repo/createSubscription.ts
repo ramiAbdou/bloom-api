@@ -63,7 +63,7 @@ const createSubscription = async (
   });
 
   cache.invalidateEntries([
-    `${QueryEvent.GET_PAYMENT_HISTORY}-${member.id}`,
+    `${QueryEvent.GET_MEMBER_PAYMENTS}-${member.id}`,
     `${QueryEvent.GET_PAYMENTS}-${communityId}`,
     `${QueryEvent.GET_TOTAL_DUES_COLLECTED}-${communityId}`
   ]);
