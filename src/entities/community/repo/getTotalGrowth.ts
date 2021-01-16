@@ -5,9 +5,17 @@ import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../../member/Member';
 
+/**
+ * Returns the total growth of the accepted members within the community,
+ * including the current total number of members as well as the growth
+ * percentage.
+ *
+ * @example getTotalGrowth() => [528, 173.1]
+ * @example getTotalGrowth() => [1, 100]
+ */
 const getTotalGrowth = async ({
   communityId
-}: GQLContext): Promise<number[]> => {
+}: Pick<GQLContext, 'communityId'>): Promise<number[]> => {
   const cacheKey = `${QueryEvent.GET_TOTAL_GROWTH}-${communityId}`;
   if (cache.has(cacheKey)) return cache.get(cacheKey);
 
@@ -16,14 +24,14 @@ const getTotalGrowth = async ({
 
   const bm = new BloomManager();
 
-  const numMembers30DaysAgo = await bm.em.count(Member, {
+  const numMembers30DaysAgo: number = await bm.em.count(Member, {
     community: { id: communityId },
     deletedAt: { $eq: null, $gt: endOf30DaysAgo.format() },
     joinedAt: { $lte: endOf30DaysAgo.format() },
     status: ['ACCEPTED']
   });
 
-  const numMembersAddedSince = await bm.em.count(Member, {
+  const numMembersAddedSince: number = await bm.em.count(Member, {
     community: { id: communityId },
     deletedAt: { $eq: null, $gt: endOfToday.format() },
     joinedAt: { $gt: endOf30DaysAgo.format() },
@@ -33,7 +41,7 @@ const getTotalGrowth = async ({
   const growthRatio: number =
     (numMembersAddedSince + numMembers30DaysAgo) / (numMembers30DaysAgo || 1);
 
-  const growthPercentage = Number((growthRatio * 100).toFixed(1));
+  const growthPercentage = Number(((growthRatio - 1) * 100).toFixed(1));
   const result = [numMembersAddedSince + numMembers30DaysAgo, growthPercentage];
   cache.set(cacheKey, result);
 
