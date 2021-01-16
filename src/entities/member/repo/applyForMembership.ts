@@ -113,15 +113,17 @@ const applyForMembership = async (
     `${QueryEvent.GET_MEMBERS}-${community.id}`
   ]);
 
-  await updatePaymentMethod(
-    { paymentMethodId },
-    { communityId: community.id, memberId: member.id }
-  );
+  if (paymentMethodId) {
+    await updatePaymentMethod(
+      { paymentMethodId },
+      { communityId: community.id, memberId: member.id }
+    );
 
-  await createSubscription(
-    { autoRenew: true, memberTypeId },
-    { communityId: community.id, memberId: member.id }
-  );
+    await createSubscription(
+      { autoRenew: true, memberTypeId },
+      { communityId: community.id, memberId: member.id }
+    );
+  }
 
   // Send the appropriate emails based on the response.
   setTimeout(async () => {
