@@ -1,5 +1,4 @@
 import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../Member';
 import { AdminArgs } from '../Member.types';
@@ -16,10 +15,11 @@ export default async (
     Member,
     { id: memberIds },
     { role: null },
-    { event: 'MEMBERS_DEMOTED' }
+    {
+      cacheKeysToInvalidate: [`${QueryEvent.GET_DATABASE}-${communityId}`],
+      event: 'MEMBERS_DEMOTED'
+    }
   );
 
-  // Invalidate the cache for the GET_DATABASE call.
-  cache.invalidateEntries([`${QueryEvent.GET_DATABASE}-${communityId}`]);
   return members;
 };

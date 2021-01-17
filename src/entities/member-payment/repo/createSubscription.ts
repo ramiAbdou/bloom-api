@@ -2,8 +2,7 @@ import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache/cache';
+import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import Community from '../../community/Community';
@@ -61,12 +60,6 @@ const createSubscription = async (
     member,
     type
   });
-
-  cache.invalidateEntries([
-    `${QueryEvent.GET_MEMBER_PAYMENTS}-${member.id}`,
-    `${QueryEvent.GET_PAYMENTS}-${communityId}`,
-    `${QueryEvent.GET_TOTAL_DUES_COLLECTED}-${communityId}`
-  ]);
 
   return payment.member;
 };

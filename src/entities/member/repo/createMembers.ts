@@ -8,7 +8,7 @@ import User from '../../user/User';
 import Member from '../Member';
 
 @InputType()
-export class NewMemberInput {
+class CreateMemberInput {
   @Field(() => String)
   email: string;
 
@@ -24,8 +24,8 @@ export class NewMemberInput {
 
 @ArgsType()
 export class CreateMembersArgs {
-  @Field(() => [NewMemberInput])
-  members: NewMemberInput[];
+  @Field(() => [CreateMemberInput])
+  members: CreateMemberInput[];
 }
 
 /**
@@ -75,11 +75,10 @@ export default async (
     event: 'MEMBERS_CREATED'
   });
 
-  await bm.em.populate(members, ['community.questions', 'data']);
-
   // Send the appropriate emails based on the response. Also, add the members
   // to the Mailchimp audience.
   setTimeout(async () => {
+    await bm.em.populate(members, ['community.questions', 'data']);
     await addToMailchimpAudience(members, community);
   }, 0);
 

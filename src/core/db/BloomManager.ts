@@ -131,8 +131,8 @@ class BloomManager {
     wrap(result).assign(data);
 
     await this.flush({
-      cacheKeysToInvalidate: options.cacheKeysToInvalidate,
-      event: options.event
+      cacheKeysToInvalidate: options?.cacheKeysToInvalidate,
+      event: options?.event
     });
 
     return result;
@@ -176,7 +176,11 @@ class BloomManager {
       wrap(entity).assign(data);
     });
 
-    await this.flush({ event: options.event });
+    await this.flush({
+      cacheKeysToInvalidate: options?.cacheKeysToInvalidate,
+      event: options?.event
+    });
+
     return result;
   }
 

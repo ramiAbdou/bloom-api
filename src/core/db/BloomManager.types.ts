@@ -20,9 +20,8 @@ export interface BloomFindOptions<T, P> extends FindOptions<T, P> {
 }
 
 export interface BloomFindAndUpdateOptions<T, P>
-  extends BloomFindOptions<T, P> {
-  event: LoggerEvent;
-}
+  extends BloomFindOptions<T, P>,
+    BloomManagerFlushArgs {}
 
 export interface BloomManagerDeleteAndFlushArgs extends BloomManagerFlushArgs {
   entities: AnyEntity<any>[];
