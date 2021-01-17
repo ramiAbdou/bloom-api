@@ -15,5 +15,5 @@ export default async (members: Member[]) => {
     })
   );
 
-  await bm.flush('INVITED_MEMBER_ACCEPTED');
+  await bm.flush({ event: 'INVITED_MEMBER_ACCEPTED' });
 };

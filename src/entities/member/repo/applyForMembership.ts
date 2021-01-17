@@ -1,7 +1,6 @@
 import { ArgsType, Field, InputType } from 'type-graphql';
 
 import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
 import Community from '../../community/Community';
 import MemberData from '../../member-data/MemberData';
@@ -105,13 +104,13 @@ const applyForMembership = async (
     }
   });
 
-  await bm.flush('MEMBERS_CREATED');
-
-  // Invalidate the cache for the GET_APPLICANTS call.
-  cache.invalidateEntries([
-    `${QueryEvent.GET_APPLICANTS}-${community.id}`,
-    `${QueryEvent.GET_DATABASE}-${community.id}`
-  ]);
+  await bm.flush({
+    cacheKeysToInvalidate: [
+      `${QueryEvent.GET_APPLICANTS}-${community.id}`,
+      `${QueryEvent.GET_DATABASE}-${community.id}`
+    ],
+    event: 'MEMBERS_CREATED'
+  });
 
   if (paymentMethodId) {
     await updatePaymentMethod(

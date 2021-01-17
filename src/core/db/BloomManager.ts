@@ -11,14 +11,15 @@ import {
 } from '@mikro-orm/core';
 
 import { LoggerEvent } from '@constants';
+import cache from '@core/cache/cache';
 import logger from '@util/logger';
 import { now } from '@util/util';
-import cache from '../cache/cache';
 import {
   BloomFindAndUpdateOptions,
   BloomFindOneAndUpdateOptions,
   BloomFindOneOptions,
-  BloomFindOptions
+  BloomFindOptions,
+  BloomManagerFlushArgs
 } from './BloomManager.types';
 import db from './db';
 
@@ -37,11 +38,12 @@ class BloomManager {
 
   fork = () => new BloomManager();
 
-  async flush?(event?: LoggerEvent) {
+  async flush?({ cacheKeysToInvalidate, event }: BloomManagerFlushArgs) {
     try {
       logger.log({ contextId: this.em.id, event, level: 'BEFORE_FLUSH' });
       await this.em.flush();
       logger.log({ contextId: this.em.id, event, level: 'FLUSH_SUCCESS' });
+      cache.invalidateEntries(cacheKeysToInvalidate);
     } catch (e) {
       logger.log({
         contextId: this.em.id,
@@ -114,11 +116,7 @@ class BloomManager {
     data: EntityData<T>,
     options?: BloomFindOneOptions<T, P>
   ): Promise<[Loaded<T, P> | T, boolean]> {
-    const result = await this.findOne<T, P>(entityName, where, {
-      ...options,
-      cache: false
-    });
-
+    const result = await this.findOne<T, P>(entityName, where, options);
     return [result ?? this.create(entityName, data), !!result];
   }
 
@@ -131,7 +129,7 @@ class BloomManager {
     // If not found, get it from the DB.
     const result = await this.findOne<T, P>(entityName, where, { ...options });
     wrap(result).assign(data);
-    await this.flush(options.event);
+    await this.flush({ event: options.event });
     return result;
   }
 
@@ -173,7 +171,7 @@ class BloomManager {
       wrap(entity).assign(data);
     });
 
-    await this.flush(options.event);
+    await this.flush({ event: options.event });
     return result;
   }
 
@@ -206,7 +204,7 @@ class BloomManager {
       });
     } else entities.deletedAt = now();
 
-    await this.flush(event);
+    await this.flush({ event });
   }
 }
 

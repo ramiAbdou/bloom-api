@@ -48,13 +48,13 @@ const updateMemberData = async (
     data
   );
 
-  await bm.flush();
-
-  cache.invalidateEntries([
-    `${QueryEvent.GET_DATABASE}-${communityId}`,
-    `${QueryEvent.GET_DIRECTORY}-${communityId}`,
-    `${QueryEvent.GET_USER}-${userId}`
-  ]);
+  await bm.flush({
+    cacheKeysToInvalidate: [
+      `${QueryEvent.GET_DATABASE}-${communityId}`,
+      `${QueryEvent.GET_DIRECTORY}-${communityId}`,
+      `${QueryEvent.GET_USER}-${userId}`
+    ]
+  });
 
   return updatedData;
 };

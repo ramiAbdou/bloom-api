@@ -47,7 +47,7 @@ const createStripeCustomer = async ({
       ).id;
 
   wrap(member).assign({ stripeCustomerId });
-  await bm.flush('STRIPE_CUSTOMER_CREATED');
+  await bm.flush({ event: 'STRIPE_CUSTOMER_CREATED' });
 
   return member;
 };

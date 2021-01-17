@@ -18,6 +18,7 @@ class Cache extends LRUCache<string, any> {
    * Precondition: value must be populated with some values.
    */
   invalidateEntries = (cacheKeys: string[]) => {
+    if (!cacheKeys?.length) return;
     cacheKeys.forEach((key: string) => this.del(key));
   };
 

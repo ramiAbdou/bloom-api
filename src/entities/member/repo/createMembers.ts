@@ -1,7 +1,6 @@
 import { ArgsType, Field, InputType } from 'type-graphql';
 
 import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
 import addToMailchimpAudience from '@entities/community-integrations/repo/addToMailchimpAudience';
 import Community from '../../community/Community';
@@ -71,8 +70,10 @@ export default async (
     )
   );
 
-  await bm.flush('MEMBERS_CREATED');
-  cache.invalidateEntries([`${QueryEvent.GET_DATABASE}-${communityId}`]);
+  await bm.flush({
+    cacheKeysToInvalidate: [`${QueryEvent.GET_DATABASE}-${communityId}`],
+    event: 'MEMBERS_CREATED'
+  });
 
   await bm.em.populate(members, ['community.questions', 'data']);
 

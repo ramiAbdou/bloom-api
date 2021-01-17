@@ -73,12 +73,13 @@ const updateUser = async (
   if (pictureUrl) user.pictureUrl = pictureUrl;
   if (twitterUrl) user.twitterUrl = twitterUrl;
 
-  await bm.flush('UPDATE_USER');
-
-  cache.invalidateEntries([
-    `${QueryEvent.GET_DIRECTORY}-${communityId}`,
-    `${QueryEvent.GET_USER}-${userId}`
-  ]);
+  await bm.flush({
+    cacheKeysToInvalidate: [
+      `${QueryEvent.GET_DIRECTORY}-${communityId}`,
+      `${QueryEvent.GET_USER}-${userId}`
+    ],
+    event: 'UPDATE_USER'
+  });
 
   return { member, user };
 };
