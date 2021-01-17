@@ -5,22 +5,22 @@ import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../member/Member';
 import MemberPayment from './MemberPayment';
+import createLifetimePayment, {
+  CreateLifetimePaymentArgs
+} from './repo/createLifetimePayment';
 import createSubscription, {
   CreateSubsciptionArgs
 } from './repo/createSubscription';
-import payStripeInvoice, {
-  PayStripeInvoiceArgs
-} from './repo/payStripeInvoice';
 
 @Resolver()
 export default class MemberPaymentResolver {
   @Authorized()
   @Mutation(() => Member, { nullable: true })
-  async createSinglePayment(
-    @Args() args: PayStripeInvoiceArgs,
+  async createLifetimePayment(
+    @Args() args: CreateLifetimePaymentArgs,
     @Ctx() ctx: GQLContext
   ) {
-    return (await payStripeInvoice(args, ctx)).member;
+    return createLifetimePayment(args, ctx);
   }
 
   @Authorized()

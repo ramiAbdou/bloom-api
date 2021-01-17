@@ -13,13 +13,13 @@ import MemberPayment from '../MemberPayment';
 import createMemberPayment from './createMemberPayment';
 
 @ArgsType()
-export class PayStripeInvoiceArgs {
+export class CreateLifetimePaymentArgs {
   @Field({ nullable: true })
   memberTypeId: string;
 }
 
-const payStripeInvoice = async (
-  { memberTypeId }: PayStripeInvoiceArgs,
+const createLifetimePayment = async (
+  { memberTypeId }: CreateLifetimePaymentArgs,
   { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
 ) => {
   const bm = new BloomManager();
@@ -41,6 +41,13 @@ const payStripeInvoice = async (
 
   const { stripePriceId } = type;
 
+  if (stripeSubscriptionId) {
+    await stripe.subscriptions.del(stripeSubscriptionId, {
+      idempotencyKey: nanoid(),
+      stripeAccount: stripeAccountId
+    });
+  }
+
   await stripe.invoiceItems.create(
     { customer: stripeCustomerId, price: stripePriceId },
     { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
@@ -48,11 +55,7 @@ const payStripeInvoice = async (
 
   // Creates the recurring subscription.
   const invoice: Stripe.Invoice = await stripe.invoices.create(
-    {
-      auto_advance: false,
-      customer: stripeCustomerId,
-      subscription: stripeSubscriptionId
-    },
+    { auto_advance: false, customer: stripeCustomerId },
     { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
@@ -69,7 +72,7 @@ const payStripeInvoice = async (
     type
   });
 
-  return payment;
+  return payment?.member;
 };
 
-export default payStripeInvoice;
+export default createLifetimePayment;
