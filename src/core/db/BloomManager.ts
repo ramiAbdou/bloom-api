@@ -129,7 +129,12 @@ class BloomManager {
     // If not found, get it from the DB.
     const result = await this.findOne<T, P>(entityName, where, { ...options });
     wrap(result).assign(data);
-    await this.flush({ event: options.event });
+
+    await this.flush({
+      cacheKeysToInvalidate: options.cacheKeysToInvalidate,
+      event: options.event
+    });
+
     return result;
   }
 

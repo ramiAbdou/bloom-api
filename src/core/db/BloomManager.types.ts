@@ -12,9 +12,8 @@ export interface BloomFindOneOptions<T, P> extends FindOneOptions<T, P> {
 }
 
 export interface BloomFindOneAndUpdateOptions<T, P>
-  extends BloomFindOneOptions<T, P> {
-  event: LoggerEvent;
-}
+  extends BloomFindOneOptions<T, P>,
+    BloomManagerFlushArgs {}
 
 export interface BloomFindOptions<T, P> extends FindOptions<T, P> {
   cacheKey?: string;
