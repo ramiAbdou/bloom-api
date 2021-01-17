@@ -84,7 +84,10 @@ export default class CommunityResolver {
       {
         cacheKey: `${QueryEvent.GET_DIRECTORY}-${communityId}`,
         orderBy: {
-          members: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC }
+          members: {
+            createdAt: QueryOrder.DESC,
+            updatedAt: QueryOrder.DESC
+          }
         },
         populate: ['questions', 'members.data', 'members.type', 'members.user']
       }
