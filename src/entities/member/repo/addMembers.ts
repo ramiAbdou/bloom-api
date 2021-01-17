@@ -8,7 +8,7 @@ import User from '../../user/User';
 import Member from '../Member';
 
 @InputType()
-class CreateMemberInput {
+class AddMemberInput {
   @Field(() => String)
   email: string;
 
@@ -23,17 +23,17 @@ class CreateMemberInput {
 }
 
 @ArgsType()
-export class CreateMembersArgs {
-  @Field(() => [CreateMemberInput])
-  members: CreateMemberInput[];
+export class AddMembersArgs {
+  @Field(() => [AddMemberInput])
+  members: AddMemberInput[];
 }
 
 /**
  * Toggles the admin status of the member. If the role of the members
  * were previously ADMIN, they become null, and vice versa.
  */
-export default async (
-  { members: inputs }: CreateMembersArgs,
+const addMembers = async (
+  { members: inputs }: AddMembersArgs,
   { communityId }: GQLContext
 ): Promise<Member[]> => {
   const bm = new BloomManager();
@@ -84,3 +84,5 @@ export default async (
 
   return members;
 };
+
+export default addMembers;

@@ -21,10 +21,58 @@ export class CreateSubsciptionArgs {
   memberTypeId: string;
 }
 
+interface CreateStripeSubsciptionArgs {
+  stripeAccountId?: string;
+  stripeCustomerId?: string;
+  stripePriceId?: string;
+  stripeSubscriptionId?: string;
+}
+
+const createStripeSubscription = async ({
+  stripeAccountId,
+  stripeCustomerId,
+  stripePriceId
+}: CreateStripeSubsciptionArgs) => {
+  const subscription: Stripe.Subscription = await stripe.subscriptions.create(
+    {
+      customer: stripeCustomerId,
+      expand: ['latest_invoice.payment_intent'],
+      items: [{ price: stripePriceId }]
+    },
+    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
+  );
+
+  return subscription;
+};
+
+const updateStripeSubscription = async ({
+  stripeAccountId,
+  stripePriceId,
+  stripeSubscriptionId
+}: CreateStripeSubsciptionArgs) => {
+  const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(
+    stripeSubscriptionId,
+    { stripeAccount: stripeAccountId }
+  );
+
+  const updatedSubscription = await stripe.subscriptions.update(
+    stripeSubscriptionId,
+    {
+      expand: ['latest_invoice.payment_intent'],
+      items: [{ id: subscription.items.data[0].id, price: stripePriceId }],
+      proration_behavior: 'always_invoice'
+    },
+    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
+  );
+
+  return updatedSubscription;
+};
+
 const createSubscription = async (
   { autoRenew, memberTypeId }: CreateSubsciptionArgs,
-  { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
+  ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<Member> => {
+  const { communityId, memberId } = ctx;
   const bm = new BloomManager();
 
   const [community, type]: [Community, MemberType] = await Promise.all([
@@ -32,36 +80,41 @@ const createSubscription = async (
     bm.findOne(MemberType, { id: memberTypeId })
   ]);
 
-  const { stripeAccountId } = community.integrations;
-
   // Need to merge the user because we could've potentially updated the Stripe
   // customer ID if it wasn't stored.
   const member: Member = await createStripeCustomer({ memberId });
 
-  // Creates the recurring subscription.
-  const subscription = await stripe.subscriptions.create(
-    {
-      customer: member.stripeCustomerId,
-      expand: ['latest_invoice.payment_intent'],
-      items: [{ price: type.stripePriceId }]
-    },
-    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
-  );
+  const { stripeAccountId } = community.integrations;
+  const { stripeCustomerId, stripeSubscriptionId } = member;
+  const { stripePriceId } = type;
+
+  const args: CreateStripeSubsciptionArgs = {
+    stripeAccountId,
+    stripeCustomerId,
+    stripePriceId,
+    stripeSubscriptionId
+  };
+
+  const subscription: Stripe.Subscription = stripeSubscriptionId
+    ? await updateStripeSubscription(args)
+    : await createStripeSubscription(args);
 
   // If the Stripe subscription succeeds, attach the payment method to the
   // user.
   member.autoRenew = autoRenew;
   member.stripeSubscriptionId = subscription.id;
 
+  const invoice = subscription.latest_invoice as Stripe.Invoice;
+
   const payment: MemberPayment = await createMemberPayment({
     bm,
     communityId,
-    invoice: subscription.latest_invoice as Stripe.Invoice,
+    invoice,
     member,
     type
   });
 
-  return payment.member;
+  return payment?.member ?? member;
 };
 
 export default createSubscription;

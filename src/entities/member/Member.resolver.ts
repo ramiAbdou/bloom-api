@@ -5,10 +5,10 @@ import BloomManager from '@core/db/BloomManager';
 import { Member } from '@entities/entities';
 import { PopulateArgs } from '../../util/gql.types';
 import { AdminArgs } from './Member.types';
+import addMembers, { AddMembersArgs } from './repo/addMembers';
 import applyForMembership, {
   ApplyForMembershipArgs
 } from './repo/applyForMembership';
-import createMembers, { CreateMembersArgs } from './repo/createMembers';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import demoteToMember from './repo/demoteToMember';
 import promoteToAdmin from './repo/promoteToAdmin';
@@ -22,6 +22,12 @@ import updatePaymentMethod, {
 
 @Resolver()
 export default class MemberResolver {
+  @Authorized('ADMIN')
+  @Mutation(() => [Member], { nullable: true })
+  async addMembers(@Args() args: AddMembersArgs, @Ctx() ctx: GQLContext) {
+    return addMembers(args, ctx);
+  }
+
   /**
    * Creates a Member is for the given Community ID, and also creates a
    * User with the basic information from the member data.
@@ -32,12 +38,6 @@ export default class MemberResolver {
     @Ctx() ctx: GQLContext
   ): Promise<Member> {
     return applyForMembership(args, ctx);
-  }
-
-  @Authorized('ADMIN')
-  @Mutation(() => [Member], { nullable: true })
-  async createMembers(@Args() args: CreateMembersArgs, @Ctx() ctx: GQLContext) {
-    return createMembers(args, ctx);
   }
 
   @Authorized('ADMIN')

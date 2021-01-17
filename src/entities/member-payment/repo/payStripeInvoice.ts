@@ -4,29 +4,24 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { Member } from '@entities/entities';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import CommunityIntegrations from '../../community-integrations/CommunityIntegrations';
 import MemberType from '../../member-type/MemberType';
+import Member from '../../member/Member';
 import createStripeCustomer from '../../member/repo/createStripeCustomer';
 import MemberPayment from '../MemberPayment';
-import cancelStripeSubscription from './cancelStripeSubscription';
 import createMemberPayment from './createMemberPayment';
 
 @ArgsType()
-export class CreateOneTimePaymentArgs {
-  @Field()
+export class PayStripeInvoiceArgs {
+  @Field({ nullable: true })
   memberTypeId: string;
 }
 
-/**
- * Precondition: Should only be called for a LIFETIME membership. All other
- * payments should be subscriptions.
- */
-const createOneTimePayment = async (
-  { memberTypeId }: CreateOneTimePaymentArgs,
-  { communityId, memberId }: GQLContext
-): Promise<Member> => {
+const payStripeInvoice = async (
+  { memberTypeId }: PayStripeInvoiceArgs,
+  { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
+) => {
   const bm = new BloomManager();
 
   const [{ stripeAccountId }, member, type]: [
@@ -44,21 +39,20 @@ const createOneTimePayment = async (
     stripeSubscriptionId
   }: Member = await createStripeCustomer({ memberId });
 
-  if (stripeSubscriptionId) {
-    await cancelStripeSubscription(
-      { bm, subscriptionId: stripeSubscriptionId },
-      { communityId }
-    );
-  }
+  const { stripePriceId } = type;
 
   await stripe.invoiceItems.create(
-    { customer: stripeCustomerId, price: type.stripePriceId },
+    { customer: stripeCustomerId, price: stripePriceId },
     { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
   // Creates the recurring subscription.
   const invoice: Stripe.Invoice = await stripe.invoices.create(
-    { auto_advance: false, customer: stripeCustomerId },
+    {
+      auto_advance: false,
+      customer: stripeCustomerId,
+      subscription: stripeSubscriptionId
+    },
     { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
@@ -75,7 +69,7 @@ const createOneTimePayment = async (
     type
   });
 
-  return payment.member;
+  return payment;
 };
 
-export default createOneTimePayment;
+export default payStripeInvoice;
