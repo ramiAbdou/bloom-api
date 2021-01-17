@@ -10,7 +10,6 @@ import {
   wrap
 } from '@mikro-orm/core';
 
-import { LoggerEvent } from '@constants';
 import cache from '@core/cache/cache';
 import logger from '@util/logger';
 import { now } from '@util/util';
@@ -19,6 +18,7 @@ import {
   BloomFindOneAndUpdateOptions,
   BloomFindOneOptions,
   BloomFindOptions,
+  BloomManagerDeleteAndFlushArgs,
   BloomManagerFlushArgs
 } from './BloomManager.types';
 import db from './db';
@@ -199,17 +199,16 @@ class BloomManager {
    * table. There is a global filter that gets all entities that have a
    * deletedAt = null.
    */
-  async deleteAndFlush(
-    entities?: AnyEntity<any> | AnyEntity<any>[],
-    event?: LoggerEvent
-  ) {
-    if (Array.isArray(entities)) {
-      entities.forEach((entity: AnyEntity<any>) => {
-        entity.deletedAt = now();
-      });
-    } else entities.deletedAt = now();
+  async deleteAndFlush({
+    cacheKeysToInvalidate,
+    entities,
+    event
+  }: BloomManagerDeleteAndFlushArgs) {
+    entities.forEach((entity: AnyEntity<any>) => {
+      entity.deletedAt = now();
+    });
 
-    await this.flush({ event });
+    await this.flush({ cacheKeysToInvalidate, event });
   }
 }
 

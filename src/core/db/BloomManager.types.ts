@@ -1,4 +1,4 @@
-import { FindOneOptions, FindOptions } from '@mikro-orm/core';
+import { AnyEntity, FindOneOptions, FindOptions } from '@mikro-orm/core';
 
 import { LoggerEvent } from '@constants';
 
@@ -22,4 +22,8 @@ export interface BloomFindOptions<T, P> extends FindOptions<T, P> {
 export interface BloomFindAndUpdateOptions<T, P>
   extends BloomFindOptions<T, P> {
   event: LoggerEvent;
+}
+
+export interface BloomManagerDeleteAndFlushArgs extends BloomManagerFlushArgs {
+  entities: AnyEntity<any>[];
 }

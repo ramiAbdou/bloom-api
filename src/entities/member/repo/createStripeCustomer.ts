@@ -9,8 +9,6 @@ import Member from '../Member';
 /**
  * If the user does not have an associated Stripe customer object, create
  * that object and store it on the user entity.
- *
- * Note: Doesn't flush, just wraps the entity.
  */
 const createStripeCustomer = async ({
   memberId
