@@ -104,6 +104,12 @@ export default class Question extends BaseEntity {
       this.type = QuestionType.MULTIPLE_CHOICE;
     }
 
+    if (this.category === QuestionCategory.DUES_STATUS) {
+      this.inApplication = false;
+      this.inExpandedDirectoryCard = false;
+      this.type = QuestionType.MULTIPLE_CHOICE;
+    }
+
     // By default, if the question is fit to be in the directory card, it is
     // fit to be in the expanded card as well.
     if (this.inDirectoryCard) this.inExpandedDirectoryCard = true;

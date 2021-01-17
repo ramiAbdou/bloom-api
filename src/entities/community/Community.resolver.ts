@@ -70,7 +70,13 @@ export default class CommunityResolver {
       {
         cacheKey: `${QueryEvent.GET_DATABASE}-${communityId}`,
         orderBy: { members: { createdAt: QueryOrder.DESC } },
-        populate: ['questions', 'members.data', 'members.type', 'members.user']
+        populate: [
+          'integrations',
+          'questions',
+          'members.data',
+          'members.type',
+          'members.user'
+        ]
       }
     );
   }
@@ -123,8 +129,8 @@ export default class CommunityResolver {
   }
 
   @Authorized('ADMIN')
-  @Query(() => [Number, Number])
-  async getTotalDuesGrowth(@Ctx() ctx: GQLContext): Promise<number[]> {
+  @Query(() => Number)
+  async getTotalDuesGrowth(@Ctx() ctx: GQLContext): Promise<number> {
     return getTotalDuesGrowth(ctx);
   }
 

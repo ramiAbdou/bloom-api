@@ -5,6 +5,7 @@ import CommunityApplication from '../../community-application/CommunityApplicati
 import CommunityIntegrations from '../../community-integrations/CommunityIntegrations';
 import MemberType from '../../member-type/MemberType';
 import Question from '../../question/Question';
+import { QuestionCategory } from '../../question/Question.types';
 import Community from '../Community';
 
 /**
@@ -30,12 +31,19 @@ const createCommunity = async ({
     }
   );
 
+  const duesStatusQuestions: EntityData<Question>[] = persistedTypes.some(
+    ({ amount }: MemberType) => !!amount
+  )
+    ? [{ category: QuestionCategory.DUES_STATUS, title: 'Status' }]
+    : [];
+
   // Add the first name, last name and joined at dates to array of questions.
   const questionsWithDefaults: EntityData<Question>[] = [
-    { category: 'FIRST_NAME', title: 'First Name' },
-    { category: 'LAST_NAME', title: 'Last Name' },
+    { category: QuestionCategory.FIRST_NAME, title: 'First Name' },
+    { category: QuestionCategory.LAST_NAME, title: 'Last Name' },
+    ...duesStatusQuestions,
     ...questions,
-    { category: 'JOINED_AT', title: 'Joined On' }
+    { category: 'JOINED_AT', title: 'Joined At' }
   ];
 
   const persistedQuestions = questionsWithDefaults.map((question, i: number) =>

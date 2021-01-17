@@ -7,6 +7,7 @@ export enum QuestionType {
 
 export enum QuestionCategory {
   CURRENT_LOCATION = 'CURRENT_LOCATION',
+  DUES_STATUS = 'DUES_STATUS',
   EMAIL = 'EMAIL',
   FIRST_NAME = 'FIRST_NAME',
   GENDER = 'GENDER',
