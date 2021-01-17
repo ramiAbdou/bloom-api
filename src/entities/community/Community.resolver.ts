@@ -110,7 +110,7 @@ export default class CommunityResolver {
       { id: communityId },
       {
         cacheKey: `${QueryEvent.GET_INTEGRATIONS}-${communityId}`,
-        populate: ['integrations']
+        populate: ['integrations', 'types']
       }
     );
   }

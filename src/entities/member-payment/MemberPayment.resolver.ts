@@ -11,9 +11,6 @@ import createOneTimePayment, {
 import createSubscription, {
   CreateSubsciptionArgs
 } from './repo/createSubscription';
-import getDuesInformation, {
-  GetDuesInformationResult
-} from './repo/getDuesInformation';
 
 @Resolver()
 export default class MemberPaymentResolver {
@@ -33,12 +30,6 @@ export default class MemberPaymentResolver {
     @Ctx() ctx: GQLContext
   ) {
     return createSubscription(args, ctx);
-  }
-
-  @Authorized()
-  @Query(() => GetDuesInformationResult)
-  async getDuesInformation(@Ctx() ctx: GQLContext) {
-    return getDuesInformation(ctx);
   }
 
   @Authorized()
