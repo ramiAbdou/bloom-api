@@ -98,15 +98,17 @@ export default class Question extends BaseEntity {
       this.options = ['Male', 'Female', 'Non-Binary', 'Prefer Not to Say'];
     }
 
-    if (this.category === 'MEMBERSHIP_TYPE') {
-      this.inApplicantCard = false;
-      this.options = this.community.types.getItems().map(({ name }) => name);
-      this.type = QuestionType.MULTIPLE_CHOICE;
-    }
-
     if (this.category === QuestionCategory.DUES_STATUS) {
       this.inApplication = false;
       this.inExpandedDirectoryCard = false;
+      this.type = QuestionType.MULTIPLE_CHOICE;
+    }
+
+    if (this.category === QuestionCategory.MEMBERSHIP_TYPE) {
+      this.inApplication = false;
+      this.inApplicantCard = false;
+      this.inExpandedDirectoryCard = false;
+      this.options = this.community.types.getItems().map(({ name }) => name);
       this.type = QuestionType.MULTIPLE_CHOICE;
     }
 

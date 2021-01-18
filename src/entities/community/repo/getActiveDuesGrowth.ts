@@ -1,6 +1,7 @@
 import { GQLContext, QueryEvent } from '@constants';
 import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
+import { MemberDuesStatus } from '@entities/member/Member.types';
 import Member from '../../member/Member';
 
 const getActiveDuesGrowth = async ({ communityId }: GQLContext) => {
@@ -11,7 +12,7 @@ const getActiveDuesGrowth = async ({ communityId }: GQLContext) => {
 
   const numActiveMembers: number = await bm.em.count(Member, {
     community: { id: communityId },
-    duesStatus: 'ACTIVE',
+    duesStatus: MemberDuesStatus.ACTIVE,
     type: { amount: { $gt: 0 } }
   });
 

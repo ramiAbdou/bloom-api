@@ -42,6 +42,7 @@ const createCommunity = async ({
     { category: QuestionCategory.FIRST_NAME, title: 'First Name' },
     { category: QuestionCategory.LAST_NAME, title: 'Last Name' },
     ...duesStatusQuestions,
+    { category: QuestionCategory.MEMBERSHIP_TYPE, title: 'Membership Type' },
     ...questions,
     { category: 'JOINED_AT', title: 'Joined At' }
   ];
