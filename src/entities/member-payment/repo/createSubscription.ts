@@ -9,7 +9,6 @@ import Community from '../../community/Community';
 import MemberType from '../../member-type/MemberType';
 import Member from '../../member/Member';
 import createStripeCustomer from '../../member/repo/createStripeCustomer';
-import MemberPayment from '../MemberPayment';
 import createMemberPayment from './createMemberPayment';
 
 @ArgsType()
@@ -83,6 +82,7 @@ const createSubscription = async (
   // Need to merge the user because we could've potentially updated the Stripe
   // customer ID if it wasn't stored.
   const member: Member = await createStripeCustomer({ memberId });
+  bm.em.merge(member);
 
   const { stripeAccountId } = community.integrations;
   const { stripeCustomerId, stripeSubscriptionId } = member;
@@ -106,7 +106,7 @@ const createSubscription = async (
 
   const invoice = subscription.latest_invoice as Stripe.Invoice;
 
-  const payment: MemberPayment = await createMemberPayment({
+  const updatedMember: Member = await createMemberPayment({
     bm,
     communityId,
     invoice,
@@ -114,7 +114,7 @@ const createSubscription = async (
     type
   });
 
-  return payment?.member ?? member;
+  return updatedMember;
 };
 
 export default createSubscription;

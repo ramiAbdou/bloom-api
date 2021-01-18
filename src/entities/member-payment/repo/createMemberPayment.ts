@@ -1,10 +1,10 @@
 import Stripe from 'stripe';
 
 import { BloomManagerArgs } from '@constants';
+import { MemberDuesStatus } from '@entities/member/Member.types';
 import { getPaymentCacheKeys } from '../../../core/cache/cacheUtil';
 import MemberType from '../../member-type/MemberType';
 import Member from '../../member/Member';
-import { MemberDuesStatus } from '../../member/Member.types';
 import MemberPayment from '../MemberPayment';
 
 interface CreateMemberPaymentArgs extends BloomManagerArgs {
@@ -28,23 +28,22 @@ const createMemberPayment = async ({
 }: CreateMemberPaymentArgs) => {
   const { amount_paid, id, hosted_invoice_url } = invoice;
 
-  if (invoice.status !== 'paid') return null;
-
   // Only if the subscription worked should the MemberPayment be created.
-
-  const payment: MemberPayment = amount_paid
-    ? bm.create(MemberPayment, {
-        amount: amount_paid,
-        community: { id: communityId },
-        member,
-        stripeInvoiceId: id,
-        stripeInvoiceUrl: hosted_invoice_url,
-        type
-      })
-    : null;
 
   member.duesStatus = MemberDuesStatus.ACTIVE;
   member.type = type;
+
+  const payment: MemberPayment =
+    invoice.status === 'paid' && amount_paid
+      ? bm.create(MemberPayment, {
+          amount: amount_paid,
+          community: { id: communityId },
+          member,
+          stripeInvoiceId: id,
+          stripeInvoiceUrl: hosted_invoice_url,
+          type
+        })
+      : null;
 
   await bm.flush({
     cacheKeysToInvalidate: getPaymentCacheKeys({
@@ -53,7 +52,7 @@ const createMemberPayment = async ({
     })
   });
 
-  return payment;
+  return payment?.member ?? member;
 };
 
 export default createMemberPayment;

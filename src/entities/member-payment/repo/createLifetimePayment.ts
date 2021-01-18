@@ -9,7 +9,6 @@ import CommunityIntegrations from '../../community-integrations/CommunityIntegra
 import MemberType from '../../member-type/MemberType';
 import Member from '../../member/Member';
 import createStripeCustomer from '../../member/repo/createStripeCustomer';
-import MemberPayment from '../MemberPayment';
 import createMemberPayment from './createMemberPayment';
 
 @ArgsType()
@@ -24,21 +23,18 @@ const createLifetimePayment = async (
 ) => {
   const bm = new BloomManager();
 
-  const [{ stripeAccountId }, member, type]: [
+  const [{ stripeAccountId }, type]: [
     CommunityIntegrations,
-    Member,
     MemberType
   ] = await Promise.all([
     bm.findOne(CommunityIntegrations, { community: { id: communityId } }),
-    bm.findOne(Member, { id: memberId }),
     bm.findOne(MemberType, { id: memberTypeId })
   ]);
 
-  const {
-    stripeCustomerId,
-    stripeSubscriptionId
-  }: Member = await createStripeCustomer({ memberId });
+  const member: Member = await createStripeCustomer({ memberId });
+  bm.em.merge(member);
 
+  const { stripeCustomerId, stripeSubscriptionId } = member;
   const { stripePriceId } = type;
 
   if (stripeSubscriptionId) {
@@ -64,7 +60,7 @@ const createLifetimePayment = async (
     stripeAccount: stripeAccountId
   });
 
-  const payment: MemberPayment = await createMemberPayment({
+  const updatedMember: Member = await createMemberPayment({
     bm,
     communityId,
     invoice: paidInvoice,
@@ -72,7 +68,7 @@ const createLifetimePayment = async (
     type
   });
 
-  return payment?.member;
+  return updatedMember;
 };
 
 export default createLifetimePayment;

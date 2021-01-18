@@ -11,6 +11,9 @@ import createLifetimePayment, {
 import createSubscription, {
   CreateSubsciptionArgs
 } from './repo/createSubscription';
+import getUpcomingPayment, {
+  GetUpcomingPaymentResult
+} from './repo/getUpcomingPayment';
 
 @Resolver()
 export default class MemberPaymentResolver {
@@ -44,5 +47,13 @@ export default class MemberPaymentResolver {
         populate: ['member']
       }
     );
+  }
+
+  @Authorized()
+  @Query(() => GetUpcomingPaymentResult, { nullable: true })
+  async getUpcomingPayment(
+    @Ctx() ctx: GQLContext
+  ): Promise<GetUpcomingPaymentResult> {
+    return getUpcomingPayment(ctx);
   }
 }
