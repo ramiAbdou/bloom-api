@@ -18,9 +18,13 @@ export class CreateSubsciptionArgs {
 
   @Field()
   memberTypeId: string;
+
+  @Field(() => Number, { nullable: true })
+  prorationDate?: number;
 }
 
 interface CreateStripeSubsciptionArgs {
+  prorationDate?: number;
   stripeAccountId?: string;
   stripeCustomerId?: string;
   stripePriceId?: string;
@@ -45,6 +49,7 @@ const createStripeSubscription = async ({
 };
 
 const updateStripeSubscription = async ({
+  prorationDate,
   stripeAccountId,
   stripePriceId,
   stripeSubscriptionId
@@ -59,7 +64,8 @@ const updateStripeSubscription = async ({
     {
       expand: ['latest_invoice.payment_intent'],
       items: [{ id: subscription.items.data[0].id, price: stripePriceId }],
-      proration_behavior: 'always_invoice'
+      proration_behavior: 'always_invoice',
+      proration_date: prorationDate
     },
     { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
@@ -68,7 +74,7 @@ const updateStripeSubscription = async ({
 };
 
 const createSubscription = async (
-  { autoRenew, memberTypeId }: CreateSubsciptionArgs,
+  { autoRenew, memberTypeId, prorationDate }: CreateSubsciptionArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<Member> => {
   const { communityId, memberId } = ctx;
@@ -89,6 +95,7 @@ const createSubscription = async (
   const { stripePriceId } = type;
 
   const args: CreateStripeSubsciptionArgs = {
+    prorationDate,
     stripeAccountId,
     stripeCustomerId,
     stripePriceId,

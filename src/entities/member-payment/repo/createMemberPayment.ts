@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 
-import { BloomManagerArgs } from '@constants';
+import { BloomManagerArgs, QueryEvent } from '@constants';
 import { MemberDuesStatus } from '@entities/member/Member.types';
 import { getPaymentCacheKeys } from '../../../core/cache/cacheUtil';
 import MemberType from '../../member-type/MemberType';
@@ -46,10 +46,10 @@ const createMemberPayment = async ({
       : null;
 
   await bm.flush({
-    cacheKeysToInvalidate: getPaymentCacheKeys({
-      communityId,
-      memberId: member.id
-    })
+    cacheKeysToInvalidate: [
+      ...getPaymentCacheKeys({ communityId, memberId: member.id }),
+      `${QueryEvent.GET_USER}-${member.user.id}`
+    ]
   });
 
   return payment?.member ?? member;

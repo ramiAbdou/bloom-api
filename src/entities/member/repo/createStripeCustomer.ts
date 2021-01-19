@@ -14,13 +14,18 @@ const createStripeCustomer = async ({
   memberId
 }: Pick<GQLContext, 'memberId'>): Promise<Member> => {
   const bm = new BloomManager();
-  const member: Member = await bm.findOne(Member, { id: memberId });
+
+  const member: Member = await bm.findOne(
+    Member,
+    { id: memberId },
+    { populate: ['user'] }
+  );
 
   // If the stripeCustomerId already exists, there's no need create a new
   // customer.
   if (member.stripeCustomerId) return member;
 
-  await bm.em.populate(member, ['community.integrations', 'user']);
+  await bm.em.populate(member, ['community.integrations']);
 
   const { email, fullName } = member.user;
   const { stripeAccountId } = member.community.integrations;
