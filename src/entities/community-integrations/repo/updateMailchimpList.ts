@@ -1,5 +1,4 @@
 import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '../CommunityIntegrations';
 
@@ -15,13 +14,11 @@ export default async (
     CommunityIntegrations,
     { community: { id: communityId } },
     { mailchimpListId },
-    { event: 'MAILCHIMP_LIST_STORED' }
+    {
+      cacheKeysToInvalidate: [`${QueryEvent.GET_INTEGRATIONS}-${communityId}`],
+      event: 'MAILCHIMP_LIST_STORED'
+    }
   );
-
-  // Invalidate the cache for the GET_INTEGRATIONS call.
-  cache.invalidateEntries([
-    `${QueryEvent.GET_INTEGRATIONS}-${integrations.community.id}`
-  ]);
 
   return integrations;
 };

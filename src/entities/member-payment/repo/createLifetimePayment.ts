@@ -4,55 +4,48 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { Member } from '@entities/entities';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import CommunityIntegrations from '../../community-integrations/CommunityIntegrations';
 import MemberType from '../../member-type/MemberType';
+import Member from '../../member/Member';
 import createStripeCustomer from '../../member/repo/createStripeCustomer';
-import MemberPayment from '../MemberPayment';
-import cancelStripeSubscription from './cancelStripeSubscription';
 import createMemberPayment from './createMemberPayment';
 
 @ArgsType()
-export class CreateOneTimePaymentArgs {
-  @Field()
+export class CreateLifetimePaymentArgs {
+  @Field({ nullable: true })
   memberTypeId: string;
 }
 
-/**
- * Precondition: Should only be called for a LIFETIME membership. All other
- * payments should be subscriptions.
- */
-const createOneTimePayment = async (
-  { memberTypeId }: CreateOneTimePaymentArgs,
-  { communityId, memberId }: GQLContext
-): Promise<Member> => {
+const createLifetimePayment = async (
+  { memberTypeId }: CreateLifetimePaymentArgs,
+  { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
+) => {
   const bm = new BloomManager();
 
-  const [{ stripeAccountId }, member, type]: [
+  const [{ stripeAccountId }, type]: [
     CommunityIntegrations,
-    Member,
     MemberType
   ] = await Promise.all([
     bm.findOne(CommunityIntegrations, { community: { id: communityId } }),
-    bm.findOne(Member, { id: memberId }),
     bm.findOne(MemberType, { id: memberTypeId })
   ]);
 
-  const {
-    stripeCustomerId,
-    stripeSubscriptionId
-  }: Member = await createStripeCustomer({ memberId });
+  const member: Member = await createStripeCustomer({ memberId });
+  bm.em.merge(member);
+
+  const { stripeCustomerId, stripeSubscriptionId } = member;
+  const { stripePriceId } = type;
 
   if (stripeSubscriptionId) {
-    await cancelStripeSubscription(
-      { bm, subscriptionId: stripeSubscriptionId },
-      { communityId }
-    );
+    await stripe.subscriptions.del(stripeSubscriptionId, {
+      idempotencyKey: nanoid(),
+      stripeAccount: stripeAccountId
+    });
   }
 
   await stripe.invoiceItems.create(
-    { customer: stripeCustomerId, price: type.stripePriceId },
+    { customer: stripeCustomerId, price: stripePriceId },
     { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
@@ -67,7 +60,7 @@ const createOneTimePayment = async (
     stripeAccount: stripeAccountId
   });
 
-  const payment: MemberPayment = await createMemberPayment({
+  const updatedMember: Member = await createMemberPayment({
     bm,
     communityId,
     invoice: paidInvoice,
@@ -75,7 +68,7 @@ const createOneTimePayment = async (
     type
   });
 
-  return payment.member;
+  return updatedMember;
 };
 
-export default createOneTimePayment;
+export default createLifetimePayment;

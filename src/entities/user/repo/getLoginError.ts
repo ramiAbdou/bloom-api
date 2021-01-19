@@ -1,3 +1,4 @@
+import updateInvitedStatuses from '@entities/member/repo/updateInvitedStatus';
 import Member from '../../member/Member';
 import User from '../User';
 
@@ -14,6 +15,15 @@ export type LoginError =
  */
 const getLoginError = async (user: User): Promise<LoginError> => {
   if (!user) return 'USER_NOT_FOUND';
+
+  const members: Member[] = user.members.getItems();
+
+  // If when trying to login, the user has some a status of INVITED (only
+  // possible if an admin added them manually), then we should set those
+  // statuses to be ACCEPTED.
+  if (members.some(({ status }) => status === 'INVITED')) {
+    await updateInvitedStatuses(members);
+  }
 
   return user.members
     .getItems()

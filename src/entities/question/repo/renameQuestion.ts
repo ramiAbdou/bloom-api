@@ -1,7 +1,6 @@
 import { ArgsType, Field, Int } from 'type-graphql';
 
 import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import Question from '../Question';
 
@@ -39,17 +38,14 @@ export default async (
 
   question.title = title;
 
-  // COME BACK TO THIS!
-  // await bm.flush('QUESTION_RENAMED', question, true);
-  await bm.flush('QUESTION_RENAMED');
-
-  // Invalidate GET_APPLICATION since we fetch the member questions
-  // there as well.
-  cache.invalidateEntries([
-    `${QueryEvent.GET_APPLICATION}-${urlName}`,
-    `${QueryEvent.GET_DIRECTORY}-${communityId}`,
-    `${QueryEvent.GET_MEMBERS}-${communityId}`
-  ]);
+  await bm.flush({
+    cacheKeysToInvalidate: [
+      `${QueryEvent.GET_APPLICATION}-${urlName}`,
+      `${QueryEvent.GET_DATABASE}-${communityId}`,
+      `${QueryEvent.GET_DIRECTORY}-${communityId}`
+    ],
+    event: 'QUESTION_RENAMED'
+  });
 
   return question;
 };

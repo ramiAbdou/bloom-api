@@ -9,20 +9,23 @@ import Member from '../Member';
 /**
  * If the user does not have an associated Stripe customer object, create
  * that object and store it on the user entity.
- *
- * Note: Doesn't flush, just wraps the entity.
  */
 const createStripeCustomer = async ({
   memberId
 }: Pick<GQLContext, 'memberId'>): Promise<Member> => {
   const bm = new BloomManager();
-  const member: Member = await bm.findOne(Member, { id: memberId });
+
+  const member: Member = await bm.findOne(
+    Member,
+    { id: memberId },
+    { populate: ['user'] }
+  );
 
   // If the stripeCustomerId already exists, there's no need create a new
   // customer.
   if (member.stripeCustomerId) return member;
 
-  await bm.em.populate(member, ['community.integrations', 'user']);
+  await bm.em.populate(member, ['community.integrations']);
 
   const { email, fullName } = member.user;
   const { stripeAccountId } = member.community.integrations;
@@ -47,7 +50,7 @@ const createStripeCustomer = async ({
       ).id;
 
   wrap(member).assign({ stripeCustomerId });
-  await bm.flush('STRIPE_CUSTOMER_CREATED');
+  await bm.flush({ event: 'STRIPE_CUSTOMER_CREATED' });
 
   return member;
 };

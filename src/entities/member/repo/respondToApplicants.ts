@@ -1,7 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import { now } from '@util/util';
 import Member from '../Member';
@@ -31,14 +30,17 @@ export default async (
     Member,
     { id: memberIds },
     { joinedAt: now(), status: response },
-    { event: 'MEMBERS_ACCEPTED' }
+    {
+      cacheKeysToInvalidate:
+        response === 'ACCEPTED'
+          ? [
+              `${QueryEvent.GET_APPLICANTS}-${communityId}`,
+              `${QueryEvent.GET_DATABASE}-${communityId}`
+            ]
+          : [`${QueryEvent.GET_APPLICANTS}-${communityId}`],
+      event: 'MEMBERS_ACCEPTED'
+    }
   );
-
-  cache.invalidateEntries([`${QueryEvent.GET_APPLICANTS}-${communityId}`]);
-
-  if (response === 'ACCEPTED') {
-    cache.invalidateEntries([`${QueryEvent.GET_MEMBERS}-${communityId}`]);
-  }
 
   // Send the appropriate emails based on the response. Also, add the members
   // to the Mailchimp audience.

@@ -1,7 +1,6 @@
 import { ArgsType, Field, ObjectType } from 'type-graphql';
 
 import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../../member/Member';
 import User from '../User';
@@ -73,12 +72,13 @@ const updateUser = async (
   if (pictureUrl) user.pictureUrl = pictureUrl;
   if (twitterUrl) user.twitterUrl = twitterUrl;
 
-  await bm.flush('UPDATE_USER');
-
-  cache.invalidateEntries([
-    `${QueryEvent.GET_DIRECTORY}-${communityId}`,
-    `${QueryEvent.GET_USER}-${userId}`
-  ]);
+  await bm.flush({
+    cacheKeysToInvalidate: [
+      `${QueryEvent.GET_DIRECTORY}-${communityId}`,
+      `${QueryEvent.GET_USER}-${userId}`
+    ],
+    event: 'UPDATE_USER'
+  });
 
   return { member, user };
 };

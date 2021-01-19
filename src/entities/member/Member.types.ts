@@ -1,9 +1,8 @@
 import { ArgsType, Field, ObjectType } from 'type-graphql';
 
 export enum MemberDuesStatus {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
-  LAME = 'LAME'
+  ACTIVE = 'Active',
+  INACTIVE = 'Inactive'
 }
 
 export enum MemberRole {

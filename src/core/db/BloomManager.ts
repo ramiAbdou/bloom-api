@@ -10,15 +10,16 @@ import {
   wrap
 } from '@mikro-orm/core';
 
-import { LoggerEvent } from '@constants';
+import cache from '@core/cache/cache';
 import logger from '@util/logger';
-import { buildCacheKey, now } from '@util/util';
-import cache from '../cache';
+import { now } from '@util/util';
 import {
   BloomFindAndUpdateOptions,
   BloomFindOneAndUpdateOptions,
   BloomFindOneOptions,
-  BloomFindOptions
+  BloomFindOptions,
+  BloomManagerDeleteAndFlushArgs,
+  BloomManagerFlushArgs
 } from './BloomManager.types';
 import db from './db';
 
@@ -37,11 +38,12 @@ class BloomManager {
 
   fork = () => new BloomManager();
 
-  async flush?(event?: LoggerEvent) {
+  async flush?({ cacheKeysToInvalidate, event }: BloomManagerFlushArgs) {
     try {
       logger.log({ contextId: this.em.id, event, level: 'BEFORE_FLUSH' });
       await this.em.flush();
       logger.log({ contextId: this.em.id, event, level: 'FLUSH_SUCCESS' });
+      cache.invalidateEntries(cacheKeysToInvalidate);
     } catch (e) {
       logger.log({
         contextId: this.em.id,
@@ -63,14 +65,10 @@ class BloomManager {
     // a resolved Promise to ensure type safety.
     const { cacheKey } = options ?? {};
 
-    const key =
-      cacheKey ??
-      buildCacheKey({ entityName, operation: 'FIND_ONE', where, ...options });
-
     // If we grab the entity from the cache, we need to merge it to the current
     // entity manager, as a normal findOne would do.
-    if (options?.cache !== false && cache.has(key)) {
-      const entity = cache.get(key);
+    if (options?.cache !== false && cache.has(cacheKey)) {
+      const entity = cache.get(cacheKey);
       if (entity) this.em.merge(entity, true);
       return entity as Promise<Loaded<T, P> | null>;
     }
@@ -79,7 +77,7 @@ class BloomManager {
     const result = await this.em.findOne<T, P>(entityName, where, options);
 
     // Update the cache after fetching from the DB.
-    if (options?.cache !== false) cache.set(key, result);
+    if (options?.cache !== false) cache.set(cacheKey, result);
     return result;
   }
 
@@ -92,14 +90,10 @@ class BloomManager {
     // a resolved Promise to ensure type safety.
     const { cacheKey } = options ?? {};
 
-    const key =
-      cacheKey ??
-      buildCacheKey({ entityName, operation: 'FIND_ONE', where, ...options });
-
     // If we grab the entity from the cache, we need to merge it to the current
     // entity manager, as a normal findOne would do.
-    if (cache.has(key)) {
-      const entity = cache.get(key);
+    if (cache.has(cacheKey)) {
+      const entity = cache.get(cacheKey);
       if (entity) this.em.merge(entity);
       return entity as Promise<Loaded<T, P> | null>;
     }
@@ -112,7 +106,7 @@ class BloomManager {
     );
 
     // Update the cache after fetching from the DB.
-    cache.set(key, result);
+    cache.set(cacheKey, result);
     return result;
   }
 
@@ -122,11 +116,7 @@ class BloomManager {
     data: EntityData<T>,
     options?: BloomFindOneOptions<T, P>
   ): Promise<[Loaded<T, P> | T, boolean]> {
-    const result = await this.findOne<T, P>(entityName, where, {
-      ...options,
-      cache: false
-    });
-
+    const result = await this.findOne<T, P>(entityName, where, options);
     return [result ?? this.create(entityName, data), !!result];
   }
 
@@ -139,17 +129,12 @@ class BloomManager {
     // If not found, get it from the DB.
     const result = await this.findOne<T, P>(entityName, where, { ...options });
     wrap(result).assign(data);
-    await this.flush(options.event);
 
-    // Update the cache after fetching from the DB.
-    const key = buildCacheKey({
-      entityName,
-      operation: 'FIND_ONE',
-      where,
-      ...options
+    await this.flush({
+      cacheKeysToInvalidate: options?.cacheKeysToInvalidate,
+      event: options?.event
     });
 
-    cache.set(key, result);
     return result;
   }
 
@@ -162,14 +147,10 @@ class BloomManager {
     // a resolved Promise to ensure type safety.
     const { cacheKey } = options ?? {};
 
-    const key =
-      cacheKey ??
-      buildCacheKey({ entityName, operation: 'FIND', where, ...options });
-
     // If we grab the entity from the cache, we need to merge it to the current
     // entity manager, as a normal findOne would do.
-    if (cache.has(key)) {
-      const result = cache.get(key);
+    if (cache.has(cacheKey)) {
+      const result = cache.get(cacheKey);
       result.forEach((entity) => entity && this.em.merge(entity));
       return result as Promise<Loaded<T, P>[]>;
     }
@@ -178,7 +159,7 @@ class BloomManager {
     const result = await this.em.find<T, P>(entityName, where, { ...options });
 
     // Update the cache after fetching from the DB.
-    cache.set(key, result);
+    cache.set(cacheKey, result);
     return result;
   }
 
@@ -195,17 +176,11 @@ class BloomManager {
       wrap(entity).assign(data);
     });
 
-    await this.flush(options.event);
-
-    // Update the cache after fetching from the DB.
-    const key = buildCacheKey({
-      entityName,
-      operation: 'FIND',
-      where,
-      ...options
+    await this.flush({
+      cacheKeysToInvalidate: options?.cacheKeysToInvalidate,
+      event: options?.event
     });
 
-    cache.set(key, result);
     return result;
   }
 
@@ -228,17 +203,16 @@ class BloomManager {
    * table. There is a global filter that gets all entities that have a
    * deletedAt = null.
    */
-  async deleteAndFlush(
-    entities?: AnyEntity<any> | AnyEntity<any>[],
-    event?: LoggerEvent
-  ) {
-    if (Array.isArray(entities)) {
-      entities.forEach((entity: AnyEntity<any>) => {
-        entity.deletedAt = now();
-      });
-    } else entities.deletedAt = now();
+  async deleteAndFlush({
+    cacheKeysToInvalidate,
+    entities,
+    event
+  }: BloomManagerDeleteAndFlushArgs) {
+    entities.forEach((entity: AnyEntity<any>) => {
+      entity.deletedAt = now();
+    });
 
-    await this.flush(event);
+    await this.flush({ cacheKeysToInvalidate, event });
   }
 }
 

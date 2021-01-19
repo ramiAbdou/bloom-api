@@ -79,69 +79,6 @@ export default class Member extends BaseEntity {
   // ## MEMBER FUNCTIONS
 
   /**
-   * Returns all of the data associated with this Member formatted in
-   * with questionId and value. Only fetches the questions in where
-   * inExpandedDirectoryCard are true however.
-   *
-   * Used in the GET_DIRECTORY call.
-   */
-  @Authorized()
-  @Field(() => [QuestionValue])
-  cardData(): QuestionValue[] {
-    const data = this.data?.getItems();
-    const { email, gender, firstName, lastName } = this.user;
-
-    return this.community.questions
-      .getItems()
-      .filter(({ inExpandedDirectoryCard }) => inExpandedDirectoryCard)
-      .map(({ category, id, title }: Question) => {
-        let value: string;
-        const result = data.find(({ question }) => question.title === title);
-
-        if (result) value = result.value;
-        else if (category === 'EMAIL') value = email;
-        else if (category === 'FIRST_NAME') value = firstName;
-        else if (category === 'GENDER') value = gender;
-        else if (category === 'JOINED_AT') value = this.joinedAt;
-        else if (category === 'LAST_NAME') value = lastName;
-        else if (category === 'MEMBERSHIP_TYPE') value = this.type.name;
-
-        return { questionId: id, value };
-      });
-  }
-
-  /**
-   * Returns all of the data associated with this Member formatted in
-   * with questionId and value.
-   *
-   * Used in the GET_DATABASE call.
-   */
-  @Authorized('ADMIN')
-  @Field(() => [QuestionValue])
-  allData(): QuestionValue[] {
-    const data = this.data?.getItems();
-    const { email, gender, firstName, lastName } = this.user;
-
-    return this.community.questions
-      .getItems()
-      .filter(({ onlyInApplication }) => !onlyInApplication)
-      .map(({ category, id, title }: Question) => {
-        let value: string;
-        const result = data.find(({ question }) => question.title === title);
-
-        if (result) value = result.value;
-        else if (category === 'EMAIL') value = email;
-        else if (category === 'FIRST_NAME') value = firstName;
-        else if (category === 'GENDER') value = gender;
-        else if (category === 'JOINED_AT') value = this.joinedAt;
-        else if (category === 'LAST_NAME') value = lastName;
-        else if (category === 'MEMBERSHIP_TYPE') value = this.type.name;
-
-        return { questionId: id, value };
-      });
-  }
-
-  /**
    * Returns the pending application data that will allow the ADMIN of the
    * community to accept or reject the application.
    *
@@ -194,7 +131,10 @@ export default class Member extends BaseEntity {
 
   @BeforeCreate()
   beforeCreate() {
-    if (this.role || this.community.autoAccept) {
+    if (
+      (this.role && this.status !== MemberStatus.INVITED) ||
+      this.community.autoAccept
+    ) {
       this.joinedAt = now();
       this.status = MemberStatus.ACCEPTED;
     }

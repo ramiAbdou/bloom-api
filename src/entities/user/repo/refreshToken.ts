@@ -59,7 +59,7 @@ const refreshToken = async ({
   user.refreshToken = tokens.refreshToken;
 
   bm.create(MemberRefresh, { member });
-  await bm.flush('REFRESH_TOKEN_UPDATED');
+  await bm.flush({ event: 'REFRESH_TOKEN_UPDATED' });
 
   return tokens;
 };

@@ -1,7 +1,6 @@
 import { wrap } from '@mikro-orm/core';
 
 import { QueryEvent } from '@constants';
-import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import createStripeProducts from '@entities/member-type/repo/createStripeProducts';
 import { stripe } from '@integrations/stripe/Stripe.util';
@@ -34,10 +33,11 @@ export default async (urlName: string, code: string): Promise<void> => {
   });
 
   wrap(integrations).assign({ stripeAccountId });
-  await bm.flush('STRIPE_ACCOUNT_STORED');
 
-  // Invalidate the cache for the GET_INTEGRATIONS call.
-  cache.invalidateEntries([
-    `${QueryEvent.GET_INTEGRATIONS}-${integrations.community.id}`
-  ]);
+  await bm.flush({
+    cacheKeysToInvalidate: [
+      `${QueryEvent.GET_INTEGRATIONS}-${integrations.community.id}`
+    ],
+    event: 'STRIPE_ACCOUNT_STORED'
+  });
 };

@@ -1,7 +1,6 @@
 import { ArgsType, Field, InputType } from 'type-graphql';
 
 import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache';
 import BloomManager from '@core/db/BloomManager';
 import addToMailchimpAudience from '@entities/community-integrations/repo/addToMailchimpAudience';
 import Community from '../../community/Community';
@@ -9,7 +8,7 @@ import User from '../../user/User';
 import Member from '../Member';
 
 @InputType()
-export class NewMemberInput {
+class AddMemberInput {
   @Field(() => String)
   email: string;
 
@@ -24,17 +23,17 @@ export class NewMemberInput {
 }
 
 @ArgsType()
-export class CreateMembersArgs {
-  @Field(() => [NewMemberInput])
-  members: NewMemberInput[];
+export class AddMembersArgs {
+  @Field(() => [AddMemberInput])
+  members: AddMemberInput[];
 }
 
 /**
  * Toggles the admin status of the member. If the role of the members
  * were previously ADMIN, they become null, and vice versa.
  */
-export default async (
-  { members: inputs }: CreateMembersArgs,
+const addMembers = async (
+  { members: inputs }: AddMembersArgs,
   { communityId }: GQLContext
 ): Promise<Member[]> => {
   const bm = new BloomManager();
@@ -71,16 +70,19 @@ export default async (
     )
   );
 
-  await bm.flush('MEMBERS_CREATED');
-  cache.invalidateEntries([`${QueryEvent.GET_MEMBERS}-${communityId}`]);
-
-  await bm.em.populate(members, ['community.questions', 'data']);
+  await bm.flush({
+    cacheKeysToInvalidate: [`${QueryEvent.GET_DATABASE}-${communityId}`],
+    event: 'MEMBERS_CREATED'
+  });
 
   // Send the appropriate emails based on the response. Also, add the members
   // to the Mailchimp audience.
   setTimeout(async () => {
+    await bm.em.populate(members, ['community.questions', 'data']);
     await addToMailchimpAudience(members, community);
   }, 0);
 
   return members;
 };
+
+export default addMembers;

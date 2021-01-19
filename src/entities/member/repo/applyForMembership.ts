@@ -1,16 +1,21 @@
 import { ArgsType, Field, InputType } from 'type-graphql';
 
-import { QueryEvent } from '@constants';
-import cache from '@core/cache';
+import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Community from '../../community/Community';
 import MemberData from '../../member-data/MemberData';
+import createSubscription from '../../member-payment/repo/createSubscription';
+import { QuestionCategory } from '../../question/Question.types';
 import User from '../../user/User';
 import Member from '../Member';
+import updatePaymentMethod from './updatePaymentMethod';
 
 @InputType()
 export class MemberDataInput {
-  @Field()
+  @Field(() => String, { nullable: true })
+  category?: QuestionCategory;
+
+  @Field({ nullable: true })
   questionId: string;
 
   @Field(() => [String], { nullable: true })
@@ -25,6 +30,12 @@ export class ApplyForMembershipArgs {
   @Field()
   email: string;
 
+  @Field({ nullable: true })
+  memberTypeId?: string;
+
+  @Field({ nullable: true })
+  paymentMethodId?: string;
+
   @Field()
   urlName: string;
 }
@@ -33,11 +44,16 @@ export class ApplyForMembershipArgs {
  * Applies for member in the community using the given email and data.
  * A user is either created OR fetched based on the email.
  */
-export default async ({
-  data,
-  email,
-  urlName
-}: ApplyForMembershipArgs): Promise<Member> => {
+const applyForMembership = async (
+  {
+    data,
+    email,
+    memberTypeId,
+    paymentMethodId,
+    urlName
+  }: ApplyForMembershipArgs,
+  { res }: Pick<GQLContext, 'res'>
+): Promise<Member> => {
   const bm = new BloomManager();
 
   // Populate the questions and types so that we can capture the member
@@ -50,8 +66,7 @@ export default async ({
 
   // The user can potentially already exist if they are a part of other
   // communities.
-  const user: User =
-    (await bm.findOne(User, { email })) ?? bm.create(User, { email });
+  const [user] = await bm.findOneOrCreate(User, { email }, { email });
 
   if (await bm.findOne(Member, { community, user })) {
     throw new Error(
@@ -66,16 +81,16 @@ export default async ({
 
   // Some data we store on the user entity, and some we store as member
   // data.
-  data.forEach(({ questionId, value: valueArray }) => {
+  data.forEach(({ category, questionId, value: valueArray }) => {
     // If there's no value, then short circuit. Because for the initial
     // creation of data, it must exist.
     if (!valueArray?.length) return;
 
     const question = questions.find(({ id }) => questionId === id);
-    const { category } = question;
+    category = category ?? question.category;
 
     const value =
-      question.type === 'MULTIPLE_SELECT' ? valueArray : valueArray[0];
+      question?.type === 'MULTIPLE_SELECT' ? valueArray : valueArray[0];
 
     if (category === 'EMAIL') user.email = value as string;
     else if (category === 'FIRST_NAME') user.firstName = value as string;
@@ -89,13 +104,25 @@ export default async ({
     }
   });
 
-  await bm.flush('MEMBERS_CREATED');
+  await bm.flush({
+    cacheKeysToInvalidate: [
+      `${QueryEvent.GET_APPLICANTS}-${community.id}`,
+      `${QueryEvent.GET_DATABASE}-${community.id}`
+    ],
+    event: 'MEMBERS_CREATED'
+  });
 
-  // Invalidate the cache for the GET_APPLICANTS call.
-  cache.invalidateEntries([
-    `${QueryEvent.GET_APPLICANTS}-${community.id}`,
-    `${QueryEvent.GET_MEMBERS}-${community.id}`
-  ]);
+  if (paymentMethodId) {
+    await updatePaymentMethod(
+      { paymentMethodId },
+      { communityId: community.id, memberId: member.id }
+    );
+
+    await createSubscription(
+      { autoRenew: true, memberTypeId },
+      { communityId: community.id, memberId: member.id }
+    );
+  }
 
   // Send the appropriate emails based on the response.
   setTimeout(async () => {
@@ -104,5 +131,10 @@ export default async ({
     // } else await bm.memberRepo().sendMemberReceievedEmail(member, community);
   }, 0);
 
+  res.clearCookie('accessToken');
+  res.clearCookie('refreshToken');
+
   return member;
 };
+
+export default applyForMembership;

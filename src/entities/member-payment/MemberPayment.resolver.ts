@@ -5,25 +5,28 @@ import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../member/Member';
 import MemberPayment from './MemberPayment';
-import createOneTimePayment, {
-  CreateOneTimePaymentArgs
-} from './repo/createOneTimePayment';
+import createLifetimePayment, {
+  CreateLifetimePaymentArgs
+} from './repo/createLifetimePayment';
 import createSubscription, {
   CreateSubsciptionArgs
 } from './repo/createSubscription';
-import getDuesInformation, {
-  GetDuesInformationResult
-} from './repo/getDuesInformation';
+import getChangePreview, {
+  GetChangePreviewResult
+} from './repo/getChangePreview';
+import getUpcomingPayment, {
+  GetUpcomingPaymentResult
+} from './repo/getUpcomingPayment';
 
 @Resolver()
 export default class MemberPaymentResolver {
   @Authorized()
   @Mutation(() => Member, { nullable: true })
-  async createOneTimePayment(
-    @Args() args: CreateOneTimePaymentArgs,
+  async createLifetimePayment(
+    @Args() args: CreateLifetimePaymentArgs,
     @Ctx() ctx: GQLContext
   ) {
-    return createOneTimePayment(args, ctx);
+    return createLifetimePayment(args, ctx);
   }
 
   @Authorized()
@@ -36,36 +39,33 @@ export default class MemberPaymentResolver {
   }
 
   @Authorized()
-  @Query(() => GetDuesInformationResult)
-  async getDuesInformation(@Ctx() ctx: GQLContext) {
-    return getDuesInformation(ctx);
+  @Query(() => GetChangePreviewResult, { nullable: true })
+  async getChangePreview(
+    @Args() args: CreateSubsciptionArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<GetChangePreviewResult> {
+    return getChangePreview(args, ctx);
   }
 
-  @Authorized('ADMIN')
+  @Authorized()
   @Query(() => [MemberPayment])
-  async getDuesHistory(@Ctx() { communityId }: GQLContext) {
+  async getMemberPayments(@Ctx() { memberId }: GQLContext) {
     return new BloomManager().find(
       MemberPayment,
-      { member: { community: { id: communityId } } },
+      { member: { id: memberId } },
       {
-        cacheKey: `${QueryEvent.GET_PAYMENTS}-${communityId}`,
+        cacheKey: `${QueryEvent.GET_MEMBER_PAYMENTS}-${memberId}`,
         orderBy: { createdAt: QueryOrder.DESC },
-        populate: ['member.user', 'type']
+        populate: ['member']
       }
     );
   }
 
   @Authorized()
-  @Query(() => [MemberPayment])
-  async getPaymentHistory(@Ctx() { memberId }: GQLContext) {
-    return new BloomManager().find(
-      MemberPayment,
-      { member: { id: memberId } },
-      {
-        cacheKey: `${QueryEvent.GET_PAYMENT_HISTORY}-${memberId}`,
-        orderBy: { createdAt: QueryOrder.DESC },
-        populate: ['member']
-      }
-    );
+  @Query(() => GetUpcomingPaymentResult, { nullable: true })
+  async getUpcomingPayment(
+    @Ctx() ctx: GQLContext
+  ): Promise<GetUpcomingPaymentResult> {
+    return getUpcomingPayment(ctx);
   }
 }

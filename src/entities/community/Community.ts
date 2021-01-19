@@ -15,6 +15,7 @@ import BaseEntity from '@core/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
 import CommunityApplication from '../community-application/CommunityApplication';
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
+import MemberPayment from '../member-payment/MemberPayment';
 import MemberType from '../member-type/MemberType';
 import Member from '../member/Member';
 import Question from '../question/Question';
@@ -93,6 +94,10 @@ export default class Community extends BaseEntity {
   @Field(() => [Member])
   @OneToMany(() => Member, ({ community }) => community)
   members = new Collection<Member>(this);
+
+  @Field(() => [MemberPayment])
+  @OneToMany(() => MemberPayment, ({ community }) => community)
+  payments = new Collection<MemberPayment>(this);
 
   // Should get the questions by the order that they are stored in the DB.
   @Field(() => [Question])
