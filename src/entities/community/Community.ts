@@ -15,6 +15,7 @@ import BaseEntity from '@core/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
 import CommunityApplication from '../community-application/CommunityApplication';
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
+import Event from '../event/Event';
 import MemberPayment from '../member-payment/MemberPayment';
 import MemberType from '../member-type/MemberType';
 import Member from '../member/Member';
@@ -83,6 +84,10 @@ export default class Community extends BaseEntity {
   // way for someone to join is if the admin adds them manually.
   @OneToOne({ nullable: true })
   defaultType: MemberType;
+
+  @Field(() => [Event])
+  @OneToMany(() => Event, ({ community }) => community)
+  events = new Collection<Event>(this);
 
   @Field(() => CommunityIntegrations, { nullable: true })
   @OneToOne(() => CommunityIntegrations, ({ community }) => community, {
