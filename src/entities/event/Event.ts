@@ -1,9 +1,16 @@
 import { IsUrl } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
-import { Entity, ManyToOne, Property } from '@mikro-orm/core';
+import {
+  Collection,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  Property
+} from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
 import Community from '../community/Community';
+import EventGuest from '../event-guest/EventGuest';
 
 @ObjectType()
 @Entity()
@@ -38,6 +45,13 @@ export default class Event extends BaseEntity {
   @IsUrl()
   videoUrl: string;
 
+  // ## RELATIONSHIPS
+
+  @Field(() => Community)
   @ManyToOne(() => Community)
   community: Community;
+
+  @Field(() => [EventGuest])
+  @OneToMany(() => EventGuest, ({ event }) => event)
+  guests = new Collection<EventGuest>(this);
 }
