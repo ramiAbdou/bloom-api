@@ -18,7 +18,6 @@ import {
   BloomFindOneAndUpdateOptions,
   BloomFindOneOptions,
   BloomFindOptions,
-  BloomManagerDeleteAndFlushArgs,
   BloomManagerFlushArgs
 } from './BloomManager.types';
 import db from './db';
@@ -185,6 +184,33 @@ class BloomManager {
   }
 
   /**
+   * Instead of actually removing and flushing the entity(s), this function
+   * acts as a SOFT DELETE and simply sets the deletedAt column within the
+   * table. There is a global filter that gets all entities that have a
+   * deletedAt = null.
+   */
+  async findAndDelete<T, P>(
+    entityName: EntityName<T>,
+    where: FilterQuery<T>,
+    options?: BloomFindAndUpdateOptions<T, P>
+  ): Promise<boolean> {
+    // If not found, get it from the DB.
+    const result = await this.find<T, P>(entityName, where, { ...options });
+
+    result.forEach((entity: Loaded<T, P>) => {
+      // @ts-ignore b/c not sure the right type for this.
+      entity.deletedAt = now();
+    });
+
+    await this.flush({
+      cacheKeysToInvalidate: options?.cacheKeysToInvalidate,
+      event: options?.event
+    });
+
+    return true;
+  }
+
+  /**
    * Persists the newly created entity. Replaces the old BloomManager function
    * called createAndPersist.
    */
@@ -195,24 +221,6 @@ class BloomManager {
     const entity: New<T, P> = this.em.create(entityName, data);
     this.em.persist(entity);
     return entity;
-  }
-
-  /**
-   * Instead of actually removing and flushing the entity(s), this function
-   * acts as a SOFT DELETE and simply sets the deletedAt column within the
-   * table. There is a global filter that gets all entities that have a
-   * deletedAt = null.
-   */
-  async deleteAndFlush({
-    cacheKeysToInvalidate,
-    entities,
-    event
-  }: BloomManagerDeleteAndFlushArgs) {
-    entities.forEach((entity: AnyEntity<any>) => {
-      entity.deletedAt = now();
-    });
-
-    await this.flush({ cacheKeysToInvalidate, event });
   }
 }
 

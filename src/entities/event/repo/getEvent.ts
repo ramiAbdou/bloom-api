@@ -16,7 +16,7 @@ const getEvent = async ({ eventId }: GetEventArgs) => {
     { id: eventId },
     {
       cacheKey: `${QueryEvent.GET_EVENT}-${eventId}`,
-      populate: ['community', 'guests.member']
+      populate: ['community', 'guests.member.user']
     }
   );
 };

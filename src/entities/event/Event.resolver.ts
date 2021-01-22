@@ -3,6 +3,7 @@ import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { GQLContext } from '@constants';
 import Event from './Event';
 import createEvent, { CreateEventArgs } from './repo/createEvent';
+import deleteEvent, { DeleteEventArgs } from './repo/deleteEvent';
 import getEvent, { GetEventArgs } from './repo/getEvent';
 import updateEvent, { UpdateEventArgs } from './repo/updateEvent';
 import updateRecordingLink, {
@@ -18,6 +19,15 @@ export default class EventResolver {
     @Ctx() ctx: GQLContext
   ): Promise<Event> {
     return createEvent(args, ctx);
+  }
+
+  @Authorized('ADMIN')
+  @Mutation(() => Boolean, { nullable: true })
+  async deleteEvent(
+    @Args() args: DeleteEventArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<boolean> {
+    return deleteEvent(args, ctx);
   }
 
   @Authorized()
