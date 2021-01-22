@@ -95,6 +95,7 @@ export type LoggerEvent =
   | 'STRIPE_CUSTOMER_CREATED'
   | 'STRIPE_SUBSCRIPTION_CREATED'
   | 'UPDATE_EVENT'
+  | 'UPDATE_EVENT_RECORDING_LINK'
   | 'UPDATE_USER';
 
 export type GQLContext = {

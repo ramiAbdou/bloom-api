@@ -39,6 +39,11 @@ export default class Event extends BaseEntity {
   @Property({ default: true })
   private: boolean;
 
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  @IsUrl()
+  recordingUrl: string;
+
   @Field()
   @Property()
   startTime: string;

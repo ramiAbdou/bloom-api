@@ -5,6 +5,9 @@ import Event from './Event';
 import createEvent, { CreateEventArgs } from './repo/createEvent';
 import getEvent, { GetEventArgs } from './repo/getEvent';
 import updateEvent, { UpdateEventArgs } from './repo/updateEvent';
+import updateRecordingLink, {
+  UpdateRecordingLinkArgs
+} from './repo/updateRecordingLink';
 
 @Resolver()
 export default class EventResolver {
@@ -30,5 +33,13 @@ export default class EventResolver {
     @Ctx() ctx: GQLContext
   ): Promise<Event> {
     return updateEvent(args, ctx);
+  }
+
+  @Authorized('ADMIN')
+  @Mutation(() => Event, { nullable: true })
+  async updateRecordingLink(
+    @Args() args: UpdateRecordingLinkArgs
+  ): Promise<Event> {
+    return updateRecordingLink(args);
   }
 }
