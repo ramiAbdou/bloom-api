@@ -7,7 +7,7 @@ import Member from '../member/Member';
 
 @ObjectType()
 @Entity()
-export default class EventGuest extends BaseCompositeEntity {
+export default class EventAttendee extends BaseCompositeEntity {
   @Field(() => Event)
   @ManyToOne(() => Event, { primary: true })
   event: Event;

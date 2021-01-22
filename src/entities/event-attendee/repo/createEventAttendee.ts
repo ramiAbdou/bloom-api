@@ -2,26 +2,26 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import EventGuest from '../EventGuest';
+import EventAttendee from '../EventAttendee';
 
 @ArgsType()
-export class CreateEventGuestArgs {
+export class CreateEventAttendeeArgs {
   @Field()
   eventId: string;
 }
 
-const createEventGuest = async (
-  { eventId }: CreateEventGuestArgs,
+const createEventAttendee = async (
+  { eventId }: CreateEventAttendeeArgs,
   { memberId }: Pick<GQLContext, 'memberId'>
 ) => {
-  const [guest] = await new BloomManager().findOneOrCreateAndFlush(
-    EventGuest,
+  const [attendee] = await new BloomManager().findOneOrCreateAndFlush(
+    EventAttendee,
     { event: { id: eventId }, member: { id: memberId } },
     { event: { id: eventId }, member: { id: memberId } },
-    { event: 'CREATE_EVENT_GUEST' }
+    { event: 'CREATE_EVENT_ATTENDEE' }
   );
 
-  return guest;
+  return attendee;
 };
 
-export default createEventGuest;
+export default createEventAttendee;

@@ -17,6 +17,7 @@ import {
   BloomFindAndUpdateOptions,
   BloomFindOneAndUpdateOptions,
   BloomFindOneOptions,
+  BloomFindOneOrCreateAndFlushOptions,
   BloomFindOptions,
   BloomManagerFlushArgs
 } from './BloomManager.types';
@@ -117,6 +118,19 @@ class BloomManager {
   ): Promise<[Loaded<T, P> | T, boolean]> {
     const result = await this.findOne<T, P>(entityName, where, options);
     return [result ?? this.create(entityName, data), !!result];
+  }
+
+  async findOneOrCreateAndFlush<T, P>(
+    entityName: EntityName<T>,
+    where: FilterQuery<T>,
+    data: EntityData<T>,
+    options?: BloomFindOneOrCreateAndFlushOptions<T, P>
+  ): Promise<[Loaded<T, P> | T, boolean]> {
+    const result = await this.findOne<T, P>(entityName, where, options);
+    return [
+      result ?? (await this.createAndFlush(entityName, data, options)),
+      !!result
+    ];
   }
 
   async findOneAndUpdate<T, P>(
@@ -220,6 +234,20 @@ class BloomManager {
   ): New<T, P> {
     const entity: New<T, P> = this.em.create(entityName, data);
     this.em.persist(entity);
+    return entity;
+  }
+
+  /**
+   * Persists the newly created entity. Replaces the old BloomManager function
+   * called createAndPersist.
+   */
+  async createAndFlush<T extends AnyEntity<T>, P extends Populate<T> = any>(
+    entityName: EntityName<T>,
+    data: EntityData<T>,
+    options?: BloomManagerFlushArgs
+  ): Promise<New<T, P>> {
+    const entity: New<T, P> = this.create(entityName, data);
+    await this.flush(options);
     return entity;
   }
 }

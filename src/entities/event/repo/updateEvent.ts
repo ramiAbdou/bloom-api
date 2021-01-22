@@ -29,6 +29,7 @@ const updateEvent = async (
   { id: eventId, ...args }: UpdateEventArgs,
   { communityId }: GQLContext
 ): Promise<Event> => {
+  console.log(args);
   return new BloomManager().findOneAndUpdate(
     Event,
     { id: eventId },

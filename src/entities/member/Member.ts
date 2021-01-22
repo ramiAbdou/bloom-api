@@ -12,6 +12,7 @@ import {
 import BaseEntity from '@core/db/BaseEntity';
 import { now } from '@util/util';
 import Community from '../community/Community';
+import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
 import MemberData from '../member-data/MemberData';
 import MemberPayment from '../member-payment/MemberPayment';
@@ -147,6 +148,10 @@ export default class Member extends BaseEntity {
   }
 
   // ## RELATIONSHIPS
+
+  @Field(() => [EventAttendee])
+  @OneToMany(() => EventAttendee, ({ member }) => member)
+  attendees = new Collection<EventAttendee>(this);
 
   @Field(() => Community)
   @ManyToOne(() => Community)

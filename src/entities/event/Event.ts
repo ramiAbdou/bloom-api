@@ -11,6 +11,7 @@ import {
 import { APP } from '@constants';
 import BaseEntity from '@core/db/BaseEntity';
 import Community from '../community/Community';
+import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
 
 @ObjectType()
@@ -58,6 +59,10 @@ export default class Event extends BaseEntity {
   videoUrl: string;
 
   // ## RELATIONSHIPS
+
+  @Field(() => [EventAttendee])
+  @OneToMany(() => EventAttendee, ({ event }) => event)
+  attendees = new Collection<EventAttendee>(this);
 
   @Field(() => Community)
   @ManyToOne(() => Community)
