@@ -108,7 +108,7 @@ export default class CommunityResolver {
       { id: communityId },
       {
         cacheKey: `${QueryEvent.GET_EVENTS}-${communityId}`,
-        populate: ['events']
+        populate: ['events.guests']
       }
     );
   }

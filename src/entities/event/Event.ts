@@ -8,6 +8,7 @@ import {
   Property
 } from '@mikro-orm/core';
 
+import { APP } from '@constants';
 import BaseEntity from '@core/db/BaseEntity';
 import Community from '../community/Community';
 import EventGuest from '../event-guest/EventGuest';
@@ -22,6 +23,12 @@ export default class Event extends BaseEntity {
   @Field()
   @Property()
   endTime: string;
+
+  @Field()
+  @Property({ persist: false })
+  get eventUrl(): string {
+    return `${APP.CLIENT_URL}/${this.community.urlName}/events/${this.id}`;
+  }
 
   @Field({ nullable: true })
   @Property({ nullable: true })
