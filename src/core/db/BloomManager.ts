@@ -14,6 +14,7 @@ import cache from '@core/cache/cache';
 import logger from '@util/logger';
 import { now } from '@util/util';
 import {
+  BloomCreateAndFlushArgs,
   BloomFindAndUpdateOptions,
   BloomFindOneAndUpdateOptions,
   BloomFindOneOptions,
@@ -128,7 +129,11 @@ class BloomManager {
   ): Promise<[Loaded<T, P> | T, boolean]> {
     const result = await this.findOne<T, P>(entityName, where, options);
     return [
-      result ?? (await this.createAndFlush(entityName, data, options)),
+      result ??
+        ((await this.createAndFlush(entityName, data, options)) as Loaded<
+          T,
+          P
+        >),
       !!result
     ];
   }
@@ -244,10 +249,16 @@ class BloomManager {
   async createAndFlush<T extends AnyEntity<T>, P extends Populate<T> = any>(
     entityName: EntityName<T>,
     data: EntityData<T>,
-    options?: BloomManagerFlushArgs
-  ): Promise<New<T, P>> {
-    const entity: New<T, P> = this.create(entityName, data);
+    { populate, ...options }: BloomCreateAndFlushArgs<P>
+  ): Promise<T> {
+    const entity = this.create(entityName, data);
     await this.flush(options);
+
+    if (populate) {
+      this.em.merge(entity);
+      await this.em.populate(entity, ['member.user'], null, null, true);
+    }
+
     return entity;
   }
 }

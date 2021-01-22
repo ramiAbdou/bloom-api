@@ -6,6 +6,9 @@ export interface BloomManagerFlushArgs {
   cacheKeysToInvalidate?: string[];
   event?: LoggerEvent;
 }
+export interface BloomCreateAndFlushArgs<P> extends BloomManagerFlushArgs {
+  populate?: P;
+}
 
 export interface BloomFindOneOptions<T, P> extends FindOneOptions<T, P> {
   cacheKey?: string;

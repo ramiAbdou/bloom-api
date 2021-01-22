@@ -49,6 +49,10 @@ export default class Event extends BaseEntity {
   @Property()
   startTime: string;
 
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  summary: string;
+
   @Field()
   @Property()
   title: string;

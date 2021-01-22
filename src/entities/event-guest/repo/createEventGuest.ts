@@ -18,7 +18,7 @@ const createEventGuest = async (
     EventGuest,
     { event: { id: eventId }, member: { id: memberId } },
     { event: { id: eventId }, member: { id: memberId } },
-    { event: 'CREATE_EVENT_GUEST' }
+    { event: 'CREATE_EVENT_GUEST', populate: ['member.user'] }
   );
 
   return guest;

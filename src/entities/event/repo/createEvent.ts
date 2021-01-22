@@ -24,6 +24,9 @@ export class CreateEventArgs {
   @Field()
   startTime: string;
 
+  @Field({ nullable: true })
+  summary?: string;
+
   @Field()
   title: string;
 }
@@ -32,19 +35,14 @@ const createEvent = async (
   args: CreateEventArgs,
   { communityId }: GQLContext
 ): Promise<Event> => {
-  const bm = new BloomManager();
-
-  const event: Event = bm.create(Event, {
-    ...args,
-    community: { id: communityId }
-  });
-
-  await bm.flush({
-    cacheKeysToInvalidate: [`${QueryEvent.GET_EVENTS}-${communityId}`],
-    event: 'CREATE_EVENT'
-  });
-
-  return event;
+  return new BloomManager().createAndFlush(
+    Event,
+    { ...args, community: { id: communityId } },
+    {
+      cacheKeysToInvalidate: [`${QueryEvent.GET_EVENTS}-${communityId}`],
+      event: 'CREATE_EVENT'
+    }
+  );
 };
 
 export default createEvent;
