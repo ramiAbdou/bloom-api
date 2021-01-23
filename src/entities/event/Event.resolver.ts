@@ -1,10 +1,12 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
+import { TimeSeriesData } from '@util/gql.types';
 import Event from './Event';
 import createEvent, { CreateEventArgs } from './repo/createEvent';
 import deleteEvent, { DeleteEventArgs } from './repo/deleteEvent';
 import getEvent, { GetEventArgs } from './repo/getEvent';
+import getEventGuestSeries from './repo/getEventGuestSeries';
 import updateEvent, { UpdateEventArgs } from './repo/updateEvent';
 import updateRecordingLink, {
   UpdateRecordingLinkArgs
@@ -34,6 +36,14 @@ export default class EventResolver {
   @Query(() => Event)
   async getEvent(@Args() args: GetEventArgs) {
     return getEvent(args);
+  }
+
+  @Authorized('ADMIN')
+  @Query(() => [TimeSeriesData])
+  async getEventGuestSeries(
+    @Args() args: GetEventArgs
+  ): Promise<TimeSeriesData[]> {
+    return getEventGuestSeries(args);
   }
 
   @Authorized('ADMIN')

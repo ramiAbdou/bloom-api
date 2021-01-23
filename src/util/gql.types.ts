@@ -1,4 +1,4 @@
-import { ArgsType, Field } from 'type-graphql';
+import { ArgsType, Field, ObjectType } from 'type-graphql';
 /**
  * @fileoverview GraphQL Types
  * - Contains all of the types needed for a GraphQL response object. File is
@@ -10,4 +10,13 @@ import { ArgsType, Field } from 'type-graphql';
 export class PopulateArgs {
   @Field(() => [String], { nullable: true })
   populate?: string[];
+}
+
+@ObjectType()
+export class TimeSeriesData {
+  @Field({ nullable: true })
+  name: string;
+
+  @Field({ nullable: true })
+  value: number;
 }

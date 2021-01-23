@@ -3,7 +3,7 @@ import { QueryOrder } from '@mikro-orm/core';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { TimeSeriesData } from '../member/Member.types';
+import { TimeSeriesData } from '@util/gql.types';
 import Community from './Community';
 import getActiveDuesGrowth from './repo/getActiveDuesGrowth';
 import getActiveMembersGrowth from './repo/getActiveMembersGrowth';
