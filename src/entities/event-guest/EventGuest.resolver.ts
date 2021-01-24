@@ -3,6 +3,7 @@ import { QueryOrder } from '@mikro-orm/core';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { now } from '@util/util';
 import EventGuest from './EventGuest';
 import createEventGuest, {
   CreateEventGuestArgs
@@ -24,7 +25,7 @@ export default class EventGuestResolver {
   async getMemberUpcomingEvents(@Ctx() { memberId }: GQLContext) {
     return new BloomManager().find(
       EventGuest,
-      { member: { id: memberId } },
+      { event: { endTime: { $gte: now() } }, member: { id: memberId } },
       {
         cacheKey: `${QueryEvent.GET_MEMBER_UPCOMING_EVENTS}-${memberId}`,
         orderBy: { event: { startTime: QueryOrder.ASC } },
