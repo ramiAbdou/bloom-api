@@ -32,12 +32,12 @@ const getEventGuestSeries = async ({
 
   let currentTime: string = day.utc(event.startTime).format();
 
-  while (currentTime >= day.utc(event.createdAt).subtract(1, 'hour').format()) {
+  while (currentTime >= day.utc(event.createdAt).subtract(3, 'hour').format()) {
     timeSeriesKeys.push(currentTime);
 
     currentTime = day
       .utc(currentTime)
-      .subtract(1, 'hour')
+      .subtract(3, 'hour')
       .startOf('hour')
       .format();
   }
@@ -47,7 +47,7 @@ const getEventGuestSeries = async ({
   const result: TimeSeriesData[] = timeSeriesKeys
     .reverse()
     .reduce((acc: TimeSeriesData[], dateKey: string) => {
-      if (day.utc().isBefore(day.utc(dateKey))) {
+      if (day.utc().isBefore(day.utc(dateKey).subtract(3, 'hour'))) {
         return [...acc, { name: dateKey, value: null }];
       }
 
