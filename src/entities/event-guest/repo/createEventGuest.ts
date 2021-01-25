@@ -1,6 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import EventGuest from '../EventGuest';
 
@@ -12,13 +12,21 @@ export class CreateEventGuestArgs {
 
 const createEventGuest = async (
   { eventId }: CreateEventGuestArgs,
-  { memberId }: Pick<GQLContext, 'memberId'>
+  { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
 ) => {
   const [guest] = await new BloomManager().findOneOrCreateAndFlush(
     EventGuest,
     { event: { id: eventId }, member: { id: memberId } },
     { event: { id: eventId }, member: { id: memberId } },
-    { event: 'CREATE_EVENT_GUEST', populate: ['member.user'] }
+    {
+      cacheKeysToInvalidate: [
+        `${QueryEvent.GET_EVENT}-${eventId}`,
+        `${QueryEvent.GET_EVENT_GUEST_SERIES}-${eventId}`,
+        `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`
+      ],
+      event: 'CREATE_EVENT_GUEST',
+      populate: ['member.user']
+    }
   );
 
   return guest;

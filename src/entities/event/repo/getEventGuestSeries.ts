@@ -5,7 +5,6 @@ import { QueryEvent } from '@constants';
 import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
 import { TimeSeriesData } from '@util/gql.types';
-import { now } from '@util/util';
 import EventGuest from '../../event-guest/EventGuest';
 import Event from '../Event';
 
@@ -31,16 +30,14 @@ const getEventGuestSeries = async ({
 
   const timeSeriesKeys: string[] = [];
 
-  let currentTime: string = day.utc().isBefore(day.utc(event.startTime))
-    ? now()
-    : day.utc(event.startTime).format();
+  let currentTime: string = day.utc(event.startTime).format();
 
-  while (currentTime >= day.utc(event.createdAt).format()) {
+  while (currentTime >= day.utc(event.createdAt).subtract(1, 'hour').format()) {
     timeSeriesKeys.push(currentTime);
 
     currentTime = day
       .utc(currentTime)
-      .subtract(3, 'hour')
+      .subtract(1, 'hour')
       .startOf('hour')
       .format();
   }
@@ -48,14 +45,18 @@ const getEventGuestSeries = async ({
   const guests: EventGuest[] = event.guests.getItems();
 
   const result: TimeSeriesData[] = timeSeriesKeys
+    .reverse()
     .reduce((acc: TimeSeriesData[], dateKey: string) => {
+      if (day.utc().isBefore(day.utc(dateKey))) {
+        return [...acc, { name: dateKey, value: null }];
+      }
+
       const numGuests = guests.filter((guest: EventGuest) => {
         return guest.createdAt <= dateKey;
       })?.length;
 
       return [...acc, { name: dateKey, value: numGuests }];
-    }, [])
-    .reverse();
+    }, []);
 
   cache.set(cacheKey, result);
 

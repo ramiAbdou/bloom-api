@@ -1,15 +1,6 @@
-import { GQLContext, QueryEvent } from '@constants';
+/* eslint-disable import/prefer-default-export */
 
-export const getMemberInformationCacheKeys = ({
-  communityId,
-  userId
-}: Pick<GQLContext, 'communityId' | 'userId'>) => {
-  return [
-    `${QueryEvent.GET_DATABASE}-${communityId}`,
-    `${QueryEvent.GET_DIRECTORY}-${communityId}`,
-    `${QueryEvent.GET_USER}-${userId}`
-  ];
-};
+import { GQLContext, QueryEvent } from '@constants';
 
 export const getPaymentCacheKeys = ({
   communityId,

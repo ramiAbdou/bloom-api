@@ -1,7 +1,10 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { QueryOrder } from '@mikro-orm/core';
 
-import { GQLContext } from '@constants';
+import { GQLContext, QueryEvent } from '@constants';
+import BloomManager from '@core/db/BloomManager';
 import { TimeSeriesData } from '@util/gql.types';
+import { now } from '@util/util';
 import Event from './Event';
 import createEvent, { CreateEventArgs } from './repo/createEvent';
 import deleteEvent, { DeleteEventArgs } from './repo/deleteEvent';
@@ -36,6 +39,36 @@ export default class EventResolver {
   @Query(() => Event)
   async getEvent(@Args() args: GetEventArgs) {
     return getEvent(args);
+  }
+
+  @Authorized()
+  @Query(() => [Event], { nullable: true })
+  async getPastEvents(@Ctx() { communityId }: GQLContext): Promise<Event[]> {
+    return new BloomManager().find(
+      Event,
+      { community: { id: communityId }, endTime: { $lt: now() } },
+      {
+        cacheKey: `${QueryEvent.GET_PAST_EVENTS}-${communityId}`,
+        orderBy: { startTime: QueryOrder.DESC },
+        populate: ['community', 'guests.member.user']
+      }
+    );
+  }
+
+  @Authorized()
+  @Query(() => [Event], { nullable: true })
+  async getUpcomingEvents(
+    @Ctx() { communityId }: GQLContext
+  ): Promise<Event[]> {
+    return new BloomManager().find(
+      Event,
+      { community: { id: communityId }, endTime: { $gte: now() } },
+      {
+        cacheKey: `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`,
+        orderBy: { startTime: QueryOrder.ASC },
+        populate: ['community', 'guests.member.user']
+      }
+    );
   }
 
   @Authorized('ADMIN')
