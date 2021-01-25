@@ -69,7 +69,7 @@ export default class Event extends BaseEntity {
 
   @Authorized('ADMIN')
   @Field(() => [TimeSeriesData])
-  async attendeeSeries(): Promise<TimeSeriesData[]> {
+  async attendeesSeries(): Promise<TimeSeriesData[]> {
     return getEventAttendeeSeries(this.id);
   }
 
