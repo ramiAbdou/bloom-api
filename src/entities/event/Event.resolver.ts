@@ -3,13 +3,11 @@ import { QueryOrder } from '@mikro-orm/core';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { TimeSeriesData } from '@util/gql.types';
 import { now } from '@util/util';
 import Event from './Event';
 import createEvent, { CreateEventArgs } from './repo/createEvent';
 import deleteEvent, { DeleteEventArgs } from './repo/deleteEvent';
 import getEvent, { GetEventArgs } from './repo/getEvent';
-import getEventGuestSeries from './repo/getEventGuestSeries';
 import updateEvent, { UpdateEventArgs } from './repo/updateEvent';
 import updateRecordingLink, {
   UpdateRecordingLinkArgs
@@ -69,14 +67,6 @@ export default class EventResolver {
         populate: ['community', 'guests.member.user']
       }
     );
-  }
-
-  @Authorized('ADMIN')
-  @Query(() => [TimeSeriesData])
-  async getEventGuestSeries(
-    @Args() args: GetEventArgs
-  ): Promise<TimeSeriesData[]> {
-    return getEventGuestSeries(args);
   }
 
   @Authorized('ADMIN')

@@ -21,7 +21,7 @@ const createEventGuest = async (
     {
       cacheKeysToInvalidate: [
         `${QueryEvent.GET_EVENT}-${eventId}`,
-        `${QueryEvent.GET_EVENT_GUEST_SERIES}-${eventId}`,
+        `${QueryEvent.GET_EVENT_GUESTS_SERIES}-${eventId}`,
         `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`
       ],
       event: 'CREATE_EVENT_GUEST',

@@ -1,5 +1,4 @@
 import day from 'dayjs';
-import { ArgsType, Field } from 'type-graphql';
 
 import { QueryEvent } from '@constants';
 import cache from '@core/cache/cache';
@@ -8,21 +7,13 @@ import { TimeSeriesData } from '@util/gql.types';
 import EventGuest from '../../event-guest/EventGuest';
 import Event from '../Event';
 
-@ArgsType()
-export class GetGuestSeries {
-  @Field()
-  eventId: string;
-}
-
-const getEventGuestSeries = async ({
-  eventId
-}: GetGuestSeries): Promise<TimeSeriesData[]> => {
-  const cacheKey = `${QueryEvent.GET_EVENT_GUEST_SERIES}-${eventId}`;
+const getEventGuestsSeries = async (
+  eventId: string
+): Promise<TimeSeriesData[]> => {
+  const cacheKey = `${QueryEvent.GET_EVENT_GUESTS_SERIES}-${eventId}`;
   if (cache.has(cacheKey)) return cache.get(cacheKey);
 
-  const bm = new BloomManager();
-
-  const event: Event = await bm.findOne(
+  const event: Event = await new BloomManager().findOne(
     Event,
     { id: eventId },
     { populate: ['guests'] }
@@ -63,4 +54,4 @@ const getEventGuestSeries = async ({
   return result;
 };
 
-export default getEventGuestSeries;
+export default getEventGuestsSeries;
