@@ -39,7 +39,9 @@ const createEvent = async (
     Event,
     { ...args, community: { id: communityId } },
     {
-      cacheKeysToInvalidate: [`${QueryEvent.GET_EVENTS}-${communityId}`],
+      cacheKeysToInvalidate: [
+        `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`
+      ],
       event: 'CREATE_EVENT'
     }
   );

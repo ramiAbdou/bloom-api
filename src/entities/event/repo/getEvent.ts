@@ -17,6 +17,9 @@ const getEvent = async ({ eventId }: GetEventArgs) => {
     {
       cacheKey: `${QueryEvent.GET_EVENT}-${eventId}`,
       populate: [
+        'attendees.member.data',
+        'attendees.member.type',
+        'attendees.member.user',
         'community.questions',
         'guests.member.data',
         'guests.member.type',

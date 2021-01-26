@@ -1,6 +1,8 @@
 import { IsUrl } from 'class-validator';
+import day from 'dayjs';
 import { Authorized, Field, ObjectType } from 'type-graphql';
 import {
+  BeforeCreate,
   Collection,
   Entity,
   ManyToOne,
@@ -77,6 +79,12 @@ export default class Event extends BaseEntity {
   @Field(() => [TimeSeriesData])
   async guestsSeries(): Promise<TimeSeriesData[]> {
     return getEventGuestSeries(this.id);
+  }
+
+  @BeforeCreate()
+  beforeCreate() {
+    this.endTime = day.utc(this.endTime).format();
+    this.startTime = day.utc(this.startTime).format();
   }
 
   // ## RELATIONSHIPS
