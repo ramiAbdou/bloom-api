@@ -14,7 +14,6 @@ const deleteEventGuest = async (
   { eventId }: DeleteEventGuestArgs,
   { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<boolean> => {
-  console.log('HERE');
   return new BloomManager().findAndDelete(
     EventGuest,
     { event: { id: eventId }, member: { id: memberId } },
