@@ -15,6 +15,7 @@ import logger from '@util/logger';
 import { now } from '@util/util';
 import {
   BloomCreateAndFlushArgs,
+  BloomFindAndDeleteOptions,
   BloomFindAndUpdateOptions,
   BloomFindOneAndUpdateOptions,
   BloomFindOneOptions,
@@ -127,7 +128,21 @@ class BloomManager {
     data: EntityData<T>,
     options?: BloomFindOneOrCreateAndFlushOptions<T, P>
   ): Promise<[Loaded<T, P> | T, boolean]> {
-    const result = await this.findOne<T, P>(entityName, where, options);
+    // Disable the deletedAt filter so that we can ensure that the entity has
+    // not been created before.
+    const result = await this.findOne<T, P>(entityName, where, {
+      ...options,
+      filters: false
+    });
+
+    // @ts-ignore b/c we add deletedAt field in the BaseEntity.
+    const deleted = !!result?.deletedAt;
+
+    // @ts-ignore b/c we add deletedAt field in the BaseEntity.
+    if (deleted) result.deletedAt = null;
+
+    await this.flush(options);
+
     return [
       result ??
         ((await this.createAndFlush(entityName, data, options)) as Loaded<
@@ -211,15 +226,18 @@ class BloomManager {
   async findAndDelete<T, P>(
     entityName: EntityName<T>,
     where: FilterQuery<T>,
-    options?: BloomFindAndUpdateOptions<T, P>
+    options?: BloomFindAndDeleteOptions<T, P>
   ): Promise<boolean> {
     // If not found, get it from the DB.
-    const result = await this.find<T, P>(entityName, where, { ...options });
+    const result = await this.find<T, P>(entityName, where, options);
 
-    result.forEach((entity: Loaded<T, P>) => {
-      // @ts-ignore b/c not sure the right type for this.
-      entity.deletedAt = now();
-    });
+    if (options?.hard) this.em.remove(result);
+    else {
+      result.forEach((entity: Loaded<T, P>) => {
+        // @ts-ignore b/c not sure the right type for this.
+        entity.deletedAt = now();
+      });
+    }
 
     await this.flush({
       cacheKeysToInvalidate: options?.cacheKeysToInvalidate,

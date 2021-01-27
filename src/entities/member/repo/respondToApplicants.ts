@@ -6,9 +6,6 @@ import { now } from '@util/util';
 import Member from '../Member';
 import { MemberStatus } from '../Member.types';
 
-// import addToMailchimpAudience from '@entities/community-integrations/repo/addToMailchimpAudience';
-// import Community from '../../community/Community';
-
 @ArgsType()
 export class RespondToApplicantsArgs {
   @Field(() => [String])
@@ -22,7 +19,7 @@ export class RespondToApplicantsArgs {
  * An admin has the option to either accept or reject a Member when they
  * apply to the organization.
  */
-export default async (
+const respondToApplicants = async (
   { memberIds, response }: RespondToApplicantsArgs,
   { communityId }: GQLContext
 ): Promise<Member[]> => {
@@ -57,3 +54,5 @@ export default async (
 
   return members;
 };
+
+export default respondToApplicants;

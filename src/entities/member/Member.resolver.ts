@@ -68,12 +68,12 @@ export default class MemberResolver {
   }
 
   @Authorized('ADMIN')
-  @Mutation(() => Boolean, { nullable: true })
-  async respondToMembers(
+  @Mutation(() => [Member], { nullable: true })
+  async respondToApplicants(
     @Args() args: RespondToApplicantsArgs,
     @Ctx() ctx: GQLContext
   ) {
-    return !!(await respondToApplicants(args, ctx));
+    return respondToApplicants(args, ctx);
   }
 
   @Authorized()

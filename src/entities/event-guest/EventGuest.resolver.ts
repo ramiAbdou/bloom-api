@@ -5,6 +5,9 @@ import EventGuest from './EventGuest';
 import createEventGuest, {
   CreateEventGuestArgs
 } from './repo/createEventGuest';
+import deleteEventGuest, {
+  DeleteEventGuestArgs
+} from './repo/deleteEventGuest';
 
 @Resolver()
 export default class EventGuestResolver {
@@ -15,5 +18,14 @@ export default class EventGuestResolver {
     @Ctx() ctx: GQLContext
   ): Promise<EventGuest> {
     return createEventGuest(args, ctx);
+  }
+
+  @Authorized()
+  @Mutation(() => Boolean, { nullable: true })
+  async deleteEventGuest(
+    @Args() args: DeleteEventGuestArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<boolean> {
+    return deleteEventGuest(args, ctx);
   }
 }
