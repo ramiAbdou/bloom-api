@@ -29,13 +29,13 @@ const createEventGuest = async (
     userId
   }: Pick<GQLContext, 'communityId' | 'memberId' | 'userId'>
 ) => {
-  const partialUser: Pick<User, 'email' | 'firstName' | 'lastName'> =
-    { email, firstName, lastName } ??
-    (await new BloomManager().findOne(
-      User,
-      { id: userId },
-      { fields: ['email', 'firstName', 'lastName'] }
-    ));
+  const partialUser: Pick<User, 'email' | 'firstName' | 'lastName'> = email
+    ? { email, firstName, lastName }
+    : await new BloomManager().findOne(
+        User,
+        { id: userId },
+        { fields: ['email', 'firstName', 'lastName'] }
+      );
 
   const baseArgs: FilterQuery<EventGuest> = {
     email: partialUser.email,
@@ -61,7 +61,7 @@ const createEventGuest = async (
         `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`
       ],
       event: 'CREATE_EVENT_GUEST',
-      populate: ['member.user']
+      populate: ['member.data', 'member.user']
     }
   );
 
