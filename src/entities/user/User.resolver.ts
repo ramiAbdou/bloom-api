@@ -28,7 +28,6 @@ export default class UserResolver {
     return getUser(args, ctx);
   }
 
-  @Authorized()
   @Query(() => GetUserResult, { nullable: true })
   async getUser(@Args() args: GetUserArgs, @Ctx() ctx: GQLContext) {
     return getUser(args, ctx);

@@ -1,5 +1,5 @@
 import BloomManager from '@core/db/BloomManager';
-import updateInvitedStatuses from '@entities/member/repo/updateInvitedStatus';
+import updateInvitedStatuses from '@entities/member/repo/updateInvitedStatuses';
 import Member from '../../member/Member';
 import User from '../User';
 
@@ -24,8 +24,7 @@ interface GetLoginErrorArgs {
 const getLoginError = async ({
   communityId,
   email
-}: // user
-GetLoginErrorArgs): Promise<LoginError> => {
+}: GetLoginErrorArgs): Promise<LoginError> => {
   if (communityId) {
     // Check if the email is a member of this community.
     const member: Member = await new BloomManager().findOne(Member, {
@@ -50,7 +49,7 @@ GetLoginErrorArgs): Promise<LoginError> => {
   // possible if an admin added them manually), then we should set those
   // statuses to be ACCEPTED.
   if (members.some(({ status }) => status === 'INVITED')) {
-    await updateInvitedStatuses(members);
+    await updateInvitedStatuses({ communityId, email });
   }
 
   return members.reduce((acc: LoginError, { status }: Member) => {

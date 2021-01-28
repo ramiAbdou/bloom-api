@@ -100,19 +100,6 @@ export default class CommunityResolver {
     );
   }
 
-  @Authorized()
-  @Query(() => Community, { nullable: true })
-  async getEvents(@Ctx() { communityId }: GQLContext): Promise<Community> {
-    return new BloomManager().findOne(
-      Community,
-      { id: communityId },
-      {
-        cacheKey: `${QueryEvent.GET_EVENTS}-${communityId}`,
-        populate: ['events.guests.member.user']
-      }
-    );
-  }
-
   @Authorized('ADMIN')
   @Query(() => Community, { nullable: true })
   async getIntegrations(
