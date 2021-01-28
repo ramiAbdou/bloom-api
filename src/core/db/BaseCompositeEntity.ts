@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
 import { Field, ID, ObjectType } from 'type-graphql';
-import { PrimaryKeyType, Property } from '@mikro-orm/core';
+import { Property } from '@mikro-orm/core';
 
 import { now } from '@util/util';
 
@@ -11,7 +11,7 @@ import { now } from '@util/util';
 @ObjectType()
 export default abstract class BaseCompositeEntity {
   @Field(() => ID)
-  @Property({ unique: true })
+  @Property({ primary: true })
   id: string = nanoid();
 
   @Field()
@@ -25,6 +25,4 @@ export default abstract class BaseCompositeEntity {
   @Field()
   @Property({ onUpdate: () => now() })
   updatedAt: string = now();
-
-  [PrimaryKeyType]: [string, string];
 }

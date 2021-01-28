@@ -33,7 +33,6 @@ export default class EventResolver {
     return deleteEvent(args, ctx);
   }
 
-  @Authorized()
   @Query(() => Event)
   async getEvent(@Args() args: GetEventArgs) {
     return getEvent(args);

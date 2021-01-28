@@ -135,12 +135,6 @@ class BloomManager {
       filters: false
     });
 
-    // @ts-ignore b/c we add deletedAt field in the BaseEntity.
-    const deleted = !!result?.deletedAt;
-
-    // @ts-ignore b/c we add deletedAt field in the BaseEntity.
-    if (deleted) result.deletedAt = null;
-
     await this.flush(options);
 
     return [

@@ -11,7 +11,6 @@ import deleteEventGuest, {
 
 @Resolver()
 export default class EventGuestResolver {
-  @Authorized()
   @Mutation(() => EventGuest, { nullable: true })
   async createEventGuest(
     @Args() args: CreateEventGuestArgs,

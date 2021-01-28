@@ -1,5 +1,5 @@
 import { Field, ObjectType } from 'type-graphql';
-import { Entity, ManyToOne } from '@mikro-orm/core';
+import { Entity, ManyToOne, PrimaryKeyType } from '@mikro-orm/core';
 
 import BaseCompositeEntity from '@core/db/BaseCompositeEntity';
 import Event from '../event/Event';
@@ -15,4 +15,6 @@ export default class EventAttendee extends BaseCompositeEntity {
   @Field(() => Member)
   @ManyToOne(() => Member, { primary: true })
   member: Member;
+
+  [PrimaryKeyType]: [string, string];
 }

@@ -22,35 +22,30 @@ export class SendTemporaryLoginLinkArgs {
 const sendTemporaryLoginLink = async ({
   email
 }: SendTemporaryLoginLinkArgs) => {
-  const user: User = await new BloomManager().findOne(
-    User,
-    { email },
-    { populate: ['members'] }
-  );
-
-  // If the User hasn't been accepted into any community, throw an error.
-  const loginError: LoginError = await getLoginError(user);
-  if (loginError) throw new Error(loginError);
-
-  // Otherwise, run the refresh flow and get the temporary token to store in
-  // the login URL.
-  const { accessToken: token } = await refreshToken({ user });
-
-  const loginUrl: string = new URLBuilder(APP.CLIENT_URL).addParam(
-    'loginToken',
-    token
-  ).url;
-
-  const emailOpts: TemporaryLoginLinkVars = {
-    firstName: user.firstName,
-    loginUrl
-  };
-
-  await sendEmail({
-    template: EmailTemplate.TEMPORARY_LOGIN_LINK,
-    to: email,
-    variables: emailOpts
-  });
+  // const user: User = await new BloomManager().findOne(
+  //   User,
+  //   { email },
+  //   { populate: ['members'] }
+  // );
+  // // If the User hasn't been accepted into any community, throw an error.
+  // const loginError: LoginError = await getLoginError(user);
+  // if (loginError) throw new Error(loginError);
+  // // Otherwise, run the refresh flow and get the temporary token to store in
+  // // the login URL.
+  // const { accessToken: token } = await refreshToken({ user });
+  // const loginUrl: string = new URLBuilder(APP.CLIENT_URL).addParam(
+  //   'loginToken',
+  //   token
+  // ).url;
+  // const emailOpts: TemporaryLoginLinkVars = {
+  //   firstName: user.firstName,
+  //   loginUrl
+  // };
+  // await sendEmail({
+  //   template: EmailTemplate.TEMPORARY_LOGIN_LINK,
+  //   to: email,
+  //   variables: emailOpts
+  // });
 };
 
 export default sendTemporaryLoginLink;

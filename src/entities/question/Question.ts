@@ -47,12 +47,10 @@ export default class Question extends BaseEntity {
   @Property({ type: Boolean })
   inApplicantCard = false;
 
-  @Authorized()
   @Field(() => Boolean)
   @Property({ type: Boolean })
   inDirectoryCard = false;
 
-  @Authorized()
   @Field(() => Boolean)
   @Property({ type: Boolean })
   inExpandedDirectoryCard = false;

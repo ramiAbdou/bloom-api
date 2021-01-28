@@ -2,30 +2,20 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { PopulateArgs } from '@util/gql.types';
 import Event from '../Event';
 
 @ArgsType()
-export class GetEventArgs {
+export class GetEventArgs extends PopulateArgs {
   @Field()
   eventId: string;
 }
 
-const getEvent = async ({ eventId }: GetEventArgs) => {
+const getEvent = async ({ eventId, populate }: GetEventArgs) => {
   return new BloomManager().findOne(
     Event,
     { id: eventId },
-    {
-      cacheKey: `${QueryEvent.GET_EVENT}-${eventId}`,
-      populate: [
-        'attendees.member.data',
-        'attendees.member.type',
-        'attendees.member.user',
-        'community.questions',
-        'guests.member.data',
-        'guests.member.type',
-        'guests.member.user'
-      ]
-    }
+    { cacheKey: `${QueryEvent.GET_EVENT}-${eventId}`, populate }
   );
 };
 

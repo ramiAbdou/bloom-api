@@ -8,6 +8,7 @@ import Member from '../../member/Member';
 import User from '../User';
 
 interface RefreshTokenArgs {
+  email?: string;
   memberId?: string;
   rToken?: string;
   res?: Response;
@@ -20,6 +21,7 @@ interface RefreshTokenArgs {
  * res object is provided. If the refreshing succeeds, the tokenw il
  */
 const refreshToken = async ({
+  email,
   memberId,
   rToken,
   res,
@@ -30,6 +32,7 @@ const refreshToken = async ({
 
   if (user) bm.em.merge(user);
   else if (userId) user = await bm.findOne(User, { id: userId });
+  else if (email) user = await bm.findOne(User, { email });
   else if (rToken) user = await bm.findOne(User, { refreshToken: rToken });
 
   // If no user found with the given arguments or a user is found and
