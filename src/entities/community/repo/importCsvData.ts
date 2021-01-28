@@ -80,6 +80,8 @@ const processRow = async ({
     user
   });
 
+  if (email === ownerEmail) community.owner = member;
+
   Object.entries(row).forEach(([key, value]) => {
     // Skip over the empty values and the user-specific information since it
     // was already processed.
