@@ -16,6 +16,7 @@ import { TimeSeriesData } from '@util/gql.types';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
+import EventWatch from '../event-watch/EventWatch';
 import getEventAttendeeSeries from './repo/getEventAttendeesSeries';
 import getEventGuestSeries from './repo/getEventGuestsSeries';
 
@@ -100,4 +101,8 @@ export default class Event extends BaseEntity {
   @Field(() => [EventGuest])
   @OneToMany(() => EventGuest, ({ event }) => event)
   guests = new Collection<EventGuest>(this);
+
+  @Field(() => [EventWatch])
+  @OneToMany(() => EventWatch, ({ event }) => event)
+  watches = new Collection<EventWatch>(this);
 }

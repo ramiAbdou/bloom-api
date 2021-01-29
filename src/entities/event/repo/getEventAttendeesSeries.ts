@@ -35,6 +35,10 @@ const getEventAttendeesSeries = async (eventId: string) => {
 
   const result: TimeSeriesData[] = timeSeriesKeys.reduce(
     (acc: TimeSeriesData[], dateKey: string) => {
+      if (day.utc().isBefore(day.utc(dateKey).add(5, 'minute'))) {
+        return [...acc, { name: dateKey, value: null }];
+      }
+
       const numAttendees = attendees.filter((attendee: EventAttendee) => {
         return attendee.createdAt <= dateKey;
       })?.length;

@@ -15,6 +15,7 @@ import { now } from '@util/util';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
+import EventWatch from '../event-watch/EventWatch';
 import MemberData from '../member-data/MemberData';
 import MemberPayment from '../member-payment/MemberPayment';
 import MemberRefresh from '../member-refresh/MemberRefresh';
@@ -194,4 +195,8 @@ export default class Member extends BaseEntity {
   @Field(() => User)
   @ManyToOne(() => User)
   user: User;
+
+  @Field(() => [EventWatch])
+  @OneToMany(() => EventWatch, ({ member }) => member)
+  watches = new Collection<EventWatch>(this);
 }

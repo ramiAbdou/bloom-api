@@ -4,6 +4,7 @@ export { default as CommunityIntegrations } from './community-integrations/Commu
 export { default as Event } from './event/Event';
 export { default as EventAttendee } from './event-attendee/EventAttendee';
 export { default as EventGuest } from './event-guest/EventGuest';
+export { default as EventWatch } from './event-watch/EventWatch';
 export { default as Member } from './member/Member';
 export { default as MemberData } from './member-data/MemberData';
 export { default as MemberPayment } from './member-payment/MemberPayment';
