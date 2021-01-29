@@ -17,7 +17,12 @@ const deleteMembers = async (
   return new BloomManager().findAndDelete(
     Member,
     { id: memberIds },
-    { cacheKeysToInvalidate: [`${QueryEvent.GET_DATABASE}-${communityId}`] }
+    {
+      cacheKeysToInvalidate: [
+        `${QueryEvent.GET_DATABASE}-${communityId}`,
+        `${QueryEvent.GET_DIRECTORY}-${communityId}`
+      ]
+    }
   );
 };
 

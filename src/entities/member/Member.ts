@@ -1,6 +1,7 @@
 import { Authorized, Field, ObjectType } from 'type-graphql';
 import {
   BeforeCreate,
+  BeforeUpdate,
   Collection,
   Entity,
   Enum,
@@ -131,6 +132,8 @@ export default class Member extends BaseEntity {
     return getNextPaymentDate(this.id);
   }
 
+  // ## LIFECYCLE
+
   @BeforeCreate()
   beforeCreate() {
     if (
@@ -145,6 +148,13 @@ export default class Member extends BaseEntity {
     // Every community should've assigned one default member.
     if (!this.type) this.type = this.community.defaultType;
     if (this.type.isFree) this.duesStatus = MemberDuesStatus.ACTIVE;
+  }
+
+  @BeforeUpdate()
+  beforeUpdate() {
+    if (this.status === MemberStatus.ACCEPTED && !this.joinedAt) {
+      this.joinedAt = now();
+    }
   }
 
   // ## RELATIONSHIPS
