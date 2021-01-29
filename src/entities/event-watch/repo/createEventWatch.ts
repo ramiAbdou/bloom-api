@@ -12,13 +12,16 @@ export class CreateEventWatchArgs {
 
 const createEventWatch = async (
   { eventId }: CreateEventWatchArgs,
-  { memberId }: Pick<GQLContext, 'memberId'>
+  { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
 ) => {
   return new BloomManager().createAndFlush(
     EventWatch,
     { event: { id: eventId }, member: { id: memberId } },
     {
-      cacheKeysToInvalidate: [`${QueryEvent.GET_EVENT}-${eventId}`],
+      cacheKeysToInvalidate: [
+        `${QueryEvent.GET_EVENT}-${eventId}`,
+        `${QueryEvent.GET_PAST_EVENTS}-${communityId}`
+      ],
       event: 'CREATE_EVENT_WATCH',
       populate: ['member.data', 'member.user']
     }
