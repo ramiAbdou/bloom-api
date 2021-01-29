@@ -1,24 +1,13 @@
-import {
-  Arg,
-  Args,
-  Authorized,
-  Ctx,
-  Mutation,
-  Query,
-  Resolver
-} from 'type-graphql';
+import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
-import { decodeToken } from '@util/util';
 import getUser, { GetUserArgs, GetUserResult } from './repo/getUser';
-import refreshToken from './repo/refreshToken';
-import sendTemporaryLoginLink, {
-  SendTemporaryLoginLinkArgs
-} from './repo/sendTemporaryLoginLink';
+import sendLoginLink, { SendLoginLinkArgs } from './repo/sendLoginLink';
 import updateUser, {
   UpdateUserArgs,
   UpdateUserResult
 } from './repo/updateUser';
+import verifyToken, { VerifyTokenArgs } from './repo/verifyToken';
 
 @Resolver()
 export default class UserResolver {
@@ -53,8 +42,8 @@ export default class UserResolver {
   }
 
   @Mutation(() => Boolean, { nullable: true })
-  async sendTemporaryLoginLink(@Args() args: SendTemporaryLoginLinkArgs) {
-    return sendTemporaryLoginLink(args);
+  async sendLoginLink(@Args() args: SendLoginLinkArgs) {
+    return sendLoginLink(args);
   }
 
   @Authorized()
@@ -64,17 +53,7 @@ export default class UserResolver {
   }
 
   @Query(() => Boolean)
-  async verifyLoginToken(
-    @Arg('loginToken') loginToken: string,
-    @Ctx() { res }: GQLContext
-  ) {
-    const userId: string = decodeToken(loginToken)?.userId;
-
-    if (!(await refreshToken({ res, userId }))) {
-      res.cookie('LOGIN_LINK_ERROR', 'TOKEN_EXPIRED');
-      return false;
-    }
-
-    return true;
+  async verifyToken(@Args() args: VerifyTokenArgs, @Ctx() ctx: GQLContext) {
+    return verifyToken(args, ctx);
   }
 }

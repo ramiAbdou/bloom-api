@@ -17,11 +17,7 @@ sg.setApiKey(process.env.SENDGRID_API_KEY);
  * @param mjml Name of the MJML file (including the .mjml extension).
  * @param variables Optional variables that populate the Handlebars template.
  */
-export default async function sendEmail({
-  template,
-  to,
-  variables
-}: SendEmailArgs) {
+const sendEmail = async ({ template, to, variables }: SendEmailArgs) => {
   // Shouldn't send any emails in development. If needed, comment this line
   // out manually each time.
   if (!isProduction) return;
@@ -51,4 +47,6 @@ export default async function sendEmail({
       level: 'ERROR'
     });
   }
-}
+};
+
+export default sendEmail;
