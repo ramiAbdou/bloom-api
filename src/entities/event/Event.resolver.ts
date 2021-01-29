@@ -3,6 +3,7 @@ import { QueryOrder } from '@mikro-orm/core';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { PopulateArgs } from '@util/gql.types';
 import { now } from '@util/util';
 import Event from './Event';
 import createEvent, { CreateEventArgs } from './repo/createEvent';
@@ -40,14 +41,17 @@ export default class EventResolver {
 
   @Authorized()
   @Query(() => [Event], { nullable: true })
-  async getPastEvents(@Ctx() { communityId }: GQLContext): Promise<Event[]> {
+  async getPastEvents(
+    @Args() { populate }: PopulateArgs,
+    @Ctx() { communityId }: GQLContext
+  ): Promise<Event[]> {
     return new BloomManager().find(
       Event,
       { community: { id: communityId }, endTime: { $lt: now() } },
       {
         cacheKey: `${QueryEvent.GET_PAST_EVENTS}-${communityId}`,
         orderBy: { startTime: QueryOrder.DESC },
-        populate: ['community', 'attendees.member.user']
+        populate: ['community', 'attendees.member.user', ...(populate ?? [])]
       }
     );
   }

@@ -1,9 +1,9 @@
-import { Arg, Authorized, Ctx, Query, Resolver } from 'type-graphql';
+import { Arg, Args, Authorized, Ctx, Query, Resolver } from 'type-graphql';
 import { QueryOrder } from '@mikro-orm/core';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { TimeSeriesData } from '@util/gql.types';
+import { PopulateArgs, TimeSeriesData } from '@util/gql.types';
 import Community from './Community';
 import getActiveDuesGrowth from './repo/getActiveDuesGrowth';
 import getActiveMembersGrowth from './repo/getActiveMembersGrowth';
@@ -58,6 +58,19 @@ export default class CommunityResolver {
         orderBy: { createdAt: QueryOrder.DESC },
         populate: ['questions', 'members.data', 'members.type', 'members.user']
       }
+    );
+  }
+
+  @Authorized()
+  @Query(() => Community, { nullable: true })
+  async getCommunity(
+    @Args() { populate }: PopulateArgs,
+    @Ctx() { communityId }: GQLContext
+  ): Promise<Community> {
+    return new BloomManager().findOne(
+      Community,
+      { id: communityId },
+      { populate }
     );
   }
 
