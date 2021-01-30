@@ -11,6 +11,7 @@ import applyForMembership, {
 } from './repo/applyForMembership';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import demoteToMember from './repo/demoteToMember';
+import isEmailTaken, { IsEmailTakenArgs } from './repo/isEmailToken';
 import promoteToAdmin from './repo/promoteToAdmin';
 import respondToApplicants, {
   RespondToApplicantsArgs
@@ -50,6 +51,11 @@ export default class MemberResolver {
   @Mutation(() => [Member], { nullable: true })
   async demoteToMember(@Args() args: AdminArgs, @Ctx() ctx: GQLContext) {
     return demoteToMember(args, ctx);
+  }
+
+  @Query(() => Boolean)
+  async isEmailTaken(@Args() args: IsEmailTakenArgs) {
+    return isEmailTaken(args);
   }
 
   @Authorized()
