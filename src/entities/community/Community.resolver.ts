@@ -1,4 +1,4 @@
-import { Arg, Args, Authorized, Ctx, Query, Resolver } from 'type-graphql';
+import { Args, Authorized, Ctx, Query, Resolver } from 'type-graphql';
 import { QueryOrder } from '@mikro-orm/core';
 
 import { GQLContext, QueryEvent } from '@constants';
@@ -33,18 +33,6 @@ export default class CommunityResolver {
     @Ctx() ctx: GQLContext
   ): Promise<TimeSeriesData[]> {
     return getActiveMembersSeries(ctx);
-  }
-
-  @Query(() => Community, { nullable: true })
-  async getApplication(@Arg('urlName') urlName: string): Promise<Community> {
-    return new BloomManager().findOneOrFail(
-      Community,
-      { urlName },
-      {
-        cacheKey: `${QueryEvent.GET_APPLICATION}-${urlName}`,
-        populate: ['application', 'integrations', 'questions', 'types']
-      }
-    );
   }
 
   @Authorized('ADMIN')

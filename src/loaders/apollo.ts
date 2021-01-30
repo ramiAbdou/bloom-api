@@ -5,7 +5,8 @@ import { AuthChecker, buildSchema } from 'type-graphql';
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { decodeToken } from '@util/util';
-import CommunityIntegrations from '../entities/community-integrations/CommunityIntegrations.resolver';
+import CommunityApplicationResolver from '../entities/community-application/CommunityApplication.resolver';
+import CommunityIntegrationsResolver from '../entities/community-integrations/CommunityIntegrations.resolver';
 import CommunityResolver from '../entities/community/Community.resolver';
 import EventAttendeeResolver from '../entities/event-attendee/EventAttendee.resolver';
 import EventGuestResolver from '../entities/event-guest/EventGuest.resolver';
@@ -46,7 +47,8 @@ export const createSchema = async (): Promise<GraphQLSchema> =>
     authChecker,
     resolvers: [
       CommunityResolver,
-      CommunityIntegrations,
+      CommunityApplicationResolver,
+      CommunityIntegrationsResolver,
       EventResolver,
       EventAttendeeResolver,
       EventGuestResolver,

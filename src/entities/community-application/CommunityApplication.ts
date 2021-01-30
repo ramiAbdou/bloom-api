@@ -15,6 +15,7 @@ export default class CommunityApplication extends BaseEntity {
   @Property()
   title: string;
 
+  @Field(() => Community)
   @OneToOne(() => Community, ({ application }) => application)
   community: Community;
 }
