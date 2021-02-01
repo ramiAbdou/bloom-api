@@ -1,6 +1,6 @@
 import { IsUrl } from 'class-validator';
 import day from 'dayjs';
-import { Authorized, Field, ObjectType } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
 import {
   BeforeCreate,
   Collection,
@@ -12,13 +12,10 @@ import {
 
 import { APP } from '@constants';
 import BaseEntity from '@core/db/BaseEntity';
-import { TimeSeriesData } from '@util/gql.types';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
 import EventWatch from '../event-watch/EventWatch';
-import getEventAttendeeSeries from './repo/getEventAttendeesSeries';
-import getEventGuestSeries from './repo/getEventGuestsSeries';
 
 @ObjectType()
 @Entity()
@@ -67,20 +64,6 @@ export default class Event extends BaseEntity {
   @Property()
   @IsUrl()
   videoUrl: string;
-
-  // ## REPO FUNCTIONS
-
-  @Authorized('ADMIN')
-  @Field(() => [TimeSeriesData])
-  async attendeesSeries(): Promise<TimeSeriesData[]> {
-    return getEventAttendeeSeries(this.id);
-  }
-
-  @Authorized('ADMIN')
-  @Field(() => [TimeSeriesData])
-  async guestsSeries(): Promise<TimeSeriesData[]> {
-    return getEventGuestSeries(this.id);
-  }
 
   @BeforeCreate()
   beforeCreate() {

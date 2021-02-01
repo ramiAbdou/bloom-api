@@ -21,6 +21,15 @@ export class CreateEventGuestArgs {
   lastName?: string;
 }
 
+/**
+ * Returns a new EventGuest.
+ *
+ * Invalidates QueryEvent.GET_EVENT and QueryEvent.GET_PAST_EVENTS.
+ *
+ * @param args.eventId - Identifier of the event.
+ * @param ctx.communityId - Identifier of the community.
+ * @param ctx.memberId - Identifier of the member.
+ */
 const createEventGuest = async (
   { email, firstName, lastName, eventId }: CreateEventGuestArgs,
   {
@@ -57,7 +66,6 @@ const createEventGuest = async (
     {
       cacheKeysToInvalidate: [
         `${QueryEvent.GET_EVENT}-${eventId}`,
-        `${QueryEvent.GET_EVENT_GUESTS_SERIES}-${eventId}`,
         `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`
       ],
       event: 'CREATE_EVENT_GUEST',
