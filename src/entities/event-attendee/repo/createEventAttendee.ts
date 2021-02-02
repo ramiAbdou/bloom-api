@@ -21,6 +21,18 @@ export class CreateEventAttendeeArgs {
   lastName?: string;
 }
 
+/**
+ * Returns a new EventAttendee.
+ *
+ * Invalidates QueryEvent.GET_EVENT and QueryEvent.GET_PAST_EVENTS.
+ *
+ * @param args.email - Email of the NON-MEMBER attendee.
+ * @param args.firstName - First name of the NON-MEMBER attendee.
+ * @param args.lastName - Last name of the NON-MEMBER attendee.
+ * @param args.eventId - Identifier of the event.
+ * @param ctx.memberId - Identifier of the member.
+ * @param ctx.userId - Identifier of the user.
+ */
 const createEventAttendee = async (
   { email, firstName, lastName, eventId }: CreateEventAttendeeArgs,
   { memberId, userId }: Pick<GQLContext, 'communityId' | 'memberId' | 'userId'>
