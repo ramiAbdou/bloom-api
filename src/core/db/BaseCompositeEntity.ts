@@ -11,7 +11,7 @@ import { now } from '@util/util';
 @ObjectType()
 export default abstract class BaseCompositeEntity {
   @Field(() => ID)
-  @Property({ primary: true })
+  @Property()
   id: string = nanoid();
 
   @Field()

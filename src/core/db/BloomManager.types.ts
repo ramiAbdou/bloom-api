@@ -6,6 +6,7 @@ export interface BloomManagerFlushArgs {
   cacheKeysToInvalidate?: string[];
   event?: LoggerEvent;
 }
+
 export interface BloomCreateAndFlushArgs<P> extends BloomManagerFlushArgs {
   populate?: P;
 }
@@ -13,10 +14,6 @@ export interface BloomCreateAndFlushArgs<P> extends BloomManagerFlushArgs {
 export interface BloomFindOneOptions<T, P> extends FindOneOptions<T, P> {
   cacheKey?: string;
 }
-
-export interface BloomFindOneOrCreateAndFlushOptions<T, P>
-  extends BloomFindOneOptions<T, P>,
-    BloomManagerFlushArgs {}
 
 export interface BloomFindOneAndUpdateOptions<T, P>
   extends BloomFindOneOptions<T, P>,

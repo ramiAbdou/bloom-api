@@ -19,7 +19,6 @@ import {
   BloomFindAndUpdateOptions,
   BloomFindOneAndUpdateOptions,
   BloomFindOneOptions,
-  BloomFindOneOrCreateAndFlushOptions,
   BloomFindOptions,
   BloomManagerFlushArgs
 } from './BloomManager.types';
