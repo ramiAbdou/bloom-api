@@ -23,18 +23,26 @@ const createEventWatch = async (
   { eventId }: CreateEventWatchArgs,
   { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
 ) => {
-  return new BloomManager().createAndFlush(
+  const bm = new BloomManager();
+
+  const [watch, wasFound]: [EventWatch, boolean] = await bm.findOneOrCreate(
     EventWatch,
     { event: { id: eventId }, member: { id: memberId } },
-    {
+    { event: { id: eventId }, member: { id: memberId } }
+  );
+
+  if (!wasFound) {
+    await bm.flush({
       cacheKeysToInvalidate: [
         `${QueryEvent.GET_EVENT}-${eventId}`,
         `${QueryEvent.GET_PAST_EVENTS}-${communityId}`
       ],
-      event: 'CREATE_EVENT_WATCH',
-      populate: ['member.data', 'member.user']
-    }
-  );
+      event: 'CREATE_EVENT_WATCH'
+    });
+  }
+
+  await bm.em.populate(watch, ['member.data', 'member.user']);
+  return watch;
 };
 
 export default createEventWatch;

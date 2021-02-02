@@ -122,31 +122,6 @@ class BloomManager {
     return [result ?? this.create(entityName, data), !!result];
   }
 
-  async findOneOrCreateAndFlush<T, P>(
-    entityName: EntityName<T>,
-    where: FilterQuery<T>,
-    data: EntityData<T>,
-    options?: BloomFindOneOrCreateAndFlushOptions<T, P>
-  ): Promise<[Loaded<T, P> | T, boolean]> {
-    // Disable the deletedAt filter so that we can ensure that the entity has
-    // not been created before.
-    const result = await this.findOne<T, P>(entityName, where, {
-      ...options,
-      filters: false
-    });
-
-    await this.flush(options);
-
-    return [
-      result ??
-        ((await this.createAndFlush(entityName, data, options)) as Loaded<
-          T,
-          P
-        >),
-      !!result
-    ];
-  }
-
   async findOneAndUpdate<T, P>(
     entityName: EntityName<T>,
     where: FilterQuery<T>,

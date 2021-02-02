@@ -22,12 +22,7 @@ import MemberRefresh from '../member-refresh/MemberRefresh';
 import MemberType from '../member-type/MemberType';
 import Question from '../question/Question';
 import User from '../user/User';
-import {
-  MemberDuesStatus,
-  MemberRole,
-  MemberStatus,
-  QuestionValue
-} from './Member.types';
+import { MemberRole, MemberStatus, QuestionValue } from './Member.types';
 import getNextPaymentDate from './repo/getNextPaymentDate';
 import getPaymentMethod, {
   GetPaymentMethodResult
@@ -40,9 +35,9 @@ export default class Member extends BaseEntity {
   @Property({ nullable: true, type: 'text' })
   bio: string;
 
-  @Field(() => String)
-  @Enum({ items: () => MemberDuesStatus, type: String })
-  duesStatus: MemberDuesStatus = MemberDuesStatus.INACTIVE;
+  @Field(() => Boolean)
+  @Property({ type: Boolean })
+  isDuesActive = false;
 
   // Refers to the date that the member was ACCEPTED.
   @Field({ nullable: true })
@@ -148,7 +143,7 @@ export default class Member extends BaseEntity {
     // If no member type is provided, assign them the default member.
     // Every community should've assigned one default member.
     if (!this.type) this.type = this.community.defaultType;
-    if (this.type.isFree) this.duesStatus = MemberDuesStatus.ACTIVE;
+    if (this.type.isFree) this.isDuesActive = true;
   }
 
   @BeforeUpdate()

@@ -38,6 +38,11 @@ export default class Community extends BaseEntity {
   @IsUrl()
   logoUrl: string;
 
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  @IsUrl()
+  knowledgeHubUrl: string;
+
   @Field()
   @Property({ unique: true })
   name: string;

@@ -30,7 +30,7 @@ const createMemberPayment = async ({
 
   // Only if the subscription worked should the MemberPayment be created.
 
-  member.duesStatus = MemberDuesStatus.ACTIVE;
+  member.isDuesActive = true;
   member.type = type;
 
   const payment: MemberPayment =
