@@ -13,7 +13,10 @@ import CommunityIntegrations from '../CommunityIntegrations';
  * @param code Stripe's API produced authorization code that we exchange for
  * tokens.
  */
-export default async (urlName: string, code: string): Promise<void> => {
+const storeStripeTokens = async (
+  urlName: string,
+  code: string
+): Promise<void> => {
   const bm = new BloomManager();
 
   const integrations = await bm.findOne(
@@ -41,3 +44,5 @@ export default async (urlName: string, code: string): Promise<void> => {
     event: 'STRIPE_ACCOUNT_STORED'
   });
 };
+
+export default storeStripeTokens;

@@ -12,7 +12,10 @@ import CommunityIntegrations from '../CommunityIntegrations';
  *
  * Precondition: The community ID must represent a community.
  */
-export default async (urlName: string, code: string): Promise<void> => {
+const storeMailchimpToken = async (
+  urlName: string,
+  code: string
+): Promise<void> => {
   // All the other redirect URIs use localhost when in development, but
   // Mailchimp forces us to use 127.0.0.1 instead, so we can't use the
   // APP.SERVER_URL local URL.
@@ -42,3 +45,5 @@ export default async (urlName: string, code: string): Promise<void> => {
   // Invalidate the cache for the GET_INTEGRATIONS call.
   cache.invalidateEntries([`${QueryEvent.GET_INTEGRATIONS}-${community.id}`]);
 };
+
+export default storeMailchimpToken;
