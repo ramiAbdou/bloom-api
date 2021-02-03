@@ -1,13 +1,15 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
+import Member from '../member/Member';
 import getUser, { GetUserArgs, GetUserResult } from './repo/getUser';
 import sendLoginLink, { SendLoginLinkArgs } from './repo/sendLoginLink';
-import updateUser, {
-  UpdateUserArgs,
-  UpdateUserResult
-} from './repo/updateUser';
+import updateUser, { UpdateUserArgs } from './repo/updateUser';
+import updateUserSocials, {
+  UpdateUserSocialsArgs
+} from './repo/updateUserSocials';
 import verifyToken, { VerifyTokenArgs } from './repo/verifyToken';
+import User from './User';
 
 @Resolver()
 export default class UserResolver {
@@ -47,9 +49,18 @@ export default class UserResolver {
   }
 
   @Authorized()
-  @Mutation(() => UpdateUserResult)
+  @Mutation(() => Member)
   async updateUser(@Args() args: UpdateUserArgs, @Ctx() ctx: GQLContext) {
     return updateUser(args, ctx);
+  }
+
+  @Authorized()
+  @Mutation(() => User)
+  async updateUserSocials(
+    @Args() args: UpdateUserSocialsArgs,
+    @Ctx() ctx: GQLContext
+  ) {
+    return updateUserSocials(args, ctx);
   }
 
   @Query(() => Boolean)

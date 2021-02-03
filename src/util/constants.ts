@@ -96,7 +96,8 @@ export type LoggerEvent =
   | 'STRIPE_SUBSCRIPTION_CREATED'
   | 'UPDATE_EVENT'
   | 'UPDATE_EVENT_RECORDING_LINK'
-  | 'UPDATE_USER';
+  | 'UPDATE_USER'
+  | 'UPDATE_USER_SOCIALS';
 
 export type GQLContext = {
   communityId: string;
