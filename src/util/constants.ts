@@ -26,13 +26,6 @@ export const APP = {
     : 'http://localhost:8080'
 };
 
-export const INTEGRATIONS = {
-  DIGITAL_OCEAN_SPACE_URL: 'https://sfo2.digitaloceanspaces.com/bl.community',
-  STRIPE_API_KEY: isProduction
-    ? process.env.STRIPE_API_KEY
-    : process.env.STRIPE_TEST_API_KEY
-};
-
 export const JWT = {
   EXPIRES_IN: 60 * 60, // Represents 1 hour (in s).
   SECRET: process.env.JWT_SECRET

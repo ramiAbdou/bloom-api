@@ -10,7 +10,7 @@ import {
   QueryOrder
 } from '@mikro-orm/core';
 
-import { INTEGRATIONS } from '@constants';
+import { isProduction } from '@constants';
 import BaseEntity from '@core/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
 import CommunityApplication from '../community-application/CommunityApplication';
@@ -20,8 +20,6 @@ import MemberPayment from '../member-payment/MemberPayment';
 import MemberType from '../member-type/MemberType';
 import Member from '../member/Member';
 import Question from '../question/Question';
-
-const { DIGITAL_OCEAN_SPACE_URL } = INTEGRATIONS;
 
 @ObjectType()
 @Entity()
@@ -70,7 +68,16 @@ export default class Community extends BaseEntity {
   beforeCreate() {
     if (!this.urlName) this.urlName = toLowerCaseDash(this.name);
     if (!this.logoUrl) {
-      this.logoUrl = `${DIGITAL_OCEAN_SPACE_URL}/${this.urlName}.png`;
+      const DIGITAL_OCEAN_BUCKET = isProduction
+        ? process.env.DIGITAL_OCEAN_BUCKET_NAME
+        : process.env.DIGITAL_OCEAN_TEST_BUCKET_NAME;
+
+      const DIGITAL_OCEAN_URL =
+        `https://` +
+        `${DIGITAL_OCEAN_BUCKET}.${process.env.DIGITAL_OCEAN_REGION}` +
+        `.digitaloceanspaces.com`;
+
+      this.logoUrl = `${DIGITAL_OCEAN_URL}/${this.urlName}`;
     }
   }
 
