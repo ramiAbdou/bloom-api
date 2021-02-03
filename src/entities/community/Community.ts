@@ -68,14 +68,9 @@ export default class Community extends BaseEntity {
   beforeCreate() {
     if (!this.urlName) this.urlName = toLowerCaseDash(this.name);
     if (!this.logoUrl) {
-      const DIGITAL_OCEAN_BUCKET = isProduction
-        ? process.env.DIGITAL_OCEAN_BUCKET_NAME
-        : process.env.DIGITAL_OCEAN_TEST_BUCKET_NAME;
-
-      const DIGITAL_OCEAN_URL =
-        `https://` +
-        `${DIGITAL_OCEAN_BUCKET}.${process.env.DIGITAL_OCEAN_REGION}` +
-        `.digitaloceanspaces.com`;
+      const DIGITAL_OCEAN_URL = isProduction
+        ? process.env.DIGITAL_OCEAN_BUCKET_URL
+        : process.env.DIGITAL_OCEAN_TEST_BUCKET_URL;
 
       this.logoUrl = `${DIGITAL_OCEAN_URL}/${this.urlName}`;
     }
