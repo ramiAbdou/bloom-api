@@ -1,4 +1,4 @@
-import { ArgsType, Field, ObjectType } from 'type-graphql';
+import { ArgsType, Field } from 'type-graphql';
 
 export enum MemberRole {
   ADMIN = 'ADMIN',
@@ -16,13 +16,4 @@ export enum MemberStatus {
 export class AdminArgs {
   @Field(() => [String])
   memberIds: string[];
-}
-
-@ObjectType()
-export class QuestionValue {
-  @Field()
-  questionId: string;
-
-  @Field({ nullable: true })
-  value: string;
 }

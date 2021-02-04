@@ -95,7 +95,11 @@ export default class MemberResolver {
   async getDirectory(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
     return new BloomManager().find(
       Member,
-      { community: { id: communityId }, status: 'ACCEPTED' },
+      {
+        community: { id: communityId },
+        data: { question: { inDirectoryCard: true } },
+        status: 'ACCEPTED'
+      },
       {
         cacheKey: `${QueryEvent.GET_DIRECTORY}-${communityId}`,
         orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC },

@@ -7,6 +7,7 @@ import {
   Enum,
   ManyToOne,
   OneToMany,
+  OneToOne,
   Property
 } from '@mikro-orm/core';
 
@@ -131,6 +132,10 @@ export default class Member extends BaseEntity {
   @Field(() => [EventGuest])
   @OneToMany(() => EventGuest, ({ member }) => member)
   guests = new Collection<EventGuest>(this);
+
+  @Field(() => MemberData)
+  @OneToOne(() => MemberData)
+  highlightedData: MemberData;
 
   @Field(() => [MemberPayment])
   @OneToMany(() => MemberPayment, ({ member }) => member)

@@ -96,6 +96,10 @@ export default class Community extends BaseEntity {
   @OneToMany(() => Event, ({ community }) => community)
   events = new Collection<Event>(this);
 
+  @Field(() => Question)
+  @OneToOne(() => Question)
+  highlightedQuestion: Question;
+
   @Field(() => CommunityIntegrations, { nullable: true })
   @OneToOne(() => CommunityIntegrations, ({ community }) => community, {
     nullable: true,
