@@ -19,11 +19,13 @@ export default class QuestionResolver {
       ? { urlName }
       : { id: communityId };
 
+    const key = urlName ?? communityId;
+
     return new BloomManager().find(
       Question,
       { community: args },
       {
-        cacheKey: `${QueryEvent.GET_QUESTIONS}-${communityId}`,
+        cacheKey: `${QueryEvent.GET_QUESTIONS}-${key}`,
         populate: ['community']
       }
     );
