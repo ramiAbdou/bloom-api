@@ -12,6 +12,12 @@ export class PopulateArgs {
   populate?: string[];
 }
 
+@ArgsType()
+export class UrlNameArgs {
+  @Field({ nullable: true })
+  urlName?: string;
+}
+
 @ObjectType()
 export class TimeSeriesData {
   @Field({ nullable: true })

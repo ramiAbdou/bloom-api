@@ -117,6 +117,7 @@ export default class Question extends BaseEntity {
 
   // ## RELATIONSHIPS
 
+  @Field(() => Community)
   @ManyToOne(() => Community)
   community: Community;
 }
