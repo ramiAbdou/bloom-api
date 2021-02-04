@@ -81,7 +81,11 @@ export default class MemberResolver {
   async getDatabase(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
     return new BloomManager().find(
       Member,
-      { community: { id: communityId }, status: ['ACCEPTED'] },
+      {
+        community: { id: communityId },
+        data: { question: { onlyInApplication: false } },
+        status: ['ACCEPTED']
+      },
       {
         cacheKey: `${QueryEvent.GET_DATABASE}-${communityId}`,
         orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC },
