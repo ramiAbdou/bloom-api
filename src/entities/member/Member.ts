@@ -20,9 +20,8 @@ import MemberData from '../member-data/MemberData';
 import MemberPayment from '../member-payment/MemberPayment';
 import MemberRefresh from '../member-refresh/MemberRefresh';
 import MemberType from '../member-type/MemberType';
-import Question from '../question/Question';
 import User from '../user/User';
-import { MemberRole, MemberStatus, QuestionValue } from './Member.types';
+import { MemberRole, MemberStatus } from './Member.types';
 import getNextPaymentDate from './repo/getNextPaymentDate';
 import getPaymentMethod, {
   GetPaymentMethodResult
@@ -74,45 +73,6 @@ export default class Member extends BaseEntity {
   @Field({ nullable: true })
   @Property({ nullable: true })
   stripeSubscriptionId: string;
-
-  // ## MEMBER FUNCTIONS
-
-  /**
-   * Returns the pending application data that will allow the ADMIN of the
-   * community to accept or reject the application.
-   *
-   * Used in the GET_APPLICANTS call.
-   */
-  @Authorized('ADMIN')
-  @Field(() => [QuestionValue])
-  applicantData(): QuestionValue[] {
-    // This method is only intended for retrieving pending application data.
-    if (this.status !== 'PENDING') return null;
-
-    const data = this.data.getItems();
-    const { email, gender, firstName, lastName } = this.user;
-
-    return (
-      this.community.questions
-        .getItems()
-        // We only need the questions in the application.
-        .filter(({ inApplication }: Question) => inApplication)
-        .map(({ category, id, title }: Question) => {
-          let value: string;
-          const result = data.find(({ question }) => question.title === title);
-
-          if (result) value = result.value;
-          else if (category === 'JOINED_AT') value = this.joinedAt;
-          else if (category === 'EMAIL') value = email;
-          else if (category === 'FIRST_NAME') value = firstName;
-          else if (category === 'GENDER') value = gender;
-          else if (category === 'LAST_NAME') value = lastName;
-          else if (category === 'MEMBERSHIP_TYPE') value = this.type.name;
-
-          return { questionId: id, value };
-        })
-    );
-  }
 
   // ## STRIPE RELATED MEMBER FUNCTIONS
 

@@ -1,6 +1,7 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { QueryOrder } from '@mikro-orm/core';
 
-import { GQLContext } from '@constants';
+import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { Member } from '@entities/entities';
 import { PopulateArgs } from '../../util/gql.types';
@@ -59,6 +60,20 @@ export default class MemberResolver {
   @Query(() => Boolean)
   async isEmailTaken(@Args() args: IsEmailTakenArgs) {
     return isEmailTaken(args);
+  }
+
+  @Authorized('ADMIN')
+  @Query(() => [Member])
+  async getApplicants(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
+    return new BloomManager().find(
+      Member,
+      { community: { id: communityId }, status: 'PENDING' },
+      {
+        cacheKey: `${QueryEvent.GET_APPLICANTS}-${communityId}`,
+        orderBy: { createdAt: QueryOrder.DESC },
+        populate: ['community', 'data', 'type', 'user']
+      }
+    );
   }
 
   @Authorized()

@@ -35,20 +35,6 @@ export default class CommunityResolver {
     return getActiveMembersSeries(ctx);
   }
 
-  @Authorized('ADMIN')
-  @Query(() => Community, { nullable: true })
-  async getApplicants(@Ctx() { communityId }: GQLContext): Promise<Community> {
-    return new BloomManager().findOne(
-      Community,
-      { id: communityId, members: { status: 'PENDING' } },
-      {
-        cacheKey: `${QueryEvent.GET_APPLICANTS}-${communityId}`,
-        orderBy: { createdAt: QueryOrder.DESC },
-        populate: ['questions', 'members.data', 'members.type', 'members.user']
-      }
-    );
-  }
-
   @Authorized()
   @Query(() => Community, { nullable: true })
   async getCommunity(
