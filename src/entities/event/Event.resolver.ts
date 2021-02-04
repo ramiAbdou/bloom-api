@@ -63,7 +63,7 @@ export default class EventResolver {
       {
         cacheKey: `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`,
         orderBy: { startTime: QueryOrder.ASC },
-        populate: ['community', 'guests.member.user']
+        populate: ['community']
       }
     );
   }

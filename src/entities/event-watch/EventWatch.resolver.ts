@@ -1,6 +1,7 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
+import getPastEventAttendees from '../event-attendee/repo/getPastEventAttendees';
 import EventWatch from './EventWatch';
 import createEventWatch, {
   CreateEventWatchArgs
@@ -24,5 +25,10 @@ export default class EventWatchResolver {
     @Args() args: GetEventWatchesArgs
   ): Promise<EventWatch[]> {
     return getEventWatches(args);
+  }
+
+  @Query(() => [EventWatch])
+  async getPastEventAttendees(@Ctx() ctx: GQLContext): Promise<EventWatch[]> {
+    return getPastEventAttendees(ctx);
   }
 }
