@@ -7,7 +7,7 @@ import MemberData from '../MemberData';
 @InputType()
 class MemberDataArgs {
   @Field()
-  id: string;
+  questionId: string;
 
   @Field(() => [String], { nullable: true })
   value: string[];
@@ -27,22 +27,26 @@ const updateMemberData = async (
 
   const data: MemberData[] = await bm.find(MemberData, {
     member: { id: memberId },
-    question: { id: items.map(({ id }) => id) }
+    question: { id: items.map(({ questionId }) => questionId) }
   });
 
   const updatedData: MemberData[] = items.reduce(
-    (acc: MemberData[], item: MemberDataArgs) => {
-      const value = item.value?.toString();
+    (acc: MemberData[], { questionId, value }: MemberDataArgs) => {
+      const stringifiedValue = value?.toString();
 
-      const dataPoint: MemberData =
-        data.find((element: MemberData) => element.question.id === item.id) ??
+      const existingEntity: MemberData = data.find(
+        (element: MemberData) => element.question.id === questionId
+      );
+
+      const entity: MemberData =
+        existingEntity ??
         bm.create(MemberData, {
           member: { id: memberId },
-          question: { id: item.id }
+          question: { id: questionId }
         });
 
-      dataPoint.value = value;
-      return [...acc, dataPoint];
+      entity.value = stringifiedValue;
+      return [...acc, entity];
     },
     data
   );
