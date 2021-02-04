@@ -47,7 +47,7 @@ export default class EventResolver {
       {
         cacheKey: `${QueryEvent.GET_PAST_EVENTS}-${communityId}`,
         orderBy: { startTime: QueryOrder.DESC },
-        populate: ['community.questions', 'attendees.member.user', 'watches']
+        populate: ['community']
       }
     );
   }

@@ -8,6 +8,7 @@ import createEventAttendee, {
 import getEventAttendees, {
   GetEventAttendeesArgs
 } from './repo/getEventAttendees';
+import getPastEventAttendees from './repo/getPastEventAttendees';
 
 @Resolver()
 export default class EventAttendeeResolver {
@@ -26,5 +27,12 @@ export default class EventAttendeeResolver {
     @Args() args: GetEventAttendeesArgs
   ): Promise<EventAttendee[]> {
     return getEventAttendees(args);
+  }
+
+  @Query(() => [EventAttendee])
+  async getPastEventAttendees(
+    @Ctx() ctx: GQLContext
+  ): Promise<EventAttendee[]> {
+    return getPastEventAttendees(ctx);
   }
 }

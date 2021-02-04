@@ -56,8 +56,8 @@ const addMembers = async (
   }
 
   const members: Member[] = await Promise.all(
-    inputs.map(async ({ isAdmin, email, firstName, lastName }) =>
-      bm.create(Member, {
+    inputs.map(async ({ isAdmin, email, firstName, lastName }) => {
+      return bm.create(Member, {
         community,
         role: isAdmin ? 'ADMIN' : null,
         status: 'INVITED',
@@ -66,8 +66,8 @@ const addMembers = async (
         user:
           (await bm.findOne(User, { email })) ??
           bm.create(User, { email, firstName, lastName })
-      })
-    )
+      });
+    })
   );
 
   await bm.flush({

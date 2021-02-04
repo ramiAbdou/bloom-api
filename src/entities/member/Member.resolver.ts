@@ -106,7 +106,7 @@ export default class MemberResolver {
       },
       {
         cacheKey: `${QueryEvent.GET_DIRECTORY}-${communityId}`,
-        orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC },
+        orderBy: { createdAt: QueryOrder.DESC },
         populate: ['community', 'data', 'user']
       }
     );

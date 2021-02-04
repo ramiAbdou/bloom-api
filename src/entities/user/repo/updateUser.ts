@@ -52,6 +52,7 @@ const updateUser = async (
       ...(firstName || lastName || pictureUrl
         ? `${QueryEvent.GET_DIRECTORY}-${communityId}`
         : []),
+      `${QueryEvent.GET_MEMBER_PROFILE}-${memberId}`,
       `${QueryEvent.GET_USER}-${userId}`
     ],
     event: 'UPDATE_USER'
