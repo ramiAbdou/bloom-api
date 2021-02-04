@@ -76,6 +76,34 @@ export default class MemberResolver {
     );
   }
 
+  @Authorized('ADMIN')
+  @Query(() => [Member])
+  async getDatabase(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
+    return new BloomManager().find(
+      Member,
+      { community: { id: communityId }, status: ['ACCEPTED'] },
+      {
+        cacheKey: `${QueryEvent.GET_DATABASE}-${communityId}`,
+        orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC },
+        populate: ['community', 'data', 'type', 'user']
+      }
+    );
+  }
+
+  @Authorized()
+  @Query(() => [Member])
+  async getDirectory(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
+    return new BloomManager().find(
+      Member,
+      { community: { id: communityId }, status: 'ACCEPTED' },
+      {
+        cacheKey: `${QueryEvent.GET_DIRECTORY}-${communityId}`,
+        orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC },
+        populate: ['community', 'data', 'user']
+      }
+    );
+  }
+
   @Authorized()
   @Query(() => Member, { nullable: true })
   async getMember(

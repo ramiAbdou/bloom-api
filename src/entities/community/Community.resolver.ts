@@ -1,5 +1,4 @@
 import { Args, Authorized, Ctx, Query, Resolver } from 'type-graphql';
-import { QueryOrder } from '@mikro-orm/core';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
@@ -45,45 +44,6 @@ export default class CommunityResolver {
       Community,
       { id: communityId },
       { populate }
-    );
-  }
-
-  @Authorized('ADMIN')
-  @Query(() => Community, { nullable: true })
-  async getDatabase(@Ctx() { communityId }: GQLContext): Promise<Community> {
-    return new BloomManager().findOne(
-      Community,
-      { id: communityId, members: { status: ['ACCEPTED'] } },
-      {
-        cacheKey: `${QueryEvent.GET_DATABASE}-${communityId}`,
-        orderBy: { members: { createdAt: QueryOrder.DESC } },
-        populate: [
-          'integrations',
-          'questions',
-          'members.data',
-          'members.type',
-          'members.user'
-        ]
-      }
-    );
-  }
-
-  @Authorized()
-  @Query(() => Community, { nullable: true })
-  async getDirectory(@Ctx() { communityId }: GQLContext): Promise<Community> {
-    return new BloomManager().findOne(
-      Community,
-      { id: communityId, members: { status: 'ACCEPTED' } },
-      {
-        cacheKey: `${QueryEvent.GET_DIRECTORY}-${communityId}`,
-        orderBy: {
-          members: {
-            createdAt: QueryOrder.DESC,
-            updatedAt: QueryOrder.DESC
-          }
-        },
-        populate: ['questions', 'members.data', 'members.type', 'members.user']
-      }
     );
   }
 
