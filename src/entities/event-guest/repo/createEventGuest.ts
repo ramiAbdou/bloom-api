@@ -65,11 +65,11 @@ const createEventGuest = async (
     { ...baseArgs, ...partialUser },
     {
       cacheKeysToInvalidate: [
-        `${QueryEvent.GET_EVENT}-${eventId}`,
+        `${QueryEvent.GET_EVENT_GUESTS}-${eventId}`,
         `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`
       ],
       event: 'CREATE_EVENT_GUEST',
-      populate: ['member.data', 'member.user']
+      populate: ['member.user']
     }
   );
 

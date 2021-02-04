@@ -29,7 +29,7 @@ const deleteEventGuest = async (
     { event: { id: eventId }, member: { id: memberId } },
     {
       cacheKeysToInvalidate: [
-        `${QueryEvent.GET_EVENT}-${eventId}`,
+        `${QueryEvent.GET_EVENT_GUESTS}-${eventId}`,
         `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`
       ],
       event: 'DELETE_EVENT_GUEST',

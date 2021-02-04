@@ -128,7 +128,7 @@ class BloomManager {
     options?: BloomFindOneAndUpdateOptions<T, P>
   ): Promise<Loaded<T, P>> {
     // If not found, get it from the DB.
-    const result = await this.findOne<T, P>(entityName, where, { ...options });
+    const result = await this.findOne<T, P>(entityName, where, options);
     wrap(result).assign(data);
 
     await this.flush({
@@ -157,7 +157,7 @@ class BloomManager {
     }
 
     // If not found, get it from the DB.
-    const result = await this.em.find<T, P>(entityName, where, { ...options });
+    const result = await this.em.find<T, P>(entityName, where, options);
 
     // Update the cache after fetching from the DB.
     cache.set(cacheKey, result);

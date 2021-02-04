@@ -64,7 +64,7 @@ const createEventAttendee = async (
     EventAttendee,
     { ...baseArgs, ...partialUser },
     {
-      cacheKeysToInvalidate: [`${QueryEvent.GET_EVENT}-${eventId}`],
+      cacheKeysToInvalidate: [`${QueryEvent.GET_EVENT_ATTENDEES}-${eventId}`],
       event: 'CREATE_EVENT_ATTENDEE',
       populate: ['member.data', 'member.user']
     }

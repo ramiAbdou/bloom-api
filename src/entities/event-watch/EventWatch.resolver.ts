@@ -1,10 +1,11 @@
-import { Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
+import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import EventWatch from './EventWatch';
 import createEventWatch, {
   CreateEventWatchArgs
 } from './repo/createEventWatch';
+import getEventWatches, { GetEventWatchesArgs } from './repo/getEventWatches';
 
 @Resolver()
 export default class EventWatchResolver {
@@ -15,5 +16,13 @@ export default class EventWatchResolver {
     @Ctx() ctx: GQLContext
   ): Promise<EventWatch> {
     return createEventWatch(args, ctx);
+  }
+
+  @Authorized('ADMIN')
+  @Query(() => [EventWatch])
+  async getEventWatches(
+    @Args() args: GetEventWatchesArgs
+  ): Promise<EventWatch[]> {
+    return getEventWatches(args);
   }
 }

@@ -34,7 +34,7 @@ const createEventWatch = async (
   if (!wasFound) {
     await bm.flush({
       cacheKeysToInvalidate: [
-        `${QueryEvent.GET_EVENT}-${eventId}`,
+        `${QueryEvent.GET_EVENT_WATCHES}-${eventId}`,
         `${QueryEvent.GET_PAST_EVENTS}-${communityId}`
       ],
       event: 'CREATE_EVENT_WATCH'

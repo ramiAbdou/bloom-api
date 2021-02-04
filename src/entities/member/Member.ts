@@ -2,12 +2,12 @@ import { Authorized, Field, ObjectType } from 'type-graphql';
 import {
   BeforeCreate,
   BeforeUpdate,
+  Cascade,
   Collection,
   Entity,
   Enum,
   ManyToOne,
   OneToMany,
-  OneToOne,
   Property
 } from '@mikro-orm/core';
 
@@ -117,7 +117,9 @@ export default class Member extends BaseEntity {
   // ## RELATIONSHIPS
 
   @Field(() => [EventAttendee])
-  @OneToMany(() => EventAttendee, ({ member }) => member)
+  @OneToMany(() => EventAttendee, ({ member }) => member, {
+    cascade: [Cascade.ALL]
+  })
   attendees = new Collection<EventAttendee>(this);
 
   @Field(() => Community)
@@ -130,12 +132,10 @@ export default class Member extends BaseEntity {
   data = new Collection<MemberData>(this);
 
   @Field(() => [EventGuest])
-  @OneToMany(() => EventGuest, ({ member }) => member)
+  @OneToMany(() => EventGuest, ({ member }) => member, {
+    cascade: [Cascade.ALL]
+  })
   guests = new Collection<EventGuest>(this);
-
-  @Field(() => MemberData)
-  @OneToOne(() => MemberData)
-  highlightedData: MemberData;
 
   @Field(() => [MemberPayment])
   @OneToMany(() => MemberPayment, ({ member }) => member)
@@ -157,6 +157,8 @@ export default class Member extends BaseEntity {
   user: User;
 
   @Field(() => [EventWatch])
-  @OneToMany(() => EventWatch, ({ member }) => member)
+  @OneToMany(() => EventWatch, ({ member }) => member, {
+    cascade: [Cascade.ALL]
+  })
   watches = new Collection<EventWatch>(this);
 }
