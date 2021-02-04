@@ -1,6 +1,7 @@
 import { ArgsType, Field, InputType } from 'type-graphql';
 
 import { GQLContext, QueryEvent } from '@constants';
+import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
 import Community from '../../community/Community';
 import MemberData from '../../member-data/MemberData';
@@ -8,6 +9,7 @@ import createSubscription from '../../member-payment/repo/createSubscription';
 import { QuestionCategory } from '../../question/Question.types';
 import User from '../../user/User';
 import Member from '../Member';
+import { MemberStatus } from '../Member.types';
 import updatePaymentMethod from './updatePaymentMethod';
 
 @InputType()
@@ -104,13 +106,13 @@ const applyForMembership = async (
     }
   });
 
-  await bm.flush({
-    cacheKeysToInvalidate: [
-      `${QueryEvent.GET_APPLICANTS}-${community.id}`,
-      `${QueryEvent.GET_DATABASE}-${community.id}`
-    ],
-    event: 'MEMBERS_CREATED'
-  });
+  await bm.flush({ event: 'MEMBERS_CREATED' });
+
+  cache.invalidateEntries(
+    member.status === MemberStatus.ACCEPTED
+      ? [`${QueryEvent.GET_DATABASE}-${community.id}`]
+      : [`${QueryEvent.GET_APPLICANTS}-${community.id}`]
+  );
 
   if (paymentMethodId) {
     await updatePaymentMethod(

@@ -19,6 +19,28 @@ export class UpdateMemberDataArgs {
   items: MemberDataArgs[];
 }
 
+interface DidHighlightedValueChangeArgs {
+  data: MemberData[];
+  updatedData: MemberData[];
+}
+
+const didHighlightedValueChange = ({
+  data,
+  updatedData
+}: DidHighlightedValueChangeArgs) => {
+  const highlightedData = data.find(({ question }: MemberData) => {
+    return !!question.inDirectoryCard;
+  })?.value;
+
+  const updatedHighlightedData = updatedData.find(
+    ({ question }: MemberData) => {
+      return !!question.inDirectoryCard;
+    }
+  )?.value;
+
+  return highlightedData !== updatedHighlightedData;
+};
+
 const updateMemberData = async (
   { items }: UpdateMemberDataArgs,
   { communityId, memberId, userId }: GQLContext
@@ -38,12 +60,14 @@ const updateMemberData = async (
         (element: MemberData) => element.question.id === questionId
       );
 
-      const entity: MemberData =
-        existingEntity ??
-        bm.create(MemberData, {
+      let entity: MemberData = existingEntity;
+
+      if (!entity) {
+        entity = bm.create(MemberData, {
           member: { id: memberId },
           question: { id: questionId }
         });
+      }
 
       entity.value = stringifiedValue;
       return [...acc, entity];
@@ -54,7 +78,9 @@ const updateMemberData = async (
   await bm.flush({
     cacheKeysToInvalidate: [
       `${QueryEvent.GET_DATABASE}-${communityId}`,
-      `${QueryEvent.GET_DIRECTORY}-${communityId}`,
+      ...(didHighlightedValueChange({ data, updatedData })
+        ? [`${QueryEvent.GET_DIRECTORY}-${communityId}`]
+        : []),
       `${QueryEvent.GET_USER}-${userId}`
     ]
   });

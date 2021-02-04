@@ -7,7 +7,7 @@ import { AdminArgs } from '../Member.types';
  * Toggles the admin status of the member. If the role of the members
  * were previously ADMIN, they become null, and vice versa.
  */
-export default async (
+const promoteMembers = async (
   { memberIds }: AdminArgs,
   { communityId }: GQLContext
 ): Promise<Member[]> => {
@@ -17,9 +17,11 @@ export default async (
     { role: 'ADMIN' },
     {
       cacheKeysToInvalidate: [`${QueryEvent.GET_DATABASE}-${communityId}`],
-      event: 'MEMBERS_PROMOTED'
+      event: 'PROMOTE_MEMBERS'
     }
   );
 
   return members;
 };
+
+export default promoteMembers;

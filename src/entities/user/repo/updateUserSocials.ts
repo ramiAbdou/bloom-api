@@ -31,17 +31,14 @@ export class UpdateUserSocialsArgs {
  */
 const updateUserSocials = async (
   { facebookUrl, instagramUrl, linkedInUrl, twitterUrl }: UpdateUserSocialsArgs,
-  { communityId, userId }: GQLContext
+  { userId }: GQLContext
 ): Promise<User> => {
   return new BloomManager().findOneAndUpdate(
     User,
     { id: userId },
     { facebookUrl, instagramUrl, linkedInUrl, twitterUrl },
     {
-      cacheKeysToInvalidate: [
-        `${QueryEvent.GET_DIRECTORY}-${communityId}`,
-        `${QueryEvent.GET_USER}-${userId}`
-      ],
+      cacheKeysToInvalidate: [`${QueryEvent.GET_USER}-${userId}`],
       event: 'UPDATE_USER_SOCIALS'
     }
   );

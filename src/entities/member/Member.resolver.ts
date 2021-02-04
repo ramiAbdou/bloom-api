@@ -16,7 +16,7 @@ import getMemberProfile, {
   GetMemberProfileArgs
 } from './repo/getMemberProfile';
 import isEmailTaken, { IsEmailTakenArgs } from './repo/isEmailToken';
-import promoteToAdmin from './repo/promoteToAdmin';
+import promoteMembers from './repo/promoteMembers';
 import respondToApplicants, {
   RespondToApplicantsArgs
 } from './repo/respondToApplicants';
@@ -129,8 +129,8 @@ export default class MemberResolver {
 
   @Authorized('OWNER')
   @Mutation(() => [Member], { nullable: true })
-  async promoteToAdmin(@Args() args: AdminArgs, @Ctx() ctx: GQLContext) {
-    return promoteToAdmin(args, ctx);
+  async promoteMembers(@Args() args: AdminArgs, @Ctx() ctx: GQLContext) {
+    return promoteMembers(args, ctx);
   }
 
   @Authorized('ADMIN')

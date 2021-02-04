@@ -1,5 +1,3 @@
-import { wrap } from '@mikro-orm/core';
-
 import { QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import createStripeProducts from '@entities/member-type/repo/createStripeProducts';
@@ -16,7 +14,7 @@ import CommunityIntegrations from '../CommunityIntegrations';
 const storeStripeTokens = async (
   urlName: string,
   code: string
-): Promise<void> => {
+): Promise<CommunityIntegrations> => {
   const bm = new BloomManager();
 
   const integrations = await bm.findOne(
@@ -35,14 +33,16 @@ const storeStripeTokens = async (
     types: integrations.community.types.getItems()
   });
 
-  wrap(integrations).assign({ stripeAccountId });
+  integrations.stripeAccountId = stripeAccountId;
 
   await bm.flush({
     cacheKeysToInvalidate: [
       `${QueryEvent.GET_INTEGRATIONS}-${integrations.community.id}`
     ],
-    event: 'STRIPE_ACCOUNT_STORED'
+    event: 'STORE_STRIPE_ACCOUNT'
   });
+
+  return integrations;
 };
 
 export default storeStripeTokens;

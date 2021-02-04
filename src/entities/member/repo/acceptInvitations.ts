@@ -12,7 +12,7 @@ interface UpdateInvitedStatusesArgs {
  * Updates all of the INVITED statuses to ACCEPTED on a member.
  * Precondition: Should only be called when a user is logging into Bloom.
  */
-const updateInvitedStatuses = async ({
+const acceptInvitations = async ({
   communityId,
   email
 }: UpdateInvitedStatusesArgs): Promise<Member[]> => {
@@ -28,10 +28,10 @@ const updateInvitedStatuses = async ({
       `${QueryEvent.GET_DATABASE}-${communityId}`,
       `${QueryEvent.GET_DIRECTORY}-${communityId}`
     ],
-    event: 'ACCEPT_INVITE_STATUS'
+    event: 'ACCEPT_INVITATIONS'
   });
 
   return members;
 };
 
-export default updateInvitedStatuses;
+export default acceptInvitations;

@@ -49,7 +49,9 @@ const updateUser = async (
 
   await bm.flush({
     cacheKeysToInvalidate: [
-      `${QueryEvent.GET_DIRECTORY}-${communityId}`,
+      ...(firstName || lastName || pictureUrl
+        ? `${QueryEvent.GET_DIRECTORY}-${communityId}`
+        : []),
       `${QueryEvent.GET_USER}-${userId}`
     ],
     event: 'UPDATE_USER'

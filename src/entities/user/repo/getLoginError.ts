@@ -1,5 +1,5 @@
 import BloomManager from '@core/db/BloomManager';
-import updateInvitedStatuses from '@entities/member/repo/updateInvitedStatuses';
+import acceptInvitations from '@entities/member/repo/acceptInvitations';
 import Member from '../../member/Member';
 import User from '../User';
 
@@ -49,7 +49,7 @@ const getLoginError = async ({
   // possible if an admin added them manually), then we should set those
   // statuses to be ACCEPTED.
   if (members.some(({ status }) => status === 'INVITED')) {
-    await updateInvitedStatuses({ communityId, email });
+    await acceptInvitations({ communityId, email });
   }
 
   return members.reduce((acc: LoginError, { status }: Member) => {
