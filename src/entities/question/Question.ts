@@ -15,10 +15,6 @@ import { QuestionCategory, QuestionType } from './Question.types';
 @ObjectType()
 @Entity()
 export default class Question extends BaseEntity {
-  @Field(() => Number)
-  @Property({ version: true })
-  version!: number;
-
   // If the question is a special question, we have to store it in a different
   // fashion. For example, 'EMAIL' would be stored on the user, NOT the
   // member.
