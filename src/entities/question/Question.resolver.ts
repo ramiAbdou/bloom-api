@@ -1,5 +1,5 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
-import { FilterQuery } from '@mikro-orm/core';
+import { FilterQuery, QueryOrder } from '@mikro-orm/core';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
@@ -26,6 +26,7 @@ export default class QuestionResolver {
       { community: args },
       {
         cacheKey: `${QueryEvent.GET_QUESTIONS}-${key}`,
+        orderBy: { createdAt: QueryOrder.ASC, order: QueryOrder.ASC },
         populate: ['community']
       }
     );
