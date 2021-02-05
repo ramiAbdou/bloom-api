@@ -128,7 +128,9 @@ export default class Member extends BaseEntity {
 
   // Data will only be populated if a question has ever been answered before.
   @Field(() => [MemberData])
-  @OneToMany(() => MemberData, ({ member }) => member)
+  @OneToMany(() => MemberData, ({ member }) => member, {
+    cascade: [Cascade.ALL]
+  })
   data = new Collection<MemberData>(this);
 
   @Field(() => [EventGuest])

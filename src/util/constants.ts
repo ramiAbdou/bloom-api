@@ -76,6 +76,7 @@ export enum QueryEvent {
 
 export type LoggerEvent =
   | 'ACCEPT_INVITATIONS'
+  | 'APPLY_FOR_MEMBERSHIP'
   | 'AUTO_RENEW_UPDATED'
   | 'COMMUNITY_CREATED'
   | 'COMMUNITY_CSV_IMPORTED'

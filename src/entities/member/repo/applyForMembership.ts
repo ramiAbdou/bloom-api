@@ -7,7 +7,9 @@ import Community from '../../community/Community';
 import MemberData from '../../member-data/MemberData';
 import createLifetimePayment from '../../member-payment/repo/createLifetimePayment';
 import createSubscription from '../../member-payment/repo/createSubscription';
+import MemberType from '../../member-type/MemberType';
 import { RecurrenceType } from '../../member-type/MemberType.types';
+import Question from '../../question/Question';
 import { QuestionCategory } from '../../question/Question.types';
 import User from '../../user/User';
 import Member from '../Member';
@@ -44,6 +46,38 @@ export class ApplyForMembershipArgs {
   urlName: string;
 }
 
+interface CreateApplicationPaymentArgs {
+  memberTypeId: string;
+  paymentMethodId: string;
+  recurrence: RecurrenceType;
+}
+
+const createApplicationPayment = async (
+  { memberTypeId, paymentMethodId, recurrence }: CreateApplicationPaymentArgs,
+  ctx: Pick<GQLContext, 'communityId' | 'memberId'>
+) => {
+  if (!paymentMethodId) return;
+
+  try {
+    await updatePaymentMethod({ paymentMethodId }, ctx);
+
+    if (recurrence === RecurrenceType.LIFETIME) {
+      await createLifetimePayment({ memberTypeId }, ctx);
+      return;
+    }
+
+    await createSubscription({ autoRenew: true, memberTypeId }, ctx);
+  } catch (e) {
+    await new BloomManager().findAndDelete(
+      Member,
+      { id: ctx.memberId },
+      { hard: true }
+    );
+
+    throw new Error(`There was a problem processing your payment.`);
+  }
+};
+
 /**
  * Applies for member in the community using the given email and data.
  * A user is either created OR fetched based on the email.
@@ -62,11 +96,14 @@ const applyForMembership = async (
 
   // Populate the questions and types so that we can capture the member
   // data in a relational manner.
-  const community = await bm.findOne(
-    Community,
-    { urlName },
-    { populate: ['integrations', 'questions', 'types'] }
-  );
+  const [community, type]: [Community, MemberType] = await Promise.all([
+    bm.findOne(
+      Community,
+      { urlName },
+      { populate: ['integrations', 'questions'] }
+    ),
+    bm.findOne(MemberType, { id: memberTypeId })
+  ]);
 
   // The user can potentially already exist if they are a part of other
   // communities.
@@ -79,57 +116,45 @@ const applyForMembership = async (
   }
 
   const member: Member = bm.create(Member, { community, user });
-
   const questions = community.questions.getItems();
-  const types = community.types.getItems();
 
   // Some data we store on the user entity, and some we store as member
   // data.
-  data.forEach(({ category, questionId, value: valueArray }) => {
-    // If there's no value, then short circuit. Because for the initial
-    // creation of data, it must exist.
-    if (!valueArray?.length) return;
+  data.forEach(
+    ({ category, questionId, value: valueArray }: MemberDataInput) => {
+      // If there's no value, then short circuit. Because for the initial
+      // creation of data, it must exist.
+      if (!valueArray?.length) return;
 
-    const question = questions.find(({ id }) => questionId === id);
-    category = category ?? question.category;
+      const question: Question = questions.find(({ id }) => questionId === id);
+      category = category ?? question.category;
 
-    const value =
-      question?.type === 'MULTIPLE_SELECT' ? valueArray : valueArray[0];
+      const value = (question?.type === 'MULTIPLE_SELECT'
+        ? valueArray
+        : valueArray[0]
+      )?.toString();
 
-    if (category === 'EMAIL') user.email = value as string;
-    else if (category === 'FIRST_NAME') user.firstName = value as string;
-    else if (category === 'LAST_NAME') user.lastName = value as string;
-    else if (category === 'GENDER') user.gender = value as string;
-    else if (category === 'MEMBERSHIP_TYPE') {
-      const type = types.find(({ name }) => value === name);
-      if (type) member.type = type;
-    } else {
-      bm.create(MemberData, { member, question, value: value.toString() });
+      if (category === 'EMAIL') user.email = value;
+      else if (category === 'FIRST_NAME') user.firstName = value;
+      else if (category === 'LAST_NAME') user.lastName = value;
+      else if (category === 'GENDER') user.gender = value;
+      else if (category === 'MEMBERSHIP_TYPE') member.type = type;
+      else bm.create(MemberData, { member, question, value });
     }
-  });
+  );
 
-  await bm.flush({ event: 'MEMBERS_CREATED' });
+  await bm.flush({ event: 'APPLY_FOR_MEMBERSHIP' });
 
   cache.invalidateEntries(
     member.status === MemberStatus.ACCEPTED
-      ? [`${QueryEvent.GET_DATABASE}-${community.id}`]
-      : [`${QueryEvent.GET_APPLICANTS}-${community.id}`]
+      ? [`${QueryEvent.GET_APPLICANTS}-${community.id}`]
+      : [`${QueryEvent.GET_DATABASE}-${community.id}`]
   );
 
-  const ctx: Pick<GQLContext, 'communityId' | 'memberId'> = {
-    communityId: community.id,
-    memberId: member.id
-  };
-
-  if (paymentMethodId) {
-    await updatePaymentMethod({ paymentMethodId }, ctx);
-
-    if (member.type.recurrence === RecurrenceType.LIFETIME) {
-      await createLifetimePayment({ memberTypeId }, ctx);
-    } else {
-      await createSubscription({ autoRenew: true, memberTypeId }, ctx);
-    }
-  }
+  await createApplicationPayment(
+    { memberTypeId, paymentMethodId, recurrence: type.recurrence },
+    { communityId: community.id, memberId: member.id }
+  );
 
   // Send the appropriate emails based on the response.
   setTimeout(async () => {
