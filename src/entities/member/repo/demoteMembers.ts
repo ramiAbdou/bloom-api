@@ -7,7 +7,7 @@ import { AdminArgs } from '../Member.types';
  * Toggles the admin status of the member. If the role of the members
  * were previously ADMIN, they become null, and vice versa.
  */
-export default async (
+const demoteMembers = async (
   { memberIds }: AdminArgs,
   { communityId }: GQLContext
 ): Promise<Member[]> => {
@@ -23,3 +23,5 @@ export default async (
 
   return members;
 };
+
+export default demoteMembers;

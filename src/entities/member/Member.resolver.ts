@@ -11,7 +11,7 @@ import applyForMembership, {
   ApplyForMembershipArgs
 } from './repo/applyForMembership';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
-import demoteToMember from './repo/demoteToMember';
+import demoteMembers from './repo/demoteMembers';
 import getMemberProfile, {
   GetMemberProfileArgs
 } from './repo/getMemberProfile';
@@ -53,8 +53,8 @@ export default class MemberResolver {
 
   @Authorized('OWNER')
   @Mutation(() => [Member], { nullable: true })
-  async demoteToMember(@Args() args: AdminArgs, @Ctx() ctx: GQLContext) {
-    return demoteToMember(args, ctx);
+  async demoteMembers(@Args() args: AdminArgs, @Ctx() ctx: GQLContext) {
+    return demoteMembers(args, ctx);
   }
 
   @Query(() => Boolean)

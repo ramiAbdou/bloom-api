@@ -52,6 +52,17 @@ interface CreateApplicationPaymentArgs {
   recurrence: RecurrenceType;
 }
 
+/**
+ * Creates the application payment for the incoming member. If no payment
+ * method ID is provided, nothing happens. If the recurrence is LIFETIME,
+ * creates a one-time payment, and otherwise creates a subscription.
+ *
+ * @param args.memberTypeId Type ID to apply for.
+ * @param args.paymentMethodId ID of the Stripe Payment Method.
+ * @param args.recurrence Recurrence of the new type to apply to.
+ * @param ctx.communityId ID of the community.
+ * @param ctx.memberId ID of the member.
+ */
 const createApplicationPayment = async (
   { memberTypeId, paymentMethodId, recurrence }: CreateApplicationPaymentArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
@@ -97,11 +108,7 @@ const applyForMembership = async (
   // Populate the questions and types so that we can capture the member
   // data in a relational manner.
   const [community, type]: [Community, MemberType] = await Promise.all([
-    bm.findOne(
-      Community,
-      { urlName },
-      { populate: ['integrations', 'questions'] }
-    ),
+    bm.findOne(Community, { urlName }, { populate: ['questions'] }),
     bm.findOne(MemberType, { id: memberTypeId })
   ]);
 
@@ -120,28 +127,26 @@ const applyForMembership = async (
 
   // Some data we store on the user entity, and some we store as member
   // data.
-  data.forEach(
-    ({ category, questionId, value: valueArray }: MemberDataInput) => {
-      // If there's no value, then short circuit. Because for the initial
-      // creation of data, it must exist.
-      if (!valueArray?.length) return;
+  data.forEach(({ category, questionId, value: values }: MemberDataInput) => {
+    // If there's no value, then short circuit. Because for the initial
+    // creation of data, it must exist.
+    if (!values?.length) return;
 
-      const question: Question = questions.find(({ id }) => questionId === id);
-      category = category ?? question.category;
+    const question: Question = questions.find(({ id }) => questionId === id);
+    category = category ?? question.category;
 
-      const value = (question?.type === 'MULTIPLE_SELECT'
-        ? valueArray
-        : valueArray[0]
-      )?.toString();
+    const value = (question?.type === 'MULTIPLE_SELECT'
+      ? values
+      : values[0]
+    )?.toString();
 
-      if (category === 'EMAIL') user.email = value;
-      else if (category === 'FIRST_NAME') user.firstName = value;
-      else if (category === 'LAST_NAME') user.lastName = value;
-      else if (category === 'GENDER') user.gender = value;
-      else if (category === 'MEMBERSHIP_TYPE') member.type = type;
-      else bm.create(MemberData, { member, question, value });
-    }
-  );
+    if (category === 'EMAIL') user.email = value;
+    else if (category === 'FIRST_NAME') user.firstName = value;
+    else if (category === 'LAST_NAME') user.lastName = value;
+    else if (category === 'GENDER') user.gender = value;
+    else if (category === 'MEMBERSHIP_TYPE') member.type = type;
+    else bm.create(MemberData, { member, question, value });
+  });
 
   await bm.flush({ event: 'APPLY_FOR_MEMBERSHIP' });
 
@@ -155,13 +160,6 @@ const applyForMembership = async (
     { memberTypeId, paymentMethodId, recurrence: type.recurrence },
     { communityId: community.id, memberId: member.id }
   );
-
-  // Send the appropriate emails based on the response.
-  setTimeout(async () => {
-    // if (community.autoAccept) {
-    //   await bm.memberRepo().sendMemberAcceptedEmails([member], community);
-    // } else await bm.memberRepo().sendMemberReceievedEmail(member, community);
-  }, 0);
 
   res.clearCookie('accessToken');
   res.clearCookie('refreshToken');
