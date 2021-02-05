@@ -14,6 +14,8 @@ export default class MemberData extends BaseEntity {
   @Property({ nullable: true, type: 'text' })
   value: string;
 
+  // ## RELATIONSHIPS
+
   @ManyToOne(() => Member)
   member: Member;
 

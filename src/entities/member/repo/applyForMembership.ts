@@ -109,7 +109,10 @@ const applyForMembership = async (
   // data in a relational manner.
   const [community, type]: [Community, MemberType] = await Promise.all([
     bm.findOne(Community, { urlName }, { populate: ['questions'] }),
-    bm.findOne(MemberType, { id: memberTypeId })
+    bm.findOne(
+      MemberType,
+      memberTypeId ? { id: memberTypeId } : { community: { urlName } }
+    )
   ]);
 
   // The user can potentially already exist if they are a part of other
@@ -140,12 +143,13 @@ const applyForMembership = async (
       : values[0]
     )?.toString();
 
+    if (questionId) bm.create(MemberData, { member, question, value });
+
     if (category === 'EMAIL') user.email = value;
     else if (category === 'FIRST_NAME') user.firstName = value;
     else if (category === 'LAST_NAME') user.lastName = value;
     else if (category === 'GENDER') user.gender = value;
     else if (category === 'MEMBERSHIP_TYPE') member.type = type;
-    else bm.create(MemberData, { member, question, value });
   });
 
   await bm.flush({ event: 'APPLY_FOR_MEMBERSHIP' });
