@@ -5,7 +5,9 @@ import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
 import Community from '../../community/Community';
 import MemberData from '../../member-data/MemberData';
+import createLifetimePayment from '../../member-payment/repo/createLifetimePayment';
 import createSubscription from '../../member-payment/repo/createSubscription';
+import { RecurrenceType } from '../../member-type/MemberType.types';
 import { QuestionCategory } from '../../question/Question.types';
 import User from '../../user/User';
 import Member from '../Member';
@@ -114,16 +116,19 @@ const applyForMembership = async (
       : [`${QueryEvent.GET_APPLICANTS}-${community.id}`]
   );
 
-  if (paymentMethodId) {
-    await updatePaymentMethod(
-      { paymentMethodId },
-      { communityId: community.id, memberId: member.id }
-    );
+  const ctx: Pick<GQLContext, 'communityId' | 'memberId'> = {
+    communityId: community.id,
+    memberId: member.id
+  };
 
-    await createSubscription(
-      { autoRenew: true, memberTypeId },
-      { communityId: community.id, memberId: member.id }
-    );
+  if (paymentMethodId) {
+    await updatePaymentMethod({ paymentMethodId }, ctx);
+
+    if (member.type.recurrence === RecurrenceType.LIFETIME) {
+      await createLifetimePayment({ memberTypeId }, ctx);
+    } else {
+      await createSubscription({ autoRenew: true, memberTypeId }, ctx);
+    }
   }
 
   // Send the appropriate emails based on the response.
