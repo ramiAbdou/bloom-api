@@ -9,6 +9,7 @@ import Community from '../../community/Community';
 import MemberType from '../../member-type/MemberType';
 import Member from '../../member/Member';
 import createStripeCustomer from '../../member/repo/createStripeCustomer';
+import MemberPayment from '../MemberPayment';
 import createMemberPayment from './createMemberPayment';
 
 @ArgsType()
@@ -76,7 +77,7 @@ const updateStripeSubscription = async ({
 const createSubscription = async (
   { autoRenew, memberTypeId, prorationDate }: CreateSubsciptionArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
-): Promise<Member> => {
+): Promise<MemberPayment> => {
   const { communityId, memberId } = ctx;
   const bm = new BloomManager();
 
@@ -113,7 +114,7 @@ const createSubscription = async (
 
   const invoice = subscription.latest_invoice as Stripe.Invoice;
 
-  const updatedMember: Member = await createMemberPayment({
+  const payment: MemberPayment = await createMemberPayment({
     bm,
     communityId,
     invoice,
@@ -121,7 +122,7 @@ const createSubscription = async (
     type
   });
 
-  return updatedMember;
+  return payment;
 };
 
 export default createSubscription;

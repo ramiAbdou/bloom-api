@@ -3,7 +3,6 @@ import { QueryOrder } from '@mikro-orm/core';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import Member from '../member/Member';
 import MemberPayment from './MemberPayment';
 import createLifetimePayment, {
   CreateLifetimePaymentArgs
@@ -21,20 +20,20 @@ import getUpcomingPayment, {
 @Resolver()
 export default class MemberPaymentResolver {
   @Authorized()
-  @Mutation(() => Member, { nullable: true })
+  @Mutation(() => MemberPayment, { nullable: true })
   async createLifetimePayment(
     @Args() args: CreateLifetimePaymentArgs,
     @Ctx() ctx: GQLContext
-  ) {
+  ): Promise<MemberPayment> {
     return createLifetimePayment(args, ctx);
   }
 
   @Authorized()
-  @Mutation(() => Member, { nullable: true })
+  @Mutation(() => MemberPayment, { nullable: true })
   async createSubscription(
     @Args() args: CreateSubsciptionArgs,
     @Ctx() ctx: GQLContext
-  ) {
+  ): Promise<MemberPayment> {
     return createSubscription(args, ctx);
   }
 

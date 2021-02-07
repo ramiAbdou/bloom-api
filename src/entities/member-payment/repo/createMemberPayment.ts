@@ -23,7 +23,7 @@ const createMemberPayment = async ({
   invoice,
   member,
   type
-}: CreateMemberPaymentArgs) => {
+}: CreateMemberPaymentArgs): Promise<MemberPayment> => {
   const { amount_paid, id, hosted_invoice_url } = invoice;
 
   // Only if the subscription worked should the MemberPayment be created.
@@ -31,17 +31,18 @@ const createMemberPayment = async ({
   member.isDuesActive = true;
   member.type = type;
 
-  const payment: MemberPayment =
-    invoice.status === 'paid' && amount_paid
-      ? bm.create(MemberPayment, {
-          amount: amount_paid,
-          community: { id: communityId },
-          member,
-          stripeInvoiceId: id,
-          stripeInvoiceUrl: hosted_invoice_url,
-          type
-        })
-      : null;
+  let payment: MemberPayment = null;
+
+  if (invoice.status === 'paid' && amount_paid) {
+    payment = bm.create(MemberPayment, {
+      amount: amount_paid,
+      community: { id: communityId },
+      member,
+      stripeInvoiceId: id,
+      stripeInvoiceUrl: hosted_invoice_url,
+      type
+    });
+  }
 
   await bm.flush({
     cacheKeysToInvalidate: [
@@ -56,7 +57,7 @@ const createMemberPayment = async ({
     ]
   });
 
-  return payment?.member ?? member;
+  return payment;
 };
 
 export default createMemberPayment;

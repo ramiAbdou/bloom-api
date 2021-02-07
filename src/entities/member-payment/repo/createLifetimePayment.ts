@@ -9,6 +9,7 @@ import CommunityIntegrations from '../../community-integrations/CommunityIntegra
 import MemberType from '../../member-type/MemberType';
 import Member from '../../member/Member';
 import createStripeCustomer from '../../member/repo/createStripeCustomer';
+import MemberPayment from '../MemberPayment';
 import createMemberPayment from './createMemberPayment';
 
 @ArgsType()
@@ -20,7 +21,7 @@ export class CreateLifetimePaymentArgs {
 const createLifetimePayment = async (
   { memberTypeId }: CreateLifetimePaymentArgs,
   { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
-) => {
+): Promise<MemberPayment> => {
   const bm = new BloomManager();
 
   const [{ stripeAccountId }, type]: [
@@ -60,7 +61,7 @@ const createLifetimePayment = async (
     stripeAccount: stripeAccountId
   });
 
-  const updatedMember: Member = await createMemberPayment({
+  const payment: MemberPayment = await createMemberPayment({
     bm,
     communityId,
     invoice: paidInvoice,
@@ -68,7 +69,7 @@ const createLifetimePayment = async (
     type
   });
 
-  return updatedMember;
+  return payment;
 };
 
 export default createLifetimePayment;
