@@ -5,8 +5,8 @@ import EventAttendee from '../EventAttendee';
 
 const getPastEventAttendees = async ({
   communityId
-}: Pick<GQLContext, 'communityId'>) => {
-  return new BloomManager().find(
+}: Pick<GQLContext, 'communityId'>): Promise<EventAttendee[]> => {
+  const attendees: EventAttendee[] = await new BloomManager().find(
     EventAttendee,
     { event: { community: { id: communityId }, endTime: { $lt: now() } } },
     {
@@ -14,6 +14,8 @@ const getPastEventAttendees = async ({
       populate: ['event', 'member.user']
     }
   );
+
+  return attendees;
 };
 
 export default getPastEventAttendees;

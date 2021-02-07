@@ -32,8 +32,7 @@ const deleteEventGuest = async (
         `${QueryEvent.GET_EVENT_GUESTS}-${eventId}`,
         `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`
       ],
-      event: 'DELETE_EVENT_GUEST',
-      hard: true
+      event: 'DELETE_EVENT_GUEST'
     }
   );
 };

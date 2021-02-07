@@ -24,7 +24,8 @@ const deleteMembers = async (
         ...memberIds.map((memberId: string) => {
           return `${QueryEvent.GET_MEMBER_PROFILE}-${memberId}`;
         })
-      ]
+      ],
+      soft: true
     }
   );
 };

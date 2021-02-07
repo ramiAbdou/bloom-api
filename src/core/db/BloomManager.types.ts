@@ -30,5 +30,5 @@ export interface BloomFindAndUpdateOptions<T, P>
 export interface BloomFindAndDeleteOptions<T, P>
   extends BloomFindOptions<T, P>,
     BloomManagerFlushArgs {
-  hard?: boolean;
+  soft?: boolean;
 }

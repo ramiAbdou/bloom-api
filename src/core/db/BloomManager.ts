@@ -199,13 +199,12 @@ class BloomManager {
     // If not found, get it from the DB.
     const result = await this.find<T, P>(entityName, where, options);
 
-    if (options?.hard) this.em.remove(result);
-    else {
+    if (options?.soft) {
       result.forEach((entity: Loaded<T, P>) => {
         // @ts-ignore b/c not sure the right type for this.
         entity.deletedAt = now();
       });
-    }
+    } else this.em.remove(result);
 
     await this.flush({
       cacheKeysToInvalidate: options?.cacheKeysToInvalidate,

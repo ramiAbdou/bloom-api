@@ -2,7 +2,6 @@ import { Authorized, Field, ObjectType } from 'type-graphql';
 import {
   BeforeCreate,
   BeforeUpdate,
-  Cascade,
   Collection,
   Entity,
   Enum,
@@ -117,9 +116,7 @@ export default class Member extends BaseEntity {
   // ## RELATIONSHIPS
 
   @Field(() => [EventAttendee])
-  @OneToMany(() => EventAttendee, ({ member }) => member, {
-    cascade: [Cascade.ALL]
-  })
+  @OneToMany(() => EventAttendee, ({ member }) => member)
   attendees = new Collection<EventAttendee>(this);
 
   @Field(() => Community)
@@ -128,15 +125,11 @@ export default class Member extends BaseEntity {
 
   // Data will only be populated if a question has ever been answered before.
   @Field(() => [MemberData])
-  @OneToMany(() => MemberData, ({ member }) => member, {
-    cascade: [Cascade.ALL]
-  })
+  @OneToMany(() => MemberData, ({ member }) => member)
   data = new Collection<MemberData>(this);
 
   @Field(() => [EventGuest])
-  @OneToMany(() => EventGuest, ({ member }) => member, {
-    cascade: [Cascade.ALL]
-  })
+  @OneToMany(() => EventGuest, ({ member }) => member)
   guests = new Collection<EventGuest>(this);
 
   @Field(() => [MemberPayment])
@@ -159,8 +152,6 @@ export default class Member extends BaseEntity {
   user: User;
 
   @Field(() => [EventWatch])
-  @OneToMany(() => EventWatch, ({ member }) => member, {
-    cascade: [Cascade.ALL]
-  })
+  @OneToMany(() => EventWatch, ({ member }) => member)
   watches = new Collection<EventWatch>(this);
 }
