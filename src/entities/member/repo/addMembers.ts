@@ -2,7 +2,7 @@ import { ArgsType, Field, InputType } from 'type-graphql';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import addToMailchimpAudience from '@entities/community-integrations/repo/addToMailchimpAudience';
+import addToMailchimpAudience from '../../community-integrations/repo/addToMailchimpAudience';
 import Community from '../../community/Community';
 import User from '../../user/User';
 import Member from '../Member';
@@ -18,8 +18,8 @@ class AddMemberInput {
   @Field(() => String)
   lastName: string;
 
-  @Field(() => Boolean)
-  isAdmin: boolean;
+  @Field(() => Boolean, { defaultValue: false })
+  isAdmin?: boolean;
 }
 
 @ArgsType()

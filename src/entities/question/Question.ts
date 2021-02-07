@@ -95,6 +95,7 @@ export default class Question extends BaseEntity {
     if (this.category === QuestionCategory.DUES_STATUS) {
       this.inApplication = false;
       this.inExpandedDirectoryCard = false;
+      this.options = ['Active', 'Inactive'];
       this.type = QuestionType.MULTIPLE_CHOICE;
     }
 

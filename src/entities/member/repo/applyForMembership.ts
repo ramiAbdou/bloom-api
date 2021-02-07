@@ -155,7 +155,7 @@ const applyForMembership = async (
   await bm.flush({ event: 'APPLY_FOR_MEMBERSHIP' });
 
   cache.invalidateEntries(
-    member.status === MemberStatus.ACCEPTED
+    member.status === MemberStatus.PENDING
       ? [`${QueryEvent.GET_APPLICANTS}-${community.id}`]
       : [`${QueryEvent.GET_DATABASE}-${community.id}`]
   );
