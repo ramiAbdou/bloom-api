@@ -60,6 +60,21 @@ export default class MemberPaymentResolver {
     );
   }
 
+  @Authorized('ADMIN')
+  @Query(() => [MemberPayment], { nullable: true })
+  async getPayments(
+    @Ctx() { communityId }: GQLContext
+  ): Promise<MemberPayment[]> {
+    return new BloomManager().find(
+      MemberPayment,
+      { community: { id: communityId } },
+      {
+        cacheKey: `${QueryEvent.GET_PAYMENTS}-${communityId}`,
+        populate: ['community', 'member.user', 'type']
+      }
+    );
+  }
+
   @Authorized()
   @Query(() => GetUpcomingPaymentResult, { nullable: true })
   async getUpcomingPayment(
