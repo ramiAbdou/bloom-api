@@ -1,5 +1,4 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
-import { QueryOrder } from '@mikro-orm/core';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
@@ -13,6 +12,9 @@ import createSubscription, {
 import getChangePreview, {
   GetChangePreviewResult
 } from './repo/getChangePreview';
+import getMemberPayments, {
+  GetMemberPaymentsArgs
+} from './repo/getMemberPayments';
 import getUpcomingPayment, {
   GetUpcomingPaymentResult
 } from './repo/getUpcomingPayment';
@@ -48,16 +50,11 @@ export default class MemberPaymentResolver {
 
   @Authorized()
   @Query(() => [MemberPayment])
-  async getMemberPayments(@Ctx() { memberId }: GQLContext) {
-    return new BloomManager().find(
-      MemberPayment,
-      { member: { id: memberId } },
-      {
-        cacheKey: `${QueryEvent.GET_MEMBER_PAYMENTS}-${memberId}`,
-        orderBy: { createdAt: QueryOrder.DESC },
-        populate: ['member']
-      }
-    );
+  async getMemberPayments(
+    @Args() args: GetMemberPaymentsArgs,
+    @Ctx() ctx: GQLContext
+  ) {
+    return getMemberPayments(args, ctx);
   }
 
   @Authorized('ADMIN')

@@ -14,8 +14,8 @@ export default class EventWatch extends BaseEntity {
   @ManyToOne(() => Event, { primary: true })
   event: Event;
 
-  @Field(() => Member, { nullable: true })
-  @ManyToOne(() => Member, { nullable: true })
+  @Field(() => Member)
+  @ManyToOne(() => Member, { primary: true })
   member: Member;
 
   [PrimaryKeyType]: [string, string];

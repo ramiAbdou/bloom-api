@@ -45,7 +45,7 @@ const updateUser = async (
   member.bio = bio;
   member.user.firstName = firstName;
   member.user.lastName = lastName;
-  member.user.pictureUrl = pictureUrl;
+  if (pictureUrl) member.user.pictureUrl = pictureUrl;
 
   await bm.flush({
     cacheKeysToInvalidate: [
