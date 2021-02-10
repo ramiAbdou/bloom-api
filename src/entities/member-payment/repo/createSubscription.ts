@@ -114,13 +114,10 @@ const createSubscription = async (
 
   const invoice = subscription.latest_invoice as Stripe.Invoice;
 
-  const payment: MemberPayment = await createMemberPayment({
-    bm,
-    communityId,
-    invoice,
-    member,
-    type
-  });
+  const payment: MemberPayment = await createMemberPayment(
+    { invoice, typeId: type.id },
+    { communityId, memberId }
+  );
 
   return payment;
 };
