@@ -7,7 +7,7 @@ import MemberData from '../MemberData';
 @InputType()
 class MemberDataArgs {
   @Field()
-  id: string;
+  questionId: string;
 
   @Field(() => [String], { nullable: true })
   value: string[];
@@ -19,6 +19,28 @@ export class UpdateMemberDataArgs {
   items: MemberDataArgs[];
 }
 
+interface DidHighlightedValueChangeArgs {
+  data: MemberData[];
+  updatedData: MemberData[];
+}
+
+const didHighlightedValueChange = ({
+  data,
+  updatedData
+}: DidHighlightedValueChangeArgs) => {
+  const highlightedData = data.find(({ question }: MemberData) => {
+    return !!question.inDirectoryCard;
+  })?.value;
+
+  const updatedHighlightedData = updatedData.find(
+    ({ question }: MemberData) => {
+      return !!question.inDirectoryCard;
+    }
+  )?.value;
+
+  return highlightedData !== updatedHighlightedData;
+};
+
 const updateMemberData = async (
   { items }: UpdateMemberDataArgs,
   { communityId, memberId, userId }: GQLContext
@@ -27,22 +49,28 @@ const updateMemberData = async (
 
   const data: MemberData[] = await bm.find(MemberData, {
     member: { id: memberId },
-    question: { id: items.map(({ id }) => id) }
+    question: { id: items.map(({ questionId }) => questionId) }
   });
 
   const updatedData: MemberData[] = items.reduce(
-    (acc: MemberData[], item: MemberDataArgs) => {
-      const value = item.value?.toString();
+    (acc: MemberData[], { questionId, value }: MemberDataArgs) => {
+      const stringifiedValue = value?.toString();
 
-      const dataPoint: MemberData =
-        data.find((element: MemberData) => element.question.id === item.id) ??
-        bm.create(MemberData, {
+      const existingEntity: MemberData = data.find(
+        (element: MemberData) => element.question.id === questionId
+      );
+
+      let entity: MemberData = existingEntity;
+
+      if (!entity) {
+        entity = bm.create(MemberData, {
           member: { id: memberId },
-          question: { id: item.id }
+          question: { id: questionId }
         });
+      }
 
-      dataPoint.value = value;
-      return [...acc, dataPoint];
+      entity.value = stringifiedValue;
+      return [...acc, entity];
     },
     data
   );
@@ -50,7 +78,10 @@ const updateMemberData = async (
   await bm.flush({
     cacheKeysToInvalidate: [
       `${QueryEvent.GET_DATABASE}-${communityId}`,
-      `${QueryEvent.GET_DIRECTORY}-${communityId}`,
+      ...(didHighlightedValueChange({ data, updatedData })
+        ? [`${QueryEvent.GET_DIRECTORY}-${communityId}`]
+        : []),
+      `${QueryEvent.GET_MEMBER_PROFILE}-${memberId}`,
       `${QueryEvent.GET_USER}-${userId}`
     ]
   });

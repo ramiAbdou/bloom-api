@@ -4,6 +4,7 @@ import { Connection, IDatabaseDriver, Options } from '@mikro-orm/core';
 import { APP, isProduction } from '@constants';
 import * as entities from '@entities/entities';
 import BaseEntity from '@core/db/BaseEntity';
+import BaseCompositeEntity from '@core/db/BaseCompositeEntity';
 import BloomSubscriber from '@core/db/BloomSubscriber';
 import NamingStrategy from '@core/db/NamingStrategy';
 
@@ -17,8 +18,14 @@ export default {
   // rest of the entities.
   discovery: { disableDynamicFileAccess: true },
   driverOptions: { connection: { ssl: isProduction } },
-  entities: [BaseEntity, ...Object.values(entities)],
-  filters: { notDeleted: { args: false, cond: { deletedAt: null } } },
+  entities: [BaseEntity, BaseCompositeEntity, ...Object.values(entities)],
+  filters: {
+    notDeleted: {
+      args: false,
+      cond: { deletedAt: null },
+      entity: ['Member', 'User']
+    }
+  },
   namingStrategy: NamingStrategy,
   subscribers: [new BloomSubscriber()],
   type: 'postgresql'

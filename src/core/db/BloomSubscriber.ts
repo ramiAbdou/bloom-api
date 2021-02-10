@@ -7,7 +7,6 @@ import {
   FlushEventArgs
 } from '@mikro-orm/core';
 
-import cache from '@core/cache/cache';
 import logger, { LoggerChangeSet, LoggerChangeType } from '@util/logger';
 
 export default class BloomSubscriber implements EventSubscriber {
@@ -24,17 +23,5 @@ export default class BloomSubscriber implements EventSubscriber {
       });
 
     logger.log({ changes, contextId: em.id, level: 'ON_FLUSH' });
-  }
-
-  /**
-   * If a flush was successful, then we grab the change sets and invalidate
-   * every value in the cache who has dependencies that were just updated.
-   */
-  async afterFlush<T>({ uow }: FlushEventArgs): Promise<void> {
-    const idsToInvalidate = uow
-      .getChangeSets()
-      .map(({ entity }: ChangeSet<AnyEntity<any>>) => entity.id);
-
-    cache.invalidateEntriesByDependencies(idsToInvalidate);
   }
 }

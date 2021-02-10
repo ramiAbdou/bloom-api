@@ -18,8 +18,8 @@ type EmailBaseArgs = {
 
 export enum EmailTemplate {
   APPLICATION_RECEIVED = 'APPLICATION_RECEIVED',
-  PAYMENT_RECEIPT = 'PAYMENT_RECEIPT',
-  TEMPORARY_LOGIN_LINK = 'TEMPORARY_LOGIN_LINK'
+  LOGIN = 'LOGIN',
+  PAYMENT_RECEIPT = 'PAYMENT_RECEIPT'
 }
 
 // ## APPLICATION RECEIVED
@@ -50,26 +50,26 @@ interface PaymentReceiptTemplate extends EmailBaseArgs {
   variables: PaymentReceiptVars;
 }
 
-// ## TEMPORARY LOGIN LINK
+// ## LOGIN
 
-export type TemporaryLoginLinkVars = { firstName: string; loginUrl: string };
+export type LoginVars = { firstName: string; loginUrl: string };
 
-interface TemporaryLoginLinkTemplate extends EmailBaseArgs {
-  template: EmailTemplate.TEMPORARY_LOGIN_LINK;
-  variables: TemporaryLoginLinkVars;
+interface LoginTemplate extends EmailBaseArgs {
+  template: EmailTemplate.LOGIN;
+  variables: LoginVars;
 }
 
 export type SendEmailArgs =
   | ApplicationReceivedTemplate
-  | PaymentReceiptTemplate
-  | TemporaryLoginLinkTemplate;
+  | LoginTemplate
+  | PaymentReceiptTemplate;
 
 // ## EMAIL TEMPLATE FILE MAP
 
 export const emailTemplateFiles: Record<EmailTemplate, string> = {
   APPLICATION_RECEIVED: 'application-received',
-  PAYMENT_RECEIPT: 'payment-receipt',
-  TEMPORARY_LOGIN_LINK: 'temporary-login-link'
+  LOGIN: 'login',
+  PAYMENT_RECEIPT: 'payment-receipt'
 };
 
 // ## EMAIL SUBJECT MAP
@@ -79,9 +79,9 @@ export const emailSubjectFns: Record<
   (...args: any) => string
 > = {
   APPLICATION_RECEIVED: () => '',
+  LOGIN: (): string => 'Your Bloom Login Link',
   PAYMENT_RECEIPT: ({
     communityName
   }: Pick<PaymentReceiptVars, 'communityName'>): string =>
-    `${communityName} Membership Payment Invoice`,
-  TEMPORARY_LOGIN_LINK: (): string => 'Your Bloom Login Link'
+    `${communityName} Membership Payment Invoice`
 };

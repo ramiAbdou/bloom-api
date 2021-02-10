@@ -4,8 +4,8 @@ import { QueryOrder } from '@mikro-orm/core';
 import { GQLContext, QueryEvent } from '@constants';
 import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
+import { TimeSeriesData } from '@util/gql.types';
 import Member from '../../member/Member';
-import { TimeSeriesData } from '../../member/Member.types';
 
 const getActiveGrowthSeries = async ({
   communityId

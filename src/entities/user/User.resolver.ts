@@ -1,24 +1,15 @@
-import {
-  Arg,
-  Args,
-  Authorized,
-  Ctx,
-  Mutation,
-  Query,
-  Resolver
-} from 'type-graphql';
+import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
-import { decodeToken } from '@util/util';
+import Member from '../member/Member';
 import getUser, { GetUserArgs, GetUserResult } from './repo/getUser';
-import refreshToken from './repo/refreshToken';
-import sendTemporaryLoginLink, {
-  SendTemporaryLoginLinkArgs
-} from './repo/sendTemporaryLoginLink';
-import updateUser, {
-  UpdateUserArgs,
-  UpdateUserResult
-} from './repo/updateUser';
+import sendLoginLink, { SendLoginLinkArgs } from './repo/sendLoginLink';
+import updateUser, { UpdateUserArgs } from './repo/updateUser';
+import updateUserSocials, {
+  UpdateUserSocialsArgs
+} from './repo/updateUserSocials';
+import verifyToken, { VerifyTokenArgs } from './repo/verifyToken';
+import User from './User';
 
 @Resolver()
 export default class UserResolver {
@@ -28,7 +19,6 @@ export default class UserResolver {
     return getUser(args, ctx);
   }
 
-  @Authorized()
   @Query(() => GetUserResult, { nullable: true })
   async getUser(@Args() args: GetUserArgs, @Ctx() ctx: GQLContext) {
     return getUser(args, ctx);
@@ -54,28 +44,27 @@ export default class UserResolver {
   }
 
   @Mutation(() => Boolean, { nullable: true })
-  async sendTemporaryLoginLink(@Args() args: SendTemporaryLoginLinkArgs) {
-    return sendTemporaryLoginLink(args);
+  async sendLoginLink(@Args() args: SendLoginLinkArgs) {
+    return sendLoginLink(args);
   }
 
   @Authorized()
-  @Mutation(() => UpdateUserResult)
+  @Mutation(() => Member)
   async updateUser(@Args() args: UpdateUserArgs, @Ctx() ctx: GQLContext) {
     return updateUser(args, ctx);
   }
 
-  @Query(() => Boolean)
-  async verifyLoginToken(
-    @Arg('loginToken') loginToken: string,
-    @Ctx() { res }: GQLContext
+  @Authorized()
+  @Mutation(() => User)
+  async updateUserSocials(
+    @Args() args: UpdateUserSocialsArgs,
+    @Ctx() ctx: GQLContext
   ) {
-    const userId: string = decodeToken(loginToken)?.userId;
+    return updateUserSocials(args, ctx);
+  }
 
-    if (!(await refreshToken({ res, userId }))) {
-      res.cookie('LOGIN_LINK_ERROR', 'TOKEN_EXPIRED');
-      return false;
-    }
-
-    return true;
+  @Query(() => Boolean)
+  async verifyToken(@Args() args: VerifyTokenArgs, @Ctx() ctx: GQLContext) {
+    return verifyToken(args, ctx);
   }
 }

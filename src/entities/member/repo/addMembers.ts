@@ -2,7 +2,7 @@ import { ArgsType, Field, InputType } from 'type-graphql';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import addToMailchimpAudience from '@entities/community-integrations/repo/addToMailchimpAudience';
+import addToMailchimpAudience from '../../community-integrations/repo/addToMailchimpAudience';
 import Community from '../../community/Community';
 import User from '../../user/User';
 import Member from '../Member';
@@ -18,8 +18,8 @@ class AddMemberInput {
   @Field(() => String)
   lastName: string;
 
-  @Field(() => Boolean)
-  isAdmin: boolean;
+  @Field(() => Boolean, { defaultValue: false })
+  isAdmin?: boolean;
 }
 
 @ArgsType()
@@ -56,8 +56,8 @@ const addMembers = async (
   }
 
   const members: Member[] = await Promise.all(
-    inputs.map(async ({ isAdmin, email, firstName, lastName }) =>
-      bm.create(Member, {
+    inputs.map(async ({ isAdmin, email, firstName, lastName }) => {
+      return bm.create(Member, {
         community,
         role: isAdmin ? 'ADMIN' : null,
         status: 'INVITED',
@@ -66,8 +66,8 @@ const addMembers = async (
         user:
           (await bm.findOne(User, { email })) ??
           bm.create(User, { email, firstName, lastName })
-      })
-    )
+      });
+    })
   );
 
   await bm.flush({

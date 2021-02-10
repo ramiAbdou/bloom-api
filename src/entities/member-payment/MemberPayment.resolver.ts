@@ -1,9 +1,7 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
-import { QueryOrder } from '@mikro-orm/core';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import Member from '../member/Member';
 import MemberPayment from './MemberPayment';
 import createLifetimePayment, {
   CreateLifetimePaymentArgs
@@ -14,6 +12,9 @@ import createSubscription, {
 import getChangePreview, {
   GetChangePreviewResult
 } from './repo/getChangePreview';
+import getMemberPayments, {
+  GetMemberPaymentsArgs
+} from './repo/getMemberPayments';
 import getUpcomingPayment, {
   GetUpcomingPaymentResult
 } from './repo/getUpcomingPayment';
@@ -21,20 +22,20 @@ import getUpcomingPayment, {
 @Resolver()
 export default class MemberPaymentResolver {
   @Authorized()
-  @Mutation(() => Member, { nullable: true })
+  @Mutation(() => MemberPayment, { nullable: true })
   async createLifetimePayment(
     @Args() args: CreateLifetimePaymentArgs,
     @Ctx() ctx: GQLContext
-  ) {
+  ): Promise<MemberPayment> {
     return createLifetimePayment(args, ctx);
   }
 
   @Authorized()
-  @Mutation(() => Member, { nullable: true })
+  @Mutation(() => MemberPayment, { nullable: true })
   async createSubscription(
     @Args() args: CreateSubsciptionArgs,
     @Ctx() ctx: GQLContext
-  ) {
+  ): Promise<MemberPayment> {
     return createSubscription(args, ctx);
   }
 
@@ -49,14 +50,24 @@ export default class MemberPaymentResolver {
 
   @Authorized()
   @Query(() => [MemberPayment])
-  async getMemberPayments(@Ctx() { memberId }: GQLContext) {
+  async getMemberPayments(
+    @Args() args: GetMemberPaymentsArgs,
+    @Ctx() ctx: GQLContext
+  ) {
+    return getMemberPayments(args, ctx);
+  }
+
+  @Authorized('ADMIN')
+  @Query(() => [MemberPayment], { nullable: true })
+  async getPayments(
+    @Ctx() { communityId }: GQLContext
+  ): Promise<MemberPayment[]> {
     return new BloomManager().find(
       MemberPayment,
-      { member: { id: memberId } },
+      { community: { id: communityId } },
       {
-        cacheKey: `${QueryEvent.GET_MEMBER_PAYMENTS}-${memberId}`,
-        orderBy: { createdAt: QueryOrder.DESC },
-        populate: ['member']
+        cacheKey: `${QueryEvent.GET_PAYMENTS}-${communityId}`,
+        populate: ['community', 'member.user', 'type']
       }
     );
   }

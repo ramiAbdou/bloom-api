@@ -9,8 +9,12 @@ import Member from '../../member/Member';
  * Adds all of the users associated with the members to the Mailchimp
  * audience stored in the community.
  */
-export default async (members: Member[], community: Community) => {
+const addToMailchimpAudience = async (
+  members: Member[],
+  community: Community
+) => {
   if (!isProduction) return;
+
   const { mailchimpAccessToken, mailchimpListId } = community.integrations;
 
   // Format the data that we send to Mailchimp to add users to the audience.
@@ -40,3 +44,5 @@ export default async (members: Member[], community: Community) => {
     level: 'INFO'
   });
 };
+
+export default addToMailchimpAudience;

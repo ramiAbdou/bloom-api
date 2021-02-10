@@ -7,19 +7,21 @@ import { AdminArgs } from '../Member.types';
  * Toggles the admin status of the member. If the role of the members
  * were previously ADMIN, they become null, and vice versa.
  */
-export default async (
+const promoteMembers = async (
   { memberIds }: AdminArgs,
   { communityId }: GQLContext
 ): Promise<Member[]> => {
   const members: Member[] = await new BloomManager().findAndUpdate(
     Member,
     { id: memberIds },
-    { role: null },
+    { role: 'ADMIN' },
     {
       cacheKeysToInvalidate: [`${QueryEvent.GET_DATABASE}-${communityId}`],
-      event: 'MEMBERS_DEMOTED'
+      event: 'PROMOTE_MEMBERS'
     }
   );
 
   return members;
 };
+
+export default promoteMembers;

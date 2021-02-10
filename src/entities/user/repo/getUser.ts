@@ -24,7 +24,7 @@ const getUser = async (
 ): Promise<GetUserResult> => {
   const { communityId, res, userId } = ctx;
 
-  const user: GetUserResult = await new BloomManager().findOne(
+  const user: GetUserResult = await new BloomManager().findOneOrFail(
     User,
     { id: userId },
     {
@@ -36,8 +36,6 @@ const getUser = async (
       ]
     }
   );
-
-  if (!user) return null;
 
   user.activeCommunityId = communityId;
 

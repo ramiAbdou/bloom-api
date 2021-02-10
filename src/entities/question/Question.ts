@@ -15,10 +15,6 @@ import { QuestionCategory, QuestionType } from './Question.types';
 @ObjectType()
 @Entity()
 export default class Question extends BaseEntity {
-  @Field(() => Number)
-  @Property({ version: true })
-  version!: number;
-
   // If the question is a special question, we have to store it in a different
   // fashion. For example, 'EMAIL' would be stored on the user, NOT the
   // member.
@@ -47,12 +43,10 @@ export default class Question extends BaseEntity {
   @Property({ type: Boolean })
   inApplicantCard = false;
 
-  @Authorized()
   @Field(() => Boolean)
   @Property({ type: Boolean })
   inDirectoryCard = false;
 
-  @Authorized()
   @Field(() => Boolean)
   @Property({ type: Boolean })
   inExpandedDirectoryCard = false;
@@ -101,6 +95,7 @@ export default class Question extends BaseEntity {
     if (this.category === QuestionCategory.DUES_STATUS) {
       this.inApplication = false;
       this.inExpandedDirectoryCard = false;
+      this.options = ['Active', 'Inactive'];
       this.type = QuestionType.MULTIPLE_CHOICE;
     }
 
@@ -119,6 +114,7 @@ export default class Question extends BaseEntity {
 
   // ## RELATIONSHIPS
 
+  @Field(() => Community)
   @ManyToOne(() => Community)
   community: Community;
 }

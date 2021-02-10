@@ -14,15 +14,20 @@ const deleteMembers = async (
   { memberIds }: DeleteMembersArgs,
   { communityId }: GQLContext
 ): Promise<boolean> => {
-  const bm = new BloomManager();
-  const members: Member[] = await bm.find(Member, { id: memberIds });
-
-  await bm.deleteAndFlush({
-    cacheKeysToInvalidate: [`${QueryEvent.GET_DATABASE}-${communityId}`],
-    entities: members
-  });
-
-  return true;
+  return new BloomManager().findAndDelete(
+    Member,
+    { id: memberIds },
+    {
+      cacheKeysToInvalidate: [
+        `${QueryEvent.GET_DATABASE}-${communityId}`,
+        `${QueryEvent.GET_DIRECTORY}-${communityId}`,
+        ...memberIds.map((memberId: string) => {
+          return `${QueryEvent.GET_MEMBER_PROFILE}-${memberId}`;
+        })
+      ],
+      soft: true
+    }
+  );
 };
 
 export default deleteMembers;

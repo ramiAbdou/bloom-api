@@ -1,6 +1,7 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { QueryOrder } from '@mikro-orm/core';
 
-import { GQLContext } from '@constants';
+import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { Member } from '@entities/entities';
 import { PopulateArgs } from '../../util/gql.types';
@@ -10,8 +11,12 @@ import applyForMembership, {
   ApplyForMembershipArgs
 } from './repo/applyForMembership';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
-import demoteToMember from './repo/demoteToMember';
-import promoteToAdmin from './repo/promoteToAdmin';
+import demoteMembers from './repo/demoteMembers';
+import getMemberProfile, {
+  GetMemberProfileArgs
+} from './repo/getMemberProfile';
+import isEmailTaken, { IsEmailTakenArgs } from './repo/isEmailToken';
+import promoteMembers from './repo/promoteMembers';
 import respondToApplicants, {
   RespondToApplicantsArgs
 } from './repo/respondToApplicants';
@@ -48,8 +53,59 @@ export default class MemberResolver {
 
   @Authorized('OWNER')
   @Mutation(() => [Member], { nullable: true })
-  async demoteToMember(@Args() args: AdminArgs, @Ctx() ctx: GQLContext) {
-    return demoteToMember(args, ctx);
+  async demoteMembers(@Args() args: AdminArgs, @Ctx() ctx: GQLContext) {
+    return demoteMembers(args, ctx);
+  }
+
+  @Query(() => Boolean)
+  async isEmailTaken(@Args() args: IsEmailTakenArgs) {
+    return isEmailTaken(args);
+  }
+
+  @Authorized('ADMIN')
+  @Query(() => [Member])
+  async getApplicants(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
+    return new BloomManager().find(
+      Member,
+      { community: { id: communityId }, status: 'PENDING' },
+      {
+        cacheKey: `${QueryEvent.GET_APPLICANTS}-${communityId}`,
+        orderBy: { createdAt: QueryOrder.DESC },
+        populate: ['community', 'data', 'type', 'user']
+      }
+    );
+  }
+
+  @Authorized('ADMIN')
+  @Query(() => [Member])
+  async getDatabase(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
+    return new BloomManager().find(
+      Member,
+      {
+        community: { id: communityId },
+        data: { question: { onlyInApplication: false } },
+        status: ['ACCEPTED']
+      },
+      {
+        cacheKey: `${QueryEvent.GET_DATABASE}-${communityId}`,
+        orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC },
+        populate: ['community', 'data', 'type', 'user']
+      }
+    );
+  }
+
+  @Authorized()
+  @Query(() => [Member])
+  async getDirectory(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
+    return new BloomManager().find(
+      Member,
+      { community: { id: communityId }, status: 'ACCEPTED' },
+      {
+        cacheKey: `${QueryEvent.GET_DIRECTORY}-${communityId}`,
+        orderBy: { createdAt: QueryOrder.DESC },
+        populate: ['community', 'data', 'user']
+      }
+    );
   }
 
   @Authorized()
@@ -61,19 +117,25 @@ export default class MemberResolver {
     return new BloomManager().findOne(Member, { id: memberId }, { populate });
   }
 
+  @Authorized()
+  @Query(() => Member, { nullable: true })
+  async getMemberProfile(@Args() args: GetMemberProfileArgs) {
+    return getMemberProfile(args);
+  }
+
   @Authorized('OWNER')
   @Mutation(() => [Member], { nullable: true })
-  async promoteToAdmin(@Args() args: AdminArgs, @Ctx() ctx: GQLContext) {
-    return promoteToAdmin(args, ctx);
+  async promoteMembers(@Args() args: AdminArgs, @Ctx() ctx: GQLContext) {
+    return promoteMembers(args, ctx);
   }
 
   @Authorized('ADMIN')
-  @Mutation(() => Boolean, { nullable: true })
-  async respondToMembers(
+  @Mutation(() => [Member], { nullable: true })
+  async respondToApplicants(
     @Args() args: RespondToApplicantsArgs,
     @Ctx() ctx: GQLContext
   ) {
-    return !!(await respondToApplicants(args, ctx));
+    return respondToApplicants(args, ctx);
   }
 
   @Authorized()

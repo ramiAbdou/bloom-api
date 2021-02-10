@@ -10,17 +10,16 @@ import {
   QueryOrder
 } from '@mikro-orm/core';
 
-import { INTEGRATIONS } from '@constants';
+import { isProduction } from '@constants';
 import BaseEntity from '@core/db/BaseEntity';
 import { toLowerCaseDash } from '@util/util';
 import CommunityApplication from '../community-application/CommunityApplication';
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
+import Event from '../event/Event';
 import MemberPayment from '../member-payment/MemberPayment';
 import MemberType from '../member-type/MemberType';
 import Member from '../member/Member';
 import Question from '../question/Question';
-
-const { DIGITAL_OCEAN_SPACE_URL } = INTEGRATIONS;
 
 @ObjectType()
 @Entity()
@@ -36,6 +35,11 @@ export default class Community extends BaseEntity {
   @Property({ nullable: true, unique: true })
   @IsUrl()
   logoUrl: string;
+
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  @IsUrl()
+  knowledgeHubUrl: string;
 
   @Field()
   @Property({ unique: true })
@@ -64,7 +68,11 @@ export default class Community extends BaseEntity {
   beforeCreate() {
     if (!this.urlName) this.urlName = toLowerCaseDash(this.name);
     if (!this.logoUrl) {
-      this.logoUrl = `${DIGITAL_OCEAN_SPACE_URL}/${this.urlName}.png`;
+      const DIGITAL_OCEAN_URL = isProduction
+        ? process.env.DIGITAL_OCEAN_BUCKET_URL
+        : process.env.DIGITAL_OCEAN_TEST_BUCKET_URL;
+
+      this.logoUrl = `${DIGITAL_OCEAN_URL}/${this.urlName}`;
     }
   }
 
@@ -83,6 +91,10 @@ export default class Community extends BaseEntity {
   // way for someone to join is if the admin adds them manually.
   @OneToOne({ nullable: true })
   defaultType: MemberType;
+
+  @Field(() => [Event])
+  @OneToMany(() => Event, ({ community }) => community)
+  events = new Collection<Event>(this);
 
   @Field(() => CommunityIntegrations, { nullable: true })
   @OneToOne(() => CommunityIntegrations, ({ community }) => community, {
@@ -105,6 +117,10 @@ export default class Community extends BaseEntity {
     orderBy: { order: QueryOrder.ASC }
   })
   questions = new Collection<Question>(this);
+
+  @Field(() => Member, { nullable: true })
+  @OneToOne({ nullable: true })
+  owner: Member;
 
   // Should get the questions by the order that they are stored in the DB.
   @Field(() => [MemberType])

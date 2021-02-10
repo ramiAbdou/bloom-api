@@ -14,11 +14,12 @@ import cache from '@core/cache/cache';
 import logger from '@util/logger';
 import { now } from '@util/util';
 import {
+  BloomCreateAndFlushArgs,
+  BloomFindAndDeleteOptions,
   BloomFindAndUpdateOptions,
   BloomFindOneAndUpdateOptions,
   BloomFindOneOptions,
   BloomFindOptions,
-  BloomManagerDeleteAndFlushArgs,
   BloomManagerFlushArgs
 } from './BloomManager.types';
 import db from './db';
@@ -127,7 +128,7 @@ class BloomManager {
     options?: BloomFindOneAndUpdateOptions<T, P>
   ): Promise<Loaded<T, P>> {
     // If not found, get it from the DB.
-    const result = await this.findOne<T, P>(entityName, where, { ...options });
+    const result = await this.findOne<T, P>(entityName, where, options);
     wrap(result).assign(data);
 
     await this.flush({
@@ -156,7 +157,7 @@ class BloomManager {
     }
 
     // If not found, get it from the DB.
-    const result = await this.em.find<T, P>(entityName, where, { ...options });
+    const result = await this.em.find<T, P>(entityName, where, options);
 
     // Update the cache after fetching from the DB.
     cache.set(cacheKey, result);
@@ -185,6 +186,35 @@ class BloomManager {
   }
 
   /**
+   * Instead of actually removing and flushing the entity(s), this function
+   * acts as a SOFT DELETE and simply sets the deletedAt column within the
+   * table. There is a global filter that gets all entities that have a
+   * deletedAt = null.
+   */
+  async findAndDelete<T, P>(
+    entityName: EntityName<T>,
+    where: FilterQuery<T>,
+    options?: BloomFindAndDeleteOptions<T, P>
+  ): Promise<boolean> {
+    // If not found, get it from the DB.
+    const result = await this.find<T, P>(entityName, where, options);
+
+    if (options?.soft) {
+      result.forEach((entity: Loaded<T, P>) => {
+        // @ts-ignore b/c not sure the right type for this.
+        entity.deletedAt = now();
+      });
+    } else this.em.remove(result);
+
+    await this.flush({
+      cacheKeysToInvalidate: options?.cacheKeysToInvalidate,
+      event: options?.event
+    });
+
+    return true;
+  }
+
+  /**
    * Persists the newly created entity. Replaces the old BloomManager function
    * called createAndPersist.
    */
@@ -198,21 +228,23 @@ class BloomManager {
   }
 
   /**
-   * Instead of actually removing and flushing the entity(s), this function
-   * acts as a SOFT DELETE and simply sets the deletedAt column within the
-   * table. There is a global filter that gets all entities that have a
-   * deletedAt = null.
+   * Persists the newly created entity. Replaces the old BloomManager function
+   * called createAndPersist.
    */
-  async deleteAndFlush({
-    cacheKeysToInvalidate,
-    entities,
-    event
-  }: BloomManagerDeleteAndFlushArgs) {
-    entities.forEach((entity: AnyEntity<any>) => {
-      entity.deletedAt = now();
-    });
+  async createAndFlush<T extends AnyEntity<T>, P extends Populate<T> = any>(
+    entityName: EntityName<T>,
+    data: EntityData<T>,
+    { populate, ...options }: BloomCreateAndFlushArgs<P>
+  ): Promise<T> {
+    const entity = this.create(entityName, data);
+    await this.flush(options);
 
-    await this.flush({ cacheKeysToInvalidate, event });
+    if (populate) {
+      this.em.merge(entity);
+      await this.em.populate(entity, ['member.user'], null, null, true);
+    }
+
+    return entity;
   }
 }
 

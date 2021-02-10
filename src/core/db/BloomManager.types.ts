@@ -1,10 +1,14 @@
-import { AnyEntity, FindOneOptions, FindOptions } from '@mikro-orm/core';
+import { FindOneOptions, FindOptions } from '@mikro-orm/core';
 
 import { LoggerEvent } from '@constants';
 
 export interface BloomManagerFlushArgs {
   cacheKeysToInvalidate?: string[];
   event?: LoggerEvent;
+}
+
+export interface BloomCreateAndFlushArgs<P> extends BloomManagerFlushArgs {
+  populate?: P;
 }
 
 export interface BloomFindOneOptions<T, P> extends FindOneOptions<T, P> {
@@ -23,6 +27,8 @@ export interface BloomFindAndUpdateOptions<T, P>
   extends BloomFindOptions<T, P>,
     BloomManagerFlushArgs {}
 
-export interface BloomManagerDeleteAndFlushArgs extends BloomManagerFlushArgs {
-  entities: AnyEntity<any>[];
+export interface BloomFindAndDeleteOptions<T, P>
+  extends BloomFindOptions<T, P>,
+    BloomManagerFlushArgs {
+  soft?: boolean;
 }

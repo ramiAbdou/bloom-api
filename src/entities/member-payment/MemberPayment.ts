@@ -22,6 +22,8 @@ export default class MemberPayment extends BaseEntity {
   @IsUrl()
   stripeInvoiceUrl: string;
 
+  // ## RELATIONSHIPS
+
   @Field(() => Community)
   @ManyToOne(() => Community)
   community: Community;

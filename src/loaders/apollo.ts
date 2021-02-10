@@ -5,10 +5,16 @@ import { AuthChecker, buildSchema } from 'type-graphql';
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { decodeToken } from '@util/util';
-import CommunityIntegrations from '../entities/community-integrations/CommunityIntegrations.resolver';
+import CommunityApplicationResolver from '../entities/community-application/CommunityApplication.resolver';
+import CommunityIntegrationsResolver from '../entities/community-integrations/CommunityIntegrations.resolver';
 import CommunityResolver from '../entities/community/Community.resolver';
+import EventAttendeeResolver from '../entities/event-attendee/EventAttendee.resolver';
+import EventGuestResolver from '../entities/event-guest/EventGuest.resolver';
+import EventWatchResolver from '../entities/event-watch/EventWatch.resolver';
+import EventResolver from '../entities/event/Event.resolver';
 import MemberDataResolver from '../entities/member-data/MemberData.resolver';
 import MemberPaymentResolver from '../entities/member-payment/MemberPayment.resolver';
+import MemberTypeResolver from '../entities/member-type/MemberType.resolver';
 import Member from '../entities/member/Member';
 import MemberResolver from '../entities/member/Member.resolver';
 import QuestionResolver from '../entities/question/Question.resolver';
@@ -42,11 +48,17 @@ export const createSchema = async (): Promise<GraphQLSchema> =>
     authChecker,
     resolvers: [
       CommunityResolver,
-      CommunityIntegrations,
-      QuestionResolver,
+      CommunityApplicationResolver,
+      CommunityIntegrationsResolver,
+      EventResolver,
+      EventAttendeeResolver,
+      EventGuestResolver,
+      EventWatchResolver,
       MemberResolver,
       MemberDataResolver,
       MemberPaymentResolver,
+      MemberTypeResolver,
+      QuestionResolver,
       UserResolver
     ]
   });

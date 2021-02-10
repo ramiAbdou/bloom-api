@@ -6,7 +6,7 @@ import CommunityIntegrations from '../CommunityIntegrations';
  * Stores the Mailchimp list ID that we use for adding new members to the
  * listserv.
  */
-export default async (
+const updateMailchimpList = async (
   mailchimpListId: string,
   { communityId }: GQLContext
 ): Promise<CommunityIntegrations> => {
@@ -22,3 +22,5 @@ export default async (
 
   return integrations;
 };
+
+export default updateMailchimpList;

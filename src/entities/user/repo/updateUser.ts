@@ -1,9 +1,8 @@
-import { ArgsType, Field, ObjectType } from 'type-graphql';
+import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../../member/Member';
-import User from '../User';
 
 @ArgsType()
 export class UpdateUserArgs {
@@ -11,76 +10,55 @@ export class UpdateUserArgs {
   bio?: string;
 
   @Field({ nullable: true })
-  facebookUrl?: string;
-
-  @Field({ nullable: true })
   firstName?: string;
-
-  @Field({ nullable: true })
-  instagramUrl?: string;
 
   @Field({ nullable: true })
   lastName?: string;
 
   @Field({ nullable: true })
-  linkedInUrl?: string;
-
-  @Field({ nullable: true })
   pictureUrl?: string;
-
-  @Field({ nullable: true })
-  twitterUrl?: string;
 }
 
-@ObjectType()
-export class UpdateUserResult {
-  @Field(() => Member)
-  member: Member;
-
-  @Field(() => User)
-  user: User;
-}
-
+/**
+ * Returns the updated MEMBER, instead of the updated user so that React App
+ * can more easily update it's global state with updated data.
+ *
+ * Invalidates GET_DIRECTORY and GET_USER calls.
+ *
+ * @param args.bio Bio of the member.
+ * @param args.firstName First name of the user.
+ * @param args.lastName Last name of the member.
+ * @param args.pictureUrl Picture URL of the user.
+ */
 const updateUser = async (
-  {
-    bio,
-    facebookUrl,
-    firstName,
-    instagramUrl,
-    lastName,
-    linkedInUrl,
-    pictureUrl,
-    twitterUrl
-  }: UpdateUserArgs,
+  { bio, firstName, lastName, pictureUrl }: UpdateUserArgs,
   { communityId, memberId, userId }: GQLContext
-): Promise<UpdateUserResult> => {
+): Promise<Member> => {
   const bm = new BloomManager();
 
-  const [user, member]: [User, Member] = await Promise.all([
-    bm.findOne(User, { id: userId }),
-    bm.findOne(Member, { id: memberId })
-  ]);
+  const member: Member = await bm.findOne(
+    Member,
+    { id: memberId },
+    { populate: ['user'] }
+  );
 
-  if (bio) member.bio = bio;
-
-  if (firstName) user.firstName = firstName;
-  if (lastName) user.lastName = lastName;
-
-  if (facebookUrl) user.facebookUrl = facebookUrl;
-  if (instagramUrl) user.instagramUrl = instagramUrl;
-  if (linkedInUrl) user.linkedInUrl = linkedInUrl;
-  if (pictureUrl) user.pictureUrl = pictureUrl;
-  if (twitterUrl) user.twitterUrl = twitterUrl;
+  member.bio = bio;
+  member.user.firstName = firstName;
+  member.user.lastName = lastName;
+  if (pictureUrl) member.user.pictureUrl = pictureUrl;
 
   await bm.flush({
     cacheKeysToInvalidate: [
-      `${QueryEvent.GET_DIRECTORY}-${communityId}`,
+      ...(firstName || lastName || pictureUrl
+        ? `${QueryEvent.GET_DIRECTORY}-${communityId}`
+        : []),
+      `${QueryEvent.GET_MEMBER_PROFILE}-${memberId}`,
       `${QueryEvent.GET_USER}-${userId}`
     ],
     event: 'UPDATE_USER'
   });
 
-  return { member, user };
+  return member;
 };
 
 export default updateUser;

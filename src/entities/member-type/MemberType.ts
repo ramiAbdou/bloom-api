@@ -39,6 +39,9 @@ export default class MemberType extends BaseEntity {
     return !this.amount;
   }
 
+  // ## RELATIONSHIPS
+
+  @Field(() => Community)
   @ManyToOne(() => Community)
   community: Community;
 

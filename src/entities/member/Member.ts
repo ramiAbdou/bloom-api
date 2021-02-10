@@ -1,6 +1,7 @@
 import { Authorized, Field, ObjectType } from 'type-graphql';
 import {
   BeforeCreate,
+  BeforeUpdate,
   Collection,
   Entity,
   Enum,
@@ -12,18 +13,15 @@ import {
 import BaseEntity from '@core/db/BaseEntity';
 import { now } from '@util/util';
 import Community from '../community/Community';
+import EventAttendee from '../event-attendee/EventAttendee';
+import EventGuest from '../event-guest/EventGuest';
+import EventWatch from '../event-watch/EventWatch';
 import MemberData from '../member-data/MemberData';
 import MemberPayment from '../member-payment/MemberPayment';
 import MemberRefresh from '../member-refresh/MemberRefresh';
 import MemberType from '../member-type/MemberType';
-import Question from '../question/Question';
 import User from '../user/User';
-import {
-  MemberDuesStatus,
-  MemberRole,
-  MemberStatus,
-  QuestionValue
-} from './Member.types';
+import { MemberRole, MemberStatus } from './Member.types';
 import getNextPaymentDate from './repo/getNextPaymentDate';
 import getPaymentMethod, {
   GetPaymentMethodResult
@@ -36,9 +34,9 @@ export default class Member extends BaseEntity {
   @Property({ nullable: true, type: 'text' })
   bio: string;
 
-  @Field(() => String)
-  @Enum({ items: () => MemberDuesStatus, type: String })
-  duesStatus: MemberDuesStatus = MemberDuesStatus.INACTIVE;
+  @Field(() => Boolean)
+  @Property({ type: Boolean })
+  isDuesActive = false;
 
   // Refers to the date that the member was ACCEPTED.
   @Field({ nullable: true })
@@ -76,45 +74,6 @@ export default class Member extends BaseEntity {
   @Property({ nullable: true })
   stripeSubscriptionId: string;
 
-  // ## MEMBER FUNCTIONS
-
-  /**
-   * Returns the pending application data that will allow the ADMIN of the
-   * community to accept or reject the application.
-   *
-   * Used in the GET_APPLICANTS call.
-   */
-  @Authorized('ADMIN')
-  @Field(() => [QuestionValue])
-  applicantData(): QuestionValue[] {
-    // This method is only intended for retrieving pending application data.
-    if (this.status !== 'PENDING') return null;
-
-    const data = this.data.getItems();
-    const { email, gender, firstName, lastName } = this.user;
-
-    return (
-      this.community.questions
-        .getItems()
-        // We only need the questions in the application.
-        .filter(({ inApplication }: Question) => inApplication)
-        .map(({ category, id, title }: Question) => {
-          let value: string;
-          const result = data.find(({ question }) => question.title === title);
-
-          if (result) value = result.value;
-          else if (category === 'JOINED_AT') value = this.joinedAt;
-          else if (category === 'EMAIL') value = email;
-          else if (category === 'FIRST_NAME') value = firstName;
-          else if (category === 'GENDER') value = gender;
-          else if (category === 'LAST_NAME') value = lastName;
-          else if (category === 'MEMBERSHIP_TYPE') value = this.type.name;
-
-          return { questionId: id, value };
-        })
-    );
-  }
-
   // ## STRIPE RELATED MEMBER FUNCTIONS
 
   @Authorized()
@@ -129,6 +88,8 @@ export default class Member extends BaseEntity {
     return getNextPaymentDate(this.id);
   }
 
+  // ## LIFECYCLE
+
   @BeforeCreate()
   beforeCreate() {
     if (
@@ -142,10 +103,21 @@ export default class Member extends BaseEntity {
     // If no member type is provided, assign them the default member.
     // Every community should've assigned one default member.
     if (!this.type) this.type = this.community.defaultType;
-    if (this.type.isFree) this.duesStatus = MemberDuesStatus.ACTIVE;
+    if (this.type.isFree) this.isDuesActive = true;
+  }
+
+  @BeforeUpdate()
+  beforeUpdate() {
+    if (this.status === MemberStatus.ACCEPTED && !this.joinedAt) {
+      this.joinedAt = now();
+    }
   }
 
   // ## RELATIONSHIPS
+
+  @Field(() => [EventAttendee])
+  @OneToMany(() => EventAttendee, ({ member }) => member)
+  attendees = new Collection<EventAttendee>(this);
 
   @Field(() => Community)
   @ManyToOne(() => Community)
@@ -155,6 +127,10 @@ export default class Member extends BaseEntity {
   @Field(() => [MemberData])
   @OneToMany(() => MemberData, ({ member }) => member)
   data = new Collection<MemberData>(this);
+
+  @Field(() => [EventGuest])
+  @OneToMany(() => EventGuest, ({ member }) => member)
+  guests = new Collection<EventGuest>(this);
 
   @Field(() => [MemberPayment])
   @OneToMany(() => MemberPayment, ({ member }) => member)
@@ -174,4 +150,8 @@ export default class Member extends BaseEntity {
   @Field(() => User)
   @ManyToOne(() => User)
   user: User;
+
+  @Field(() => [EventWatch])
+  @OneToMany(() => EventWatch, ({ member }) => member)
+  watches = new Collection<EventWatch>(this);
 }
