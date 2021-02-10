@@ -21,7 +21,7 @@ const getMemberPayments = async (
     MemberPayment,
     { member: { id: memberId } },
     {
-      cacheKey: `${QueryEvent.GET_MEMBER_PAYMENTS}-${memberId}`,
+      cacheKey: `${QueryEvent.GET_PAYMENTS}-${memberId}`,
       orderBy: { createdAt: QueryOrder.DESC },
       populate: ['member']
     }

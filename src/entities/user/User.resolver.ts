@@ -2,7 +2,7 @@ import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import Member from '../member/Member';
-import getUser, { GetUserArgs, GetUserResult } from './repo/getUser';
+import getUser, { GetUserArgs } from './repo/getUser';
 import sendLoginLink, { SendLoginLinkArgs } from './repo/sendLoginLink';
 import updateUser, { UpdateUserArgs } from './repo/updateUser';
 import updateUserSocials, {
@@ -13,13 +13,7 @@ import User from './User';
 
 @Resolver()
 export default class UserResolver {
-  @Authorized()
-  @Query(() => GetUserResult, { nullable: true })
-  async getActiveCommunity(@Args() args: GetUserArgs, @Ctx() ctx: GQLContext) {
-    return getUser(args, ctx);
-  }
-
-  @Query(() => GetUserResult, { nullable: true })
+  @Query(() => User, { nullable: true })
   async getUser(@Args() args: GetUserArgs, @Ctx() ctx: GQLContext) {
     return getUser(args, ctx);
   }

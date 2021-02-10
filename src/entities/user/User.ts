@@ -6,6 +6,7 @@ import {
   Entity,
   Enum,
   OneToMany,
+  OneToOne,
   Property
 } from '@mikro-orm/core';
 
@@ -88,6 +89,10 @@ export default class User extends BaseEntity {
   }
 
   // ## RELATIONSHIPS
+
+  @Field(() => Member, { nullable: true })
+  @OneToOne({ entity: () => Member, nullable: true })
+  member: Member;
 
   @Field(() => [Member])
   @OneToMany(() => Member, ({ user }) => user)

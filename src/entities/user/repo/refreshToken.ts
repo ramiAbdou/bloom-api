@@ -1,10 +1,11 @@
 import { Response } from 'express';
+import { FilterQuery } from '@mikro-orm/core';
 
 import { AuthTokens } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { generateTokens, setHttpOnlyTokens } from '@util/util';
 import MemberRefresh from '../../member-refresh/MemberRefresh';
-import Member from '../../member/Member';
+// import Member from '../../member/Member';
 import User from '../User';
 
 interface RefreshTokenArgs {
@@ -12,7 +13,6 @@ interface RefreshTokenArgs {
   memberId?: string;
   rToken?: string;
   res?: Response;
-  user?: User;
   userId?: string;
 }
 
@@ -22,36 +22,37 @@ interface RefreshTokenArgs {
  */
 const refreshToken = async ({
   email,
-  memberId,
+  // memberId,
   rToken,
   res,
-  user,
   userId
 }: RefreshTokenArgs): Promise<AuthTokens> => {
+  let args: FilterQuery<User>;
+
+  if (userId) args = { id: userId };
+  else if (email) args = { email };
+  else if (rToken) args = { refreshToken: rToken };
+
   const bm = new BloomManager();
 
-  if (user) bm.em.merge(user);
-  else if (userId) user = await bm.findOne(User, { id: userId });
-  else if (email) user = await bm.findOne(User, { email });
-  else if (rToken) user = await bm.findOne(User, { refreshToken: rToken });
+  const user: User = await bm.findOne(User, args, {
+    populate: ['member.community']
+  });
 
   // If no user found with the given arguments or a user is found and
   // the access token is expired, then exit. Also, if there is a loginToken
   // present, then we verify that before proceeding.
   if (!user?.id) return null;
 
-  if (!user.members.isInitialized()) await user.members.init();
-
-  const member: Member = memberId
-    ? user.members.getItems().find(({ id }) => id === memberId)
-    : user.members[0];
-
-  await bm.em.populate(member, 'community');
-  const communityId = member.community.id;
+  if (!user.member) {
+    await bm.em.populate(user, ['members.community']);
+    const [firstMember] = user.members;
+    user.member = firstMember;
+  }
 
   const tokens = generateTokens({
-    communityId,
-    memberId: member.id,
+    communityId: user.member.community.id,
+    memberId: user.member.id,
     userId: user.id
   });
 
@@ -61,7 +62,7 @@ const refreshToken = async ({
   // Update the refreshToken in the DB, and create a refresh entity.
   user.refreshToken = tokens.refreshToken;
 
-  bm.create(MemberRefresh, { member });
+  bm.create(MemberRefresh, { member: user.member });
   await bm.flush({ event: 'REFRESH_TOKEN_UPDATED' });
 
   return tokens;

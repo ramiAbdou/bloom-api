@@ -15,6 +15,7 @@ import demoteMembers from './repo/demoteMembers';
 import getMemberProfile, {
   GetMemberProfileArgs
 } from './repo/getMemberProfile';
+import getMembers from './repo/getMembers';
 import isEmailTaken, { IsEmailTakenArgs } from './repo/isEmailToken';
 import promoteMembers from './repo/promoteMembers';
 import respondToApplicants, {
@@ -110,11 +111,23 @@ export default class MemberResolver {
 
   @Authorized()
   @Query(() => Member, { nullable: true })
-  async getMember(
+  async getMemberPopulate(
     @Args() { populate }: PopulateArgs,
     @Ctx() { memberId }: GQLContext
   ) {
     return new BloomManager().findOne(Member, { id: memberId }, { populate });
+  }
+
+  @Authorized()
+  @Query(() => [Member], { nullable: true })
+  async getMember(@Ctx() ctx: GQLContext): Promise<Member[]> {
+    return getMember(ctx);
+  }
+
+  @Authorized()
+  @Query(() => [Member], { nullable: true })
+  async getMembers(@Ctx() ctx: GQLContext): Promise<Member[]> {
+    return getMembers(ctx);
   }
 
   @Authorized()

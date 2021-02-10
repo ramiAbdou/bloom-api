@@ -1,10 +1,10 @@
-import { ArgsType, Field, ObjectType } from 'type-graphql';
+import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { Member } from '@entities/entities';
+// import { Member } from '@entities/entities';
 import User from '../User';
-import refreshToken from './refreshToken';
+// import refreshToken from './refreshToken';
 
 @ArgsType()
 export class GetUserArgs {
@@ -12,19 +12,17 @@ export class GetUserArgs {
   urlName?: string;
 }
 
-@ObjectType()
-export class GetUserResult extends User {
-  @Field()
-  activeCommunityId?: string;
-}
-
 const getUser = async (
   { urlName }: GetUserArgs,
-  ctx: GQLContext
-): Promise<GetUserResult> => {
-  const { communityId, res, userId } = ctx;
+  {
+    communityId,
+    // res,
+    userId
+  }: Pick<GQLContext, 'communityId' | 'res' | 'userId'>
+): Promise<User> => {
+  console.log(communityId, userId);
 
-  const user: GetUserResult = await new BloomManager().findOneOrFail(
+  const user: User = await new BloomManager().findOneOrFail(
     User,
     { id: userId },
     {
@@ -37,18 +35,18 @@ const getUser = async (
     }
   );
 
-  user.activeCommunityId = communityId;
+  // user.activeCommunityId = communityId;
 
-  if (urlName) {
-    const member: Member = user.members
-      .getItems()
-      .find(({ community }) => community.urlName === urlName);
+  // if (urlName) {
+  //   const member: Member = user.members
+  //     .getItems()
+  //     .find(({ community }) => community.urlName === urlName);
 
-    if (member && communityId !== member.community.id) {
-      await refreshToken({ memberId: member.id, res, userId });
-      user.activeCommunityId = member.community.id;
-    }
-  }
+  //   if (member && communityId !== member.community.id) {
+  //     await refreshToken({ memberId: member.id, res, userId });
+  //     // user.activeCommunityId = member.community.id;
+  //   }
+  // }
 
   return user;
 };
