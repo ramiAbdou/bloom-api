@@ -80,8 +80,9 @@ export default class EventResolver {
   @Authorized('ADMIN')
   @Mutation(() => Event, { nullable: true })
   async updateRecordingLink(
-    @Args() args: UpdateRecordingLinkArgs
+    @Args() args: UpdateRecordingLinkArgs,
+    @Ctx() ctx: GQLContext
   ): Promise<Event> {
-    return updateRecordingLink(args);
+    return updateRecordingLink(args, ctx);
   }
 }

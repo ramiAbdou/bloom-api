@@ -23,9 +23,7 @@ const getTotalGrowthSeries = async ({
   const cacheKey = `${QueryEvent.GET_TOTAL_MEMBERS_SERIES}-${communityId}`;
   if (cache.has(cacheKey)) return cache.get(cacheKey);
 
-  const bm = new BloomManager();
-
-  const members = await bm.find(Member, {
+  const members = await new BloomManager().find(Member, {
     community: { id: communityId },
     status: ['ACCEPTED']
   });
