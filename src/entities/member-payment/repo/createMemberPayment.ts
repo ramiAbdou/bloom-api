@@ -36,7 +36,7 @@ const createMemberPayment = async (
       member,
       stripeInvoiceId: invoice.id,
       stripeInvoiceUrl: invoice.hosted_invoice_url,
-      type: {}
+      type: { id: typeId }
     });
   }
 
