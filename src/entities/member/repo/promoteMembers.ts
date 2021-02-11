@@ -16,7 +16,12 @@ const promoteMembers = async (
     { id: memberIds },
     { role: 'ADMIN' },
     {
-      cacheKeysToInvalidate: [`${QueryEvent.GET_DATABASE}-${communityId}`],
+      cacheKeysToInvalidate: [
+        `${QueryEvent.GET_DATABASE}-${communityId}`,
+        ...memberIds.map(
+          (memberId: string) => `${QueryEvent.GET_MEMBER}-${memberId}`
+        )
+      ],
       event: 'PROMOTE_MEMBERS'
     }
   );

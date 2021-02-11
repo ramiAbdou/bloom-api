@@ -12,7 +12,7 @@ import applyForMembership, {
 } from './repo/applyForMembership';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import demoteMembers from './repo/demoteMembers';
-import getMember from './repo/getMember';
+import getMember, { GetMemberArgs } from './repo/getMember';
 import getMemberProfile, {
   GetMemberProfileArgs
 } from './repo/getMemberProfile';
@@ -22,7 +22,7 @@ import promoteMembers from './repo/promoteMembers';
 import respondToApplicants, {
   RespondToApplicantsArgs
 } from './repo/respondToApplicants';
-import updateAutoRenew, { UpdateAutoRenewArgs } from './repo/updateAutoRenew';
+import updateMember, { UpdateMemberArgs } from './repo/updateMember';
 import updatePaymentMethod, {
   UpdatePaymentMethodArgs
 } from './repo/updatePaymentMethod';
@@ -121,8 +121,11 @@ export default class MemberResolver {
 
   @Authorized()
   @Query(() => Member, { nullable: true })
-  async getMember(@Ctx() ctx: GQLContext): Promise<Member> {
-    return getMember(ctx);
+  async getMember(
+    @Args() args: GetMemberArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<Member> {
+    return getMember(args, ctx);
   }
 
   @Authorized()
@@ -154,11 +157,11 @@ export default class MemberResolver {
 
   @Authorized()
   @Mutation(() => Member, { nullable: true })
-  async updateAutoRenew(
-    @Args() args: UpdateAutoRenewArgs,
+  async updateMember(
+    @Args() args: UpdateMemberArgs,
     @Ctx() ctx: GQLContext
-  ) {
-    return updateAutoRenew(args, ctx);
+  ): Promise<Member> {
+    return updateMember(args, ctx);
   }
 
   @Authorized()

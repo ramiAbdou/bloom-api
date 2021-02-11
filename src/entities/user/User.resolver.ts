@@ -9,8 +9,7 @@ import {
 } from 'type-graphql';
 
 import { GQLContext } from '@constants';
-import Member from '../member/Member';
-import getUser from './repo/getUser';
+import getUser, { GetUserArgs } from './repo/getUser';
 import refreshToken from './repo/refreshToken';
 import sendLoginLink, { SendLoginLinkArgs } from './repo/sendLoginLink';
 import updateUser, { UpdateUserArgs } from './repo/updateUser';
@@ -23,8 +22,8 @@ import User from './User';
 @Resolver()
 export default class UserResolver {
   @Query(() => User, { nullable: true })
-  async getUser(@Ctx() ctx: GQLContext) {
-    return getUser(ctx);
+  async getUser(@Args() args: GetUserArgs, @Ctx() ctx: GQLContext) {
+    return getUser(args, ctx);
   }
 
   /**
@@ -61,8 +60,11 @@ export default class UserResolver {
   }
 
   @Authorized()
-  @Mutation(() => Member)
-  async updateUser(@Args() args: UpdateUserArgs, @Ctx() ctx: GQLContext) {
+  @Mutation(() => User)
+  async updateUser(
+    @Args() args: UpdateUserArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<User> {
     return updateUser(args, ctx);
   }
 

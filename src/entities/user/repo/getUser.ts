@@ -1,16 +1,27 @@
+import { ArgsType, Field } from 'type-graphql';
+
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import User from '../User';
 
-const getUser = async ({
-  userId
-}: Pick<GQLContext, 'userId'>): Promise<User> => {
+@ArgsType()
+export class GetUserArgs {
+  @Field({ nullable: true })
+  userId?: string;
+}
+
+const getUser = async (
+  args: GetUserArgs,
+  ctx: Pick<GQLContext, 'userId'>
+): Promise<User> => {
+  const userId = args?.userId ?? ctx.userId;
+
   const user: User = await new BloomManager().findOneOrFail(
     User,
     { id: userId },
     {
       cacheKey: `${QueryEvent.GET_USER}-${userId}`,
-      populate: ['members.community', 'members.community', 'members']
+      populate: ['members.community']
     }
   );
 
