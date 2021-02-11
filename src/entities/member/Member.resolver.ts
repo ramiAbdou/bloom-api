@@ -12,6 +12,7 @@ import applyForMembership, {
 } from './repo/applyForMembership';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import demoteMembers from './repo/demoteMembers';
+import getMember from './repo/getMember';
 import getMemberProfile, {
   GetMemberProfileArgs
 } from './repo/getMemberProfile';
@@ -119,8 +120,8 @@ export default class MemberResolver {
   }
 
   @Authorized()
-  @Query(() => [Member], { nullable: true })
-  async getMember(@Ctx() ctx: GQLContext): Promise<Member[]> {
+  @Query(() => Member, { nullable: true })
+  async getMember(@Ctx() ctx: GQLContext): Promise<Member> {
     return getMember(ctx);
   }
 

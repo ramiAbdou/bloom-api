@@ -1,8 +1,17 @@
-import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Authorized,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver
+} from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import Member from '../member/Member';
-import getUser, { GetUserArgs } from './repo/getUser';
+import getUser from './repo/getUser';
+import refreshToken from './repo/refreshToken';
 import sendLoginLink, { SendLoginLinkArgs } from './repo/sendLoginLink';
 import updateUser, { UpdateUserArgs } from './repo/updateUser';
 import updateUserSocials, {
@@ -14,8 +23,8 @@ import User from './User';
 @Resolver()
 export default class UserResolver {
   @Query(() => User, { nullable: true })
-  async getUser(@Args() args: GetUserArgs, @Ctx() ctx: GQLContext) {
-    return getUser(args, ctx);
+  async getUser(@Ctx() ctx: GQLContext) {
+    return getUser(ctx);
   }
 
   /**
@@ -40,6 +49,15 @@ export default class UserResolver {
   @Mutation(() => Boolean, { nullable: true })
   async sendLoginLink(@Args() args: SendLoginLinkArgs) {
     return sendLoginLink(args);
+  }
+
+  @Authorized()
+  @Mutation(() => Boolean, { nullable: true })
+  async switchMember(
+    @Arg('memberId') memberId: string,
+    @Ctx() ctx: GQLContext
+  ) {
+    await refreshToken({ ...ctx, memberId });
   }
 
   @Authorized()

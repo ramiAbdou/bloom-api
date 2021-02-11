@@ -4,13 +4,13 @@ import Member from '../Member';
 
 const getMember = async ({
   memberId
-}: Pick<GQLContext, 'memberId'>): Promise<Member[]> => {
-  return new BloomManager().findOne(
+}: Pick<GQLContext, 'memberId'>): Promise<Member> => {
+  return new BloomManager().findOneOrFail(
     Member,
     { id: memberId },
     {
       cacheKey: `${QueryEvent.GET_MEMBER}-${memberId}`,
-      populate: ['user']
+      populate: ['community', 'type', 'user']
     }
   );
 };

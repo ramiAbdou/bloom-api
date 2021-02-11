@@ -60,6 +60,7 @@ module.exports = {
         next: 'return'
       }
     ],
+    'prefer-destructuring': ['error', { object: true, array: false }],
     semi: 2, // Must have semicolon wherever possible.
     'simple-import-sort/sort': [
       2,

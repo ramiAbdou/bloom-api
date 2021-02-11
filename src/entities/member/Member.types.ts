@@ -12,8 +12,16 @@ export enum MemberStatus {
   REJECTED = 'REJECTED'
 }
 
+// ## GQL TYPES
+
 @ArgsType()
 export class AdminArgs {
   @Field(() => [String])
   memberIds: string[];
+}
+
+@ArgsType()
+export class MemberIdArgs {
+  @Field(() => String)
+  memberId: string;
 }
