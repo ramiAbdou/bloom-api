@@ -17,7 +17,7 @@ export class UpdateMemberArgs {
  * Returns the updated MEMBER, instead of the updated user so that React App
  * can more easily update it's global state with updated data.
  *
- * Invalidates GET_MEMBER and GET_MEMBER_PROFILE calls.
+ * Invalidates GET_MEMBER and GET_MEMBER calls.
  *
  * @param args.bio Bio of the member.
  */
@@ -32,7 +32,7 @@ const updateMember = async (
     {
       cacheKeysToInvalidate: [
         `${QueryEvent.GET_MEMBER}-${memberId}`,
-        ...(args.bio ? [`${QueryEvent.GET_MEMBER_PROFILE}-${memberId}`] : [])
+        ...(args.bio ? [`${QueryEvent.GET_MEMBER}-${memberId}`] : [])
       ],
       event: 'UPDATE_MEMBER'
     }

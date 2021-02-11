@@ -81,7 +81,7 @@ const updateMemberData = async (
       ...(didHighlightedValueChange({ data, updatedData })
         ? [`${QueryEvent.GET_DIRECTORY}-${communityId}`]
         : []),
-      `${QueryEvent.GET_MEMBER_PROFILE}-${memberId}`,
+      `${QueryEvent.GET_MEMBER_DATA}-${memberId}`,
       `${QueryEvent.GET_USER}-${userId}`
     ]
   });

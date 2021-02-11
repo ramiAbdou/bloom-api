@@ -13,9 +13,6 @@ import applyForMembership, {
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import demoteMembers from './repo/demoteMembers';
 import getMember, { GetMemberArgs } from './repo/getMember';
-import getMemberProfile, {
-  GetMemberProfileArgs
-} from './repo/getMemberProfile';
 import getMembers from './repo/getMembers';
 import isEmailTaken, { IsEmailTakenArgs } from './repo/isEmailToken';
 import promoteMembers from './repo/promoteMembers';
@@ -132,12 +129,6 @@ export default class MemberResolver {
   @Query(() => [Member], { nullable: true })
   async getMembers(@Ctx() ctx: GQLContext): Promise<Member[]> {
     return getMembers(ctx);
-  }
-
-  @Authorized()
-  @Query(() => Member, { nullable: true })
-  async getMemberProfile(@Args() args: GetMemberProfileArgs) {
-    return getMemberProfile(args);
   }
 
   @Authorized('OWNER')

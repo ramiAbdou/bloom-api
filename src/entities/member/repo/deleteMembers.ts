@@ -20,10 +20,7 @@ const deleteMembers = async (
     {
       cacheKeysToInvalidate: [
         `${QueryEvent.GET_DATABASE}-${communityId}`,
-        `${QueryEvent.GET_DIRECTORY}-${communityId}`,
-        ...memberIds.map((memberId: string) => {
-          return `${QueryEvent.GET_MEMBER_PROFILE}-${memberId}`;
-        })
+        `${QueryEvent.GET_DIRECTORY}-${communityId}`
       ],
       soft: true
     }

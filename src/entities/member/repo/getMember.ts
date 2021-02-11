@@ -19,10 +19,7 @@ const getMember = async (
   return new BloomManager().findOneOrFail(
     Member,
     { id: memberId },
-    {
-      cacheKey: `${QueryEvent.GET_MEMBER}-${memberId}`,
-      populate: ['community', 'type', 'user']
-    }
+    { cacheKey: `${QueryEvent.GET_MEMBER}-${memberId}` }
   );
 };
 

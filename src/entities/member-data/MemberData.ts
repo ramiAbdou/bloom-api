@@ -16,6 +16,7 @@ export default class MemberData extends BaseEntity {
 
   // ## RELATIONSHIPS
 
+  @Field(() => Member)
   @ManyToOne(() => Member)
   member: Member;
 

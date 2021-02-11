@@ -28,7 +28,7 @@ export class UpdateUserArgs {
  */
 const updateUser = async (
   args: UpdateUserArgs,
-  { communityId, memberId, userId }: GQLContext
+  { communityId, userId }: GQLContext
 ): Promise<User> => {
   return new BloomManager().findOneAndUpdate(
     User,
@@ -39,7 +39,6 @@ const updateUser = async (
         ...(args.firstName || args.lastName || args.pictureUrl
           ? `${QueryEvent.GET_DIRECTORY}-${communityId}`
           : []),
-        `${QueryEvent.GET_MEMBER_PROFILE}-${memberId}`,
         `${QueryEvent.GET_USER}-${userId}`
       ],
       event: 'UPDATE_USER'
