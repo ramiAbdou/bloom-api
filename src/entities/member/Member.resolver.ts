@@ -87,7 +87,7 @@ export default class MemberResolver {
       {
         cacheKey: `${QueryEvent.GET_DATABASE}-${communityId}`,
         orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC },
-        populate: ['community', 'data', 'type', 'user']
+        populate: ['data', 'user']
       }
     );
   }
@@ -101,7 +101,7 @@ export default class MemberResolver {
       {
         cacheKey: `${QueryEvent.GET_DIRECTORY}-${communityId}`,
         orderBy: { createdAt: QueryOrder.DESC },
-        populate: ['community', 'data', 'user']
+        populate: ['data', 'user']
       }
     );
   }
