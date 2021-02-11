@@ -46,8 +46,7 @@ export default class EventResolver {
       { community: { id: communityId }, endTime: { $lt: now() } },
       {
         cacheKey: `${QueryEvent.GET_PAST_EVENTS}-${communityId}`,
-        orderBy: { startTime: QueryOrder.DESC },
-        populate: ['community']
+        orderBy: { startTime: QueryOrder.DESC }
       }
     );
   }
@@ -62,8 +61,7 @@ export default class EventResolver {
       { community: { id: communityId }, endTime: { $gte: now() } },
       {
         cacheKey: `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`,
-        orderBy: { startTime: QueryOrder.ASC },
-        populate: ['community']
+        orderBy: { startTime: QueryOrder.ASC }
       }
     );
   }

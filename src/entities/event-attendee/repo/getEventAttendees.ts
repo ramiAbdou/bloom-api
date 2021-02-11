@@ -22,12 +22,10 @@ const getEventAttendees = async ({
     ? { event: { id: eventId } }
     : { member: { id: memberId } };
 
-  const cacheKey = eventId
-    ? `${QueryEvent.GET_EVENT_ATTENDEES}-${eventId}`
-    : `${QueryEvent.GET_EVENT_ATTENDEES}-${memberId}`;
-
   return new BloomManager().find(EventAttendee, args, {
-    cacheKey,
+    cacheKey: eventId
+      ? `${QueryEvent.GET_EVENT_ATTENDEES}-${eventId}`
+      : `${QueryEvent.GET_EVENT_ATTENDEES}-${memberId}`,
     populate: ['event', 'member.user']
   });
 };

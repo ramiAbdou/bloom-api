@@ -1,11 +1,12 @@
 import { Response } from 'express';
+import { FilterQuery } from '@mikro-orm/core';
 
 import { AuthTokens } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { generateTokens, setHttpOnlyTokens } from '@util/util';
 import createMemberRefresh from '../../member-refresh/createMemberRefresh';
+import Member from '../../member/Member';
 import User from '../User';
-import switchMember from './switchMember';
 
 interface RefreshTokenArgs {
   email?: string;
@@ -20,23 +21,40 @@ interface RefreshTokenArgs {
  * res object is provided. If the refreshing succeeds, the tokenw il
  */
 const refreshToken = async ({
+  email,
   memberId,
   res,
-  ...userArgs
+  rToken,
+  userId
 }: RefreshTokenArgs): Promise<AuthTokens> => {
+  let args: FilterQuery<User>;
+
+  if (userId) args = { id: userId };
+  else if (email) args = { email };
+  else if (rToken) args = { refreshToken: rToken };
+
   const bm = new BloomManager();
-  const user: User = await switchMember({ ...userArgs, memberId });
+
+  const user: User = await bm.findOne(User, args);
 
   // If no user found with the given arguments or a user is found and
   // the access token is expired, then exit. Also, if there is a loginToken
   // present, then we verify that before proceeding.
   if (!user?.id) return null;
 
+  let member: Member;
+
+  if (memberId) member = await bm.findOne(Member, { id: memberId });
+  else {
+    await user.members.init();
+    member = user.members[0];
+  }
+
   bm.em.merge(user);
 
   const tokens = generateTokens({
-    communityId: user.member.community.id,
-    memberId: user.member.id,
+    communityId: member.community.id,
+    memberId: member.id,
     userId: user.id
   });
 
@@ -46,7 +64,7 @@ const refreshToken = async ({
   // Update the refreshToken in the DB, and create a refresh entity.
   user.refreshToken = tokens.refreshToken;
   await bm.flush({ event: 'UPDATE_REFRESH_TOKEN' });
-  await createMemberRefresh({ memberId: user.member.id });
+  await createMemberRefresh({ memberId: member.id });
 
   return tokens;
 };

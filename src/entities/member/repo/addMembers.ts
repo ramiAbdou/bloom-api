@@ -37,12 +37,7 @@ const addMembers = async (
   { communityId }: GQLContext
 ): Promise<Member[]> => {
   const bm = new BloomManager();
-
-  const community = await bm.findOne(
-    Community,
-    { id: communityId },
-    { populate: ['integrations', 'types'] }
-  );
+  const community = await bm.findOne(Community, { id: communityId });
 
   const existingMembers: Member[] = await bm.find(Member, {
     community,

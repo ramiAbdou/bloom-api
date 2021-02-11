@@ -6,7 +6,7 @@ import BloomManager from '@core/db/BloomManager';
 import { UrlNameArgs } from '../../util/gql.types';
 import Community from '../community/Community';
 import Question from './Question';
-import renameQuestion, { RenameQuestionArgs } from './repo/renameQuestion';
+import updateQuestion, { UpdateQuestionArgs } from './repo/updateQuestion';
 
 @Resolver()
 export default class QuestionResolver {
@@ -26,18 +26,17 @@ export default class QuestionResolver {
       { community: args },
       {
         cacheKey: `${QueryEvent.GET_QUESTIONS}-${key}`,
-        orderBy: { createdAt: QueryOrder.ASC, order: QueryOrder.ASC },
-        populate: ['community']
+        orderBy: { createdAt: QueryOrder.ASC, order: QueryOrder.ASC }
       }
     );
   }
 
   @Authorized('ADMIN')
   @Mutation(() => Question, { nullable: true })
-  async renameQuestion(
-    @Args() args: RenameQuestionArgs,
+  async updateQuestion(
+    @Args() args: UpdateQuestionArgs,
     @Ctx() ctx: GQLContext
   ): Promise<Question> {
-    return renameQuestion(args, ctx);
+    return updateQuestion(args, ctx);
   }
 }
