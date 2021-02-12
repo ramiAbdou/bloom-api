@@ -40,7 +40,7 @@ const addToMailchimpAudience = async (
       table: 'members',
       type: 'OTHER_UPDATE'
     })),
-    event: 'MAILCHIMP_LIST_UPDATED',
+    event: 'ADD_TO_MAILCHIMP',
     level: 'INFO'
   });
 };

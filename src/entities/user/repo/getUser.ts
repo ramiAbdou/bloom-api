@@ -2,10 +2,11 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { PopulateArgs } from '@util/gql.types';
 import User from '../User';
 
 @ArgsType()
-export class GetUserArgs {
+export class GetUserArgs extends PopulateArgs {
   @Field({ nullable: true })
   userId?: string;
 }
@@ -21,7 +22,7 @@ const getUser = async (
     { id: userId },
     {
       cacheKey: `${QueryEvent.GET_USER}-${userId}`,
-      populate: ['members.community']
+      populate: args?.populate
     }
   );
 

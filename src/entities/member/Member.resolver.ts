@@ -4,7 +4,6 @@ import { QueryOrder } from '@mikro-orm/core';
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { Member } from '@entities/entities';
-import { PopulateArgs } from '../../util/gql.types';
 import { AdminArgs } from './Member.types';
 import addMembers, { AddMembersArgs } from './repo/addMembers';
 import applyForMembership, {
@@ -69,7 +68,7 @@ export default class MemberResolver {
       {
         cacheKey: `${QueryEvent.GET_APPLICANTS}-${communityId}`,
         orderBy: { createdAt: QueryOrder.DESC },
-        populate: ['community', 'data', 'type', 'user']
+        populate: ['data', 'user']
       }
     );
   }
@@ -104,15 +103,6 @@ export default class MemberResolver {
         populate: ['data', 'user']
       }
     );
-  }
-
-  @Authorized()
-  @Query(() => Member, { nullable: true })
-  async getMemberPopulate(
-    @Args() { populate }: PopulateArgs,
-    @Ctx() { memberId }: GQLContext
-  ) {
-    return new BloomManager().findOne(Member, { id: memberId }, { populate });
   }
 
   @Authorized()
