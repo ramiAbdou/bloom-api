@@ -7,18 +7,23 @@ import { eventsCalendar } from '../Google.util';
  * @param eventId ID of the event.
  */
 const deleteGoogleCalendarEvent = async (eventId: string): Promise<boolean> => {
-  const response = await eventsCalendar.events.delete({
-    calendarId: process.env.GOOGLE_CALENDAR_ID,
-    eventId
-  });
+  try {
+    await eventsCalendar.events.delete({
+      calendarId: process.env.GOOGLE_CALENDAR_ID,
+      eventId
+    });
 
-  logger.log({
-    error: response.statusText,
-    event: 'DELETE_GOOGLE_CALENDAR_EVENT',
-    level: response.status < 300 ? 'INFO' : 'ERROR'
-  });
+    logger.log({ event: 'DELETE_GOOGLE_CALENDAR_EVENT', level: 'INFO' });
+    return true;
+  } catch (e) {
+    logger.log({
+      error: e,
+      event: 'DELETE_GOOGLE_CALENDAR_EVENT',
+      level: 'ERROR'
+    });
 
-  return true;
+    throw new Error(`Couldn't delete Google Calendar event.`);
+  }
 };
 
 export default deleteGoogleCalendarEvent;

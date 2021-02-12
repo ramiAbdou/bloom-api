@@ -13,7 +13,7 @@ export class DeleteMembersArgs {
 const deleteMembers = async (
   { memberIds }: DeleteMembersArgs,
   { communityId }: GQLContext
-): Promise<boolean> => {
+): Promise<Member[]> => {
   return new BloomManager().findAndDelete(
     Member,
     { id: memberIds },

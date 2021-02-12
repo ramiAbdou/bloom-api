@@ -195,7 +195,7 @@ class BloomManager {
     entityName: EntityName<T>,
     where: FilterQuery<T>,
     options?: BloomFindAndDeleteOptions<T, P>
-  ): Promise<boolean> {
+  ): Promise<T[]> {
     // If not found, get it from the DB.
     const result = await this.find<T, P>(entityName, where, options);
 
@@ -211,7 +211,33 @@ class BloomManager {
       event: options?.event
     });
 
-    return true;
+    return result;
+  }
+
+  /**
+   * Instead of actually removing and flushing the entity(s), this function
+   * acts as a SOFT DELETE and simply sets the deletedAt column within the
+   * table. There is a global filter that gets all entities that have a
+   * deletedAt = null.
+   */
+  async findOneAndDelete<T, P>(
+    entityName: EntityName<T>,
+    where: FilterQuery<T>,
+    options?: BloomFindAndDeleteOptions<T, P>
+  ): Promise<T> {
+    // If not found, get it from the DB.
+    const result = await this.findOne<T, P>(entityName, where, options);
+
+    // @ts-ignore b/c type checking.
+    if (options?.soft) result.deletedAt = now();
+    else this.em.remove(result);
+
+    await this.flush({
+      cacheKeysToInvalidate: options?.cacheKeysToInvalidate,
+      event: options?.event
+    });
+
+    return result;
   }
 
   /**

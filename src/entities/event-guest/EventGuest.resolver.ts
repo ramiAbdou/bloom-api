@@ -28,7 +28,7 @@ export default class EventGuestResolver {
     @Args() args: DeleteEventGuestArgs,
     @Ctx() ctx: GQLContext
   ): Promise<boolean> {
-    return deleteEventGuest(args, ctx);
+    return !!deleteEventGuest(args, ctx);
   }
 
   @Query(() => [EventGuest])

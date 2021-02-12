@@ -23,7 +23,7 @@ export default {
     notDeleted: {
       args: false,
       cond: { deletedAt: null },
-      entity: ['Member', 'User']
+      entity: ['Event', 'Member', 'User']
     }
   },
   namingStrategy: NamingStrategy,

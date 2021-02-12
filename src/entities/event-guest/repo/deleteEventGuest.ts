@@ -23,8 +23,8 @@ export class DeleteEventGuestArgs {
 const deleteEventGuest = async (
   { eventId }: DeleteEventGuestArgs,
   { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
-): Promise<boolean> => {
-  return new BloomManager().findAndDelete(
+): Promise<EventGuest> => {
+  return new BloomManager().findOneAndDelete(
     EventGuest,
     { event: { id: eventId }, member: { id: memberId } },
     {

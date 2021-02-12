@@ -5,13 +5,13 @@ import EventGuest from '../EventGuest';
 
 const getUpcomingEventGuests = async ({
   communityId
-}: Pick<GQLContext, 'communityId'>) => {
+}: Pick<GQLContext, 'communityId'>): Promise<EventGuest[]> => {
   return new BloomManager().find(
     EventGuest,
     { event: { community: { id: communityId }, endTime: { $gt: now() } } },
     {
       cacheKey: `${QueryEvent.GET_UPCOMING_EVENT_GUESTS}-${communityId}`,
-      populate: ['event', 'member.user']
+      populate: ['member.user']
     }
   );
 };
