@@ -61,13 +61,10 @@ const createLifetimePayment = async (
     stripeAccount: stripeAccountId
   });
 
-  const payment: MemberPayment = await createMemberPayment({
-    bm,
-    communityId,
-    invoice: paidInvoice,
-    member,
-    type
-  });
+  const payment: MemberPayment = await createMemberPayment(
+    { invoice: paidInvoice, typeId: type.id },
+    { communityId, memberId }
+  );
 
   return payment;
 };

@@ -13,10 +13,9 @@ const getActiveGrowthSeries = async ({
   const cacheKey = `${QueryEvent.GET_ACTIVE_MEMBERS_SERIES}-${communityId}`;
   if (cache.has(cacheKey)) return cache.get(cacheKey);
 
-  const bm = new BloomManager();
   const startOf30DaysAgo = day.utc().subtract(30, 'day').startOf('d');
 
-  const activeMembersThisMonth: Member[] = await bm.find(
+  const activeMembersThisMonth: Member[] = await new BloomManager().find(
     Member,
     {
       community: { id: communityId },

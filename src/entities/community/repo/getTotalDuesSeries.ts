@@ -23,10 +23,9 @@ const getTotalDuesSeries = async ({
   const cacheKey = `${QueryEvent.GET_TOTAL_DUES_SERIES}-${communityId}`;
   if (cache.has(cacheKey)) return cache.get(cacheKey);
 
-  const bm = new BloomManager();
   const startOfLastMonth = day.utc().subtract(1, 'month').startOf('d');
 
-  const payments = await bm.find(MemberPayment, {
+  const payments = await new BloomManager().find(MemberPayment, {
     community: { id: communityId },
     createdAt: { $gte: startOfLastMonth.format() }
   });

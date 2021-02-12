@@ -1,6 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
+import { GQLContext, LoggerEvent, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Event from '../Event';
 
@@ -19,6 +19,9 @@ export class UpdateEventArgs {
   private?: boolean;
 
   @Field({ nullable: true })
+  recordingUrl?: string;
+
+  @Field({ nullable: true })
   summary?: string;
 
   @Field({ nullable: true })
@@ -30,8 +33,12 @@ export class UpdateEventArgs {
 
 const updateEvent = async (
   { id: eventId, ...args }: UpdateEventArgs,
-  { communityId }: GQLContext
+  { communityId }: Pick<GQLContext, 'communityId'>
 ): Promise<Event> => {
+  const event: LoggerEvent = args?.recordingUrl
+    ? 'UPDATE_EVENT_RECORDING_LINK'
+    : 'UPDATE_EVENT';
+
   return new BloomManager().findOneAndUpdate(
     Event,
     { id: eventId },
@@ -39,9 +46,11 @@ const updateEvent = async (
     {
       cacheKeysToInvalidate: [
         `${QueryEvent.GET_EVENT}-${eventId}`,
-        `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`
+        ...(args?.recordingUrl
+          ? [`${QueryEvent.GET_PAST_EVENTS}-${communityId}`]
+          : [`${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`])
       ],
-      event: 'UPDATE_EVENT'
+      event
     }
   );
 };

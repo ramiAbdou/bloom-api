@@ -1,25 +1,24 @@
-import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Authorized,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver
+} from 'type-graphql';
 
 import { GQLContext } from '@constants';
-import Member from '../member/Member';
-import getUser, { GetUserArgs, GetUserResult } from './repo/getUser';
+import getUser, { GetUserArgs } from './repo/getUser';
+import refreshToken from './repo/refreshToken';
 import sendLoginLink, { SendLoginLinkArgs } from './repo/sendLoginLink';
 import updateUser, { UpdateUserArgs } from './repo/updateUser';
-import updateUserSocials, {
-  UpdateUserSocialsArgs
-} from './repo/updateUserSocials';
 import verifyToken, { VerifyTokenArgs } from './repo/verifyToken';
 import User from './User';
 
 @Resolver()
 export default class UserResolver {
-  @Authorized()
-  @Query(() => GetUserResult, { nullable: true })
-  async getActiveCommunity(@Args() args: GetUserArgs, @Ctx() ctx: GQLContext) {
-    return getUser(args, ctx);
-  }
-
-  @Query(() => GetUserResult, { nullable: true })
+  @Query(() => User, { nullable: true })
   async getUser(@Args() args: GetUserArgs, @Ctx() ctx: GQLContext) {
     return getUser(args, ctx);
   }
@@ -49,18 +48,21 @@ export default class UserResolver {
   }
 
   @Authorized()
-  @Mutation(() => Member)
-  async updateUser(@Args() args: UpdateUserArgs, @Ctx() ctx: GQLContext) {
-    return updateUser(args, ctx);
+  @Mutation(() => Boolean, { nullable: true })
+  async switchMember(
+    @Arg('memberId') memberId: string,
+    @Ctx() ctx: GQLContext
+  ) {
+    await refreshToken({ ...ctx, memberId });
   }
 
   @Authorized()
   @Mutation(() => User)
-  async updateUserSocials(
-    @Args() args: UpdateUserSocialsArgs,
+  async updateUser(
+    @Args() args: UpdateUserArgs,
     @Ctx() ctx: GQLContext
-  ) {
-    return updateUserSocials(args, ctx);
+  ): Promise<User> {
+    return updateUser(args, ctx);
   }
 
   @Query(() => Boolean)

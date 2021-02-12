@@ -22,10 +22,7 @@ const isEmailTaken = async ({ communityId, email }: IsEmailTakenArgs) => {
 
   if (member) {
     throw new Error(
-      deline`
-        This email is already registered in the ${member?.community?.name}
-        community.
-      `
+      deline`This email is already registered in ${member?.community?.name}.`
     );
   }
 

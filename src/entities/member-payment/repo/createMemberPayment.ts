@@ -1,15 +1,13 @@
 import Stripe from 'stripe';
 
-import { BloomManagerArgs, QueryEvent } from '@constants';
-import MemberType from '../../member-type/MemberType';
+import { GQLContext, QueryEvent } from '@constants';
+import BloomManager from '@core/db/BloomManager';
 import Member from '../../member/Member';
 import MemberPayment from '../MemberPayment';
 
-interface CreateMemberPaymentArgs extends BloomManagerArgs {
-  communityId: string;
+interface CreateMemberPaymentArgs {
   invoice: Stripe.Invoice;
-  member: Member;
-  type: MemberType;
+  typeId: string;
 }
 
 /**
@@ -17,30 +15,28 @@ interface CreateMemberPaymentArgs extends BloomManagerArgs {
  * active. All other invoices should be handled via webhooks, except for this
  * initial time, since we want to update our UI immediately.
  */
-const createMemberPayment = async ({
-  bm,
-  communityId,
-  invoice,
-  member,
-  type
-}: CreateMemberPaymentArgs): Promise<MemberPayment> => {
-  const { amount_paid, id, hosted_invoice_url } = invoice;
+const createMemberPayment = async (
+  { invoice, typeId }: CreateMemberPaymentArgs,
+  { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
+): Promise<MemberPayment> => {
+  const bm = new BloomManager();
+  const member: Member = await bm.findOne(Member, { id: memberId });
 
   // Only if the subscription worked should the MemberPayment be created.
 
   member.isDuesActive = true;
-  member.type = type;
+  member.type.id = typeId;
 
   let payment: MemberPayment = null;
 
-  if (invoice.status === 'paid' && amount_paid) {
+  if (invoice.status === 'paid' && invoice.amount_paid) {
     payment = bm.create(MemberPayment, {
-      amount: amount_paid,
+      amount: invoice.amount_paid,
       community: { id: communityId },
       member,
-      stripeInvoiceId: id,
-      stripeInvoiceUrl: hosted_invoice_url,
-      type
+      stripeInvoiceId: invoice.id,
+      stripeInvoiceUrl: invoice.hosted_invoice_url,
+      type: { id: typeId }
     });
   }
 
@@ -48,7 +44,7 @@ const createMemberPayment = async ({
     cacheKeysToInvalidate: [
       `${QueryEvent.GET_ACTIVE_DUES_GROWTH}-${communityId}`,
       `${QueryEvent.GET_DATABASE}-${communityId}`,
-      `${QueryEvent.GET_MEMBER_PAYMENTS}-${member.id}`,
+      `${QueryEvent.GET_PAYMENTS}-${member.id}`,
       `${QueryEvent.GET_PAYMENTS}-${communityId}`,
       `${QueryEvent.GET_TOTAL_DUES_COLLECTED}-${communityId}`,
       `${QueryEvent.GET_TOTAL_DUES_GROWTH}-${communityId}`,

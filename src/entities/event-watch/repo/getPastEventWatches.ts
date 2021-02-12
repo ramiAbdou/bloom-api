@@ -11,7 +11,7 @@ const getPastEventWatches = async ({
     { event: { community: { id: communityId }, endTime: { $lt: now() } } },
     {
       cacheKey: `${QueryEvent.GET_PAST_EVENT_WATCHES}-${communityId}`,
-      populate: ['event', 'member.user']
+      populate: ['member.user']
     }
   );
 };

@@ -98,8 +98,7 @@ export default class Community extends BaseEntity {
 
   @Field(() => CommunityIntegrations, { nullable: true })
   @OneToOne(() => CommunityIntegrations, ({ community }) => community, {
-    nullable: true,
-    owner: true
+    nullable: true
   })
   integrations: CommunityIntegrations;
 

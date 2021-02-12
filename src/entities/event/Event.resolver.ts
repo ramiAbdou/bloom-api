@@ -9,9 +9,6 @@ import createEvent, { CreateEventArgs } from './repo/createEvent';
 import deleteEvent, { DeleteEventArgs } from './repo/deleteEvent';
 import getEvent, { GetEventArgs } from './repo/getEvent';
 import updateEvent, { UpdateEventArgs } from './repo/updateEvent';
-import updateRecordingLink, {
-  UpdateRecordingLinkArgs
-} from './repo/updateRecordingLink';
 
 @Resolver()
 export default class EventResolver {
@@ -46,8 +43,7 @@ export default class EventResolver {
       { community: { id: communityId }, endTime: { $lt: now() } },
       {
         cacheKey: `${QueryEvent.GET_PAST_EVENTS}-${communityId}`,
-        orderBy: { startTime: QueryOrder.DESC },
-        populate: ['community']
+        orderBy: { startTime: QueryOrder.DESC }
       }
     );
   }
@@ -62,8 +58,7 @@ export default class EventResolver {
       { community: { id: communityId }, endTime: { $gte: now() } },
       {
         cacheKey: `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`,
-        orderBy: { startTime: QueryOrder.ASC },
-        populate: ['community']
+        orderBy: { startTime: QueryOrder.ASC }
       }
     );
   }
@@ -75,13 +70,5 @@ export default class EventResolver {
     @Ctx() ctx: GQLContext
   ): Promise<Event> {
     return updateEvent(args, ctx);
-  }
-
-  @Authorized('ADMIN')
-  @Mutation(() => Event, { nullable: true })
-  async updateRecordingLink(
-    @Args() args: UpdateRecordingLinkArgs
-  ): Promise<Event> {
-    return updateRecordingLink(args);
   }
 }

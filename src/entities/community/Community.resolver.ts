@@ -1,10 +1,13 @@
 import { Authorized, Ctx, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
+import { Community } from '@entities/entities';
 import { TimeSeriesData } from '@util/gql.types';
 import getActiveDuesGrowth from './repo/getActiveDuesGrowth';
 import getActiveMembersGrowth from './repo/getActiveMembersGrowth';
 import getActiveMembersSeries from './repo/getActiveMembersSeries';
+import getCommunity from './repo/getCommunity';
+import getEventAttendeesSeries from './repo/getEventAttendeesSeries';
 import getTotalDuesGrowth from './repo/getTotalDuesGrowth';
 import getTotalDuesSeries from './repo/getTotalDuesSeries';
 import getTotalMembersGrowth from './repo/getTotalMembersGrowth';
@@ -30,6 +33,20 @@ export default class CommunityResolver {
     @Ctx() ctx: GQLContext
   ): Promise<TimeSeriesData[]> {
     return getActiveMembersSeries(ctx);
+  }
+
+  @Authorized()
+  @Query(() => Community)
+  async getCommunity(@Ctx() ctx: GQLContext): Promise<Community> {
+    return getCommunity(ctx);
+  }
+
+  @Authorized('ADMIN')
+  @Query(() => [TimeSeriesData])
+  async getEventAttendeesSeries(
+    @Ctx() ctx: GQLContext
+  ): Promise<TimeSeriesData[]> {
+    return getEventAttendeesSeries(ctx);
   }
 
   @Authorized('ADMIN')

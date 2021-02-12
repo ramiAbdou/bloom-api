@@ -5,28 +5,27 @@ import BloomManager from '@core/db/BloomManager';
 import Question from '../Question';
 
 @ArgsType()
-export class RenameQuestionArgs {
+export class UpdateQuestionArgs {
   @Field()
-  id: string;
+  questionId: string;
 
   @Field()
   title: string;
 }
 
-const renameQuestion = async (
-  { id, title }: RenameQuestionArgs,
+const updateQuestion = async (
+  { questionId, ...args }: UpdateQuestionArgs,
   { communityId }: GQLContext
 ) => {
   return new BloomManager().findOneAndUpdate(
     Question,
-    { id },
-    { title },
+    { id: questionId },
+    { ...args },
     {
       cacheKeysToInvalidate: [`${QueryEvent.GET_QUESTIONS}-${communityId}`],
-      event: 'RENAME_QUESTION',
-      populate: ['community']
+      event: 'UPDATE_QUESTION'
     }
   );
 };
 
-export default renameQuestion;
+export default updateQuestion;

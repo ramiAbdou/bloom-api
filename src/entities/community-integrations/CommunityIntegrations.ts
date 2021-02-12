@@ -29,7 +29,9 @@ export default class CommunityIntegrations extends BaseEntity {
   // ## RELATIONSHIPS
 
   @Field(() => Community)
-  @OneToOne(() => Community, ({ integrations }) => integrations)
+  @OneToOne(() => Community, ({ integrations }) => integrations, {
+    owner: true
+  })
   community: Community;
 
   // ## MEMBER FUNCTIONS

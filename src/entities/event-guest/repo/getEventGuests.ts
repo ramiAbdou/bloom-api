@@ -19,14 +19,16 @@ const getEventGuests = async ({ eventId, memberId }: GetEventGuestsArgs) => {
     ? { event: { id: eventId } }
     : { member: { id: memberId } };
 
-  const cacheKey = eventId
-    ? `${QueryEvent.GET_EVENT_GUESTS}-${eventId}`
-    : `${QueryEvent.GET_EVENT_GUESTS}-${memberId}`;
-
-  return new BloomManager().find(EventGuest, args, {
-    cacheKey,
-    populate: ['event', 'member.user']
-  });
+  return new BloomManager().find(
+    EventGuest,
+    { ...args },
+    {
+      cacheKey: eventId
+        ? `${QueryEvent.GET_EVENT_GUESTS}-${eventId}`
+        : `${QueryEvent.GET_EVENT_GUESTS}-${memberId}`,
+      populate: ['event', 'member.user']
+    }
+  );
 };
 
 export default getEventGuests;

@@ -4,7 +4,6 @@ import { QueryOrder } from '@mikro-orm/core';
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { Member } from '@entities/entities';
-import { PopulateArgs } from '../../util/gql.types';
 import { AdminArgs } from './Member.types';
 import addMembers, { AddMembersArgs } from './repo/addMembers';
 import applyForMembership, {
@@ -12,15 +11,13 @@ import applyForMembership, {
 } from './repo/applyForMembership';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import demoteMembers from './repo/demoteMembers';
-import getMemberProfile, {
-  GetMemberProfileArgs
-} from './repo/getMemberProfile';
+import getMember, { GetMemberArgs } from './repo/getMember';
 import isEmailTaken, { IsEmailTakenArgs } from './repo/isEmailToken';
 import promoteMembers from './repo/promoteMembers';
 import respondToApplicants, {
   RespondToApplicantsArgs
 } from './repo/respondToApplicants';
-import updateAutoRenew, { UpdateAutoRenewArgs } from './repo/updateAutoRenew';
+import updateMember, { UpdateMemberArgs } from './repo/updateMember';
 import updatePaymentMethod, {
   UpdatePaymentMethodArgs
 } from './repo/updatePaymentMethod';
@@ -71,7 +68,7 @@ export default class MemberResolver {
       {
         cacheKey: `${QueryEvent.GET_APPLICANTS}-${communityId}`,
         orderBy: { createdAt: QueryOrder.DESC },
-        populate: ['community', 'data', 'type', 'user']
+        populate: ['data', 'user']
       }
     );
   }
@@ -89,7 +86,7 @@ export default class MemberResolver {
       {
         cacheKey: `${QueryEvent.GET_DATABASE}-${communityId}`,
         orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC },
-        populate: ['community', 'data', 'type', 'user']
+        populate: ['data', 'user']
       }
     );
   }
@@ -103,7 +100,7 @@ export default class MemberResolver {
       {
         cacheKey: `${QueryEvent.GET_DIRECTORY}-${communityId}`,
         orderBy: { createdAt: QueryOrder.DESC },
-        populate: ['community', 'data', 'user']
+        populate: ['data', 'user']
       }
     );
   }
@@ -111,16 +108,10 @@ export default class MemberResolver {
   @Authorized()
   @Query(() => Member, { nullable: true })
   async getMember(
-    @Args() { populate }: PopulateArgs,
-    @Ctx() { memberId }: GQLContext
-  ) {
-    return new BloomManager().findOne(Member, { id: memberId }, { populate });
-  }
-
-  @Authorized()
-  @Query(() => Member, { nullable: true })
-  async getMemberProfile(@Args() args: GetMemberProfileArgs) {
-    return getMemberProfile(args);
+    @Args() args: GetMemberArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<Member> {
+    return getMember(args, ctx);
   }
 
   @Authorized('OWNER')
@@ -140,11 +131,11 @@ export default class MemberResolver {
 
   @Authorized()
   @Mutation(() => Member, { nullable: true })
-  async updateAutoRenew(
-    @Args() args: UpdateAutoRenewArgs,
+  async updateMember(
+    @Args() args: UpdateMemberArgs,
     @Ctx() ctx: GQLContext
-  ) {
-    return updateAutoRenew(args, ctx);
+  ): Promise<Member> {
+    return updateMember(args, ctx);
   }
 
   @Authorized()

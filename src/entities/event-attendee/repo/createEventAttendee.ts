@@ -35,7 +35,11 @@ export class CreateEventAttendeeArgs {
  */
 const createEventAttendee = async (
   { email, firstName, lastName, eventId }: CreateEventAttendeeArgs,
-  { memberId, userId }: Pick<GQLContext, 'communityId' | 'memberId' | 'userId'>
+  {
+    communityId,
+    memberId,
+    userId
+  }: Pick<GQLContext, 'communityId' | 'memberId' | 'userId'>
 ) => {
   const partialUser: Pick<User, 'email' | 'firstName' | 'lastName'> = email
     ? { email, firstName, lastName }
@@ -64,7 +68,10 @@ const createEventAttendee = async (
     EventAttendee,
     { ...baseArgs, ...partialUser },
     {
-      cacheKeysToInvalidate: [`${QueryEvent.GET_EVENT_ATTENDEES}-${eventId}`],
+      cacheKeysToInvalidate: [
+        `${QueryEvent.GET_EVENT_ATTENDEES}-${eventId}`,
+        `${QueryEvent.GET_EVENT_ATTENDEES_SERIES}-${communityId}`
+      ],
       event: 'CREATE_EVENT_ATTENDEE',
       populate: ['member.data', 'member.user']
     }

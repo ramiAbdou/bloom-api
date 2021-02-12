@@ -1,9 +1,11 @@
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from './CommunityIntegrations';
-import updateMailchimpList from './repo/updateMailchimpList';
+import updateIntegrations, {
+  UpdateIntegrationsArgs
+} from './repo/updateIntegrations';
 
 @Resolver()
 export default class CommunityIntegrationsResolver {
@@ -15,19 +17,16 @@ export default class CommunityIntegrationsResolver {
     return new BloomManager().findOne(
       CommunityIntegrations,
       { community: { id: communityId } },
-      {
-        cacheKey: `${QueryEvent.GET_INTEGRATIONS}-${communityId}`,
-        populate: ['community']
-      }
+      { cacheKey: `${QueryEvent.GET_INTEGRATIONS}-${communityId}` }
     );
   }
 
   @Authorized('ADMIN')
-  @Mutation(() => CommunityIntegrations, { nullable: true })
-  async updateMailchimpListId(
-    @Arg('mailchimpListId') mailchimpListId: string,
+  @Mutation(() => CommunityIntegrations)
+  async updateIntegrations(
+    @Args() args: UpdateIntegrationsArgs,
     @Ctx() ctx: GQLContext
   ) {
-    return updateMailchimpList(mailchimpListId, ctx);
+    return updateIntegrations(args, ctx);
   }
 }
