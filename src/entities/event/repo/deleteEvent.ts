@@ -14,7 +14,7 @@ export class DeleteEventArgs {
 const deleteEvent = async (
   { id: eventId }: DeleteEventArgs,
   { communityId }: GQLContext
-): Promise<boolean> => {
+): Promise<Event> => {
   const event: Event = await new BloomManager().findOneAndDelete(
     Event,
     { id: eventId },
@@ -34,7 +34,7 @@ const deleteEvent = async (
     }
   }, 0);
 
-  return true;
+  return event;
 };
 
 export default deleteEvent;

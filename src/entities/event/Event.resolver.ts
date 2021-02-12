@@ -22,11 +22,11 @@ export default class EventResolver {
   }
 
   @Authorized('ADMIN')
-  @Mutation(() => Boolean, { nullable: true })
+  @Mutation(() => Event, { nullable: true })
   async deleteEvent(
     @Args() args: DeleteEventArgs,
     @Ctx() ctx: GQLContext
-  ): Promise<boolean> {
+  ): Promise<Event> {
     return deleteEvent(args, ctx);
   }
 
