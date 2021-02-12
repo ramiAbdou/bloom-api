@@ -11,7 +11,7 @@ const getUpcomingEventGuests = async ({
     { event: { community: { id: communityId }, endTime: { $gt: now() } } },
     {
       cacheKey: `${QueryEvent.GET_UPCOMING_EVENT_GUESTS}-${communityId}`,
-      populate: ['member.user']
+      populate: ['event', 'member.user']
     }
   );
 };
