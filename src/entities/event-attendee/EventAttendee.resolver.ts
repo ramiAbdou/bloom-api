@@ -13,7 +13,7 @@ import getPastEventAttendees from './repo/getPastEventAttendees';
 @Resolver()
 export default class EventAttendeeResolver {
   @Authorized()
-  @Mutation(() => EventAttendee, { nullable: true })
+  @Mutation(() => EventAttendee)
   async createEventAttendee(
     @Args() args: CreateEventAttendeeArgs,
     @Ctx() ctx: GQLContext
