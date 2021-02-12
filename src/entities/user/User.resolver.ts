@@ -13,9 +13,6 @@ import getUser, { GetUserArgs } from './repo/getUser';
 import refreshToken from './repo/refreshToken';
 import sendLoginLink, { SendLoginLinkArgs } from './repo/sendLoginLink';
 import updateUser, { UpdateUserArgs } from './repo/updateUser';
-import updateUserSocials, {
-  UpdateUserSocialsArgs
-} from './repo/updateUserSocials';
 import verifyToken, { VerifyTokenArgs } from './repo/verifyToken';
 import User from './User';
 
@@ -66,15 +63,6 @@ export default class UserResolver {
     @Ctx() ctx: GQLContext
   ): Promise<User> {
     return updateUser(args, ctx);
-  }
-
-  @Authorized()
-  @Mutation(() => User)
-  async updateUserSocials(
-    @Args() args: UpdateUserSocialsArgs,
-    @Ctx() ctx: GQLContext
-  ) {
-    return updateUserSocials(args, ctx);
   }
 
   @Query(() => Boolean)

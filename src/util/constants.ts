@@ -109,8 +109,7 @@ export type LoggerEvent =
   | 'UPDATE_MEMBER'
   | 'UPDATE_QUESTION'
   | 'UPDATE_REFRESH_TOKEN'
-  | 'UPDATE_USER'
-  | 'UPDATE_USER_SOCIALS';
+  | 'UPDATE_USER';
 
 export type GQLContext = {
   communityId: string;

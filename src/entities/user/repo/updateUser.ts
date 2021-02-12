@@ -7,13 +7,25 @@ import User from '../User';
 @ArgsType()
 export class UpdateUserArgs {
   @Field({ nullable: true })
+  facebookUrl?: string;
+
+  @Field({ nullable: true })
   firstName?: string;
+
+  @Field({ nullable: true })
+  instagramUrl?: string;
 
   @Field({ nullable: true })
   lastName?: string;
 
   @Field({ nullable: true })
+  linkedInUrl?: string;
+
+  @Field({ nullable: true })
   pictureUrl?: string;
+
+  @Field({ nullable: true })
+  twitterUrl?: string;
 }
 
 /**
@@ -21,10 +33,6 @@ export class UpdateUserArgs {
  * can more easily update it's global state with updated data.
  *
  * Invalidates GET_DIRECTORY and GET_USER calls.
- *
- * @param args.firstName First name of the user.
- * @param args.lastName Last name of the member.
- * @param args.pictureUrl Picture URL of the user.
  */
 const updateUser = async (
   args: UpdateUserArgs,
