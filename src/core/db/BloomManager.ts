@@ -241,7 +241,7 @@ class BloomManager {
 
     if (populate) {
       this.em.merge(entity);
-      await this.em.populate(entity, ['member.user'], null, null, true);
+      await this.em.populate(entity, populate, null, null, true);
     }
 
     return entity;

@@ -36,6 +36,10 @@ export default class Event extends BaseEntity {
 
   @Field({ nullable: true })
   @Property({ nullable: true })
+  googleCalendarEventId?: string;
+
+  @Field({ nullable: true })
+  @Property({ nullable: true })
   @IsUrl()
   imageUrl?: string;
 
