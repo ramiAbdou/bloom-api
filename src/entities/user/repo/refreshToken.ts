@@ -4,7 +4,7 @@ import { FilterQuery } from '@mikro-orm/core';
 import { AuthTokens } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { generateTokens, setHttpOnlyTokens } from '@util/util';
-import createMemberRefresh from '../../member-refresh/createMemberRefresh';
+import createMemberRefresh from '../../member-refresh/repo/createMemberRefresh';
 import Member from '../../member/Member';
 import User from '../User';
 

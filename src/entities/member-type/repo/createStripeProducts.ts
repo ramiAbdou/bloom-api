@@ -5,12 +5,12 @@ import { RecurrenceType } from '@entities/member-type/MemberType.types';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import MemberType from '../MemberType';
 
-type CreateStripeProductParams = {
+type CreateStripeProductArgs = {
   stripeAccountId: string;
   type: MemberType;
 };
 
-type CreateStripeProductsParams = {
+type CreateStripeProductsArgs = {
   stripeAccountId: string;
   types: MemberType[];
 };
@@ -23,7 +23,7 @@ type CreateStripeProductsParams = {
 const createStripeProduct = async ({
   stripeAccountId,
   type
-}: CreateStripeProductParams) => {
+}: CreateStripeProductArgs) => {
   const { amount, id, name, recurrence } = type;
 
   // Create the subscription even if the product is LIFETIME fulfilled
@@ -62,10 +62,10 @@ const createStripeProduct = async ({
 const createStripeProducts = async ({
   stripeAccountId,
   types
-}: CreateStripeProductsParams) => {
+}: CreateStripeProductsArgs) => {
   await Promise.all(
-    types.map(async (entity: MemberType) =>
-      createStripeProduct({ stripeAccountId, type: entity })
+    types.map(async (type: MemberType) =>
+      createStripeProduct({ stripeAccountId, type })
     )
   );
 };

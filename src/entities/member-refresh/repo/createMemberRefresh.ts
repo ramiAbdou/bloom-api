@@ -1,6 +1,6 @@
 import BloomManager from '@core/db/BloomManager';
-import { MemberIdArgs } from '../member/Member.types';
-import MemberRefresh from './MemberRefresh';
+import { MemberIdArgs } from '../../member/Member.types';
+import MemberRefresh from '../MemberRefresh';
 
 const createMemberRefresh = async ({
   memberId
