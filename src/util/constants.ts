@@ -79,6 +79,7 @@ export enum QueryEvent {
 
 export type LoggerEvent =
   | 'ACCEPT_INVITATIONS'
+  | 'ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE'
   | 'ADD_TO_MAILCHIMP'
   | 'APPLY_FOR_MEMBERSHIP'
   | 'ATTACH_GOOGLE_CALENDAR_EVENT'

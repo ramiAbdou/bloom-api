@@ -69,8 +69,6 @@ const updateEvent = async (
 
     await updateGoogleCalendarEvent(event.googleCalendarEventId, {
       description: event.description,
-      end: { dateTime: event.endTime },
-      start: { dateTime: event.startTime },
       summary: event.title,
       visibility: event.private ? 'private' : 'public'
     });

@@ -8,20 +8,15 @@ import { eventsCalendar } from '../Google.util';
  *
  * @param eventId ID of the event.
  * @param args.description Description of the event.
- * @param args.end End time of the event.
- * @param args.start Start time of the event.
  * @param args.summary Summary time of the event.
  * @param args.visibility Visibility of the event (public or private).
  */
 const updateGoogleCalendarEvent = async (
   eventId: string,
-  args: Pick<
-    calendar_v3.Schema$Event,
-    'description' | 'end' | 'start' | 'summary' | 'visibility'
-  >
+  args: Pick<calendar_v3.Schema$Event, 'description' | 'summary' | 'visibility'>
 ): Promise<calendar_v3.Schema$Event> => {
   try {
-    const response = await eventsCalendar.events.update({
+    const response = await eventsCalendar.events.patch({
       calendarId: process.env.GOOGLE_CALENDAR_ID,
       eventId,
       requestBody: args

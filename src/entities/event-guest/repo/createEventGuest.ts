@@ -3,6 +3,8 @@ import { FilterQuery } from '@mikro-orm/core';
 
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import addGoogleCalendarEventAttendee from '@integrations/google/repo/addGoogleCalendarEventAttendee';
+import Event from '../../event/Event';
 import User from '../../user/User';
 import EventGuest from '../EventGuest';
 
@@ -31,15 +33,15 @@ export class CreateEventGuestArgs {
  * @param ctx.memberId - Identifier of the member.
  */
 const createEventGuest = async (
-  { email, firstName, lastName, eventId }: CreateEventGuestArgs,
+  { eventId, ...args }: CreateEventGuestArgs,
   {
     communityId,
     memberId,
     userId
   }: Pick<GQLContext, 'communityId' | 'memberId' | 'userId'>
 ) => {
-  const partialUser: Pick<User, 'email' | 'firstName' | 'lastName'> = email
-    ? { email, firstName, lastName }
+  const partialUser: Partial<User> = args.email
+    ? { ...args }
     : await new BloomManager().findOne(
         User,
         { id: userId },
@@ -60,7 +62,7 @@ const createEventGuest = async (
     );
   }
 
-  const guest = await new BloomManager().createAndFlush(
+  const guest: EventGuest = await new BloomManager().createAndFlush(
     EventGuest,
     { ...baseArgs, ...partialUser },
     {
@@ -72,6 +74,26 @@ const createEventGuest = async (
       populate: ['member.user']
     }
   );
+
+  // If the event is updating only b/c of the googleCalendarEventId, don't
+  // update the Google Calendar event. Otherwise, update the Google Calendar
+  // event.
+  setTimeout(async () => {
+    const bm = new BloomManager();
+
+    const [event, user] = await Promise.all([
+      bm.findOne(Event, { id: eventId }),
+      bm.findOne(User, { id: userId })
+    ]);
+
+    if (!event.googleCalendarEventId) return;
+
+    await addGoogleCalendarEventAttendee(event.googleCalendarEventId, {
+      displayName: user.fullName,
+      email: user.email,
+      responseStatus: 'accepted'
+    });
+  }, 0);
 
   return guest;
 };
