@@ -17,17 +17,21 @@ export class GetEventAttendeesArgs {
 const getEventAttendees = async ({
   eventId,
   memberId
-}: GetEventAttendeesArgs) => {
+}: GetEventAttendeesArgs): Promise<EventAttendee[]> => {
   const args: FilterQuery<EventAttendee> = eventId
     ? { event: { id: eventId } }
     : { member: { id: memberId } };
 
-  return new BloomManager().find(EventAttendee, args, {
-    cacheKey: eventId
-      ? `${QueryEvent.GET_EVENT_ATTENDEES}-${eventId}`
-      : `${QueryEvent.GET_EVENT_ATTENDEES}-${memberId}`,
-    populate: ['event', 'member.user']
-  });
+  return new BloomManager().find(
+    EventAttendee,
+    { ...args },
+    {
+      cacheKey: eventId
+        ? `${QueryEvent.GET_EVENT_ATTENDEES}-${eventId}`
+        : `${QueryEvent.GET_EVENT_ATTENDEES}-${memberId}`,
+      populate: ['event', 'member.user']
+    }
+  );
 };
 
 export default getEventAttendees;
