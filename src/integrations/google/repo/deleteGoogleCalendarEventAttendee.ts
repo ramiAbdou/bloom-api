@@ -4,14 +4,14 @@ import logger from '@util/logger';
 import { eventsCalendar } from '../Google.util';
 
 /**
- * Adds attendee to the Google Calendar event.
+ * Removes attendee from the Google Calendar event.
+ *
+ * Precondition: Google Calendar event must not be null.
  *
  * @param eventId ID of the event.
- * @param attendee.displayName Full name of the user.
  * @param attendee.email Email of the user.
- * @param attendee.responseStatus 'accepted'.
  */
-const addGoogleCalendarEventAttendee = async (
+const deleteGoogleCalendarEventAttendee = async (
   eventId: string,
   attendee: calendar_v3.Schema$EventAttendee
 ) => {
@@ -23,26 +23,34 @@ const addGoogleCalendarEventAttendee = async (
     fields: 'attendees'
   });
 
-  const previousAttendees = event.attendees ?? [];
+  const filteredAttendees = event.attendees.filter(
+    (element: calendar_v3.Schema$EventAttendee) => {
+      return element.email !== attendee.email;
+    }
+  );
 
   try {
     const response = await eventsCalendar.events.patch({
       calendarId: process.env.GOOGLE_CALENDAR_ID,
       eventId,
-      requestBody: { attendees: [...previousAttendees, attendee] }
+      requestBody: { attendees: filteredAttendees }
     });
 
-    logger.log({ event: 'ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE', level: 'INFO' });
+    logger.log({
+      event: 'DELETE_GOOGLE_CALENDAR_EVENT_ATTENDEE',
+      level: 'INFO'
+    });
+
     return response.data;
   } catch (e) {
     logger.log({
       error: e,
-      event: 'ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE',
+      event: 'DELETE_GOOGLE_CALENDAR_EVENT_ATTENDEE',
       level: 'ERROR'
     });
 
-    throw new Error(`Couldn't add attendee to Google Calendar event.`);
+    throw new Error(`Couldn't remove attendee from Google Calendar event.`);
   }
 };
 
-export default addGoogleCalendarEventAttendee;
+export default deleteGoogleCalendarEventAttendee;
