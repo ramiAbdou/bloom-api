@@ -5,16 +5,16 @@ import BloomManager from '@core/db/BloomManager';
 import Member from '../Member';
 
 @ArgsType()
-export class DeleteMembersArgs {
+export class RestoreMembersArgs {
   @Field(() => [String])
   memberIds: string[];
 }
 
-const deleteMembers = async (
-  { memberIds }: DeleteMembersArgs,
+const restoreMembers = async (
+  { memberIds }: RestoreMembersArgs,
   { communityId }: GQLContext
 ): Promise<Member[]> => {
-  return new BloomManager().findAndDelete(
+  return new BloomManager().findAndRestore(
     Member,
     { id: memberIds },
     {
@@ -22,10 +22,9 @@ const deleteMembers = async (
         `${QueryEvent.GET_DATABASE}-${communityId}`,
         `${QueryEvent.GET_DIRECTORY}-${communityId}`
       ],
-      event: 'DELETE_MEMBERS',
-      soft: true
+      event: 'RESTORE_MEMBERS'
     }
   );
 };
 
-export default deleteMembers;
+export default restoreMembers;

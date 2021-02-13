@@ -17,6 +17,7 @@ import promoteMembers from './repo/promoteMembers';
 import respondToApplicants, {
   RespondToApplicantsArgs
 } from './repo/respondToApplicants';
+import restoreMembers, { RestoreMembersArgs } from './repo/restoreMembers';
 import updateMember, { UpdateMemberArgs } from './repo/updateMember';
 import updatePaymentMethod, {
   UpdatePaymentMethodArgs
@@ -43,14 +44,20 @@ export default class MemberResolver {
   }
 
   @Authorized('ADMIN')
-  @Mutation(() => Boolean, { nullable: true })
-  async deleteMembers(@Args() args: DeleteMembersArgs, @Ctx() ctx: GQLContext) {
-    return !!deleteMembers(args, ctx);
+  @Mutation(() => [Member])
+  async deleteMembers(
+    @Args() args: DeleteMembersArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<Member[]> {
+    return deleteMembers(args, ctx);
   }
 
   @Authorized('OWNER')
-  @Mutation(() => [Member], { nullable: true })
-  async demoteMembers(@Args() args: AdminArgs, @Ctx() ctx: GQLContext) {
+  @Mutation(() => [Member])
+  async demoteMembers(
+    @Args() args: AdminArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<Member[]> {
     return demoteMembers(args, ctx);
   }
 
@@ -127,6 +134,15 @@ export default class MemberResolver {
     @Ctx() ctx: GQLContext
   ) {
     return respondToApplicants(args, ctx);
+  }
+
+  @Authorized('ADMIN')
+  @Mutation(() => [Member])
+  async restoreMembers(
+    @Args() args: RestoreMembersArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<Member[]> {
+    return restoreMembers(args, ctx);
   }
 
   @Authorized()

@@ -185,6 +185,30 @@ class BloomManager {
     return result;
   }
 
+  async findAndRestore<T, P>(
+    entityName: EntityName<T>,
+    where: FilterQuery<T>,
+    options?: BloomFindAndUpdateOptions<T, P>
+  ): Promise<Loaded<T, P>[]> {
+    // If not found, get it from the DB.
+    const result = await this.find<T, P>(entityName, where, {
+      ...options,
+      filters: false
+    });
+
+    result.forEach((entity: Loaded<T, P>) => {
+      // @ts-ignore b/c deletedAt isn't detected.
+      entity.deletedAt = null;
+    });
+
+    await this.flush({
+      cacheKeysToInvalidate: options?.cacheKeysToInvalidate,
+      event: options?.event
+    });
+
+    return result;
+  }
+
   /**
    * Instead of actually removing and flushing the entity(s), this function
    * acts as a SOFT DELETE and simply sets the deletedAt column within the
@@ -226,11 +250,33 @@ class BloomManager {
     options?: BloomFindAndDeleteOptions<T, P>
   ): Promise<T> {
     // If not found, get it from the DB.
-    const result = await this.findOne<T, P>(entityName, where, options);
+    const result = await this.findOne<T, P>(entityName, where, { ...options });
 
     // @ts-ignore b/c type checking.
     if (options?.soft) result.deletedAt = now();
     else this.em.remove(result);
+
+    await this.flush({
+      cacheKeysToInvalidate: options?.cacheKeysToInvalidate,
+      event: options?.event
+    });
+
+    return result;
+  }
+
+  async findOneAndRestore<T, P>(
+    entityName: EntityName<T>,
+    where: FilterQuery<T>,
+    options?: BloomFindAndUpdateOptions<T, P>
+  ): Promise<Loaded<T, P>> {
+    // If not found, get it from the DB.
+    const result = await this.findOne<T, P>(entityName, where, {
+      ...options,
+      filters: false
+    });
+
+    // @ts-ignore b/c deletedAt isn't detected.
+    result.deletedAt = null;
 
     await this.flush({
       cacheKeysToInvalidate: options?.cacheKeysToInvalidate,
