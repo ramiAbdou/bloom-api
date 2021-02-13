@@ -19,13 +19,7 @@ export default {
   discovery: { disableDynamicFileAccess: true },
   driverOptions: { connection: { ssl: isProduction } },
   entities: [BaseEntity, BaseCompositeEntity, ...Object.values(entities)],
-  filters: {
-    notDeleted: {
-      args: false,
-      cond: { deletedAt: null },
-      entity: ['Event', 'Member', 'User']
-    }
-  },
+  filters: { notDeleted: { args: false, cond: { deletedAt: null } } },
   namingStrategy: NamingStrategy,
   subscribers: [new BloomSubscriber()],
   type: 'postgresql'
