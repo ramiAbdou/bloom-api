@@ -223,19 +223,20 @@ class BloomManager {
     // If not found, get it from the DB.
     const result = await this.find<T, P>(entityName, where, options);
 
-    if (options?.soft) {
-      result.forEach((entity: Loaded<T, P>) => {
-        // @ts-ignore b/c not sure the right type for this.
-        entity.deletedAt = now();
-      });
-    } else this.em.remove(result);
+    const updatedResult = result.map((entity: Loaded<T, P>) => {
+      // @ts-ignore b/c not sure the right type for this.
+      entity.deletedAt = now();
+      return entity;
+    });
+
+    if (!options?.soft) this.em.remove(result);
 
     await this.flush({
       cacheKeysToInvalidate: options?.cacheKeysToInvalidate,
       event: options?.event
     });
 
-    return result;
+    return updatedResult;
   }
 
   /**
@@ -253,8 +254,8 @@ class BloomManager {
     const result = await this.findOne<T, P>(entityName, where, { ...options });
 
     // @ts-ignore b/c type checking.
-    if (options?.soft) result.deletedAt = now();
-    else this.em.remove(result);
+    result.deletedAt = now();
+    if (!options?.soft) this.em.remove(result);
 
     await this.flush({
       cacheKeysToInvalidate: options?.cacheKeysToInvalidate,

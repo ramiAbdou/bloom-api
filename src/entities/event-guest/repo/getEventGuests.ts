@@ -26,6 +26,7 @@ const getEventGuests = async ({ eventId, memberId }: GetEventGuestsArgs) => {
       cacheKey: eventId
         ? `${QueryEvent.GET_EVENT_GUESTS}-${eventId}`
         : `${QueryEvent.GET_EVENT_GUESTS}-${memberId}`,
+      filters: false,
       populate: ['event', 'member.user']
     }
   );

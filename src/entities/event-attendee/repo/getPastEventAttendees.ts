@@ -11,6 +11,7 @@ const getPastEventAttendees = async ({
     { event: { community: { id: communityId }, endTime: { $lt: now() } } },
     {
       cacheKey: `${QueryEvent.GET_PAST_EVENT_ATTENDEES}-${communityId}`,
+      filters: false,
       populate: ['event', 'member.user']
     }
   );

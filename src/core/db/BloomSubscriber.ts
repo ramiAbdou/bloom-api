@@ -17,7 +17,7 @@ export default class BloomSubscriber implements EventSubscriber {
         const { collection: table, entity, payload, type } = changeSet;
 
         let changeType: LoggerChangeType = 'CREATE';
-        if (payload?.deletedAt) changeType = 'DELETE';
+        if (payload?.deletedAt || type === 'delete') changeType = 'DELETE';
         else if (type === 'update') changeType = 'UPDATE';
         return { id: entity.id, payload, table, type: changeType };
       });

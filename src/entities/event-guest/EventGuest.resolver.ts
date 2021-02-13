@@ -23,12 +23,12 @@ export default class EventGuestResolver {
   }
 
   @Authorized()
-  @Mutation(() => Boolean, { nullable: true })
+  @Mutation(() => EventGuest, { nullable: true })
   async deleteEventGuest(
     @Args() args: DeleteEventGuestArgs,
     @Ctx() ctx: GQLContext
-  ): Promise<boolean> {
-    return !!deleteEventGuest(args, ctx);
+  ): Promise<EventGuest> {
+    return deleteEventGuest(args, ctx);
   }
 
   @Query(() => [EventGuest])
