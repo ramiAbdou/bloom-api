@@ -9,7 +9,6 @@ import updateIntegrations, {
 
 @Resolver()
 export default class CommunityIntegrationsResolver {
-  @Authorized('ADMIN')
   @Query(() => CommunityIntegrations, { nullable: true })
   async getIntegrations(
     @Ctx() { communityId }: GQLContext
