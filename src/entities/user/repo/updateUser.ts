@@ -45,7 +45,7 @@ const updateUser = async (
     {
       cacheKeysToInvalidate: [
         ...(args.firstName || args.lastName || args.pictureUrl
-          ? `${QueryEvent.GET_DIRECTORY}-${communityId}`
+          ? [`${QueryEvent.GET_DIRECTORY}-${communityId}`]
           : []),
         `${QueryEvent.GET_USER}-${userId}`
       ],
