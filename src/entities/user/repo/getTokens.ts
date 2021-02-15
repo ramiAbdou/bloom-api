@@ -14,13 +14,13 @@ export class GetTokensArgs {
 
 @ObjectType()
 export class GetTokensResult {
-  @Field()
-  communityId: string;
+  @Field({ nullable: true })
+  communityId?: string;
 
-  @Field()
+  @Field({ nullable: true })
   memberId: string;
 
-  @Field()
+  @Field({ nullable: true })
   userId: string;
 }
 
