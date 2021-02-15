@@ -7,6 +7,7 @@ import getActiveDuesGrowth from './repo/getActiveDuesGrowth';
 import getActiveMembersGrowth from './repo/getActiveMembersGrowth';
 import getActiveMembersSeries from './repo/getActiveMembersSeries';
 import getCommunity from './repo/getCommunity';
+import getCommunityOwner from './repo/getCommunityOwner';
 import getEventAttendeesSeries from './repo/getEventAttendeesSeries';
 import getTotalDuesGrowth from './repo/getTotalDuesGrowth';
 import getTotalDuesSeries from './repo/getTotalDuesSeries';
@@ -39,6 +40,11 @@ export default class CommunityResolver {
   @Query(() => Community)
   async getCommunity(@Ctx() ctx: GQLContext): Promise<Community> {
     return getCommunity(ctx);
+  }
+
+  @Query(() => Community)
+  async getCommunityOwner(@Ctx() ctx: GQLContext): Promise<Community> {
+    return getCommunityOwner(ctx);
   }
 
   @Authorized('ADMIN')
