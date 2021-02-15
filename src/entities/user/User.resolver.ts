@@ -1,16 +1,8 @@
-import {
-  Arg,
-  Args,
-  Authorized,
-  Ctx,
-  Mutation,
-  Query,
-  Resolver
-} from 'type-graphql';
+import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
+import getTokens, { GetTokensArgs, GetTokensResult } from './repo/getTokens';
 import getUser, { GetUserArgs } from './repo/getUser';
-import refreshToken from './repo/refreshToken';
 import sendLoginLink, { SendLoginLinkArgs } from './repo/sendLoginLink';
 import updateUser, { UpdateUserArgs } from './repo/updateUser';
 import verifyToken, { VerifyTokenArgs } from './repo/verifyToken';
@@ -18,18 +10,17 @@ import User from './User';
 
 @Resolver()
 export default class UserResolver {
+  @Query(() => GetTokensResult, { nullable: true })
+  async getTokens(
+    @Args() args: GetTokensArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<GetTokensResult> {
+    return getTokens(args, ctx);
+  }
+
   @Query(() => User, { nullable: true })
   async getUser(@Args() args: GetUserArgs, @Ctx() ctx: GQLContext) {
     return getUser(args, ctx);
-  }
-
-  /**
-   * Called when a user hits the React /login route. We can't access HTTP only
-   * cookies on the front-end b/c no JS access, so this GQL resolver exists.
-   */
-  @Query(() => Boolean)
-  async isUserLoggedIn(@Ctx() { userId }: GQLContext) {
-    return !!userId;
   }
 
   /**
@@ -45,15 +36,6 @@ export default class UserResolver {
   @Mutation(() => Boolean, { nullable: true })
   async sendLoginLink(@Args() args: SendLoginLinkArgs) {
     return sendLoginLink(args);
-  }
-
-  @Authorized()
-  @Mutation(() => Boolean, { nullable: true })
-  async switchMember(
-    @Arg('memberId') memberId: string,
-    @Ctx() ctx: GQLContext
-  ) {
-    await refreshToken({ ...ctx, memberId });
   }
 
   @Authorized()
