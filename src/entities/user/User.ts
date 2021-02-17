@@ -4,7 +4,6 @@ import {
   BeforeCreate,
   Collection,
   Entity,
-  Enum,
   OneToMany,
   Property
 } from '@mikro-orm/core';
@@ -17,10 +16,6 @@ import Member from '../member/Member';
 export default class User extends BaseEntity {
   // ## FIELDS
 
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  currentLocation: string;
-
   @Field()
   @Property({ unique: true })
   @IsEmail()
@@ -29,14 +24,6 @@ export default class User extends BaseEntity {
   @Field()
   @Property()
   firstName: string;
-
-  @Field({ nullable: true })
-  @Enum({
-    items: ['Male', 'Female', 'Non-Binary', 'Prefer Not to Say'],
-    nullable: true,
-    type: String
-  })
-  gender: string;
 
   @Field()
   @Property()
@@ -73,6 +60,8 @@ export default class User extends BaseEntity {
   @Property({ nullable: true })
   @IsUrl()
   twitterUrl: string;
+
+  // ## LIFECYCLE
 
   @BeforeCreate()
   async beforeCreate() {

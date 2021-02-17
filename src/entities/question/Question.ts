@@ -1,4 +1,4 @@
-import { Authorized, Field, Int, ObjectType } from 'type-graphql';
+import { Field, Int, ObjectType } from 'type-graphql';
 import {
   ArrayType,
   BeforeCreate,
@@ -81,9 +81,11 @@ export default class Question extends BaseEntity {
     }
 
     if (
-      [QuestionCategory.DUES_STATUS, QuestionCategory.MEMBERSHIP_TYPE].includes(
-        this.category
-      )
+      [
+        QuestionCategory.DUES_STATUS,
+        QuestionCategory.GENDER,
+        QuestionCategory.MEMBERSHIP_TYPE
+      ].includes(this.category)
     ) {
       this.type = QuestionType.MULTIPLE_CHOICE;
     }

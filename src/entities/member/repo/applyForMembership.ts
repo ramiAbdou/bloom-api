@@ -130,7 +130,10 @@ const applyForMembership = async (
     // creation of data, it must exist.
     if (!values?.length) return;
 
-    const question: Question = questions.find(({ id }) => questionId === id);
+    const question: Question = questions.find((element) => {
+      return questionId === element.id || category === element.category;
+    });
+
     category = category ?? question.category;
 
     const value = (question?.type === 'MULTIPLE_SELECT'
@@ -138,13 +141,11 @@ const applyForMembership = async (
       : values[0]
     )?.toString();
 
-    if (questionId) bm.create(MemberData, { member, question, value });
-
     if (category === 'EMAIL') user.email = value;
     else if (category === 'FIRST_NAME') user.firstName = value;
     else if (category === 'LAST_NAME') user.lastName = value;
-    else if (category === 'GENDER') user.gender = value;
     else if (category === 'MEMBERSHIP_TYPE') member.type = type;
+    else bm.create(MemberData, { member, question, value });
   });
 
   await bm.flush({ event: 'APPLY_FOR_MEMBERSHIP' });

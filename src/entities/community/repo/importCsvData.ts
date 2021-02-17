@@ -46,13 +46,7 @@ const processRow = async ({
   uniqueEmails
 }: ProcessRowArgs) => {
   // Precondition: Every row (JSON) should have a field called 'EMAIL'.
-  const {
-    EMAIL: dirtyEmail,
-    FIRST_NAME: firstName,
-    LAST_NAME: lastName,
-    GENDER: gender
-  } = row;
-
+  const { EMAIL: dirtyEmail, FIRST_NAME: firstName, LAST_NAME: lastName } = row;
   const email = dirtyEmail?.toLowerCase();
 
   // If no email exists or it is a duplicate email, don't process.
@@ -62,7 +56,7 @@ const processRow = async ({
   const [user, wasFound] = await bm.findOneOrCreate(
     User,
     { email },
-    { email, firstName, gender, lastName }
+    { email, firstName, lastName }
   );
 
   // If a member already exists for the user, then don't create a new
@@ -82,38 +76,41 @@ const processRow = async ({
 
   if (email === ownerEmail) community.owner = member;
 
-  Object.entries(row).forEach(([key, value]) => {
-    // Skip over the empty values and the user-specific information since it
-    // was already processed.
-    if (!value) return;
+  Object.entries(row).forEach(
+    ([key, value]: [string | QuestionCategory, string]) => {
+      // Skip over the empty values and the user-specific information since it
+      // was already processed.
+      if (!value) return;
 
-    if (key === QuestionCategory.MEMBERSHIP_TYPE) {
-      member.type = types.find(({ name }) => value === name);
-      return;
+      if (key === QuestionCategory.MEMBERSHIP_TYPE) {
+        member.type = types.find(({ name }) => value === name);
+        return;
+      }
+
+      if (key === QuestionCategory.JOINED_AT) {
+        const dayObject = day.utc(value);
+
+        // Safety check to ensure the date is formatted correctly.
+        const createdAt = dayObject.isValid()
+          ? dayObject.format()
+          : day.utc().format();
+
+        member.createdAt = createdAt;
+        member.joinedAt = createdAt;
+        return;
+      }
+
+      // If the question wasn't a special category question, then we find
+      // the question with the given key as the title. We proceed to make
+      // the appropriate member data.
+
+      const question = questions.find(({ category, title }) => {
+        return key === category || key === title;
+      });
+
+      if (question) bm.create(MemberData, { member, question, value });
     }
-
-    if (key === QuestionCategory.JOINED_AT) {
-      const dayObject = day.utc(value);
-
-      // Safety check to ensure the date is formatted correctly.
-      const createdAt = dayObject.isValid()
-        ? dayObject.format()
-        : day.utc().format();
-
-      member.createdAt = createdAt;
-      member.joinedAt = createdAt;
-      return;
-    }
-
-    // If the question wasn't a special category question, then we find
-    // the question with the given key as the title. We proceed to make
-    // the appropriate member data.
-
-    const question = questions.find(({ title }) => key === title);
-    if (question) {
-      bm.create(MemberData, { member, question, value });
-    }
-  });
+  );
 };
 
 /**
