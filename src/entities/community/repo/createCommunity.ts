@@ -8,6 +8,10 @@ import Question from '../../question/Question';
 import { QuestionCategory } from '../../question/Question.types';
 import Community from '../Community';
 
+export interface CreateCommunityArgs extends EntityData<Community> {
+  highlightedQuestionTitle?: string;
+}
+
 /**
  * Creates a new community when Bloom has a new customer. Omits the addition
  * of a logo. For now, the community should send Bloom a square logo that
@@ -15,10 +19,11 @@ import Community from '../Community';
  */
 const createCommunity = async ({
   application,
+  highlightedQuestionTitle,
   questions,
   types,
   ...data
-}: EntityData<Community>): Promise<Community> => {
+}: CreateCommunityArgs): Promise<Community> => {
   const bm = new BloomManager();
 
   let defaultTypeId: string = null;
@@ -31,32 +36,38 @@ const createCommunity = async ({
     }
   );
 
-  const duesStatusQuestions: EntityData<Question>[] = persistedTypes.some(
-    ({ amount }: MemberType) => !!amount
-  )
-    ? [{ category: QuestionCategory.DUES_STATUS, title: 'Status' }]
-    : [];
-
   // Add the first name, last name and joined at dates to array of questions.
   const questionsWithDefaults: EntityData<Question>[] = [
     { category: QuestionCategory.FIRST_NAME, title: 'First Name' },
     { category: QuestionCategory.LAST_NAME, title: 'Last Name' },
-    ...duesStatusQuestions,
+    { category: QuestionCategory.DUES_STATUS, title: 'Status' },
     { category: QuestionCategory.MEMBERSHIP_TYPE, title: 'Membership Type' },
     ...questions,
-    { category: 'JOINED_AT', title: 'Joined At' }
+    { category: QuestionCategory.JOINED_AT, title: 'Joined At' }
   ];
 
-  const persistedQuestions = questionsWithDefaults.map((question, i: number) =>
-    bm.create(Question, { ...question, order: i })
+  let highlightedQuestionId: string = null;
+
+  const persistedQuestions: Question[] = questionsWithDefaults.map(
+    (question: EntityData<Question>, i: number) => {
+      question.order = i;
+      const persistedQuestion: Question = bm.create(Question, question);
+
+      if (question.title === highlightedQuestionTitle) {
+        highlightedQuestionId = persistedQuestion.id;
+      }
+
+      return persistedQuestion;
+    }
   );
 
-  const community = bm.create(Community, {
+  const community: Community = bm.create(Community, {
     ...data,
     application: application
       ? bm.create(CommunityApplication, application)
       : null,
-    defaultType: defaultTypeId,
+    defaultType: { id: defaultTypeId },
+    highlightedQuestion: { id: highlightedQuestionId },
     integrations: bm.create(CommunityIntegrations, {}),
     questions: persistedQuestions,
     types: persistedTypes
