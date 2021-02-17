@@ -39,12 +39,6 @@ export default class Question extends BaseEntity {
   @Property({ type: Boolean })
   onlyInApplication = false;
 
-  // In the applicant card if it's important to the ADMIN.
-  @Authorized('ADMIN')
-  @Field(() => Boolean)
-  @Property({ type: Boolean })
-  inApplicantCard = false;
-
   // Will only be non-null if the type is MULTIPLE_CHOICE or MULTIPLE_SELECT.
   @Field(() => [String], { nullable: true })
   @Property({ nullable: true, type: ArrayType })
@@ -104,7 +98,6 @@ export default class Question extends BaseEntity {
     }
 
     if (this.category === QuestionCategory.MEMBERSHIP_TYPE) {
-      this.inApplicantCard = false;
       this.options = this.community.types.getItems().map(({ name }) => name);
     }
   }
