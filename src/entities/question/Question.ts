@@ -34,11 +34,6 @@ export default class Question extends BaseEntity {
   @Property({ nullable: true, type: 'text' })
   description: string;
 
-  // True if this is only needed for the application decision.
-  @Field(() => Boolean)
-  @Property({ type: Boolean })
-  onlyInApplication = false;
-
   // Will only be non-null if the type is MULTIPLE_CHOICE or MULTIPLE_SELECT.
   @Field(() => [String], { nullable: true })
   @Property({ nullable: true, type: ArrayType })
