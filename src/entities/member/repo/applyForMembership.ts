@@ -131,7 +131,9 @@ const applyForMembership = async (
     if (!values?.length) return;
 
     const question: Question = questions.find((element) => {
-      return questionId === element.id || category === element.category;
+      return (
+        questionId === element.id || (category && category === element.category)
+      );
     });
 
     category = category ?? question.category;

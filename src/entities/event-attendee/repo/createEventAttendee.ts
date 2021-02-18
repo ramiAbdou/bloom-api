@@ -57,12 +57,11 @@ const createEventAttendee = async (
 
   const existingAttendee = await new BloomManager().findOne(
     EventAttendee,
-    baseArgs
+    baseArgs,
+    { populate: ['member.user'] }
   );
 
-  if (existingAttendee) {
-    throw new Error('An attendee with this email has already joined.');
-  }
+  if (existingAttendee) return existingAttendee;
 
   const attendee = await new BloomManager().createAndFlush(
     EventAttendee,
@@ -73,7 +72,7 @@ const createEventAttendee = async (
         `${QueryEvent.GET_EVENT_ATTENDEES_SERIES}-${communityId}`
       ],
       event: 'CREATE_EVENT_ATTENDEE',
-      populate: ['member.data', 'member.user']
+      populate: ['member.user']
     }
   );
 

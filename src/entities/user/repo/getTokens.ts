@@ -24,6 +24,15 @@ export class GetTokensResult {
   userId: string;
 }
 
+/**
+ * Returns the communityId, memberId and userId from the decoded accessToken.
+ * If the urlName is present and the active communityId does not match, we
+ * refresh the token to be for that community (effectively switching
+ * communities).
+ *
+ * @param args.urlName URL name of the community, if present.
+ * @param ctx GQL Context.
+ */
 const getTokens = async (
   { urlName }: GetTokensArgs,
   {

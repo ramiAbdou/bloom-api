@@ -44,6 +44,11 @@ export default class User extends BaseEntity {
   @Field({ nullable: true })
   @Property({ nullable: true })
   @IsUrl()
+  clubhouseUrl: string;
+
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  @IsUrl()
   facebookUrl: string;
 
   @Field({ nullable: true })

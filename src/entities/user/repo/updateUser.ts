@@ -7,6 +7,9 @@ import User from '../User';
 @ArgsType()
 export class UpdateUserArgs {
   @Field({ nullable: true })
+  clubhouseUrl?: string;
+
+  @Field({ nullable: true })
   facebookUrl?: string;
 
   @Field({ nullable: true })
