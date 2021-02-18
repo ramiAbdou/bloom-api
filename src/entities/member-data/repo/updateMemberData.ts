@@ -57,8 +57,7 @@ const updateMemberData = async (
     cacheKeysToInvalidate: [
       `${QueryEvent.GET_DATABASE}-${communityId}`,
       `${QueryEvent.GET_DIRECTORY}-${communityId}`,
-      `${QueryEvent.GET_MEMBER_DATA}-${memberId}`,
-      `${QueryEvent.GET_USER}-${userId}`
+      `${QueryEvent.GET_MEMBER_DATA}-${memberId}`
     ]
   });
 

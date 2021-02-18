@@ -48,8 +48,7 @@ const createMemberPayment = async (
       `${QueryEvent.GET_PAYMENTS}-${communityId}`,
       `${QueryEvent.GET_TOTAL_DUES_COLLECTED}-${communityId}`,
       `${QueryEvent.GET_TOTAL_DUES_GROWTH}-${communityId}`,
-      `${QueryEvent.GET_TOTAL_DUES_SERIES}-${communityId}`,
-      `${QueryEvent.GET_USER}-${member.user.id}`
+      `${QueryEvent.GET_TOTAL_DUES_SERIES}-${communityId}`
     ]
   });
 
