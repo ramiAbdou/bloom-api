@@ -1,4 +1,5 @@
 import 'reflect-metadata'; // Needed for type-graphql compilation.
+import './misc';
 
 import day from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';

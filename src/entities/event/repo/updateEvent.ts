@@ -1,6 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext, LoggerEvent, QueryEvent } from '@constants';
+import { LoggerEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import updateGoogleCalendarEvent from '@integrations/google/repo/updateGoogleCalendarEvent';
 import Event from '../Event';
@@ -35,10 +35,10 @@ export class UpdateEventArgs {
   videoUrl?: string;
 }
 
-const updateEvent = async (
-  { id: eventId, ...args }: UpdateEventArgs,
-  { communityId }: Pick<GQLContext, 'communityId'>
-): Promise<Event> => {
+const updateEvent = async ({
+  id: eventId,
+  ...args
+}: UpdateEventArgs): Promise<Event> => {
   let loggerEvent: LoggerEvent;
 
   if (args?.recordingUrl) loggerEvent = 'UPDATE_EVENT_RECORDING_LINK';
@@ -50,14 +50,7 @@ const updateEvent = async (
     Event,
     { id: eventId },
     { ...args },
-    {
-      cacheKeysToInvalidate: [
-        ...(args?.recordingUrl
-          ? [`${QueryEvent.GET_PAST_EVENTS}-${communityId}`]
-          : [`${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`])
-      ],
-      event: loggerEvent
-    }
+    { event: loggerEvent }
   );
 
   // If the event is updating only b/c of the googleCalendarEventId, don't

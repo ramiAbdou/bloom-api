@@ -1,6 +1,5 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import deleteGoogleCalendarEvent from '@integrations/google/repo/deleteGoogleCalendarEvent';
 import Event from '../Event';
@@ -11,20 +10,13 @@ export class DeleteEventArgs {
   id: string;
 }
 
-const deleteEvent = async (
-  { id: eventId }: DeleteEventArgs,
-  { communityId }: GQLContext
-): Promise<Event> => {
+const deleteEvent = async ({
+  id: eventId
+}: DeleteEventArgs): Promise<Event> => {
   const event: Event = await new BloomManager().findOneAndDelete(
     Event,
     { id: eventId },
-    {
-      cacheKeysToInvalidate: [
-        `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`
-      ],
-      event: 'DELETE_EVENT',
-      soft: true
-    }
+    { event: 'DELETE_EVENT', soft: true }
   );
 
   setTimeout(async () => {

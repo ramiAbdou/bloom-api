@@ -1,9 +1,9 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { nanoid } from 'nanoid';
-import Stripe from 'stripe';
 import { Field, ObjectType } from 'type-graphql';
-import { Entity, OneToOne, Property } from '@mikro-orm/core';
+import { AfterUpdate, Entity, OneToOne, Property } from '@mikro-orm/core';
 
+import { QueryEvent } from '@constants';
+import cache from '@core/cache/cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Community from '../community/Community';
 import { MailchimpLists } from './CommunityIntegrations.types';
@@ -60,6 +60,15 @@ export default class CommunityIntegrations extends BaseEntity {
 
     const { data } = await axios(options);
     return data?.lists?.map(({ id, name }) => ({ id, name }));
+  }
+
+  // ## LIFECYCLE
+
+  @AfterUpdate()
+  afterUpdate() {
+    cache.invalidateEntries([
+      `${QueryEvent.GET_INTEGRATIONS}-${this.community.id}`
+    ]);
   }
 
   // ## RELATIONSHIPS

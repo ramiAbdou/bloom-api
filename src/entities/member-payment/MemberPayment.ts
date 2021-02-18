@@ -1,7 +1,9 @@
 import { IsUrl } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
-import { Entity, ManyToOne, Property } from '@mikro-orm/core';
+import { AfterUpdate, Entity, ManyToOne, Property } from '@mikro-orm/core';
 
+import { QueryEvent } from '@constants';
+import cache from '@core/cache/cache';
 import BaseEntity from '@core/db/BaseEntity';
 import { Community } from '@entities/entities';
 import MemberType from '../member-type/MemberType';
@@ -21,6 +23,16 @@ export default class MemberPayment extends BaseEntity {
   @Property({ unique: true })
   @IsUrl()
   stripeInvoiceUrl: string;
+
+  // ## LIFECYCLE
+
+  @AfterUpdate()
+  afterUpdate() {
+    cache.invalidateEntries([
+      `${QueryEvent.GET_PAYMENTS}-${this.community.id}`,
+      `${QueryEvent.GET_PAYMENTS}-${this.member.id}`
+    ]);
+  }
 
   // ## RELATIONSHIPS
 

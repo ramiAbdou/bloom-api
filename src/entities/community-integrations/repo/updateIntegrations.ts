@@ -1,6 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
+import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '../CommunityIntegrations';
 
@@ -18,10 +18,7 @@ const updateIntegrations = async (
     CommunityIntegrations,
     { community: { id: communityId } },
     { ...args },
-    {
-      cacheKeysToInvalidate: [`${QueryEvent.GET_INTEGRATIONS}-${communityId}`],
-      event: args?.mailchimpListId ? 'UPDATE_MAILCHIMP' : null
-    }
+    { event: args?.mailchimpListId ? 'UPDATE_MAILCHIMP' : null }
   );
 };
 

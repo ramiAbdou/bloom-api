@@ -1,6 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
+import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import createGoogleCalendarEvent from '@integrations/google/repo/createGoogleCalendarEvent';
 import Event from '../Event';
@@ -40,13 +40,7 @@ const createEvent = async (
   const event: Event = await new BloomManager().createAndFlush(
     Event,
     { ...args, community: { id: communityId } },
-    {
-      cacheKeysToInvalidate: [
-        `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`
-      ],
-      event: 'CREATE_EVENT',
-      populate: ['community']
-    }
+    { event: 'CREATE_EVENT', populate: ['community'] }
   );
 
   // After the event gets created, create the Google Calendar event as well.
@@ -61,10 +55,10 @@ const createEvent = async (
       visibility: args.private ? 'private' : 'public'
     });
 
-    await updateEvent(
-      { googleCalendarEventId: googleCalendarEvent.id, id: event.id },
-      { communityId }
-    );
+    await updateEvent({
+      googleCalendarEventId: googleCalendarEvent.id,
+      id: event.id
+    });
   }, 0);
 
   return event;

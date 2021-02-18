@@ -34,13 +34,7 @@ const storeStripeTokens = async (
   });
 
   integrations.stripeAccountId = stripeAccountId;
-
-  await bm.flush({
-    cacheKeysToInvalidate: [
-      `${QueryEvent.GET_INTEGRATIONS}-${integrations.community.id}`
-    ],
-    event: 'STORE_STRIPE_ACCOUNT'
-  });
+  await bm.flush({ event: 'STORE_STRIPE_ACCOUNT' });
 
   return integrations;
 };

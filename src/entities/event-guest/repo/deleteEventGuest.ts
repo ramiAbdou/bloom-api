@@ -18,26 +18,18 @@ export class DeleteEventGuestArgs {
  * otherwise.
  *
  * @param args.eventId - ID of the event.
- * @param ctx.communityId - ID of the community.
  * @param ctx.memberId - ID of the member.
  * @param ctx.userId - ID of the user.
  */
 const deleteEventGuest = async (
   { eventId }: DeleteEventGuestArgs,
-  {
-    communityId,
-    memberId,
-    userId
-  }: Pick<GQLContext, 'communityId' | 'memberId' | 'userId'>
+  { memberId, userId }: Pick<GQLContext, 'memberId' | 'userId'>
 ): Promise<EventGuest> => {
   const guest: EventGuest = await new BloomManager().findOneAndDelete(
     EventGuest,
     { event: { id: eventId }, member: { id: memberId } },
     {
-      cacheKeysToInvalidate: [
-        `${QueryEvent.GET_EVENT_GUESTS}-${eventId}`,
-        `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`
-      ],
+      cacheKeysToInvalidate: [`${QueryEvent.GET_EVENT_GUESTS}-${eventId}`],
       event: 'DELETE_EVENT_GUEST'
     }
   );

@@ -23,11 +23,8 @@ export default class EventResolver {
 
   @Authorized('ADMIN')
   @Mutation(() => Event, { nullable: true })
-  async deleteEvent(
-    @Args() args: DeleteEventArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<Event> {
-    return deleteEvent(args, ctx);
+  async deleteEvent(@Args() args: DeleteEventArgs): Promise<Event> {
+    return deleteEvent(args);
   }
 
   @Query(() => Event)
@@ -65,10 +62,7 @@ export default class EventResolver {
 
   @Authorized('ADMIN')
   @Mutation(() => Event, { nullable: true })
-  async updateEvent(
-    @Args() args: UpdateEventArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<Event> {
-    return updateEvent(args, ctx);
+  async updateEvent(@Args() args: UpdateEventArgs): Promise<Event> {
+    return updateEvent(args);
   }
 }

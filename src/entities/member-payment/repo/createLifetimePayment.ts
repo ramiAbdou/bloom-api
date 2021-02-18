@@ -47,8 +47,6 @@ const createLifetimePayment = async (
     await bm.flush({ event: 'DELETE_SUBSCRIPTION' });
   }
 
-  console.log('HERE', integrations);
-
   const invoice: Stripe.Invoice = await createAndPayStripeInvoice({
     accountId: integrations.stripeAccountId,
     customerId: member.stripeCustomerId,

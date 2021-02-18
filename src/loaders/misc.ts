@@ -1,0 +1,13 @@
+import '@entities/community/Community.subscriber';
+import '@entities/community-application/CommunityApplication.subscriber';
+import '@entities/community-integrations/CommunityIntegrations.subscriber';
+import '@entities/event/Event.subscriber';
+import '@entities/event-attendee/EventAttendee.subscriber';
+import '@entities/event-guest/EventGuest.subscriber';
+import '@entities/event-watch/EventWatch.subscriber';
+import '@entities/member/Member.subscriber';
+import '@entities/member-data/MemberData.subscriber';
+import '@entities/member-payment/MemberPayment.subscriber';
+import '@entities/member-type/MemberType.subscriber';
+import '@entities/question/Question.subscriber';
+import '@entities/user/User.subscriber';

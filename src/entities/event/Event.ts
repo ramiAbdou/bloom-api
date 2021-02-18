@@ -2,7 +2,6 @@ import { IsUrl } from 'class-validator';
 import day from 'dayjs';
 import { Field, ObjectType } from 'type-graphql';
 import {
-  AfterUpdate,
   BeforeCreate,
   Collection,
   Entity,
@@ -11,8 +10,7 @@ import {
   Property
 } from '@mikro-orm/core';
 
-import { APP, QueryEvent } from '@constants';
-import cache from '@core/cache/cache';
+import { APP } from '@constants';
 import BaseEntity from '@core/db/BaseEntity';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
@@ -77,11 +75,6 @@ export default class Event extends BaseEntity {
   beforeCreate() {
     this.endTime = day.utc(this.endTime).format();
     this.startTime = day.utc(this.startTime).format();
-  }
-
-  @AfterUpdate()
-  afterUpdate() {
-    cache.invalidateEntries([`${QueryEvent.GET_EVENT}-${this.id}`]);
   }
 
   // ## RELATIONSHIPS
