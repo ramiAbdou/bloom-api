@@ -39,12 +39,11 @@ class BloomManager {
 
   fork = () => new BloomManager();
 
-  async flush?({ cacheKeysToInvalidate, event }: BloomManagerFlushArgs) {
+  async flush?({ event }: BloomManagerFlushArgs) {
     try {
       logger.log({ contextId: this.em.id, event, level: 'BEFORE_FLUSH' });
       await this.em.flush();
       logger.log({ contextId: this.em.id, event, level: 'FLUSH_SUCCESS' });
-      cache.invalidateEntries(cacheKeysToInvalidate);
     } catch (e) {
       logger.log({
         contextId: this.em.id,
@@ -131,11 +130,7 @@ class BloomManager {
     const result = await this.findOne<T, P>(entityName, where, options);
     wrap(result).assign(data);
 
-    await this.flush({
-      cacheKeysToInvalidate: options?.cacheKeysToInvalidate,
-      event: options?.event
-    });
-
+    await this.flush({ event: options?.event });
     return result;
   }
 
@@ -177,11 +172,7 @@ class BloomManager {
       wrap(entity).assign(data);
     });
 
-    await this.flush({
-      cacheKeysToInvalidate: options?.cacheKeysToInvalidate,
-      event: options?.event
-    });
-
+    await this.flush({ event: options?.event });
     return result;
   }
 
@@ -201,11 +192,7 @@ class BloomManager {
       entity.deletedAt = null;
     });
 
-    await this.flush({
-      cacheKeysToInvalidate: options?.cacheKeysToInvalidate,
-      event: options?.event
-    });
-
+    await this.flush({ event: options?.event });
     return result;
   }
 
@@ -231,11 +218,7 @@ class BloomManager {
 
     if (!options?.soft) this.em.remove(result);
 
-    await this.flush({
-      cacheKeysToInvalidate: options?.cacheKeysToInvalidate,
-      event: options?.event
-    });
-
+    await this.flush({ event: options?.event });
     return updatedResult;
   }
 
@@ -257,11 +240,7 @@ class BloomManager {
     result.deletedAt = now();
     if (!options?.soft) this.em.remove(result);
 
-    await this.flush({
-      cacheKeysToInvalidate: options?.cacheKeysToInvalidate,
-      event: options?.event
-    });
-
+    await this.flush({ event: options?.event });
     return result;
   }
 
@@ -279,11 +258,7 @@ class BloomManager {
     // @ts-ignore b/c deletedAt isn't detected.
     result.deletedAt = null;
 
-    await this.flush({
-      cacheKeysToInvalidate: options?.cacheKeysToInvalidate,
-      event: options?.event
-    });
-
+    await this.flush({ event: options?.event });
     return result;
   }
 

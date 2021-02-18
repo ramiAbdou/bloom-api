@@ -59,11 +59,8 @@ export default class MemberResolver {
 
   @Authorized('OWNER')
   @Mutation(() => [Member])
-  async demoteMembers(
-    @Args() args: AdminArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<Member[]> {
-    return demoteMembers(args, ctx);
+  async demoteMembers(@Args() args: AdminArgs): Promise<Member[]> {
+    return demoteMembers(args);
   }
 
   @Query(() => Boolean)
@@ -152,12 +149,9 @@ export default class MemberResolver {
   }
 
   @Authorized('ADMIN')
-  @Mutation(() => [Member], { nullable: true })
-  async respondToApplicants(
-    @Args() args: RespondToApplicantsArgs,
-    @Ctx() ctx: GQLContext
-  ) {
-    return respondToApplicants(args, ctx);
+  @Mutation(() => [Member])
+  async respondToApplicants(@Args() args: RespondToApplicantsArgs) {
+    return respondToApplicants(args);
   }
 
   @Authorized('ADMIN')

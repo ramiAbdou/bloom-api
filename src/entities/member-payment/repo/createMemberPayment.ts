@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 
-import { GQLContext, QueryEvent } from '@constants';
+import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../../member/Member';
 import MemberPayment from '../MemberPayment';
@@ -40,15 +40,7 @@ const createMemberPayment = async (
     });
   }
 
-  await bm.flush({
-    cacheKeysToInvalidate: [
-      `${QueryEvent.GET_ACTIVE_DUES_GROWTH}-${communityId}`,
-      `${QueryEvent.GET_DATABASE}-${communityId}`,
-      `${QueryEvent.GET_TOTAL_DUES_COLLECTED}-${communityId}`,
-      `${QueryEvent.GET_TOTAL_DUES_GROWTH}-${communityId}`,
-      `${QueryEvent.GET_TOTAL_DUES_SERIES}-${communityId}`
-    ]
-  });
+  await bm.flush({});
 
   return payment;
 };

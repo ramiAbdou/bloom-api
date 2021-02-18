@@ -8,9 +8,15 @@ import { MemberStatus } from './Member.types';
 @Subscriber()
 export default class MemberSubscriber implements EventSubscriber<Member> {
   async afterUpdate({ changeSet, entity }: EventArgs<Member>) {
-    const { payload } = changeSet;
+    const { originalEntity, payload } = changeSet;
 
     cache.invalidateEntries([`${QueryEvent.GET_MEMBER}-${entity.id}`]);
+
+    if (originalEntity?.status === MemberStatus.PENDING) {
+      cache.invalidateEntries([
+        `${QueryEvent.GET_APPLICANTS}-${entity.community.id}`
+      ]);
+    }
 
     if (
       'deletedAt' in payload ||

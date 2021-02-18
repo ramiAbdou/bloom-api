@@ -3,7 +3,6 @@ import { FindOneOptions, FindOptions } from '@mikro-orm/core';
 import { LoggerEvent } from '@constants';
 
 export interface BloomManagerFlushArgs {
-  cacheKeysToInvalidate?: string[];
   event?: LoggerEvent;
 }
 

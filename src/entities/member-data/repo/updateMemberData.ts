@@ -1,6 +1,7 @@
 import { ArgsType, Field, InputType } from 'type-graphql';
 
 import { GQLContext, QueryEvent } from '@constants';
+import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
 import MemberData from '../MemberData';
 
@@ -21,7 +22,7 @@ export class UpdateMemberDataArgs {
 
 const updateMemberData = async (
   { items }: UpdateMemberDataArgs,
-  { communityId, memberId, userId }: GQLContext
+  { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<MemberData[]> => {
   const bm = new BloomManager();
 
@@ -53,13 +54,12 @@ const updateMemberData = async (
     data
   );
 
-  await bm.flush({
-    cacheKeysToInvalidate: [
-      `${QueryEvent.GET_DATABASE}-${communityId}`,
-      `${QueryEvent.GET_DIRECTORY}-${communityId}`,
-      `${QueryEvent.GET_MEMBER_DATA}-${memberId}`
-    ]
-  });
+  await bm.flush({});
+
+  cache.invalidateEntries([
+    `${QueryEvent.GET_DATABASE}-${communityId}`,
+    `${QueryEvent.GET_DIRECTORY}-${communityId}`
+  ]);
 
   return updatedData;
 };

@@ -1,6 +1,5 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { now } from '@util/util';
 import Member from '../Member';
@@ -19,24 +18,15 @@ export class RespondToApplicantsArgs {
  * An admin has the option to either accept or reject a Member when they
  * apply to the organization.
  */
-const respondToApplicants = async (
-  { memberIds, response }: RespondToApplicantsArgs,
-  { communityId }: GQLContext
-): Promise<Member[]> => {
+const respondToApplicants = async ({
+  memberIds,
+  response
+}: RespondToApplicantsArgs): Promise<Member[]> => {
   const members: Member[] = await new BloomManager().findAndUpdate(
     Member,
     { id: memberIds },
     { joinedAt: now(), status: response },
-    {
-      cacheKeysToInvalidate:
-        response === 'ACCEPTED'
-          ? [
-              `${QueryEvent.GET_APPLICANTS}-${communityId}`,
-              `${QueryEvent.GET_DATABASE}-${communityId}`
-            ]
-          : [`${QueryEvent.GET_APPLICANTS}-${communityId}`],
-      event: 'MEMBERS_ACCEPTED'
-    }
+    { event: 'MEMBERS_ACCEPTED' }
   );
 
   // Send the appropriate emails based on the response. Also, add the members
