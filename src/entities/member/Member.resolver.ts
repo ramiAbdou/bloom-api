@@ -4,6 +4,7 @@ import { QueryOrder } from '@mikro-orm/core';
 import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { Member } from '@entities/entities';
+import { CreateSubsciptionArgs } from '../member-payment/repo/createSubscription';
 import { AdminArgs } from './Member.types';
 import addMembers, { AddMembersArgs } from './repo/addMembers';
 import applyForMembership, {
@@ -11,8 +12,14 @@ import applyForMembership, {
 } from './repo/applyForMembership';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import demoteMembers from './repo/demoteMembers';
+import getChangePreview, {
+  GetChangePreviewResult
+} from './repo/getChangePreview';
 import getMember, { GetMemberArgs } from './repo/getMember';
 import getMembers from './repo/getMembers';
+import getUpcomingPayment, {
+  GetUpcomingPaymentResult
+} from './repo/getUpcomingPayment';
 import isEmailTaken, { IsEmailTakenArgs } from './repo/isEmailToken';
 import promoteMembers from './repo/promoteMembers';
 import respondToApplicants, {
@@ -81,6 +88,15 @@ export default class MemberResolver {
     );
   }
 
+  @Authorized()
+  @Query(() => GetChangePreviewResult, { nullable: true })
+  async getChangePreview(
+    @Args() args: CreateSubsciptionArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<GetChangePreviewResult> {
+    return getChangePreview(args, ctx);
+  }
+
   @Authorized('ADMIN')
   @Query(() => [Member])
   async getDatabase(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
@@ -122,6 +138,14 @@ export default class MemberResolver {
   @Query(() => [Member])
   async getMembers(@Ctx() ctx: GQLContext): Promise<Member[]> {
     return getMembers(ctx);
+  }
+
+  @Authorized()
+  @Query(() => GetUpcomingPaymentResult, { nullable: true })
+  async getUpcomingPayment(
+    @Ctx() ctx: GQLContext
+  ): Promise<GetUpcomingPaymentResult> {
+    return getUpcomingPayment(ctx);
   }
 
   @Authorized('OWNER')

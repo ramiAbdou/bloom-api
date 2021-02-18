@@ -9,15 +9,9 @@ import createLifetimePayment, {
 import createSubscription, {
   CreateSubsciptionArgs
 } from './repo/createSubscription';
-import getChangePreview, {
-  GetChangePreviewResult
-} from './repo/getChangePreview';
 import getMemberPayments, {
   GetMemberPaymentsArgs
 } from './repo/getMemberPayments';
-import getUpcomingPayment, {
-  GetUpcomingPaymentResult
-} from './repo/getUpcomingPayment';
 
 @Resolver()
 export default class MemberPaymentResolver {
@@ -37,15 +31,6 @@ export default class MemberPaymentResolver {
     @Ctx() ctx: GQLContext
   ): Promise<MemberPayment> {
     return createSubscription(args, ctx);
-  }
-
-  @Authorized()
-  @Query(() => GetChangePreviewResult, { nullable: true })
-  async getChangePreview(
-    @Args() args: CreateSubsciptionArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<GetChangePreviewResult> {
-    return getChangePreview(args, ctx);
   }
 
   @Authorized()
@@ -70,13 +55,5 @@ export default class MemberPaymentResolver {
         populate: ['member.user']
       }
     );
-  }
-
-  @Authorized()
-  @Query(() => GetUpcomingPaymentResult, { nullable: true })
-  async getUpcomingPayment(
-    @Ctx() ctx: GQLContext
-  ): Promise<GetUpcomingPaymentResult> {
-    return getUpcomingPayment(ctx);
   }
 }

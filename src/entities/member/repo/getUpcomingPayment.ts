@@ -1,5 +1,4 @@
 import day from 'dayjs';
-import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
 import { Field, ObjectType } from 'type-graphql';
 
@@ -7,14 +6,14 @@ import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import CommunityIntegrations from '../../community-integrations/CommunityIntegrations';
-import Member from '../../member/Member';
+import Member from '../Member';
 
 @ObjectType()
 export class GetUpcomingPaymentResult {
-  @Field(() => Number, { nullable: true })
+  @Field(() => Number)
   amount: number;
 
-  @Field({ nullable: true })
+  @Field()
   nextPaymentDate: string;
 }
 
@@ -34,7 +33,7 @@ const getUpcomingPayment = async ({
 
   const invoice: Stripe.Invoice = await stripe.invoices.retrieveUpcoming(
     { customer: member.stripeCustomerId },
-    { idempotencyKey: nanoid(), stripeAccount: integrations?.stripeAccountId }
+    integrations.stripeOptions
   );
 
   if (!invoice) return null;
