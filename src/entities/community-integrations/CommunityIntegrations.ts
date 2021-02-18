@@ -25,17 +25,16 @@ export default class CommunityIntegrations extends BaseEntity {
   @Property({ nullable: true })
   stripeAccountId: string;
 
-  @Property({ persist: false })
-  get stripeOptions(): Stripe.RequestOptions {
-    return { idempotencyKey: nanoid(), stripeAccount: this.stripeAccountId };
-  }
-
   @Property({ nullable: true, unique: true })
   zapierApiKey: string;
 
   @Field(() => Boolean)
   isMailchimpAuthenticated(): boolean {
     return !!this.mailchimpAccessToken;
+  }
+
+  stripeOptions(): Stripe.RequestOptions {
+    return { idempotencyKey: nanoid(), stripeAccount: this.stripeAccountId };
   }
 
   @Field(() => String, { nullable: true })

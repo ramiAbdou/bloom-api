@@ -4,7 +4,7 @@ import { stripe } from '../Stripe.util';
 
 interface CreateAndPayStripeInvoiceArgs {
   customerId: string;
-  options: Stripe.RequestOptions;
+  options: () => Stripe.RequestOptions;
   priceId: string;
 }
 
@@ -15,17 +15,17 @@ const createAndPayStripeInvoice = async ({
 }: CreateAndPayStripeInvoiceArgs): Promise<Stripe.Invoice> => {
   await stripe.invoiceItems.create(
     { customer: customerId, price: priceId },
-    options
+    options()
   );
 
   const invoice: Stripe.Invoice = await stripe.invoices.create(
     { auto_advance: false, customer: customerId },
-    options
+    options()
   );
 
   const paidInvoice: Stripe.Invoice = await stripe.invoices.pay(
     invoice.id,
-    options
+    options()
   );
 
   return paidInvoice;

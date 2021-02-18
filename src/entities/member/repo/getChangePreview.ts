@@ -6,7 +6,7 @@ import BloomManager from '@core/db/BloomManager';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import Community from '../../community/Community';
 import MemberType from '../../member-type/MemberType';
-import Member from '../../member/Member';
+import Member from '../Member';
 import { CreateSubsciptionArgs } from './createSubscription';
 
 @ObjectType()
@@ -44,7 +44,7 @@ const getChangePreview = async (
 
   const subscription = await stripe.subscriptions.retrieve(
     stripeSubscriptionId,
-    community.integrations.stripeOptions
+    community.integrations.stripeOptions()
   );
 
   const prorationDate = Math.floor(Date.now() / 1000);
@@ -59,7 +59,7 @@ const getChangePreview = async (
       subscription_proration_behavior: 'always_invoice',
       subscription_proration_date: prorationDate
     },
-    community.integrations.stripeOptions
+    community.integrations.stripeOptions()
   );
 
   const dollarAmount = invoice.amount_due / 100;

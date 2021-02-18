@@ -33,7 +33,7 @@ const getUpcomingPayment = async ({
 
   const invoice: Stripe.Invoice = await stripe.invoices.retrieveUpcoming(
     { customer: member.stripeCustomerId },
-    integrations.stripeOptions
+    integrations.stripeOptions()
   );
 
   if (!invoice) return null;

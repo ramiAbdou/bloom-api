@@ -39,7 +39,7 @@ const createLifetimePayment = async (
   if (member.stripeSubscriptionId) {
     await stripe.subscriptions.del(
       member.stripeSubscriptionId,
-      integrations.stripeOptions
+      integrations.stripeOptions()
     );
 
     member.stripeSubscriptionId = null;

@@ -3,7 +3,7 @@ import Stripe from 'stripe';
 import { stripe } from '../Stripe.util';
 
 export interface UpdateStripeSubscriptionArgs {
-  options: Stripe.RequestOptions;
+  options: () => Stripe.RequestOptions;
   priceId: string;
   prorationDate: number;
   subscriptionId: string;
@@ -17,7 +17,7 @@ const updateStripeSubscription = async ({
 }: UpdateStripeSubscriptionArgs): Promise<Stripe.Subscription> => {
   const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(
     subscriptionId,
-    options
+    options()
   );
 
   const updatedSubscription = await stripe.subscriptions.update(
@@ -28,7 +28,7 @@ const updateStripeSubscription = async ({
       proration_behavior: 'always_invoice',
       proration_date: prorationDate
     },
-    options
+    options()
   );
 
   return updatedSubscription;

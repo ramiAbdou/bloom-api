@@ -37,7 +37,7 @@ const updatePaymentMethod = async (
   await stripe.paymentMethods.attach(
     paymentMethodId,
     { customer: stripeCustomerId },
-    community.integrations.stripeOptions
+    community.integrations.stripeOptions()
   );
 
   // Sets the PaymentMethod to be the default method for the customer. Will
@@ -45,7 +45,7 @@ const updatePaymentMethod = async (
   await stripe.customers.update(
     stripeCustomerId,
     { invoice_settings: { default_payment_method: paymentMethodId } },
-    community.integrations.stripeOptions
+    community.integrations.stripeOptions()
   );
 
   member.stripePaymentMethodId = paymentMethodId;

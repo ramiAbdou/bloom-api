@@ -4,7 +4,7 @@ import { stripe } from '../Stripe.util';
 
 export interface CreateStripeSubscriptionArgs {
   customerId: string;
-  options: Stripe.RequestOptions;
+  options: () => Stripe.RequestOptions;
   priceId: string;
 }
 
@@ -19,7 +19,7 @@ const createStripeSubscription = async ({
       expand: ['latest_invoice.payment_intent'],
       items: [{ price: priceId }]
     },
-    options
+    options()
   );
 
   return subscription;
