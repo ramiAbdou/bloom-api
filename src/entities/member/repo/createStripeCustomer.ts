@@ -28,12 +28,11 @@ const createStripeCustomer = async ({
   await bm.em.populate(member, ['community.integrations']);
 
   const { email, fullName } = member.user;
-  const { stripeAccountId } = member.community.integrations;
 
   const existingStripeCustomers: Stripe.Customer[] = (
     await stripe.customers.list(
       { email, limit: 1 },
-      { stripeAccount: stripeAccountId }
+      member.community.integrations.stripeOptions
     )
   )?.data;
 
@@ -45,7 +44,7 @@ const createStripeCustomer = async ({
     : (
         await stripe.customers.create(
           { email, name: fullName },
-          { stripeAccount: stripeAccountId }
+          member.community.integrations.stripeOptions
         )
       ).id;
 

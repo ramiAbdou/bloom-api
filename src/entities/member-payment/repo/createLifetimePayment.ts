@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
 import { ArgsType, Field } from 'type-graphql';
 
@@ -24,7 +23,7 @@ const createLifetimePayment = async (
 ): Promise<MemberPayment> => {
   const bm = new BloomManager();
 
-  const [{ stripeAccountId }, type]: [
+  const [integrations, type]: [
     CommunityIntegrations,
     MemberType
   ] = await Promise.all([
@@ -39,27 +38,27 @@ const createLifetimePayment = async (
   const { stripePriceId } = type;
 
   if (stripeSubscriptionId) {
-    await stripe.subscriptions.del(stripeSubscriptionId, {
-      idempotencyKey: nanoid(),
-      stripeAccount: stripeAccountId
-    });
+    await stripe.subscriptions.del(
+      stripeSubscriptionId,
+      integrations.stripeOptions
+    );
   }
 
   await stripe.invoiceItems.create(
     { customer: stripeCustomerId, price: stripePriceId },
-    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
+    integrations.stripeOptions
   );
 
   // Creates the recurring subscription.
   const invoice: Stripe.Invoice = await stripe.invoices.create(
     { auto_advance: false, customer: stripeCustomerId },
-    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
+    integrations.stripeOptions
   );
 
-  const paidInvoice: Stripe.Invoice = await stripe.invoices.pay(invoice.id, {
-    idempotencyKey: nanoid(),
-    stripeAccount: stripeAccountId
-  });
+  const paidInvoice: Stripe.Invoice = await stripe.invoices.pay(
+    invoice.id,
+    integrations.stripeOptions
+  );
 
   const payment: MemberPayment = await createMemberPayment(
     { invoice: paidInvoice, typeId: type.id },

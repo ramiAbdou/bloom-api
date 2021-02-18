@@ -16,7 +16,7 @@ const getNextPaymentDate = async (memberId: string) => {
 
   const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(
     stripeSubscriptionId,
-    { stripeAccount: community.integrations.stripeAccountId }
+    community.integrations.stripeOptions
   );
 
   return day.utc(subscription?.current_period_end);

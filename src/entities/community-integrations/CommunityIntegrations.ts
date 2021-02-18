@@ -1,4 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import { nanoid } from 'nanoid';
+import Stripe from 'stripe';
 import { Field, ObjectType } from 'type-graphql';
 import { Entity, OneToOne, Property } from '@mikro-orm/core';
 
@@ -20,22 +22,16 @@ export default class CommunityIntegrations extends BaseEntity {
   mailchimpListId: string;
 
   @Field({ nullable: true })
-  @Property({ nullable: true, unique: true })
+  @Property({ nullable: true })
   stripeAccountId: string;
+
+  @Property({ persist: false })
+  get stripeOptions(): Stripe.RequestOptions {
+    return { idempotencyKey: nanoid(), stripeAccount: this.stripeAccountId };
+  }
 
   @Property({ nullable: true, unique: true })
   zapierApiKey: string;
-
-  // ## RELATIONSHIPS
-
-  @Field(() => Community)
-  @OneToOne(() => Community, ({ integrations }) => integrations, {
-    owner: true
-  })
-  community: Community;
-
-  // ## MEMBER FUNCTIONS
-  // ## MAILCHIMP
 
   @Field(() => Boolean)
   isMailchimpAuthenticated(): boolean {
@@ -70,4 +66,12 @@ export default class CommunityIntegrations extends BaseEntity {
     const { data } = await axios(options);
     return data?.lists?.map(({ id, name }) => ({ id, name }));
   }
+
+  // ## RELATIONSHIPS
+
+  @Field(() => Community)
+  @OneToOne(() => Community, ({ integrations }) => integrations, {
+    owner: true
+  })
+  community: Community;
 }

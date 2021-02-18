@@ -32,9 +32,7 @@ const getPaymentMethod = async (
 
   const paymentMethod = await stripe.paymentMethods.retrieve(
     stripePaymentMethodId,
-    {
-      stripeAccount: community.integrations.stripeAccountId
-    }
+    community.integrations.stripeOptions
   );
 
   const { address } = paymentMethod.billing_details;

@@ -37,7 +37,6 @@ const getChangePreview = async (
     bm.findOne(MemberType, { id: memberTypeId })
   ]);
 
-  const { stripeAccountId } = community.integrations;
   const { stripeCustomerId, stripeSubscriptionId } = member;
   const { stripePriceId } = type;
 
@@ -45,7 +44,7 @@ const getChangePreview = async (
 
   const subscription = await stripe.subscriptions.retrieve(
     stripeSubscriptionId,
-    { stripeAccount: stripeAccountId }
+    community.integrations.stripeOptions
   );
 
   const prorationDate = Math.floor(Date.now() / 1000);
@@ -60,7 +59,7 @@ const getChangePreview = async (
       subscription_proration_behavior: 'always_invoice',
       subscription_proration_date: prorationDate
     },
-    { stripeAccount: stripeAccountId }
+    community.integrations.stripeOptions
   );
 
   const dollarAmount = invoice.amount_due / 100;

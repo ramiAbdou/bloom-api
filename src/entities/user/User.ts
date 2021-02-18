@@ -26,6 +26,12 @@ export default class User extends BaseEntity {
   firstName: string;
 
   @Field()
+  @Property({ persist: false })
+  get fullName(): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
+
+  @Field()
   @Property()
   lastName: string;
 
@@ -73,12 +79,6 @@ export default class User extends BaseEntity {
     this.email = this.email.toLowerCase();
     this.firstName = this.firstName.trim();
     this.lastName = this.lastName.trim();
-  }
-
-  @Field()
-  @Property({ persist: false })
-  get fullName(): string {
-    return `${this.firstName} ${this.lastName}`;
   }
 
   // ## RELATIONSHIPS
