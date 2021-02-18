@@ -1,13 +1,11 @@
-// eslint-disable-next-line simple-import-sort/sort
 import { Connection, IDatabaseDriver, Options } from '@mikro-orm/core';
 
 import { APP, isProduction } from '@constants';
-import * as entities from '@entities/entities';
-import BaseEntity from '@core/db/BaseEntity';
 import BaseCompositeEntity from '@core/db/BaseCompositeEntity';
-import BloomSubscriber from '@core/db/BloomSubscriber';
+import BaseEntity from '@core/db/BaseEntity';
+import BloomManagerSubscriber from '@core/db/BloomManager.subscriber';
 import NamingStrategy from '@core/db/NamingStrategy';
-import UserSubscriber from '@entities/user/User.subscriber';
+import * as entities from '@entities/entities';
 
 /**
  * Exports all of the database connection and initialization information.
@@ -22,6 +20,6 @@ export default {
   entities: [BaseEntity, BaseCompositeEntity, ...Object.values(entities)],
   filters: { notDeleted: { args: false, cond: { deletedAt: null } } },
   namingStrategy: NamingStrategy,
-  subscribers: [new BloomSubscriber(), new UserSubscriber()],
+  subscribers: [new BloomManagerSubscriber()],
   type: 'postgresql'
 } as Options<IDatabaseDriver<Connection>>;

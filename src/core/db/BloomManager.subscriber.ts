@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this */
-
 import {
   AnyEntity,
   ChangeSet,
@@ -9,7 +7,7 @@ import {
 
 import logger, { LoggerChangeSet, LoggerChangeType } from '@util/logger';
 
-export default class BloomSubscriber implements EventSubscriber {
+export default class BloomManagerSubscriber implements EventSubscriber {
   async onFlush<T>({ em, uow }: FlushEventArgs): Promise<void> {
     const changes: LoggerChangeSet[] = uow
       .getChangeSets()
