@@ -44,7 +44,6 @@ const createMemberPayment = async (
     cacheKeysToInvalidate: [
       `${QueryEvent.GET_ACTIVE_DUES_GROWTH}-${communityId}`,
       `${QueryEvent.GET_DATABASE}-${communityId}`,
-      `${QueryEvent.GET_MEMBER}-${memberId}`,
       `${QueryEvent.GET_PAYMENTS}-${memberId}`,
       `${QueryEvent.GET_PAYMENTS}-${communityId}`,
       `${QueryEvent.GET_TOTAL_DUES_COLLECTED}-${communityId}`,

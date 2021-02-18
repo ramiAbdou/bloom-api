@@ -26,8 +26,6 @@ export class CreateEventGuestArgs {
 /**
  * Returns a new EventGuest.
  *
- * Invalidates QueryEvent.GET_EVENT and QueryEvent.GET_PAST_EVENTS.
- *
  * @param args.eventId - Identifier of the event.
  * @param ctx.communityId - Identifier of the community.
  * @param ctx.memberId - Identifier of the member.

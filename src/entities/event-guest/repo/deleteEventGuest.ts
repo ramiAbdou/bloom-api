@@ -17,8 +17,6 @@ export class DeleteEventGuestArgs {
  * Hard deletes the EventGuest. Returns true if successful, throws error
  * otherwise.
  *
- * Invalidates QueryEvent.GET_EVENT and QueryEvent.GET_UPCOMING_EVENTS.
- *
  * @param args.eventId - ID of the event.
  * @param ctx.communityId - ID of the community.
  * @param ctx.memberId - ID of the member.

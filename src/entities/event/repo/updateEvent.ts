@@ -52,7 +52,6 @@ const updateEvent = async (
     { ...args },
     {
       cacheKeysToInvalidate: [
-        `${QueryEvent.GET_EVENT}-${eventId}`,
         ...(args?.recordingUrl
           ? [`${QueryEvent.GET_PAST_EVENTS}-${communityId}`]
           : [`${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`])

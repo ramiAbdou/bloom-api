@@ -24,8 +24,6 @@ export class CreateEventAttendeeArgs {
 /**
  * Returns a new EventAttendee.
  *
- * Invalidates QueryEvent.GET_EVENT and QueryEvent.GET_PAST_EVENTS.
- *
  * @param args.email - Email of the NON-MEMBER attendee.
  * @param args.firstName - First name of the NON-MEMBER attendee.
  * @param args.lastName - Last name of the NON-MEMBER attendee.

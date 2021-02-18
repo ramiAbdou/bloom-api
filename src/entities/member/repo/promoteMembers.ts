@@ -18,10 +18,7 @@ const promoteMembers = async (
     {
       cacheKeysToInvalidate: [
         `${QueryEvent.GET_DATABASE}-${communityId}`,
-        `${QueryEvent.GET_DIRECTORY}-${communityId}`,
-        ...memberIds.map(
-          (memberId: string) => `${QueryEvent.GET_MEMBER}-${memberId}`
-        )
+        `${QueryEvent.GET_DIRECTORY}-${communityId}`
       ],
       event: 'PROMOTE_MEMBERS'
     }

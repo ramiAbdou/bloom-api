@@ -1,5 +1,6 @@
 import { Authorized, Field, ObjectType } from 'type-graphql';
 import {
+  AfterUpdate,
   BeforeCreate,
   BeforeUpdate,
   Cascade,
@@ -11,6 +12,8 @@ import {
   Property
 } from '@mikro-orm/core';
 
+import { QueryEvent } from '@constants';
+import cache from '@core/cache/cache';
 import BaseEntity from '@core/db/BaseEntity';
 import { now } from '@util/util';
 import Community from '../community/Community';
@@ -112,6 +115,11 @@ export default class Member extends BaseEntity {
     if (this.status === MemberStatus.ACCEPTED && !this.joinedAt) {
       this.joinedAt = now();
     }
+  }
+
+  @AfterUpdate()
+  afterUpdate() {
+    cache.invalidateEntries([`${QueryEvent.GET_MEMBER}-${this.id}`]);
   }
 
   // ## RELATIONSHIPS
