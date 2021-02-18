@@ -1,7 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
 import { FilterQuery } from '@mikro-orm/core';
 
-import { GQLContext, QueryEvent } from '@constants';
+import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import addGoogleCalendarEventAttendee from '@integrations/google/repo/addGoogleCalendarEventAttendee';
 import Event from '../../event/Event';
@@ -27,16 +27,12 @@ export class CreateEventGuestArgs {
  * Returns a new EventGuest.
  *
  * @param args.eventId - Identifier of the event.
- * @param ctx.communityId - Identifier of the community.
  * @param ctx.memberId - Identifier of the member.
+ * @param ctx.userId - Identifier of the user.
  */
 const createEventGuest = async (
   { eventId, ...args }: CreateEventGuestArgs,
-  {
-    communityId,
-    memberId,
-    userId
-  }: Pick<GQLContext, 'communityId' | 'memberId' | 'userId'>
+  { memberId, userId }: Pick<GQLContext, 'memberId' | 'userId'>
 ) => {
   const partialUser: Partial<User> = args.email
     ? { ...args }
@@ -63,11 +59,7 @@ const createEventGuest = async (
   const guest: EventGuest = await new BloomManager().createAndFlush(
     EventGuest,
     { ...baseArgs, ...partialUser },
-    {
-      cacheKeysToInvalidate: [`${QueryEvent.GET_EVENT_GUESTS}-${eventId}`],
-      event: 'CREATE_EVENT_GUEST',
-      populate: ['member.user']
-    }
+    { event: 'CREATE_EVENT_GUEST', populate: ['member.user'] }
   );
 
   // If the event is updating only b/c of the googleCalendarEventId, don't

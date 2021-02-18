@@ -1,8 +1,8 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
+import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import deleteGoogleCalendarEventAttendee from '../../../integrations/google/repo/deleteGoogleCalendarEventAttendee';
+import deleteGoogleCalendarEventAttendee from '@integrations/google/repo/deleteGoogleCalendarEventAttendee';
 import Event from '../../event/Event';
 import User from '../../user/User';
 import EventGuest from '../EventGuest';
@@ -28,10 +28,7 @@ const deleteEventGuest = async (
   const guest: EventGuest = await new BloomManager().findOneAndDelete(
     EventGuest,
     { event: { id: eventId }, member: { id: memberId } },
-    {
-      cacheKeysToInvalidate: [`${QueryEvent.GET_EVENT_GUESTS}-${eventId}`],
-      event: 'DELETE_EVENT_GUEST'
-    }
+    { event: 'DELETE_EVENT_GUEST' }
   );
 
   // If the event is updating only b/c of the googleCalendarEventId, don't

@@ -1,10 +1,8 @@
-import { QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../Member';
 import { MemberStatus } from '../Member.types';
 
 interface UpdateInvitedStatusesArgs {
-  communityId: string;
   email: string;
 }
 
@@ -13,7 +11,6 @@ interface UpdateInvitedStatusesArgs {
  * Precondition: Should only be called when a user is logging into Bloom.
  */
 const acceptInvitations = async ({
-  communityId,
   email
 }: UpdateInvitedStatusesArgs): Promise<Member[]> => {
   const bm = new BloomManager();
@@ -23,13 +20,7 @@ const acceptInvitations = async ({
     if (member.status === 'INVITED') member.status = MemberStatus.ACCEPTED;
   });
 
-  await bm.flush({
-    cacheKeysToInvalidate: [
-      `${QueryEvent.GET_DATABASE}-${communityId}`,
-      `${QueryEvent.GET_DIRECTORY}-${communityId}`
-    ],
-    event: 'ACCEPT_INVITATIONS'
-  });
+  await bm.flush({ event: 'ACCEPT_INVITATIONS' });
 
   return members;
 };

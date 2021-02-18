@@ -53,11 +53,8 @@ export default class MemberResolver {
 
   @Authorized('ADMIN')
   @Mutation(() => [Member])
-  async deleteMembers(
-    @Args() args: DeleteMembersArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<Member[]> {
-    return deleteMembers(args, ctx);
+  async deleteMembers(@Args() args: DeleteMembersArgs): Promise<Member[]> {
+    return deleteMembers(args);
   }
 
   @Authorized('OWNER')
@@ -149,9 +146,9 @@ export default class MemberResolver {
   }
 
   @Authorized('OWNER')
-  @Mutation(() => [Member], { nullable: true })
-  async promoteMembers(@Args() args: AdminArgs, @Ctx() ctx: GQLContext) {
-    return promoteMembers(args, ctx);
+  @Mutation(() => [Member])
+  async promoteMembers(@Args() args: AdminArgs) {
+    return promoteMembers(args);
   }
 
   @Authorized('ADMIN')
@@ -165,11 +162,8 @@ export default class MemberResolver {
 
   @Authorized('ADMIN')
   @Mutation(() => [Member])
-  async restoreMembers(
-    @Args() args: RestoreMembersArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<Member[]> {
-    return restoreMembers(args, ctx);
+  async restoreMembers(@Args() args: RestoreMembersArgs): Promise<Member[]> {
+    return restoreMembers(args);
   }
 
   @Authorized()

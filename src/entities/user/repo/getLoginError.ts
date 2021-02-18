@@ -49,7 +49,7 @@ const getLoginError = async ({
   // possible if an admin added them manually), then we should set those
   // statuses to be ACCEPTED.
   if (members.some(({ status }) => status === 'INVITED')) {
-    await acceptInvitations({ communityId, email });
+    await acceptInvitations({ email });
   }
 
   return members.reduce((acc: LoginError, { status }: Member) => {

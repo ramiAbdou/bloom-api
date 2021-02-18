@@ -1,7 +1,6 @@
 import { IsEmail, IsUrl } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
 import {
-  AfterUpdate,
   BeforeCreate,
   Collection,
   Entity,
@@ -9,8 +8,6 @@ import {
   Property
 } from '@mikro-orm/core';
 
-import { QueryEvent } from '@constants';
-import cache from '@core/cache/cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Member from '../member/Member';
 
@@ -82,11 +79,6 @@ export default class User extends BaseEntity {
     this.email = this.email.toLowerCase();
     this.firstName = this.firstName.trim();
     this.lastName = this.lastName.trim();
-  }
-
-  @AfterUpdate()
-  afterUpdate() {
-    cache.invalidateEntries([`${QueryEvent.GET_USER}-${this.id}`]);
   }
 
   // ## RELATIONSHIPS

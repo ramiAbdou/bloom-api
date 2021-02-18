@@ -1,7 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
 import { FilterQuery } from '@mikro-orm/core';
 
-import { GQLContext, QueryEvent } from '@constants';
+import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import User from '../../user/User';
 import EventAttendee from '../EventAttendee';
@@ -33,11 +33,7 @@ export class CreateEventAttendeeArgs {
  */
 const createEventAttendee = async (
   { email, firstName, lastName, eventId }: CreateEventAttendeeArgs,
-  {
-    communityId,
-    memberId,
-    userId
-  }: Pick<GQLContext, 'communityId' | 'memberId' | 'userId'>
+  { memberId, userId }: Pick<GQLContext, 'memberId' | 'userId'>
 ) => {
   const partialUser: Pick<User, 'email' | 'firstName' | 'lastName'> = email
     ? { email, firstName, lastName }
@@ -64,14 +60,7 @@ const createEventAttendee = async (
   const attendee = await new BloomManager().createAndFlush(
     EventAttendee,
     { ...baseArgs, ...partialUser },
-    {
-      cacheKeysToInvalidate: [
-        `${QueryEvent.GET_EVENT_ATTENDEES}-${eventId}`,
-        `${QueryEvent.GET_EVENT_ATTENDEES_SERIES}-${communityId}`
-      ],
-      event: 'CREATE_EVENT_ATTENDEE',
-      populate: ['member.user']
-    }
+    { event: 'CREATE_EVENT_ATTENDEE', populate: ['member.user'] }
   );
 
   return attendee;

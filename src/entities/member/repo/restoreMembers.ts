@@ -1,6 +1,5 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../Member';
 
@@ -10,20 +9,13 @@ export class RestoreMembersArgs {
   memberIds: string[];
 }
 
-const restoreMembers = async (
-  { memberIds }: RestoreMembersArgs,
-  { communityId }: GQLContext
-): Promise<Member[]> => {
+const restoreMembers = async ({
+  memberIds
+}: RestoreMembersArgs): Promise<Member[]> => {
   return new BloomManager().findAndRestore(
     Member,
     { id: memberIds },
-    {
-      cacheKeysToInvalidate: [
-        `${QueryEvent.GET_DATABASE}-${communityId}`,
-        `${QueryEvent.GET_DIRECTORY}-${communityId}`
-      ],
-      event: 'RESTORE_MEMBERS'
-    }
+    { event: 'RESTORE_MEMBERS' }
   );
 };
 
