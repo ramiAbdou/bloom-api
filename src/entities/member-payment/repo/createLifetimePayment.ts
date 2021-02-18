@@ -3,6 +3,7 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import createAndPayStripeInvoice from '@integrations/stripe/repo/createAndPayStripeInvoice';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import CommunityIntegrations from '../../community-integrations/CommunityIntegrations';
 import MemberType from '../../member-type/MemberType';
@@ -21,47 +22,35 @@ const createLifetimePayment = async (
   { memberTypeId }: CreateLifetimePaymentArgs,
   { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<MemberPayment> => {
+  await createStripeCustomer({ memberId });
+
   const bm = new BloomManager();
 
-  const [integrations, type]: [
+  const [integrations, member, type]: [
     CommunityIntegrations,
+    Member,
     MemberType
   ] = await Promise.all([
     bm.findOne(CommunityIntegrations, { community: { id: communityId } }),
+    bm.findOne(Member, { id: memberId }),
     bm.findOne(MemberType, { id: memberTypeId })
   ]);
 
-  const member: Member = await createStripeCustomer({ memberId });
-  bm.em.merge(member);
-
-  const { stripeCustomerId, stripeSubscriptionId } = member;
-  const { stripePriceId } = type;
-
-  if (stripeSubscriptionId) {
+  if (member.stripeSubscriptionId) {
     await stripe.subscriptions.del(
-      stripeSubscriptionId,
+      member.stripeSubscriptionId,
       integrations.stripeOptions
     );
   }
 
-  await stripe.invoiceItems.create(
-    { customer: stripeCustomerId, price: stripePriceId },
-    integrations.stripeOptions
-  );
-
-  // Creates the recurring subscription.
-  const invoice: Stripe.Invoice = await stripe.invoices.create(
-    { auto_advance: false, customer: stripeCustomerId },
-    integrations.stripeOptions
-  );
-
-  const paidInvoice: Stripe.Invoice = await stripe.invoices.pay(
-    invoice.id,
-    integrations.stripeOptions
-  );
+  const invoice: Stripe.Invoice = await createAndPayStripeInvoice({
+    customerId: member.stripeCustomerId,
+    options: integrations.stripeOptions,
+    priceId: type.stripePriceId
+  });
 
   const payment: MemberPayment = await createMemberPayment(
-    { invoice: paidInvoice, typeId: type.id },
+    { invoice, typeId: memberTypeId },
     { communityId, memberId }
   );
 
