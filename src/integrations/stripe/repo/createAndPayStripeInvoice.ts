@@ -1,32 +1,33 @@
+import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
 
 import { stripe } from '../Stripe.util';
 
 interface CreateAndPayStripeInvoiceArgs {
+  accountId: string;
   customerId: string;
-  options: () => Stripe.RequestOptions;
   priceId: string;
 }
 
 const createAndPayStripeInvoice = async ({
+  accountId,
   customerId,
-  priceId,
-  options
+  priceId
 }: CreateAndPayStripeInvoiceArgs): Promise<Stripe.Invoice> => {
   await stripe.invoiceItems.create(
     { customer: customerId, price: priceId },
-    options()
+    { idempotencyKey: nanoid(), stripeAccount: accountId }
   );
 
   const invoice: Stripe.Invoice = await stripe.invoices.create(
     { auto_advance: false, customer: customerId },
-    options()
+    { idempotencyKey: nanoid(), stripeAccount: accountId }
   );
 
-  const paidInvoice: Stripe.Invoice = await stripe.invoices.pay(
-    invoice.id,
-    options()
-  );
+  const paidInvoice: Stripe.Invoice = await stripe.invoices.pay(invoice.id, {
+    idempotencyKey: nanoid(),
+    stripeAccount: accountId
+  });
 
   return paidInvoice;
 };

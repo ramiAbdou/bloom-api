@@ -47,13 +47,13 @@ const createSubscription = async (
   ]);
 
   const createSubscriptionArgs: CreateStripeSubscriptionArgs = {
+    accountId: community.integrations.stripeAccountId,
     customerId: member.stripeCustomerId,
-    options: community.integrations.stripeOptions,
     priceId: type.stripePriceId
   };
 
   const updateSubscriptionArgs: UpdateStripeSubscriptionArgs = {
-    options: community.integrations.stripeOptions,
+    accountId: community.integrations.stripeAccountId,
     priceId: type.stripePriceId,
     prorationDate,
     subscriptionId: member.stripeSubscriptionId

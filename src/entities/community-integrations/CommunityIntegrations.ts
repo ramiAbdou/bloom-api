@@ -33,10 +33,6 @@ export default class CommunityIntegrations extends BaseEntity {
     return !!this.mailchimpAccessToken;
   }
 
-  stripeOptions(): Stripe.RequestOptions {
-    return { idempotencyKey: nanoid(), stripeAccount: this.stripeAccountId };
-  }
-
   @Field(() => String, { nullable: true })
   async mailchimpListName(): Promise<string[]> {
     const { mailchimpAccessToken, mailchimpListId } = this;

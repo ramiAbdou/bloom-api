@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
 import { ArgsType, Field } from 'type-graphql';
 
@@ -37,18 +38,20 @@ const createLifetimePayment = async (
   ]);
 
   if (member.stripeSubscriptionId) {
-    await stripe.subscriptions.del(
-      member.stripeSubscriptionId,
-      integrations.stripeOptions()
-    );
+    await stripe.subscriptions.del(member.stripeSubscriptionId, {
+      idempotencyKey: nanoid(),
+      stripeAccount: integrations.stripeAccountId
+    });
 
     member.stripeSubscriptionId = null;
     await bm.flush({ event: 'DELETE_SUBSCRIPTION' });
   }
 
+  console.log('HERE', integrations);
+
   const invoice: Stripe.Invoice = await createAndPayStripeInvoice({
+    accountId: integrations.stripeAccountId,
     customerId: member.stripeCustomerId,
-    options: integrations.stripeOptions,
     priceId: type.stripePriceId
   });
 

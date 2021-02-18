@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
@@ -37,7 +38,10 @@ const updatePaymentMethod = async (
   await stripe.paymentMethods.attach(
     paymentMethodId,
     { customer: stripeCustomerId },
-    community.integrations.stripeOptions()
+    {
+      idempotencyKey: nanoid(),
+      stripeAccount: community.integrations.stripeAccountId
+    }
   );
 
   // Sets the PaymentMethod to be the default method for the customer. Will
@@ -45,7 +49,10 @@ const updatePaymentMethod = async (
   await stripe.customers.update(
     stripeCustomerId,
     { invoice_settings: { default_payment_method: paymentMethodId } },
-    community.integrations.stripeOptions()
+    {
+      idempotencyKey: nanoid(),
+      stripeAccount: community.integrations.stripeAccountId
+    }
   );
 
   member.stripePaymentMethodId = paymentMethodId;

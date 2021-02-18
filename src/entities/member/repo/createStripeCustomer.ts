@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
 
 import { GQLContext } from '@constants';
@@ -21,10 +22,12 @@ const createStripeCustomer = async ({
 
   await bm.em.populate(member, ['community.integrations', 'user']);
 
+  const { stripeAccountId } = member.community.integrations;
+
   const existingStripeCustomers: Stripe.Customer[] = (
     await stripe.customers.list(
       { email: member.user.email, limit: 1 },
-      member.community.integrations.stripeOptions
+      { stripeAccount: stripeAccountId }
     )
   )?.data;
 
@@ -36,7 +39,7 @@ const createStripeCustomer = async ({
     : (
         await stripe.customers.create(
           { email: member.user.email, name: member.user.fullName },
-          member.community.integrations.stripeOptions
+          { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
         )
       ).id;
 

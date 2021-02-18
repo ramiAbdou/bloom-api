@@ -1,23 +1,24 @@
+import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
 
 import { stripe } from '../Stripe.util';
 
 export interface UpdateStripeSubscriptionArgs {
-  options: () => Stripe.RequestOptions;
+  accountId: string;
   priceId: string;
   prorationDate: number;
   subscriptionId: string;
 }
 
 const updateStripeSubscription = async ({
-  options,
+  accountId,
   priceId,
   prorationDate,
   subscriptionId
 }: UpdateStripeSubscriptionArgs): Promise<Stripe.Subscription> => {
   const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(
     subscriptionId,
-    options()
+    { idempotencyKey: nanoid(), stripeAccount: accountId }
   );
 
   const updatedSubscription = await stripe.subscriptions.update(
@@ -28,7 +29,7 @@ const updateStripeSubscription = async ({
       proration_behavior: 'always_invoice',
       proration_date: prorationDate
     },
-    options()
+    { idempotencyKey: nanoid(), stripeAccount: accountId }
   );
 
   return updatedSubscription;
