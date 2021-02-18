@@ -1,5 +1,4 @@
 import Stripe from 'stripe';
-import { wrap } from '@mikro-orm/core';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
@@ -48,7 +47,8 @@ const createStripeCustomer = async ({
         )
       ).id;
 
-  wrap(member).assign({ stripeCustomerId });
+  member.stripeCustomerId = stripeCustomerId;
+
   await bm.flush({ event: 'STRIPE_CUSTOMER_CREATED' });
 
   return member;

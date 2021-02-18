@@ -1,5 +1,4 @@
 import Stripe from 'stripe';
-import { wrap } from '@mikro-orm/core';
 
 import { RecurrenceType } from '@entities/member-type/MemberType.types';
 import { stripe } from '@integrations/stripe/Stripe.util';
@@ -33,14 +32,15 @@ const createStripeProduct = async ({
     { stripeAccount: stripeAccountId }
   );
 
-  const recurring: Partial<Stripe.PriceCreateParams> =
-    recurrence === RecurrenceType.LIFETIME
-      ? {}
-      : {
-          recurring: {
-            interval: recurrence === RecurrenceType.MONTHLY ? 'month' : 'year'
-          }
-        };
+  let recurring: Partial<Stripe.PriceCreateParams> = {};
+
+  if (recurrence !== RecurrenceType.LIFETIME) {
+    recurring = {
+      recurring: {
+        interval: recurrence === RecurrenceType.MONTHLY ? 'month' : 'year'
+      }
+    };
+  }
 
   const { id: stripePriceId } = await stripe.prices.create(
     {
@@ -52,7 +52,8 @@ const createStripeProduct = async ({
     { stripeAccount: stripeAccountId }
   );
 
-  wrap(type).assign({ stripePriceId, stripeProductId });
+  type.stripePriceId = stripePriceId;
+  type.stripeProductId = stripeProductId;
 };
 
 /**

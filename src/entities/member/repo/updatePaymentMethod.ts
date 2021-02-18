@@ -1,6 +1,4 @@
-import { nanoid } from 'nanoid';
 import { ArgsType, Field } from 'type-graphql';
-import { wrap } from '@mikro-orm/core';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
@@ -50,7 +48,7 @@ const updatePaymentMethod = async (
     community.integrations.stripeOptions
   );
 
-  wrap(member).assign({ stripePaymentMethodId: paymentMethodId });
+  member.stripePaymentMethodId = paymentMethodId;
   await bm.flush({ event: 'PAYMENT_METHOD_UPDATED' });
 
   return member;
