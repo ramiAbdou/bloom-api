@@ -1,9 +1,10 @@
 import day from 'dayjs';
 import { QueryOrder } from '@mikro-orm/core';
 
-import { GQLContext, QueryEvent } from '@constants';
+import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
+import { QueryEvent } from '@util/events';
 import MemberPayment from '../../member-payment/MemberPayment';
 
 const getTotalDuesGrowth = async ({

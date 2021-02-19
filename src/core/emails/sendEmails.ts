@@ -1,5 +1,6 @@
-import { FlushEvent, isProduction } from '@constants';
+import { isProduction } from '@constants';
 import sg, { MailDataRequired } from '@sendgrid/mail';
+import { FlushEvent } from '@util/events';
 import logger from '@util/logger';
 import { SendEmailsArgs } from './emails.types';
 import { formatPersonalizations } from './emails.util';

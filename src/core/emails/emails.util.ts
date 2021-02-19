@@ -13,7 +13,7 @@ interface FormatPersonalizationData {
 export const formatPersonalizations = (
   variables: SendEmailsVars[]
 ): FormatPersonalizationData[] => {
-  return variables.map(({ email, ...vars }: SendEmailsVars) => {
-    return { dynamicTemplateData: vars, to: { email } };
+  return variables.map((args: SendEmailsVars) => {
+    return { dynamicTemplateData: args, to: { email: args.user.email } };
   });
 };

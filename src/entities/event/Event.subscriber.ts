@@ -5,11 +5,11 @@ import {
   EventSubscriber as ESubscriber
 } from '@mikro-orm/core';
 
-import { QueryEvent } from '@constants';
 import cache from '@core/db/cache';
 import createGoogleCalendarEvent from '@integrations/google/repo/createGoogleCalendarEvent';
 import deleteGoogleCalendarEvent from '@integrations/google/repo/deleteGoogleCalendarEvent';
 import updateGoogleCalendarEvent from '@integrations/google/repo/updateGoogleCalendarEvent';
+import { QueryEvent } from '@util/events';
 import Event from './Event';
 import updateEvent from './repo/updateEvent';
 

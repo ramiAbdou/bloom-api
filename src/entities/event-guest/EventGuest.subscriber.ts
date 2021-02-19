@@ -1,10 +1,10 @@
 import { EntityName, EventArgs, EventSubscriber } from '@mikro-orm/core';
 
-import { QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
 import addGoogleCalendarEventAttendee from '@integrations/google/repo/addGoogleCalendarEventAttendee';
 import deleteGoogleCalendarEventAttendee from '@integrations/google/repo/deleteGoogleCalendarEventAttendee';
+import { QueryEvent } from '@util/events';
 import Event from '../event/Event';
 import EventGuest from './EventGuest';
 

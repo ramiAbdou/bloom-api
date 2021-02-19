@@ -1,3 +1,5 @@
+import User from '../../entities/user/User';
+
 export enum EmailRecipient {
   ALL_ADMINS = 'ALL_ADMINS',
   AUTHENTICATED_USER = 'AUTHENTICATED_USER',
@@ -15,8 +17,7 @@ export enum EmailTemplate {
 // ## BASE EMAIL VARS
 
 interface BaseEmailVars {
-  firstName: string;
-  email: string;
+  user: User;
 }
 
 // ## LOGIN LINK

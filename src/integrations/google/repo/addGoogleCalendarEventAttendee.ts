@@ -1,6 +1,6 @@
 import { calendar_v3 } from 'googleapis';
 
-import { FlushEvent } from '@constants';
+import { FlushEvent } from '@util/events';
 import logger from '@util/logger';
 import { eventsCalendar } from '../Google.util';
 

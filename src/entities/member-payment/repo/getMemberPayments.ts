@@ -1,8 +1,9 @@
 import { ArgsType, Field } from 'type-graphql';
 import { QueryOrder } from '@mikro-orm/core';
 
-import { GQLContext, QueryEvent } from '@constants';
+import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { QueryEvent } from '@util/events';
 import MemberPayment from '../MemberPayment';
 
 @ArgsType()

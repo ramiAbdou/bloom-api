@@ -1,6 +1,6 @@
 import { EntityName, EventArgs, EventSubscriber } from '@mikro-orm/core';
 
-import { QueryEvent } from '@constants';
+import { QueryEvent } from '@util/events';
 import cache from '@core/db/cache';
 import MemberPayment from './MemberPayment';
 

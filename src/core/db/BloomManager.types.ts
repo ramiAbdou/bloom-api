@@ -1,6 +1,6 @@
 import { FindOneOptions, FindOptions } from '@mikro-orm/core';
 
-import { FlushEvent } from '@constants';
+import { FlushEvent } from '@util/events';
 
 export interface BloomCreateAndFlushArgs<P> {
   event?: FlushEvent;

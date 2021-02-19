@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 import { ArgsType, Field } from 'type-graphql';
 
-import { FlushEvent, GQLContext } from '@constants';
+import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import createStripeSubscription, {
   CreateStripeSubscriptionArgs
@@ -9,6 +9,7 @@ import createStripeSubscription, {
 import updateStripeSubscription, {
   UpdateStripeSubscriptionArgs
 } from '@integrations/stripe/repo/updateStripeSubscription';
+import { FlushEvent } from '@util/events';
 import Community from '../../community/Community';
 import MemberType from '../../member-type/MemberType';
 import Member from '../../member/Member';

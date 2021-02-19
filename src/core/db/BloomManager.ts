@@ -10,8 +10,8 @@ import {
   wrap
 } from '@mikro-orm/core';
 
-import { FlushEvent } from '@constants';
 import cache from '@core/db/cache';
+import { FlushEvent } from '@util/events';
 import logger from '@util/logger';
 import { now } from '@util/util';
 import {

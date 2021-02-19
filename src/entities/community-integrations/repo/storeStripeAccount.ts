@@ -1,7 +1,7 @@
-import { FlushEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import createStripeProducts from '@entities/member-type/repo/createStripeProducts';
 import { stripe } from '@integrations/stripe/Stripe.util';
+import { FlushEvent } from '@util/events';
 import CommunityIntegrations from '../CommunityIntegrations';
 import { CommunityIntegrationsAuthArgs } from '../CommunityIntegrations.types';
 

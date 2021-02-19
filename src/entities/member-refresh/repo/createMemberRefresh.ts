@@ -1,5 +1,5 @@
-import { FlushEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { FlushEvent } from '@util/events';
 import { MemberIdArgs } from '../../member/Member.types';
 import MemberRefresh from '../MemberRefresh';
 

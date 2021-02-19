@@ -1,7 +1,8 @@
-import { GQLContext, QueryEvent } from '@constants';
+import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
 import { MemberStatus } from '@entities/member/Member.types';
+import { QueryEvent } from '@util/events';
 import Member from '../../member/Member';
 
 const getActiveDuesGrowth = async ({ communityId }: GQLContext) => {

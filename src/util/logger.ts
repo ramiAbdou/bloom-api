@@ -2,7 +2,7 @@ import day from 'dayjs';
 import fs from 'fs';
 import { AnyEntity, EntityData } from '@mikro-orm/core';
 
-import { FlushEvent, LoggerEvent } from '@constants';
+import { FlushEvent, LoggerEvent } from '@util/events';
 import { now } from '@util/util';
 
 type LoggerLevel =

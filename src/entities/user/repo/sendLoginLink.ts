@@ -42,9 +42,9 @@ const sendLoginLink = async ({
     APP.CLIENT_URL + (pathname ?? '')
   ).addParam('token', token).url;
 
-  const { firstName } = await new BloomManager().findOne(User, { email });
+  const user: User = await new BloomManager().findOne(User, { email });
 
-  const variables: LoginLinkVars[] = [{ email, firstName, loginUrl }];
+  const variables: LoginLinkVars[] = [{ loginUrl, user }];
   await sendEmails({ template: EmailTemplate.LOGIN_LINK, variables });
 };
 

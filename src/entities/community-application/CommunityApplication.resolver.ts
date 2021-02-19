@@ -1,6 +1,6 @@
 import { Arg, Query, Resolver } from 'type-graphql';
 
-import { QueryEvent } from '@constants';
+import { QueryEvent } from '@util/events';
 import BloomManager from '@core/db/BloomManager';
 import CommunityApplication from './CommunityApplication';
 

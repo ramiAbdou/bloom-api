@@ -1,6 +1,7 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
+import { GQLContext } from '@constants';
+import { QueryEvent } from '@util/events';
 import BloomManager from '@core/db/BloomManager';
 import MemberPayment from './MemberPayment';
 import createLifetimePayment, {

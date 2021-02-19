@@ -1,4 +1,5 @@
-import { GQLContext, QueryEvent } from '@constants';
+import { GQLContext } from '@constants';
+import { QueryEvent } from '@util/events';
 import BloomManager from '@core/db/BloomManager';
 import { now } from '@util/util';
 import EventAttendee from '../EventAttendee';

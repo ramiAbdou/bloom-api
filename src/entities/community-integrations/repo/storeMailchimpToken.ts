@@ -1,8 +1,9 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { URLSearchParams } from 'url';
 
-import { APP, FlushEvent, isProduction } from '@constants';
+import { APP, isProduction } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { FlushEvent } from '@util/events';
 import CommunityIntegrations from '../CommunityIntegrations';
 import { CommunityIntegrationsAuthArgs } from '../CommunityIntegrations.types';
 

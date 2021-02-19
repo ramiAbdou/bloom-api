@@ -1,9 +1,10 @@
 import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
 
-import { FlushEvent, GQLContext } from '@constants';
+import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { stripe } from '@integrations/stripe/Stripe.util';
+import { FlushEvent } from '@util/events';
 import Member from '../Member';
 
 /**

@@ -1,8 +1,9 @@
 import { Response } from 'express';
 import { FilterQuery } from '@mikro-orm/core';
 
-import { AuthTokens, FlushEvent } from '@constants';
+import { AuthTokens } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { FlushEvent } from '@util/events';
 import { generateTokens, setHttpOnlyTokens } from '@util/util';
 import createMemberRefresh from '../../member-refresh/repo/createMemberRefresh';
 import Member from '../../member/Member';

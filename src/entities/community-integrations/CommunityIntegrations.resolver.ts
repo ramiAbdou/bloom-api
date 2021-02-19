@@ -1,7 +1,8 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
+import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { QueryEvent } from '@util/events';
 import CommunityIntegrations from './CommunityIntegrations';
 import updateIntegrations, {
   UpdateIntegrationsArgs

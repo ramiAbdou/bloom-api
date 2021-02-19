@@ -1,7 +1,8 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { FlushEvent, GQLContext } from '@constants';
+import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { FlushEvent } from '@util/events';
 import User from '../User';
 
 @ArgsType()

@@ -6,8 +6,9 @@ import advancedFormat from 'dayjs/plugin/advancedFormat';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 
-import { APP, LoggerEvent } from '@constants';
+import { APP } from '@constants';
 import db from '@core/db/db';
+import { LoggerEvent } from '@util/events';
 import logger from '@util/logger';
 import apollo from './apollo';
 import express from './express';

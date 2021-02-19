@@ -1,8 +1,8 @@
 import csv from 'csvtojson';
 import day from 'dayjs';
 
-import { FlushEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { FlushEvent } from '@util/events';
 import MemberData from '../../member-data/MemberData';
 import MemberType from '../../member-type/MemberType';
 import Member from '../../member/Member';

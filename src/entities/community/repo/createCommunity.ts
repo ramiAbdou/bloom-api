@@ -1,7 +1,7 @@
 import { EntityData } from '@mikro-orm/core';
 
-import { FlushEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { FlushEvent } from '@util/events';
 import CommunityApplication from '../../community-application/CommunityApplication';
 import CommunityIntegrations from '../../community-integrations/CommunityIntegrations';
 import MemberType from '../../member-type/MemberType';

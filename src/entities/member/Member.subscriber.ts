@@ -1,10 +1,10 @@
 import { EntityName, EventArgs, EventSubscriber } from '@mikro-orm/core';
 
-import { QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
 import { CommunityIntegrations } from '@entities/entities';
 import addToMailchimpAudience from '@integrations/mailchimp/repo/addToMailchimpAudience';
+import { QueryEvent } from '@util/events';
 import { hasKeys } from '@util/util';
 import Member from './Member';
 import { MemberStatus } from './Member.types';
