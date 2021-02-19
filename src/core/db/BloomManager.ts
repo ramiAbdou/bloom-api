@@ -43,7 +43,7 @@ class BloomManager {
     try {
       logger.log({ contextId: this.em.id, event, level: 'BEFORE_FLUSH' });
       await this.em.flush();
-      logger.log({ contextId: this.em.id, event, level: 'FLUSH_SUCCESS' });
+      logger.log({ contextId: this.em.id, event, level: 'AFTER_FLUSH' });
     } catch (e) {
       logger.log({
         contextId: this.em.id,

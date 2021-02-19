@@ -2,14 +2,14 @@ import day from 'dayjs';
 import fs from 'fs';
 import { AnyEntity, EntityData } from '@mikro-orm/core';
 
-import { FlushEvent, LoggerEvent } from '@util/events';
+import { FlushEvent, LoggerEvent, MiscEvent } from '@util/events';
 import { now } from '@util/util';
 
 type LoggerLevel =
+  | 'AFTER_FLUSH'
   | 'BEFORE_FLUSH'
   | 'ERROR'
   | 'FLUSH_ERROR'
-  | 'FLUSH_SUCCESS'
   | 'INFO'
   | 'ON_FLUSH';
 
@@ -26,7 +26,7 @@ interface LoggerLog {
   changes?: LoggerChangeSet[];
   contextId?: number;
   error?: string;
-  event?: FlushEvent | LoggerEvent;
+  event?: FlushEvent | LoggerEvent | MiscEvent;
   level: LoggerLevel;
   timestamp: string;
 }

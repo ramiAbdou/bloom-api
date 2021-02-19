@@ -1,6 +1,6 @@
 import { calendar_v3 } from 'googleapis';
 
-import { FlushEvent } from '@util/events';
+import { MiscEvent } from '@util/events';
 import logger from '@util/logger';
 import { eventsCalendar } from '../Google.util';
 
@@ -27,7 +27,7 @@ const createGoogleCalendarEvent = async (
     });
 
     logger.log({
-      event: FlushEvent.CREATE_GOOGLE_CALENDAR_EVENT,
+      event: MiscEvent.CREATE_GOOGLE_CALENDAR_EVENT,
       level: 'INFO'
     });
 
@@ -35,7 +35,7 @@ const createGoogleCalendarEvent = async (
   } catch (e) {
     logger.log({
       error: e,
-      event: FlushEvent.CREATE_GOOGLE_CALENDAR_EVENT,
+      event: MiscEvent.CREATE_GOOGLE_CALENDAR_EVENT,
       level: 'ERROR'
     });
 
