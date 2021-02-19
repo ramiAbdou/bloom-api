@@ -8,7 +8,7 @@ import logger from '@logger';
 import { stripe } from './Stripe.util';
 import handleInvoicePaid from './webhooks/handleInvoicePaid';
 
-const router = Router();
+const router: Router = Router();
 
 router.get('/auth', async ({ query }: Request, res: Response) => {
   const { code, state: urlName } = query as AuthQueryArgs;
