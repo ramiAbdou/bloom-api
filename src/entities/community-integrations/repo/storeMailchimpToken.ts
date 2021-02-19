@@ -1,9 +1,10 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { URLSearchParams } from 'url';
 
-import { APP, isProduction } from '@constants';
+import { APP, FlushEvent, isProduction } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '../CommunityIntegrations';
+import { CommunityIntegrationsAuthArgs } from '../CommunityIntegrations.types';
 
 /**
  * Returns the updated community after updating it's Mailchimp token. If
@@ -11,10 +12,10 @@ import CommunityIntegrations from '../CommunityIntegrations';
  *
  * Precondition: The community ID must represent a community.
  */
-const storeMailchimpToken = async (
-  urlName: string,
-  code: string
-): Promise<CommunityIntegrations> => {
+const storeMailchimpToken = async ({
+  code,
+  urlName
+}: CommunityIntegrationsAuthArgs): Promise<CommunityIntegrations> => {
   // All the other redirect URIs use localhost when in development, but
   // Mailchimp forces us to use 127.0.0.1 instead, so we can't use the
   // APP.SERVER_URL local URL.
@@ -38,7 +39,7 @@ const storeMailchimpToken = async (
     CommunityIntegrations,
     { community: { urlName } },
     { mailchimpAccessToken: data?.access_token },
-    { event: 'STORE_MAILCHIMP_TOKEN' }
+    { event: FlushEvent.STORE_MAILCHIMP_TOKEN }
   );
 
   return integrations;
