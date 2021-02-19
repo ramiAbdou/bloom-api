@@ -6,7 +6,11 @@ import path from 'path';
 import { FlushEvent, isProduction } from '@constants';
 import sg from '@sendgrid/mail';
 import logger from '@util/logger';
-import { emailSubjectFns, emailTemplateFiles, SendEmailArgs } from './types';
+import {
+  emailSubjectFns,
+  emailTemplateFiles,
+  SendEmailArgs
+} from './email.types';
 
 sg.setApiKey(process.env.SENDGRID_API_KEY);
 

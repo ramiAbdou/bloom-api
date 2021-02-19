@@ -1,4 +1,13 @@
-export enum EmailType {
+export enum EmailRecipient {
+  ALL_ADMINS = 'ALL_ADMINS',
+  AUTHENTICATED_USER = 'AUTHENTICATED_USER',
+  ALL_MEMBERS = 'ALL_MEMBERS',
+  COORDINATOR = 'COORDINATOR',
+  PUBLIC_USER = 'PUBLIC_USER',
+  TARGETED_MEMBERS = 'TARGETED_MEMBERS'
+}
+
+export enum EmailTemplate {
   LOGIN_LINK = 'LOGIN_LINK',
   PAYMENT_RECEIPT = 'PAYMENT_RECEIPT'
 }
@@ -22,7 +31,7 @@ export type PaymentReceiptVars = {
 };
 
 interface PaymentReceiptTemplate extends EmailBaseArgs {
-  template: EmailType.PAYMENT_RECEIPT;
+  template: EmailTemplate.PAYMENT_RECEIPT;
   variables: PaymentReceiptVars;
 }
 
@@ -31,7 +40,7 @@ interface PaymentReceiptTemplate extends EmailBaseArgs {
 export type LoginVars = { firstName: string; loginUrl: string };
 
 interface LoginTemplate extends EmailBaseArgs {
-  template: EmailType.LOGIN_LINK;
+  template: EmailTemplate.LOGIN_LINK;
   variables: LoginVars;
 }
 
@@ -39,14 +48,17 @@ export type SendEmailArgs = LoginTemplate | PaymentReceiptTemplate;
 
 // ## EMAIL TEMPLATE FILE MAP
 
-export const emailTemplateFiles: Record<EmailType, string> = {
+export const emailTemplateFiles: Record<EmailTemplate, string> = {
   LOGIN_LINK: 'login',
   PAYMENT_RECEIPT: 'payment-receipt'
 };
 
 // ## EMAIL SUBJECT MAP
 
-export const emailSubjectFns: Record<EmailType, (...args: any) => string> = {
+export const emailSubjectFns: Record<
+  EmailTemplate,
+  (...args: any) => string
+> = {
   LOGIN_LINK: (): string => 'Your Bloom Login Link',
   PAYMENT_RECEIPT: ({
     communityName

@@ -1,6 +1,6 @@
-import { EmailType } from './types';
+import { EmailTemplate } from './email.types';
 
 export default class EmailManager {
   // recipients
-  type: EmailType;
+  type: EmailTemplate;
 }
