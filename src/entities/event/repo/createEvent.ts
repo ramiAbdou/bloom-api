@@ -1,8 +1,9 @@
+import { nanoid } from 'nanoid';
 import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { FlushEvent } from '@util/events';
+import { EmailEvent, FlushEvent } from '@util/events';
 import Event from '../Event';
 
 @ArgsType()
@@ -34,12 +35,19 @@ export class CreateEventArgs {
 
 const createEvent = async (
   args: CreateEventArgs,
-  { communityId }: GQLContext
+  { communityId, memberId }: GQLContext
 ): Promise<Event> => {
+  const eventId = nanoid();
+
   const event: Event = await new BloomManager().createAndFlush(
     Event,
-    { ...args, community: { id: communityId } },
-    { flushEvent: FlushEvent.CREATE_EVENT, populate: ['community'] }
+    { ...args, community: { id: communityId }, id: eventId },
+    {
+      emailContext: { coordinatorId: memberId, eventId },
+      emailEvent: EmailEvent.CREATE_EVENT_COORDINATOR,
+      flushEvent: FlushEvent.CREATE_EVENT,
+      populate: ['community']
+    }
   );
 
   return event;

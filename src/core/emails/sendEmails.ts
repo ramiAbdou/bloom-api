@@ -2,8 +2,12 @@ import { isProduction } from '@constants';
 import sg, { MailDataRequired } from '@sendgrid/mail';
 import { MiscEvent } from '@util/events';
 import logger from '@util/logger';
-import { SendEmailsArgs } from './emails.types';
-import { formatPersonalizations } from './emails.util';
+import {
+  EmailRecipientLevel,
+  recipientLevels,
+  SendEmailsArgs
+} from './emails.types';
+import prepareEmailVariables from './prepareEmailVariables';
 
 /**
  * Sends an email using the given MJML template and the data that is needed
@@ -12,15 +16,21 @@ import { formatPersonalizations } from './emails.util';
  * @param mjml Name of the MJML file (including the .mjml extension).
  * @param variables Optional variables that populate the Handlebars template.
  */
-const sendEmails = async ({ event, variables }: SendEmailsArgs) => {
+const sendEmails = async (args: SendEmailsArgs) => {
+  const recipientLevel = recipientLevels[args?.event];
+
   // Shouldn't send any emails in development. If needed, comment this line
   // out manually each time.
-  if (!isProduction) return;
+  if (!isProduction && recipientLevel !== EmailRecipientLevel.COORDINATOR) {
+    return;
+  }
+
+  const personalizations = await prepareEmailVariables(args);
 
   const options: MailDataRequired = {
     from: 'team@bl.community',
-    personalizations: formatPersonalizations(variables),
-    templateId: process.env[`SENDGRID_${event}_TEMPLATE_ID`]
+    personalizations,
+    templateId: process.env[`SENDGRID_${args.event}_TEMPLATE_ID`]
   };
 
   try {

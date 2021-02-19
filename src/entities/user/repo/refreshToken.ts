@@ -41,7 +41,10 @@ const refreshToken = async ({
   // If no user found with the given arguments or a user is found and
   // the access token is expired, then exit. Also, if there is a loginToken
   // present, then we verify that before proceeding.
-  if (!user?.id) return null;
+  if (!user?.id) {
+    if (res) res.clearCookie('accessToken', 'refreshToken');
+    return null;
+  }
 
   let member: Member;
 

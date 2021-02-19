@@ -13,6 +13,7 @@ import {
 import cache from '@core/db/cache';
 import logger from '@util/logger';
 import { now } from '@util/util';
+import eventBus from '../eventBus';
 import {
   BloomCreateAndFlushArgs,
   BloomFindAndDeleteOptions,
@@ -40,10 +41,12 @@ class BloomManager {
   fork = () => new BloomManager();
 
   async flush?(args?: FlushArgs) {
+    const { emailContext, emailEvent, flushEvent } = args ?? {};
+
     try {
       logger.log({
         contextId: this.em.id,
-        event: args?.flushEvent,
+        event: flushEvent,
         level: 'BEFORE_FLUSH'
       });
 
@@ -51,14 +54,16 @@ class BloomManager {
 
       logger.log({
         contextId: this.em.id,
-        event: args?.flushEvent,
+        event: flushEvent,
         level: 'AFTER_FLUSH'
       });
+
+      if (emailEvent && emailContext) eventBus.emit(emailEvent, emailContext);
     } catch (e) {
       logger.log({
         contextId: this.em.id,
         error: e.stack,
-        event: args?.flushEvent,
+        event: flushEvent,
         level: 'FLUSH_ERROR'
       });
 

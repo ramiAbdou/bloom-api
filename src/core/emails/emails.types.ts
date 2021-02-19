@@ -2,12 +2,7 @@ import Event from '@entities/event/Event';
 import User from '@entities/user/User';
 import { EmailEvent } from '@util/events';
 
-// export interface EmailContext {
-//   communityId?: string;
-//   memberIds?: string;
-// }
-
-export enum EmailRecipient {
+export enum EmailRecipientLevel {
   ALL_ADMINS = 'ALL_ADMINS',
   AUTHENTICATED_USER = 'AUTHENTICATED_USER',
   ALL_MEMBERS = 'ALL_MEMBERS',
@@ -16,7 +11,18 @@ export enum EmailRecipient {
   TARGETED_MEMBERS = 'TARGETED_MEMBERS'
 }
 
+export const recipientLevels: Record<EmailEvent, EmailRecipientLevel> = {
+  CREATE_EVENT_COORDINATOR: EmailRecipientLevel.COORDINATOR,
+  LOGIN_LINK: EmailRecipientLevel.PUBLIC_USER,
+  PAYMENT_RECEIPT: EmailRecipientLevel.PUBLIC_USER
+};
+
 // ## CREATE EVENT COORDINATOR
+
+export interface CreateEventCoordinatorContext {
+  coordinatorId: string;
+  eventId: string;
+}
 
 export interface CreateEventCoordinatorVars {
   event: Event;
@@ -24,9 +30,8 @@ export interface CreateEventCoordinatorVars {
 }
 
 interface CreateEventCoordinatorTemplate {
+  context?: CreateEventCoordinatorContext;
   event: EmailEvent.CREATE_EVENT_COORDINATOR;
-  recipientLevel?: EmailRecipient.COORDINATOR;
-  variables: LoginLinkVars[];
 }
 
 // ## LOGIN LINK
@@ -37,9 +42,9 @@ export interface LoginLinkVars {
 }
 
 interface LoginLinkTemplate {
+  context?: CreateEventCoordinatorContext;
   event: EmailEvent.LOGIN_LINK;
-  recipientLevel?: EmailRecipient.PUBLIC_USER;
-  variables: LoginLinkVars[];
+  variables?: LoginLinkVars[];
 }
 
 // ## PAYMENT RECEIPT
@@ -57,10 +62,14 @@ export interface PaymentReceiptVars {
 }
 
 interface PaymentReceiptTemplate {
+  context?: CreateEventCoordinatorContext;
   event: EmailEvent.PAYMENT_RECEIPT;
-  recipientLevel?: EmailRecipient.AUTHENTICATED_USER;
-  variables: PaymentReceiptVars[];
+  variables?: PaymentReceiptVars[];
 }
+
+// ## EMAIL CONTEXT
+
+export type EmailContext = CreateEventCoordinatorContext;
 
 // ## SEND EMAILS VARS
 

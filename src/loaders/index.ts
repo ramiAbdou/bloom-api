@@ -1,5 +1,6 @@
+/* eslint-disable simple-import-sort/sort */
+
 import 'reflect-metadata'; // Needed for type-graphql compilation.
-import './misc';
 
 import day from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
@@ -12,6 +13,8 @@ import { LoggerEvent } from '@util/events';
 import logger from '@util/logger';
 import apollo from './apollo';
 import express from './express';
+
+import './misc';
 
 day.extend(advancedFormat);
 day.extend(utc);
