@@ -31,6 +31,7 @@ interface FormatPersonalizationsArgs {
 }
 
 interface FormatPersonalizationData {
+  dynamicTemplateData?: Record<string, any>;
   subject: string;
   substitutions?: Record<string, any>;
   to: { email: string };
@@ -43,7 +44,12 @@ export const formatPersonalizations = ({
   const subject: (...args: any) => string = subjects[template];
 
   return variables.map(({ email, ...vars }: SendEmailsVars) => {
-    return { subject: subject(vars), substitutions: vars, to: { email } };
+    return {
+      dynamicTemplateData: vars,
+      subject: subject(vars),
+      substitutions: vars,
+      to: { email }
+    };
   });
 };
 

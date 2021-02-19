@@ -17,7 +17,7 @@ import { formatPersonalizations, getHandlebarsTemplate } from './emails.util';
 const sendEmails = async ({ template, variables }: SendEmailsArgs) => {
   // Shouldn't send any emails in development. If needed, comment this line
   // out manually each time.
-  if (!isProduction) return;
+  // if (!isProduction) return;
 
   const handlebarsTemplate = getHandlebarsTemplate(template);
 
@@ -25,6 +25,9 @@ const sendEmails = async ({ template, variables }: SendEmailsArgs) => {
     // Needed to use mj-include with relative paths.
     filePath: path.join(__dirname, 'templates')
   });
+
+  console.log(html);
+  console.log(formatPersonalizations({ template, variables }));
 
   try {
     const options: MailDataRequired = {

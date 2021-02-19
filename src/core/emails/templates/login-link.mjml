@@ -12,13 +12,13 @@
         padding="8px 8px 16px 8px"
         border-radius="8px"
       >
-        <mj-text padding="8px 0 16px 0">Hi, {{ firstName }},</mj-text>
+      <mj-include path="../components/hi.mjml" />
 
         <mj-text padding-bottom="16px">
           Click on the button below to sign in to Bloom.
         </mj-text>
 
-        <mj-button href="{{loginUrl}}" height="36px">Log In to Bloom</mj-button>
+        <mj-button href="{{loginUrl}}">Log In to Bloom</mj-button>
       </mj-column>
     </mj-section>
 
