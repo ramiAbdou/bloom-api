@@ -8,7 +8,7 @@ const createMemberRefresh = async ({
 }: MemberIdArgs): Promise<MemberRefresh> => {
   const bm = new BloomManager();
   const refresh = bm.create(MemberRefresh, { member: { id: memberId } });
-  await bm.flush(FlushEvent.CREATE_MEMBER_REFRESH);
+  await bm.flush({ flushEvent: FlushEvent.CREATE_MEMBER_REFRESH });
   return refresh;
 };
 

@@ -1,4 +1,11 @@
-import User from '../../entities/user/User';
+import Event from '@entities/event/Event';
+import User from '@entities/user/User';
+import { EmailEvent } from '@util/events';
+
+// export interface EmailContext {
+//   communityId?: string;
+//   memberIds?: string;
+// }
 
 export enum EmailRecipient {
   ALL_ADMINS = 'ALL_ADMINS',
@@ -9,31 +16,35 @@ export enum EmailRecipient {
   TARGETED_MEMBERS = 'TARGETED_MEMBERS'
 }
 
-export enum EmailTemplate {
-  LOGIN_LINK = 'LOGIN_LINK',
-  PAYMENT_RECEIPT = 'PAYMENT_RECEIPT'
+// ## CREATE EVENT COORDINATOR
+
+export interface CreateEventCoordinatorVars {
+  event: Event;
+  user: User;
 }
 
-// ## BASE EMAIL VARS
-
-interface BaseEmailVars {
-  user: User;
+interface CreateEventCoordinatorTemplate {
+  event: EmailEvent.CREATE_EVENT_COORDINATOR;
+  recipientLevel?: EmailRecipient.COORDINATOR;
+  variables: LoginLinkVars[];
 }
 
 // ## LOGIN LINK
 
-export interface LoginLinkVars extends BaseEmailVars {
+export interface LoginLinkVars {
   loginUrl: string;
+  user: User;
 }
 
 interface LoginLinkTemplate {
-  template: EmailTemplate.LOGIN_LINK;
+  event: EmailEvent.LOGIN_LINK;
+  recipientLevel?: EmailRecipient.PUBLIC_USER;
   variables: LoginLinkVars[];
 }
 
 // ## PAYMENT RECEIPT
 
-export interface PaymentReceiptVars extends BaseEmailVars {
+export interface PaymentReceiptVars {
   amount: number;
   cardCompany: string;
   communityName: string;
@@ -42,17 +53,25 @@ export interface PaymentReceiptVars extends BaseEmailVars {
   paymentDateAndTime: string;
   renewalDate: string;
   stripeInvoiceId: string;
+  user: User;
 }
 
 interface PaymentReceiptTemplate {
-  template: EmailTemplate.PAYMENT_RECEIPT;
+  event: EmailEvent.PAYMENT_RECEIPT;
+  recipientLevel?: EmailRecipient.AUTHENTICATED_USER;
   variables: PaymentReceiptVars[];
 }
 
 // ## SEND EMAILS VARS
 
-export type SendEmailsVars = LoginLinkVars | PaymentReceiptVars;
+export type SendEmailsVars =
+  | CreateEventCoordinatorVars
+  | LoginLinkVars
+  | PaymentReceiptVars;
 
 // ## SEND EMAILS ARGS
 
-export type SendEmailsArgs = LoginLinkTemplate | PaymentReceiptTemplate;
+export type SendEmailsArgs =
+  | CreateEventCoordinatorTemplate
+  | LoginLinkTemplate
+  | PaymentReceiptTemplate;

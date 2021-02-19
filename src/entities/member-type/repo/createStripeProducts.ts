@@ -84,7 +84,7 @@ const createStripeProducts = async ({
     })
   );
 
-  await bm.flush(FlushEvent.CREATE_STRIPE_PRODUCTS);
+  await bm.flush({ flushEvent: FlushEvent.CREATE_STRIPE_PRODUCTS });
   return updatedTypes;
 };
 

@@ -153,7 +153,7 @@ const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
     })
   );
 
-  await bm.flush(FlushEvent.IMPORT_COMMUNITY_CSV);
+  await bm.flush({ flushEvent: FlushEvent.IMPORT_COMMUNITY_CSV });
   return community;
 };
 

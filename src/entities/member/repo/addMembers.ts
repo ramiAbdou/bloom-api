@@ -66,7 +66,7 @@ const addMembers = async (
     })
   );
 
-  await bm.flush(FlushEvent.ADD_MEMBERS);
+  await bm.flush({ flushEvent: FlushEvent.ADD_MEMBERS });
 
   return members;
 };

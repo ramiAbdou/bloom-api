@@ -57,7 +57,7 @@ const updatePaymentMethod = async (
   );
 
   member.stripePaymentMethodId = paymentMethodId;
-  await bm.flush(FlushEvent.UPDATE_PAYMENT_METHOD);
+  await bm.flush({ flushEvent: FlushEvent.UPDATE_PAYMENT_METHOD });
 
   return member;
 };

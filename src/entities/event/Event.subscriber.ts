@@ -23,6 +23,8 @@ export default class EventSubscriber implements ESubscriber<Event> {
       `${QueryEvent.GET_UPCOMING_EVENTS}-${entity.community.id}`
     ]);
 
+    // send Email
+
     const googleCalendarEvent = await createGoogleCalendarEvent({
       description: entity.description,
       end: { dateTime: entity.endTime },
@@ -39,6 +41,10 @@ export default class EventSubscriber implements ESubscriber<Event> {
   }
 
   async afterUpdate({ entity }: EventArgs<Event>) {
+    if (entity.deletedAt && entity.googleCalendarEventId) {
+      await deleteGoogleCalendarEvent(entity.googleCalendarEventId);
+    }
+
     if (entity.googleCalendarEventId) {
       await updateGoogleCalendarEvent(entity.googleCalendarEventId, {
         description: entity.description,
@@ -47,10 +53,6 @@ export default class EventSubscriber implements ESubscriber<Event> {
       });
 
       return;
-    }
-
-    if (entity.deletedAt && entity.googleCalendarEventId) {
-      await deleteGoogleCalendarEvent(entity.googleCalendarEventId);
     }
 
     cache.invalidateEntries([

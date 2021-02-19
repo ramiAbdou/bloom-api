@@ -29,7 +29,7 @@ const createEventWatch = async (
     { event: { id: eventId }, member: { id: memberId } }
   );
 
-  if (!wasFound) await bm.flush(FlushEvent.CREATE_EVENT_WATCH);
+  if (!wasFound) await bm.flush({ flushEvent: FlushEvent.CREATE_EVENT_WATCH });
   await bm.em.populate(watch, ['member.data', 'member.user']);
   return watch;
 };

@@ -74,7 +74,7 @@ const createCommunity = async ({
     types: persistedTypes
   });
 
-  await bm.flush(FlushEvent.CREATE_COMMUNITY);
+  await bm.flush({ flushEvent: FlushEvent.CREATE_COMMUNITY });
   return community;
 };
 

@@ -23,7 +23,7 @@ const acceptInvitations = async ({
     }
   });
 
-  await bm.flush(FlushEvent.ACCEPT_INVITATIONS);
+  await bm.flush({ flushEvent: FlushEvent.ACCEPT_INVITATIONS });
   return members;
 };
 

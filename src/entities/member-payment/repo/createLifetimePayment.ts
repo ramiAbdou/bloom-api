@@ -45,7 +45,7 @@ const createLifetimePayment = async (
     });
 
     member.stripeSubscriptionId = null;
-    await bm.flush(FlushEvent.DELETE_SUBSCRIPTION);
+    await bm.flush({ flushEvent: FlushEvent.DELETE_SUBSCRIPTION });
   }
 
   const invoice: Stripe.Invoice = await createAndPayStripeInvoice({

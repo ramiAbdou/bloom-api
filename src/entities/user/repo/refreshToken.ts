@@ -64,7 +64,7 @@ const refreshToken = async ({
 
   // Update the refreshToken in the DB, and create a refresh entity.
   user.refreshToken = tokens.refreshToken;
-  await bm.flush(FlushEvent.UPDATE_REFRESH_TOKEN);
+  await bm.flush({ flushEvent: FlushEvent.UPDATE_REFRESH_TOKEN });
   await createMemberRefresh({ memberId: member.id });
 
   return tokens;

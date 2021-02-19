@@ -65,7 +65,7 @@ const createSubscription = async (
   // user.
   member.stripeSubscriptionId = subscription.id;
 
-  await bm.flush(FlushEvent.CREATE_SUBSCRIPTION);
+  await bm.flush({ flushEvent: FlushEvent.CREATE_SUBSCRIPTION });
 
   const invoice = subscription.latest_invoice as Stripe.Invoice;
 

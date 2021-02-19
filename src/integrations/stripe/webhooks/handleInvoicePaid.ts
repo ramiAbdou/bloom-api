@@ -2,7 +2,7 @@ import day, { Dayjs } from 'dayjs';
 import Stripe from 'stripe';
 
 import BloomManager from '@core/db/BloomManager';
-import { EmailTemplate, PaymentReceiptVars } from '@core/emails/emails.types';
+import { PaymentReceiptVars } from '@core/emails/emails.types';
 import sendEmails from '@core/emails/sendEmails';
 import { Community, Member, MemberPayment } from '@entities/entities';
 import createMemberPayment from '@entities/member-payment/repo/createMemberPayment';
@@ -63,14 +63,14 @@ const handleInvoicePaid = async (event: Stripe.Event) => {
     amount: invoice.amount_paid / 100,
     cardCompany: cardCompany.charAt(0).toUpperCase() + cardCompany.slice(1),
     communityName: community.name,
-    firstName: member.user.firstName,
     last4,
     paymentDate: paymentDate.format('MMMM D, YYYY'),
     paymentDateAndTime: paymentDate
       .tz('America/New_York')
       .format('MMMM D, YYYY @ h:mm A z'),
     renewalDate: renewalDate.format('MMMM D, YYYY'),
-    stripeInvoiceId: invoice.id
+    stripeInvoiceId: invoice.id,
+    user: member.user
   };
 
   // await sendEmails({

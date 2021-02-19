@@ -151,7 +151,7 @@ const applyForMembership = async (
     else bm.create(MemberData, { member, question, value });
   });
 
-  await bm.flush(FlushEvent.APPLY_FOR_MEMBERSHIP);
+  await bm.flush({ flushEvent: FlushEvent.APPLY_FOR_MEMBERSHIP });
 
   cache.invalidateEntries(
     member.status === MemberStatus.PENDING
