@@ -15,6 +15,7 @@
     "npm": "7.3.0"
   },
   "dependencies": {
+    "@mailchimp/mailchimp_marketing": "^3.0.29",
     "@mikro-orm/core": "^4.3.2",
     "@mikro-orm/postgresql": "^4.3.2",
     "@sendgrid/mail": "^7.2.6",

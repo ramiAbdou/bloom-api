@@ -2,7 +2,6 @@ import { ArgsType, Field, InputType } from 'type-graphql';
 
 import { FlushEvent, GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import addToMailchimpAudience from '../../community-integrations/repo/addToMailchimpAudience';
 import Community from '../../community/Community';
 import User from '../../user/User';
 import Member from '../Member';
@@ -67,13 +66,6 @@ const addMembers = async (
   );
 
   await bm.flush(FlushEvent.ADD_MEMBERS);
-
-  // Send the appropriate emails based on the response. Also, add the members
-  // to the Mailchimp audience.
-  setTimeout(async () => {
-    await bm.em.populate(members, ['community.questions', 'data']);
-    await addToMailchimpAudience(members, community);
-  }, 0);
 
   return members;
 };
