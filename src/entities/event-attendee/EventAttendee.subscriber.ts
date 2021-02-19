@@ -1,7 +1,7 @@
 import { EntityName, EventArgs, EventSubscriber } from '@mikro-orm/core';
 
 import { QueryEvent } from '@constants';
-import cache from '@core/cache/cache';
+import cache from '@core/db/cache';
 import EventAttendee from './EventAttendee';
 
 export default class EventAttendeeSubscriber

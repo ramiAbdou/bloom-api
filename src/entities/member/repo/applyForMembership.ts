@@ -1,8 +1,8 @@
 import { ArgsType, Field, InputType } from 'type-graphql';
 
 import { FlushEvent, GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
+import cache from '@core/db/cache';
 import Community from '../../community/Community';
 import MemberData from '../../member-data/MemberData';
 import createLifetimePayment from '../../member-payment/repo/createLifetimePayment';

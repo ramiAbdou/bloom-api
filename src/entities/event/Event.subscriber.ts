@@ -6,7 +6,7 @@ import {
 } from '@mikro-orm/core';
 
 import { QueryEvent } from '@constants';
-import cache from '@core/cache/cache';
+import cache from '@core/db/cache';
 import createGoogleCalendarEvent from '@integrations/google/repo/createGoogleCalendarEvent';
 import deleteGoogleCalendarEvent from '@integrations/google/repo/deleteGoogleCalendarEvent';
 import updateGoogleCalendarEvent from '@integrations/google/repo/updateGoogleCalendarEvent';

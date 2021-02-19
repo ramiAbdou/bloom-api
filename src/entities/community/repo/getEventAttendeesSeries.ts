@@ -1,8 +1,8 @@
 import day from 'dayjs';
 
 import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
+import cache from '@core/db/cache';
 import { TimeSeriesData } from '@util/gql.types';
 import EventAttendee from '../../event-attendee/EventAttendee';
 

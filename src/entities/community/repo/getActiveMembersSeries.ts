@@ -2,8 +2,8 @@ import day from 'dayjs';
 import { QueryOrder } from '@mikro-orm/core';
 
 import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
+import cache from '@core/db/cache';
 import { TimeSeriesData } from '@util/gql.types';
 import Member from '../../member/Member';
 

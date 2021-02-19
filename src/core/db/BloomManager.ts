@@ -11,7 +11,7 @@ import {
 } from '@mikro-orm/core';
 
 import { FlushEvent } from '@constants';
-import cache from '@core/cache/cache';
+import cache from '@core/db/cache';
 import logger from '@util/logger';
 import { now } from '@util/util';
 import {
