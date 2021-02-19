@@ -2,7 +2,7 @@ import bodyParser from 'body-parser';
 import { Request, Response, Router } from 'express';
 import Stripe from 'stripe';
 
-import { APP, AuthQueryParams, isProduction } from '@constants';
+import { APP, AuthQueryArgs, isProduction } from '@constants';
 import storeStripeAccount from '@entities/community-integrations/repo/storeStripeAccount';
 import logger from '@logger';
 import { stripe } from './Stripe.util';
@@ -11,7 +11,7 @@ import handleInvoicePaid from './webhooks/handleInvoicePaid';
 const router = Router();
 
 router.get('/auth', async ({ query }: Request, res: Response) => {
-  const { code, state: urlName } = query as AuthQueryParams;
+  const { code, state: urlName } = query as AuthQueryArgs;
   await storeStripeAccount({ code, urlName });
   res.redirect(`${APP.CLIENT_URL}/${urlName}/integrations`);
 });

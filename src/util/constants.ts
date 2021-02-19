@@ -1,8 +1,6 @@
 import dotenv from 'dotenv';
-import { Response } from 'express';
+import express from 'express';
 import path from 'path'; // Before constants.
-
-import BloomManager from '@core/db/BloomManager';
 
 export const isProduction = process.env.NODE_ENV === 'production';
 export const isTesting = process.env.NODE_ENV === 'testing';
@@ -38,7 +36,7 @@ export const JWT = {
  * instead of in this globally accessible constants file.
  */
 
-export type AuthQueryParams = { code: string; state: string };
+export type AuthQueryArgs = { code: string; state: string };
 export type AuthTokens = { accessToken: string; refreshToken: string };
 
 export enum FlushEvent {
@@ -133,8 +131,6 @@ export enum QueryEvent {
 export type GQLContext = {
   communityId: string;
   memberId: string;
-  res: Response;
+  res: express.Response;
   userId: string;
 };
-
-export type BloomManagerArgs = { bm: BloomManager };

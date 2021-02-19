@@ -1,7 +1,7 @@
 import csv from 'csvtojson';
 import day from 'dayjs';
 
-import { BloomManagerArgs, FlushEvent } from '@constants';
+import { FlushEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import MemberData from '../../member-data/MemberData';
 import MemberType from '../../member-type/MemberType';
@@ -14,7 +14,8 @@ import Community from '../Community';
 
 type CsvRowData = Record<string | QuestionCategory, any>;
 
-interface ProcessRowArgs extends BloomManagerArgs {
+interface ProcessRowArgs {
+  bm: BloomManager;
   community: Community;
   ownerEmail: string;
   questions: Question[];
