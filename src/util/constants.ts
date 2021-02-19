@@ -37,7 +37,17 @@ export const JWT = {
  */
 
 export type AuthQueryArgs = { code: string; state: string };
+
 export type AuthTokens = { accessToken: string; refreshToken: string };
+
+// ## EMAILS
+
+export enum EmailType {
+  LOGIN_LINK = 'LOGIN_LINK',
+  PAYMENT_RECEIPT = 'PAYMENT_RECEIPT'
+}
+
+// ## EVENTS
 
 export enum FlushEvent {
   ACCEPT_APPLICANTS = 'ACCEPT_APPLICANTS',

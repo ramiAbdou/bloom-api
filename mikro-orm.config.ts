@@ -11,7 +11,7 @@ import * as subscribers from '@entities/subscribers';
 /**
  * Exports all of the database connection and initialization information.
  */
-export default {
+const dbConfig: Options<IDatabaseDriver<Connection>> = {
   clientUrl: APP.DB_URL,
   // This option disallows the usage of entitiesDirs and caching, which we set
   // to true b/c we need since BaseEntity is in a different folder than the
@@ -26,4 +26,6 @@ export default {
     ...Object.values(subscribers).map((Subscriber) => new Subscriber())
   ],
   type: 'postgresql'
-} as Options<IDatabaseDriver<Connection>>;
+};
+
+export default dbConfig;

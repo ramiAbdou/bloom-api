@@ -1,6 +1,6 @@
 <mjml>
   <mj-head>
-    <mj-include path="./attributes.mjml" />
+    <mj-include path="../components/attributes.mjml" />
   </mj-head>
   
   <mj-body background-color="#FBFBFB">
@@ -49,6 +49,6 @@
       </mj-column>
     </mj-section>
 
-    <mj-include path="./footer.mjml" />
+    <mj-include path="../components/footer.mjml" />
   </mj-body>
 </mjml>

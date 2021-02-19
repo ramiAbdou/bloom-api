@@ -1,9 +1,10 @@
 import day, { Dayjs } from 'dayjs';
 import Stripe from 'stripe';
 
+import { EmailType } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import sendEmail from '@core/emails/sendEmail';
-import { EmailTemplate, PaymentReceiptVars } from '@core/emails/types';
+import { PaymentReceiptVars } from '@core/emails/types';
 import { Community, Member, MemberPayment } from '@entities/entities';
 import createMemberPayment from '@entities/member-payment/repo/createMemberPayment';
 import { stripe } from '../Stripe.util';
@@ -74,7 +75,7 @@ const handleInvoicePaid = async (event: Stripe.Event) => {
   };
 
   await sendEmail({
-    template: EmailTemplate.PAYMENT_RECEIPT,
+    template: EmailType.PAYMENT_RECEIPT,
     to: member.user.email,
     variables: emailOpts
   });
