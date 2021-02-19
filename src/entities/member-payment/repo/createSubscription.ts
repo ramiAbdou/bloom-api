@@ -18,9 +18,6 @@ import createMemberPayment from './createMemberPayment';
 
 @ArgsType()
 export class CreateSubsciptionArgs {
-  @Field({ defaultValue: true })
-  autoRenew: boolean;
-
   @Field()
   memberTypeId: string;
 
@@ -29,7 +26,7 @@ export class CreateSubsciptionArgs {
 }
 
 const createSubscription = async (
-  { autoRenew, memberTypeId, prorationDate }: CreateSubsciptionArgs,
+  { memberTypeId, prorationDate }: CreateSubsciptionArgs,
   { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<MemberPayment> => {
   await createStripeCustomer({ memberId });
@@ -65,7 +62,6 @@ const createSubscription = async (
 
   // If the Stripe subscription succeeds, attach the payment method to the
   // user.
-  member.autoRenew = autoRenew;
   member.stripeSubscriptionId = subscription.id;
 
   await bm.flush(FlushEvent.CREATE_SUBSCRIPTION);

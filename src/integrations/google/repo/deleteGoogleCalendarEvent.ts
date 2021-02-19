@@ -1,3 +1,4 @@
+import { FlushEvent } from '@constants';
 import logger from '@util/logger';
 import { eventsCalendar } from '../Google.util';
 
@@ -13,12 +14,16 @@ const deleteGoogleCalendarEvent = async (eventId: string): Promise<boolean> => {
       eventId
     });
 
-    logger.log({ event: 'DELETE_GOOGLE_CALENDAR_EVENT', level: 'INFO' });
+    logger.log({
+      event: FlushEvent.DELETE_GOOGLE_CALENDAR_EVENT,
+      level: 'INFO'
+    });
+
     return true;
   } catch (e) {
     logger.log({
       error: e,
-      event: 'DELETE_GOOGLE_CALENDAR_EVENT',
+      event: FlushEvent.DELETE_GOOGLE_CALENDAR_EVENT,
       level: 'ERROR'
     });
 

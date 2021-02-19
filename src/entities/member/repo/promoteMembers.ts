@@ -1,3 +1,4 @@
+import { FlushEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../Member';
 import { AdminArgs } from '../Member.types';
@@ -11,7 +12,7 @@ const promoteMembers = async ({ memberIds }: AdminArgs): Promise<Member[]> => {
     Member,
     { id: memberIds },
     { role: 'ADMIN' },
-    { event: 'PROMOTE_MEMBERS' }
+    { event: FlushEvent.PROMOTE_MEMBERS }
   );
 
   return members;

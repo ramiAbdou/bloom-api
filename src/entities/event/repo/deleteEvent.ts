@@ -1,5 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
+import { FlushEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Event from '../Event';
 
@@ -15,7 +16,7 @@ const deleteEvent = async ({
   const event: Event = await new BloomManager().findOneAndDelete(
     Event,
     { id: eventId },
-    { event: 'DELETE_EVENT', soft: true }
+    { event: FlushEvent.DELETE_EVENT, soft: true }
   );
 
   return event;

@@ -1,6 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { FlushEvent, GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Event from '../Event';
 
@@ -38,7 +38,7 @@ const createEvent = async (
   const event: Event = await new BloomManager().createAndFlush(
     Event,
     { ...args, community: { id: communityId } },
-    { event: 'CREATE_EVENT', populate: ['community'] }
+    { event: FlushEvent.CREATE_EVENT, populate: ['community'] }
   );
 
   return event;

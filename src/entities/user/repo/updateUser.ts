@@ -1,6 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { FlushEvent, GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import User from '../User';
 
@@ -39,7 +39,7 @@ const updateUser = async (
     User,
     { id: userId },
     { ...args },
-    { event: 'UPDATE_USER' }
+    { event: FlushEvent.UPDATE_USER }
   );
 };
 

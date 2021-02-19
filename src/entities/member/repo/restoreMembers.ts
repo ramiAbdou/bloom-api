@@ -1,5 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
+import { FlushEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../Member';
 
@@ -15,7 +16,7 @@ const restoreMembers = async ({
   return new BloomManager().findAndRestore(
     Member,
     { id: memberIds },
-    { event: 'RESTORE_MEMBERS' }
+    { event: FlushEvent.RESTORE_MEMBERS }
   );
 };
 

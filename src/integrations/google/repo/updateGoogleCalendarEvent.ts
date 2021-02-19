@@ -1,5 +1,6 @@
 import { calendar_v3 } from 'googleapis';
 
+import { FlushEvent } from '@constants';
 import logger from '@util/logger';
 import { eventsCalendar } from '../Google.util';
 
@@ -22,12 +23,16 @@ const updateGoogleCalendarEvent = async (
       requestBody: args
     });
 
-    logger.log({ event: 'UPDATE_GOOGLE_CALENDAR_EVENT', level: 'INFO' });
+    logger.log({
+      event: FlushEvent.UPDATE_GOOGLE_CALENDAR_EVENT,
+      level: 'INFO'
+    });
+
     return response.data;
   } catch (e) {
     logger.log({
       error: e,
-      event: 'UPDATE_GOOGLE_CALENDAR_EVENT',
+      event: FlushEvent.UPDATE_GOOGLE_CALENDAR_EVENT,
       level: 'ERROR'
     });
 

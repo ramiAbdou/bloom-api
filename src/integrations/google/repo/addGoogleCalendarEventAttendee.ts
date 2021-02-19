@@ -1,5 +1,6 @@
 import { calendar_v3 } from 'googleapis';
 
+import { FlushEvent } from '@constants';
 import logger from '@util/logger';
 import { eventsCalendar } from '../Google.util';
 
@@ -34,12 +35,16 @@ const addGoogleCalendarEventAttendee = async (
       requestBody: { attendees: [...previousAttendees, attendee] }
     });
 
-    logger.log({ event: 'ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE', level: 'INFO' });
+    logger.log({
+      event: FlushEvent.ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE,
+      level: 'INFO'
+    });
+
     return response.data;
   } catch (e) {
     logger.log({
       error: e,
-      event: 'ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE',
+      event: FlushEvent.ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE,
       level: 'ERROR'
     });
 

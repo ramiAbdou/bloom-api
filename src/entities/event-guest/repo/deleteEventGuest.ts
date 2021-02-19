@@ -1,6 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { FlushEvent, GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import EventGuest from '../EventGuest';
 
@@ -25,7 +25,7 @@ const deleteEventGuest = async (
   const guest: EventGuest = await new BloomManager().findOneAndDelete(
     EventGuest,
     { event: { id: eventId }, member: { id: memberId } },
-    { event: 'DELETE_EVENT_GUEST' }
+    { event: FlushEvent.DELETE_EVENT_GUEST }
   );
 
   return guest;

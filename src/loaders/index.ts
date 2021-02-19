@@ -6,7 +6,7 @@ import advancedFormat from 'dayjs/plugin/advancedFormat';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 
-import { APP } from '@constants';
+import { APP, LoggerEvent } from '@constants';
 import db from '@core/db/db';
 import logger from '@util/logger';
 import apollo from './apollo';
@@ -28,7 +28,7 @@ const startServer = async () => {
   apolloServer.applyMiddleware({ app, cors: false, path: '/graphql' });
 
   app.listen(APP.PORT, () =>
-    logger.log({ event: 'SERVER_STARTED', level: 'INFO' })
+    logger.log({ event: LoggerEvent.START_SERVER, level: 'INFO' })
   );
 };
 

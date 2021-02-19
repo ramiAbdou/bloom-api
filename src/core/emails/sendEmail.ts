@@ -3,7 +3,7 @@ import { compile } from 'handlebars';
 import mjml2html from 'mjml';
 import path from 'path';
 
-import { isProduction } from '@constants';
+import { FlushEvent, isProduction } from '@constants';
 import sg from '@sendgrid/mail';
 import logger from '@util/logger';
 import { emailSubjectFns, emailTemplateFiles, SendEmailArgs } from './types';
@@ -43,7 +43,7 @@ const sendEmail = async ({ template, to, variables }: SendEmailArgs) => {
   } catch (e) {
     logger.log({
       error: `Failed to send SendGrid mail to ${to}: ${e.stack}`,
-      event: 'EMAIL_FAILED',
+      event: FlushEvent.EMAIL_FAILED,
       level: 'ERROR'
     });
   }

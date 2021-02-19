@@ -1,5 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
+import { FlushEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Question from '../Question';
 
@@ -17,7 +18,7 @@ const updateQuestion = async ({ questionId, ...args }: UpdateQuestionArgs) => {
     Question,
     { id: questionId },
     { ...args },
-    { event: 'UPDATE_QUESTION' }
+    { event: FlushEvent.UPDATE_QUESTION }
   );
 };
 

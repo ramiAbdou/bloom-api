@@ -1,5 +1,6 @@
 import { calendar_v3 } from 'googleapis';
 
+import { FlushEvent } from '@constants';
 import logger from '@util/logger';
 import { eventsCalendar } from '../Google.util';
 
@@ -25,12 +26,16 @@ const createGoogleCalendarEvent = async (
       requestBody: args
     });
 
-    logger.log({ event: 'CREATE_GOOGLE_CALENDAR_EVENT', level: 'INFO' });
+    logger.log({
+      event: FlushEvent.CREATE_GOOGLE_CALENDAR_EVENT,
+      level: 'INFO'
+    });
+
     return response.data;
   } catch (e) {
     logger.log({
       error: e,
-      event: 'CREATE_GOOGLE_CALENDAR_EVENT',
+      event: FlushEvent.CREATE_GOOGLE_CALENDAR_EVENT,
       level: 'ERROR'
     });
 

@@ -1,14 +1,11 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { FlushEvent, GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../Member';
 
 @ArgsType()
 export class UpdateMemberArgs {
-  @Field(() => Boolean, { nullable: true })
-  autoRenew?: boolean;
-
   @Field({ nullable: true })
   bio?: string;
 }
@@ -27,7 +24,7 @@ const updateMember = async (
     Member,
     { id: memberId },
     { ...args },
-    { event: 'UPDATE_MEMBER' }
+    { event: FlushEvent.UPDATE_MEMBER }
   );
 };
 

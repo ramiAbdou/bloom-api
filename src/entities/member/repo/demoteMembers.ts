@@ -1,3 +1,4 @@
+import { FlushEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../Member';
 import { AdminArgs } from '../Member.types';
@@ -11,7 +12,7 @@ const demoteMembers = async ({ memberIds }: AdminArgs): Promise<Member[]> => {
     Member,
     { id: memberIds },
     { role: null },
-    { event: 'DEMOTE_MEMBERS' }
+    { event: FlushEvent.DEMOTE_MEMBERS }
   );
 
   return members;

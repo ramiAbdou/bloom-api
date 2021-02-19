@@ -1,7 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
 import { FilterQuery } from '@mikro-orm/core';
 
-import { GQLContext } from '@constants';
+import { FlushEvent, GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import User from '../../user/User';
 import EventAttendee from '../EventAttendee';
@@ -60,7 +60,7 @@ const createEventAttendee = async (
   const attendee = await new BloomManager().createAndFlush(
     EventAttendee,
     { ...baseArgs, ...partialUser },
-    { event: 'CREATE_EVENT_ATTENDEE', populate: ['member.user'] }
+    { event: FlushEvent.CREATE_EVENT_ATTENDEE, populate: ['member.user'] }
   );
 
   return attendee;

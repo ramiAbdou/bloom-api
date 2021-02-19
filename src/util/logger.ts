@@ -2,8 +2,8 @@ import day from 'dayjs';
 import fs from 'fs';
 import { AnyEntity, EntityData } from '@mikro-orm/core';
 
+import { FlushEvent, LoggerEvent } from '@constants';
 import { now } from '@util/util';
-import { FlushEvent } from './constants';
 
 type LoggerLevel =
   | 'BEFORE_FLUSH'
@@ -22,14 +22,14 @@ export type LoggerChangeSet = {
   type: LoggerChangeType;
 };
 
-type LoggerLog = {
+interface LoggerLog {
   changes?: LoggerChangeSet[];
   contextId?: number;
   error?: string;
-  event?: FlushEvent;
+  event?: FlushEvent | LoggerEvent;
   level: LoggerLevel;
   timestamp: string;
-};
+}
 
 /**
  * Controls all of the logging functionality. Writes the logs to a local
