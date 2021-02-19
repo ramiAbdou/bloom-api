@@ -1,6 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { FlushEvent, GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import EventWatch from '../EventWatch';
 
@@ -28,7 +28,7 @@ const createEventWatch = async (
     { event: { id: eventId }, member: { id: memberId } }
   );
 
-  if (!wasFound) await bm.flush({ event: 'CREATE_EVENT_WATCH' });
+  if (!wasFound) await bm.flush(FlushEvent.CREATE_EVENT_WATCH);
   await bm.em.populate(watch, ['member.data', 'member.user']);
   return watch;
 };

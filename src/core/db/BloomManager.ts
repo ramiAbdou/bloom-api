@@ -10,6 +10,7 @@ import {
   wrap
 } from '@mikro-orm/core';
 
+import { FlushEvent } from '@constants';
 import cache from '@core/cache/cache';
 import logger from '@util/logger';
 import { now } from '@util/util';
@@ -19,8 +20,7 @@ import {
   BloomFindAndUpdateOptions,
   BloomFindOneAndUpdateOptions,
   BloomFindOneOptions,
-  BloomFindOptions,
-  BloomManagerFlushArgs
+  BloomFindOptions
 } from './BloomManager.types';
 import db from './db';
 
@@ -39,7 +39,7 @@ class BloomManager {
 
   fork = () => new BloomManager();
 
-  async flush?({ event }: BloomManagerFlushArgs) {
+  async flush?(event?: FlushEvent) {
     try {
       logger.log({ contextId: this.em.id, event, level: 'BEFORE_FLUSH' });
       await this.em.flush();
@@ -130,7 +130,7 @@ class BloomManager {
     const result = await this.findOne<T, P>(entityName, where, options);
     wrap(result).assign(data);
 
-    await this.flush({ event: options?.event });
+    await this.flush(options?.event);
     return result;
   }
 
@@ -172,7 +172,7 @@ class BloomManager {
       wrap(entity).assign(data);
     });
 
-    await this.flush({ event: options?.event });
+    await this.flush(options?.event);
     return result;
   }
 
@@ -192,7 +192,7 @@ class BloomManager {
       entity.deletedAt = null;
     });
 
-    await this.flush({ event: options?.event });
+    await this.flush(options?.event);
     return result;
   }
 
@@ -218,7 +218,7 @@ class BloomManager {
 
     if (!options?.soft) this.em.remove(result);
 
-    await this.flush({ event: options?.event });
+    await this.flush(options?.event);
     return updatedResult;
   }
 
@@ -240,7 +240,7 @@ class BloomManager {
     result.deletedAt = now();
     if (!options?.soft) this.em.remove(result);
 
-    await this.flush({ event: options?.event });
+    await this.flush(options?.event);
     return result;
   }
 
@@ -258,7 +258,7 @@ class BloomManager {
     // @ts-ignore b/c deletedAt isn't detected.
     result.deletedAt = null;
 
-    await this.flush({ event: options?.event });
+    await this.flush(options?.event);
     return result;
   }
 
@@ -285,7 +285,7 @@ class BloomManager {
     { populate, ...options }: BloomCreateAndFlushArgs<P>
   ): Promise<T> {
     const entity = this.create(entityName, data);
-    await this.flush(options);
+    await this.flush(options?.event);
 
     if (populate) {
       this.em.merge(entity);

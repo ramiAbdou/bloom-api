@@ -11,7 +11,7 @@ const demoteMembers = async ({ memberIds }: AdminArgs): Promise<Member[]> => {
     Member,
     { id: memberIds },
     { role: null },
-    { event: 'MEMBERS_DEMOTED' }
+    { event: 'DEMOTE_MEMBERS' }
   );
 
   return members;

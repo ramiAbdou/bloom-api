@@ -1,11 +1,9 @@
-/* eslint-disable sort-keys-fix/sort-keys-fix */
-
 import day from 'dayjs';
 import fs from 'fs';
 import { AnyEntity, EntityData } from '@mikro-orm/core';
 
 import { now } from '@util/util';
-import { LoggerEvent } from './constants';
+import { FlushEvent } from './constants';
 
 type LoggerLevel =
   | 'BEFORE_FLUSH'
@@ -15,7 +13,7 @@ type LoggerLevel =
   | 'INFO'
   | 'ON_FLUSH';
 
-export type LoggerChangeType = 'CREATE' | 'DELETE' | 'UPDATE' | 'OTHER_UPDATE';
+export type LoggerChangeType = 'CREATE' | 'DELETE' | 'UPDATE';
 
 export type LoggerChangeSet = {
   id: string;
@@ -28,7 +26,7 @@ type LoggerLog = {
   changes?: LoggerChangeSet[];
   contextId?: number;
   error?: string;
-  event?: LoggerEvent;
+  event?: FlushEvent;
   level: LoggerLevel;
   timestamp: string;
 };

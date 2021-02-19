@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
 
-import { GQLContext } from '@constants';
+import { FlushEvent, GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import Member from '../Member';
@@ -44,7 +44,7 @@ const createStripeCustomer = async ({
       ).id;
 
   member.stripeCustomerId = stripeCustomerId;
-  await bm.flush({ event: 'STRIPE_CUSTOMER_CREATED' });
+  await bm.flush(FlushEvent.CREATE_STRIPE_CUSTOMER);
 
   return member;
 };

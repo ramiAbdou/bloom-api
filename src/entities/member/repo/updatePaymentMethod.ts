@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { FlushEvent, GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import Community from '../../community/Community';
@@ -56,7 +56,7 @@ const updatePaymentMethod = async (
   );
 
   member.stripePaymentMethodId = paymentMethodId;
-  await bm.flush({ event: 'PAYMENT_METHOD_UPDATED' });
+  await bm.flush(FlushEvent.UPDATE_PAYMENT_METHOD);
 
   return member;
 };

@@ -38,7 +38,7 @@ const addToMailchimpAudience = async (
       id,
       payload: [],
       table: 'members',
-      type: 'OTHER_UPDATE'
+      type: 'UPDATE'
     })),
     event: 'ADD_TO_MAILCHIMP',
     level: 'INFO'

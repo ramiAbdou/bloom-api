@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { FilterQuery } from '@mikro-orm/core';
 
-import { AuthTokens } from '@constants';
+import { AuthTokens, FlushEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { generateTokens, setHttpOnlyTokens } from '@util/util';
 import createMemberRefresh from '../../member-refresh/repo/createMemberRefresh';
@@ -63,7 +63,7 @@ const refreshToken = async ({
 
   // Update the refreshToken in the DB, and create a refresh entity.
   user.refreshToken = tokens.refreshToken;
-  await bm.flush({ event: 'UPDATE_REFRESH_TOKEN' });
+  await bm.flush(FlushEvent.UPDATE_REFRESH_TOKEN);
   await createMemberRefresh({ memberId: member.id });
 
   return tokens;

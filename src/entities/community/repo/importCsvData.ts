@@ -1,7 +1,7 @@
 import csv from 'csvtojson';
 import day from 'dayjs';
 
-import { BloomManagerArgs } from '@constants';
+import { BloomManagerArgs, FlushEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import MemberData from '../../member-data/MemberData';
 import MemberType from '../../member-type/MemberType';
@@ -152,7 +152,7 @@ const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
     })
   );
 
-  await bm.flush({ event: 'COMMUNITY_CSV_IMPORTED' });
+  await bm.flush(FlushEvent.IMPORT_COMMUNITY_CSV);
   return community;
 };
 

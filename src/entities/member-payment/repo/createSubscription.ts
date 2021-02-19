@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { FlushEvent, GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import createStripeSubscription, {
   CreateStripeSubscriptionArgs
@@ -68,7 +68,7 @@ const createSubscription = async (
   member.autoRenew = autoRenew;
   member.stripeSubscriptionId = subscription.id;
 
-  await bm.flush({ event: 'CREATE_SUBSCRIPTION' });
+  await bm.flush(FlushEvent.CREATE_SUBSCRIPTION);
 
   const invoice = subscription.latest_invoice as Stripe.Invoice;
 

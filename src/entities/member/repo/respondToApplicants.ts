@@ -26,7 +26,12 @@ const respondToApplicants = async ({
     Member,
     { id: memberIds },
     { joinedAt: now(), status: response },
-    { event: 'MEMBERS_ACCEPTED' }
+    {
+      event:
+        response === MemberStatus.ACCEPTED
+          ? 'ACCEPT_APPLICANTS'
+          : 'IGNORE_APPLICANTS'
+    }
   );
 
   return members;

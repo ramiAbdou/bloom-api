@@ -1,6 +1,6 @@
 import { ArgsType, Field, InputType } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
+import { FlushEvent, GQLContext, QueryEvent } from '@constants';
 import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
 import Community from '../../community/Community';
@@ -150,7 +150,7 @@ const applyForMembership = async (
     else bm.create(MemberData, { member, question, value });
   });
 
-  await bm.flush({ event: 'APPLY_FOR_MEMBERSHIP' });
+  await bm.flush(FlushEvent.APPLY_FOR_MEMBERSHIP);
 
   cache.invalidateEntries(
     member.status === MemberStatus.PENDING

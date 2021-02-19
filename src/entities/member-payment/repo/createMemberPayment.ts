@@ -40,7 +40,7 @@ const createMemberPayment = async (
     });
   }
 
-  await bm.flush({});
+  await bm.flush();
 
   return payment;
 };

@@ -1,3 +1,4 @@
+import { FlushEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import createStripeProducts from '@entities/member-type/repo/createStripeProducts';
 import { stripe } from '@integrations/stripe/Stripe.util';
@@ -33,7 +34,7 @@ const storeStripeTokens = async (
   });
 
   integrations.stripeAccountId = stripeAccountId;
-  await bm.flush({ event: 'STORE_STRIPE_ACCOUNT' });
+  await bm.flush(FlushEvent.STORE_STRIPE_ACCOUNT);
 
   return integrations;
 };

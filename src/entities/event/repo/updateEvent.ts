@@ -1,6 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { LoggerEvent } from '@constants';
+import { FlushEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Event from '../Event';
 
@@ -38,18 +38,18 @@ const updateEvent = async ({
   id: eventId,
   ...args
 }: UpdateEventArgs): Promise<Event> => {
-  let loggerEvent: LoggerEvent;
+  let flushEvent: FlushEvent;
 
-  if (args?.recordingUrl) loggerEvent = 'UPDATE_EVENT_RECORDING_LINK';
+  if (args?.recordingUrl) flushEvent = FlushEvent.UPDATE_EVENT_RECORDING_LINK;
   else if (args?.googleCalendarEventId) {
-    loggerEvent = 'ATTACH_GOOGLE_CALENDAR_EVENT';
-  } else loggerEvent = 'UPDATE_EVENT';
+    flushEvent = FlushEvent.ATTACH_GOOGLE_CALENDAR_EVENT;
+  } else flushEvent = FlushEvent.UPDATE_EVENT;
 
   const event: Event = await new BloomManager().findOneAndUpdate(
     Event,
     { id: eventId },
     { ...args },
-    { event: loggerEvent }
+    { event: flushEvent }
   );
 
   return event;

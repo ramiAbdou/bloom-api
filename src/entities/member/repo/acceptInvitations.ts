@@ -1,3 +1,4 @@
+import { FlushEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Member from '../Member';
 import { MemberStatus } from '../Member.types';
@@ -22,8 +23,7 @@ const acceptInvitations = async ({
     }
   });
 
-  await bm.flush({ event: 'ACCEPT_INVITATIONS' });
-
+  await bm.flush(FlushEvent.ACCEPT_INVITATIONS);
   return members;
 };
 

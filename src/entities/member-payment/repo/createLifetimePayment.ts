@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { FlushEvent, GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import createAndPayStripeInvoice from '@integrations/stripe/repo/createAndPayStripeInvoice';
 import { stripe } from '@integrations/stripe/Stripe.util';
@@ -44,7 +44,7 @@ const createLifetimePayment = async (
     });
 
     member.stripeSubscriptionId = null;
-    await bm.flush({ event: 'DELETE_SUBSCRIPTION' });
+    await bm.flush(FlushEvent.DELETE_SUBSCRIPTION);
   }
 
   const invoice: Stripe.Invoice = await createAndPayStripeInvoice({

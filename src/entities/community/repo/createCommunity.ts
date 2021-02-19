@@ -1,5 +1,6 @@
 import { EntityData } from '@mikro-orm/core';
 
+import { FlushEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import CommunityApplication from '../../community-application/CommunityApplication';
 import CommunityIntegrations from '../../community-integrations/CommunityIntegrations';
@@ -73,7 +74,7 @@ const createCommunity = async ({
     types: persistedTypes
   });
 
-  await bm.flush({ event: 'COMMUNITY_CREATED' });
+  await bm.flush(FlushEvent.CREATE_COMMUNITY);
   return community;
 };
 
