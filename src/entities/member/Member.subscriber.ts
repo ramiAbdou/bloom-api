@@ -1,12 +1,15 @@
-import { EventArgs, EventSubscriber, Subscriber } from '@mikro-orm/core';
+import { EntityName, EventArgs, EventSubscriber } from '@mikro-orm/core';
 
 import { QueryEvent } from '@constants';
 import cache from '@core/cache/cache';
 import Member from './Member';
 import { MemberStatus } from './Member.types';
 
-@Subscriber()
 export default class MemberSubscriber implements EventSubscriber<Member> {
+  getSubscribedEntities(): EntityName<Member>[] {
+    return [Member];
+  }
+
   async afterUpdate({ changeSet, entity }: EventArgs<Member>) {
     const { originalEntity, payload } = changeSet;
 

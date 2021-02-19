@@ -1,7 +1,10 @@
-import { EventSubscriber, Subscriber } from '@mikro-orm/core';
+import { EntityName, EventSubscriber } from '@mikro-orm/core';
 
 import MemberType from './MemberType';
 
-@Subscriber()
 export default class MemberTypeSubscriber
-  implements EventSubscriber<MemberType> {}
+  implements EventSubscriber<MemberType> {
+  getSubscribedEntities(): EntityName<MemberType>[] {
+    return [MemberType];
+  }
+}

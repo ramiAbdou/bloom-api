@@ -1,12 +1,15 @@
-import { EventArgs, EventSubscriber, Subscriber } from '@mikro-orm/core';
+import { EntityName, EventArgs, EventSubscriber } from '@mikro-orm/core';
 
 import { QueryEvent } from '@constants';
 import cache from '@core/cache/cache';
 import { decodeToken } from '@util/util';
 import User from './User';
 
-@Subscriber()
 export default class UserSubscriber implements EventSubscriber<User> {
+  getSubscribedEntities(): EntityName<User>[] {
+    return [User];
+  }
+
   async afterUpdate({ changeSet, entity }: EventArgs<User>) {
     const payload = changeSet;
     cache.invalidateEntries([`${QueryEvent.GET_USER}-${entity.id}`]);

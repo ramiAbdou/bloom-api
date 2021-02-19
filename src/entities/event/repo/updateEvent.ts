@@ -2,7 +2,6 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { LoggerEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import updateGoogleCalendarEvent from '@integrations/google/repo/updateGoogleCalendarEvent';
 import Event from '../Event';
 
 @ArgsType()
@@ -52,19 +51,6 @@ const updateEvent = async ({
     { ...args },
     { event: loggerEvent }
   );
-
-  // If the event is updating only b/c of the googleCalendarEventId, don't
-  // update the Google Calendar event. Otherwise, update the Google Calendar
-  // event.
-  setTimeout(async () => {
-    if (args?.googleCalendarEventId || !event.googleCalendarEventId) return;
-
-    await updateGoogleCalendarEvent(event.googleCalendarEventId, {
-      description: event.description,
-      summary: event.title,
-      visibility: event.private ? 'private' : 'public'
-    });
-  }, 0);
 
   return event;
 };

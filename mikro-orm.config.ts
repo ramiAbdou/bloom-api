@@ -6,6 +6,7 @@ import BaseEntity from '@core/db/BaseEntity';
 import BloomManagerSubscriber from '@core/db/BloomManager.subscriber';
 import NamingStrategy from '@core/db/NamingStrategy';
 import * as entities from '@entities/entities';
+import * as subscribers from '@entities/subscribers';
 
 /**
  * Exports all of the database connection and initialization information.
@@ -20,6 +21,6 @@ export default {
   entities: [BaseEntity, BaseCompositeEntity, ...Object.values(entities)],
   filters: { notDeleted: { args: false, cond: { deletedAt: null } } },
   namingStrategy: NamingStrategy,
-  subscribers: [new BloomManagerSubscriber()],
+  subscribers: [new BloomManagerSubscriber(), ...Object.values(subscribers)],
   type: 'postgresql'
 } as Options<IDatabaseDriver<Connection>>;

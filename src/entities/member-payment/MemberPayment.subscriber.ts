@@ -1,12 +1,15 @@
-import { EventArgs, EventSubscriber, Subscriber } from '@mikro-orm/core';
+import { EntityName, EventArgs, EventSubscriber } from '@mikro-orm/core';
 
 import { QueryEvent } from '@constants';
 import cache from '@core/cache/cache';
 import MemberPayment from './MemberPayment';
 
-@Subscriber()
 export default class MemberPaymentSubscriber
   implements EventSubscriber<MemberPayment> {
+  getSubscribedEntities(): EntityName<MemberPayment>[] {
+    return [MemberPayment];
+  }
+
   async afterCreate({ entity }: EventArgs<MemberPayment>) {
     cache.invalidateEntries([
       `${QueryEvent.GET_ACTIVE_DUES_GROWTH}-${entity.community.id}`,

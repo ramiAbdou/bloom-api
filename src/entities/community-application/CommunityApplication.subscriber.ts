@@ -1,7 +1,10 @@
-import { EventSubscriber, Subscriber } from '@mikro-orm/core';
+import { EntityName, EventSubscriber } from '@mikro-orm/core';
 
 import CommunityApplication from './CommunityApplication';
 
-@Subscriber()
 export default class CommunityApplicationSubscriber
-  implements EventSubscriber<CommunityApplication> {}
+  implements EventSubscriber<CommunityApplication> {
+  getSubscribedEntities(): EntityName<CommunityApplication>[] {
+    return [CommunityApplication];
+  }
+}
