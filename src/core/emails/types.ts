@@ -1,4 +1,7 @@
-import { EmailType } from '@constants';
+export enum EmailType {
+  LOGIN_LINK = 'LOGIN_LINK',
+  PAYMENT_RECEIPT = 'PAYMENT_RECEIPT'
+}
 
 type EmailBaseArgs = {
   to: string;

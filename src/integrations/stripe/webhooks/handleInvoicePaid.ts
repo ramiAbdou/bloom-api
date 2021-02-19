@@ -1,10 +1,9 @@
 import day, { Dayjs } from 'dayjs';
 import Stripe from 'stripe';
 
-import { EmailType } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import sendEmail from '@core/emails/sendEmail';
-import { PaymentReceiptVars } from '@core/emails/types';
+import { EmailType, PaymentReceiptVars } from '@core/emails/types';
 import { Community, Member, MemberPayment } from '@entities/entities';
 import createMemberPayment from '@entities/member-payment/repo/createMemberPayment';
 import { stripe } from '../Stripe.util';

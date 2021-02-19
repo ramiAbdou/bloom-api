@@ -1,9 +1,8 @@
 import day from 'dayjs';
 
-import { GQLContext, QueryEvent } from '@constants';
+import { GQLContext, QueryEvent, TimeSeriesData } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
-import { TimeSeriesData } from '@util/gql.types';
 import MemberPayment from '../../member-payment/MemberPayment';
 
 /**

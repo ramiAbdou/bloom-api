@@ -1,9 +1,9 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { APP, EmailType } from '@constants';
+import { APP } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import sendEmail from '@core/emails/sendEmail';
-import { LoginVars } from '@core/emails/types';
+import { EmailType, LoginVars } from '@core/emails/types';
 import URLBuilder from '@util/URLBuilder';
 import User from '../User';
 import getLoginError, { LoginError } from './getLoginError';

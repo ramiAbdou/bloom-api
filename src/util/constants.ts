@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import path from 'path'; // Before constants.
+import { Field, ObjectType } from 'type-graphql';
 
 export const isProduction = process.env.NODE_ENV === 'production';
 export const isTesting = process.env.NODE_ENV === 'testing';
@@ -39,13 +40,6 @@ export const JWT = {
 export type AuthQueryArgs = { code: string; state: string };
 
 export type AuthTokens = { accessToken: string; refreshToken: string };
-
-// ## EMAILS
-
-export enum EmailType {
-  LOGIN_LINK = 'LOGIN_LINK',
-  PAYMENT_RECEIPT = 'PAYMENT_RECEIPT'
-}
 
 // ## EVENTS
 
@@ -141,9 +135,20 @@ export enum QueryEvent {
   GET_UPCOMING_EVENT_GUESTS = 'GET_UPCOMING_EVENT_GUESTS'
 }
 
+// ## GRAPHQL
+
 export type GQLContext = {
   communityId: string;
   memberId: string;
   res: express.Response;
   userId: string;
 };
+
+@ObjectType()
+export class TimeSeriesData {
+  @Field({ nullable: true })
+  name: string;
+
+  @Field({ nullable: true })
+  value: number;
+}
