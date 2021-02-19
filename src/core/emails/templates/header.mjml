@@ -1,0 +1,5 @@
+<mj-section padding="24px 0px">
+  <mj-column>
+    <mj-image alt="Bloom Logo" src="https://dev-bloom-assets.sfo3.digitaloceanspaces.com/bloom.png" width="75px" />
+  </mj-column>
+</mj-section>

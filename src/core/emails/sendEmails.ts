@@ -1,11 +1,8 @@
-import mjml2html from 'mjml';
-import path from 'path';
-
 import { FlushEvent, isProduction } from '@constants';
 import sg, { MailDataRequired } from '@sendgrid/mail';
 import logger from '@util/logger';
 import { SendEmailsArgs } from './emails.types';
-import { formatPersonalizations, getHandlebarsTemplate } from './emails.util';
+import { formatPersonalizations } from './emails.util';
 
 /**
  * Sends an email using the given MJML template and the data that is needed
@@ -19,27 +16,17 @@ const sendEmails = async ({ template, variables }: SendEmailsArgs) => {
   // out manually each time.
   // if (!isProduction) return;
 
-  const handlebarsTemplate = getHandlebarsTemplate(template);
-
-  const { html } = mjml2html(handlebarsTemplate, {
-    // Needed to use mj-include with relative paths.
-    filePath: path.join(__dirname, 'templates')
-  });
-
-  console.log(html);
-  console.log(formatPersonalizations({ template, variables }));
-
   try {
     const options: MailDataRequired = {
       from: 'rami@bl.community',
-      html,
-      personalizations: formatPersonalizations({ template, variables })
+      personalizations: formatPersonalizations(variables),
+      templateId: process.env[`SENDGRID_${template}_TEMPLATE_ID`]
     };
 
     await sg.send(options);
   } catch (e) {
     logger.log({
-      // error: `Failed to send SendGrid mail to ${to}: ${e.stack}`,
+      error: `Failed to send SendGrid mail: ${e.stack}`,
       event: FlushEvent.EMAIL_FAILED,
       level: 'ERROR'
     });
