@@ -27,7 +27,7 @@ const respondToApplicants = async ({
     { id: memberIds },
     { joinedAt: now(), status: response },
     {
-      event:
+      flushEvent:
         response === MemberStatus.ACCEPTED
           ? 'ACCEPT_APPLICANTS'
           : 'IGNORE_APPLICANTS'

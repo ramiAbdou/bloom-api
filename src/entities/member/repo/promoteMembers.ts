@@ -12,7 +12,7 @@ const promoteMembers = async ({ memberIds }: AdminArgs): Promise<Member[]> => {
     Member,
     { id: memberIds },
     { role: 'ADMIN' },
-    { event: FlushEvent.PROMOTE_MEMBERS }
+    { flushEvent: FlushEvent.PROMOTE_MEMBERS }
   );
 
   return members;

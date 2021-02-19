@@ -26,7 +26,7 @@ const deleteEventGuest = async (
   const guest: EventGuest = await new BloomManager().findOneAndDelete(
     EventGuest,
     { event: { id: eventId }, member: { id: memberId } },
-    { event: FlushEvent.DELETE_EVENT_GUEST }
+    { flushEvent: FlushEvent.DELETE_EVENT_GUEST }
   );
 
   return guest;

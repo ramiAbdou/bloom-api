@@ -133,7 +133,7 @@ class BloomManager {
 
     wrap(result).assign(data);
 
-    await this.flush(options?.event);
+    await this.flush(options?.flushEvent);
     return result;
   }
 
@@ -175,7 +175,7 @@ class BloomManager {
       wrap(entity).assign(data);
     });
 
-    await this.flush(options?.event);
+    await this.flush(options?.flushEvent);
     return result;
   }
 
@@ -195,7 +195,7 @@ class BloomManager {
       entity.deletedAt = null;
     });
 
-    await this.flush(options?.event);
+    await this.flush(options?.flushEvent);
     return result;
   }
 
@@ -221,7 +221,7 @@ class BloomManager {
 
     if (!options?.soft) this.em.remove(result);
 
-    await this.flush(options?.event);
+    await this.flush(options?.flushEvent);
     return updatedResult;
   }
 
@@ -243,7 +243,7 @@ class BloomManager {
     result.deletedAt = now();
     if (!options?.soft) this.em.remove(result);
 
-    await this.flush(options?.event);
+    await this.flush(options?.flushEvent);
     return result;
   }
 
@@ -261,7 +261,7 @@ class BloomManager {
     // @ts-ignore b/c deletedAt isn't detected.
     result.deletedAt = null;
 
-    await this.flush(options?.event);
+    await this.flush(options?.flushEvent);
     return result;
   }
 
@@ -288,7 +288,7 @@ class BloomManager {
     { populate, ...options }: BloomCreateAndFlushArgs<P>
   ): Promise<T> {
     const entity = this.create(entityName, data);
-    await this.flush(options?.event);
+    await this.flush(options?.flushEvent);
 
     if (populate) {
       this.em.merge(entity);

@@ -16,7 +16,7 @@ const deleteMembers = async ({
   return new BloomManager().findAndDelete(
     Member,
     { id: memberIds },
-    { event: FlushEvent.DELETE_MEMBERS, soft: true }
+    { flushEvent: FlushEvent.DELETE_MEMBERS, soft: true }
   );
 };
 

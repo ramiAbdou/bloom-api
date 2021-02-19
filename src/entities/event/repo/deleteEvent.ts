@@ -16,7 +16,7 @@ const deleteEvent = async ({
   const event: Event = await new BloomManager().findOneAndDelete(
     Event,
     { id: eventId },
-    { event: FlushEvent.DELETE_EVENT, soft: true }
+    { flushEvent: FlushEvent.DELETE_EVENT, soft: true }
   );
 
   return event;

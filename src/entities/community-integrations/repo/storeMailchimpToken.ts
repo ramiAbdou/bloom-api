@@ -40,7 +40,7 @@ const storeMailchimpToken = async ({
     CommunityIntegrations,
     { community: { urlName } },
     { mailchimpAccessToken: data?.access_token },
-    { event: FlushEvent.STORE_MAILCHIMP_TOKEN }
+    { flushEvent: FlushEvent.STORE_MAILCHIMP_TOKEN }
   );
 
   return integrations;

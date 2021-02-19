@@ -25,7 +25,7 @@ const storeStripeAccount = async ({
     CommunityIntegrations,
     { community: { urlName } },
     { stripeAccountId },
-    { event: FlushEvent.STORE_STRIPE_ACCOUNT, populate: ['community'] }
+    { flushEvent: FlushEvent.STORE_STRIPE_ACCOUNT, populate: ['community'] }
   );
 
   await createStripeProducts({ communityId: integrations.community.id });

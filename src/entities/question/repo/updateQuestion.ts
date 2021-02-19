@@ -18,7 +18,7 @@ const updateQuestion = async ({ questionId, ...args }: UpdateQuestionArgs) => {
     Question,
     { id: questionId },
     { ...args },
-    { event: FlushEvent.UPDATE_QUESTION }
+    { flushEvent: FlushEvent.UPDATE_QUESTION }
   );
 };
 

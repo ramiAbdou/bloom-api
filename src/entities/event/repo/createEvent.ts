@@ -39,7 +39,7 @@ const createEvent = async (
   const event: Event = await new BloomManager().createAndFlush(
     Event,
     { ...args, community: { id: communityId } },
-    { event: FlushEvent.CREATE_EVENT, populate: ['community'] }
+    { flushEvent: FlushEvent.CREATE_EVENT, populate: ['community'] }
   );
 
   return event;

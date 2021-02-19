@@ -12,7 +12,7 @@ const demoteMembers = async ({ memberIds }: AdminArgs): Promise<Member[]> => {
     Member,
     { id: memberIds },
     { role: null },
-    { event: FlushEvent.DEMOTE_MEMBERS }
+    { flushEvent: FlushEvent.DEMOTE_MEMBERS }
   );
 
   return members;

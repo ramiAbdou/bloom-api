@@ -58,7 +58,7 @@ const createEventGuest = async (
   const guest: EventGuest = await new BloomManager().createAndFlush(
     EventGuest,
     { ...baseArgs, ...partialUser },
-    { event: FlushEvent.CREATE_EVENT_GUEST, populate: ['member.user'] }
+    { flushEvent: FlushEvent.CREATE_EVENT_GUEST, populate: ['member.user'] }
   );
 
   return guest;

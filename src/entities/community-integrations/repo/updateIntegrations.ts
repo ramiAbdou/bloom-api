@@ -19,7 +19,7 @@ const updateIntegrations = async (
     CommunityIntegrations,
     { community: { id: communityId } },
     { ...args },
-    { event: args?.mailchimpListId ? FlushEvent.UPDATE_MAILCHIMP : null }
+    { flushEvent: args?.mailchimpListId ? FlushEvent.UPDATE_MAILCHIMP : null }
   );
 };
 

@@ -25,7 +25,7 @@ const updateMember = async (
     Member,
     { id: memberId },
     { ...args },
-    { event: FlushEvent.UPDATE_MEMBER }
+    { flushEvent: FlushEvent.UPDATE_MEMBER }
   );
 };
 

@@ -49,7 +49,7 @@ const updateEvent = async ({
     Event,
     { id: eventId },
     { ...args },
-    { event: flushEvent }
+    { flushEvent }
   );
 
   return event;

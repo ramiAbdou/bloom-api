@@ -40,7 +40,7 @@ const updateUser = async (
     User,
     { id: userId },
     { ...args },
-    { event: FlushEvent.UPDATE_USER }
+    { flushEvent: FlushEvent.UPDATE_USER }
   );
 };
 

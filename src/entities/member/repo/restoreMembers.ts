@@ -16,7 +16,7 @@ const restoreMembers = async ({
   return new BloomManager().findAndRestore(
     Member,
     { id: memberIds },
-    { event: FlushEvent.RESTORE_MEMBERS }
+    { flushEvent: FlushEvent.RESTORE_MEMBERS }
   );
 };
 
