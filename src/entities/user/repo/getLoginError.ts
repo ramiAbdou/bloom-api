@@ -1,4 +1,5 @@
 import BloomManager from '@core/db/BloomManager';
+import { MemberStatus } from '@entities/member/Member.types';
 import acceptInvitations from '@entities/member/repo/acceptInvitations';
 import Member from '../../member/Member';
 import User from '../User';
@@ -48,19 +49,21 @@ const getLoginError = async ({
   // If when trying to login, the user has some a status of INVITED (only
   // possible if an admin added them manually), then we should set those
   // statuses to be ACCEPTED.
-  if (members.some(({ status }) => status === 'INVITED')) {
+  if (members.some(({ status }) => status === MemberStatus.INVITED)) {
     await acceptInvitations({ email });
   }
 
   return members.reduce((acc: LoginError, { status }: Member) => {
     // SUCCESS CASE: If the user has been approved in some community,
     // update the refresh token in the DB.
-    if (['ACCEPTED', 'INVITED'].includes(status)) return null;
+    if ([MemberStatus.ACCEPTED, MemberStatus.INVITED].includes(status)) {
+      return null;
+    }
 
     // If acc is null and application is PENDING, don't do anything, cause
     // the user is already approved. If acc isn't null, then set error to
     // APPLICATION_PENDING.
-    if (acc && status === 'PENDING') return 'APPLICATION_PENDING';
+    if (acc && status === MemberStatus.PENDING) return 'APPLICATION_PENDING';
     return acc;
   }, 'APPLICATION_REJECTED');
 };

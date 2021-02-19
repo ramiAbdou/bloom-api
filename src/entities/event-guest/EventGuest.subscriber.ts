@@ -4,6 +4,7 @@ import { QueryEvent } from '@constants';
 import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
 import addGoogleCalendarEventAttendee from '@integrations/google/repo/addGoogleCalendarEventAttendee';
+import deleteGoogleCalendarEventAttendee from '@integrations/google/repo/deleteGoogleCalendarEventAttendee';
 import Event from '../event/Event';
 import EventGuest from './EventGuest';
 
@@ -13,29 +14,31 @@ export default class EventGuestSubscriber
     return [EventGuest];
   }
 
-  async afterCreate({ entity }: EventArgs<EventGuest>) {
+  async afterCreate({ entity: guest }: EventArgs<EventGuest>) {
     cache.invalidateEntries([
-      `${QueryEvent.GET_EVENT_GUESTS}-${entity.event.id}`
+      `${QueryEvent.GET_EVENT_GUESTS}-${guest.event.id}`
     ]);
 
     const bm = new BloomManager();
-
-    const [event] = await Promise.all([
-      bm.findOne(Event, { id: entity.event.id })
-    ]);
-
-    if (!event.googleCalendarEventId) return;
+    const event = await bm.findOne(Event, { id: guest.event.id });
 
     await addGoogleCalendarEventAttendee(event.googleCalendarEventId, {
-      displayName: `${entity.firstName} ${entity.lastName}`,
-      email: entity.email,
+      displayName: `${guest.firstName} ${guest.lastName}`,
+      email: guest.email,
       responseStatus: 'accepted'
     });
   }
 
-  async afterDelete({ entity }: EventArgs<EventGuest>) {
+  async afterDelete({ entity: guest }: EventArgs<EventGuest>) {
     cache.invalidateEntries([
-      `${QueryEvent.GET_EVENT_GUESTS}-${entity.event.id}`
+      `${QueryEvent.GET_EVENT_GUESTS}-${guest.event.id}`
     ]);
+
+    const bm = new BloomManager();
+    const event = await bm.findOne(Event, { id: guest.event.id });
+
+    await deleteGoogleCalendarEventAttendee(event.googleCalendarEventId, {
+      email: guest.email
+    });
   }
 }

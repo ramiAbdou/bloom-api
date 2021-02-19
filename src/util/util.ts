@@ -33,6 +33,20 @@ export const generateTokens = (
 });
 
 /**
+ * Returns true if the entity has and of the keys in the given entity, even
+ * if the value of the key is null.
+ *
+ * @param entity Object with keys. Could be empty, but not null.
+ * @param keys List of keys in the object.
+ *
+ * @example hasKeys({ firstName: 'Rami', age: 21 }, ['firstName']) => true
+ * @example hasKeys({ firstName: 'Rami', age: 21 }, ['lastName']) => false
+ */
+export function hasKeys<T>(entity: T, keys: (keyof T)[]) {
+  return keys.some((key: keyof T) => key in entity);
+}
+
+/**
  * Returns the current UTC timestamp as a string to the millisecond.
  *
  * @example now() => '2020-08-31T23:17:20Z'

@@ -1,4 +1,3 @@
-import { QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import createStripeProducts from '@entities/member-type/repo/createStripeProducts';
 import { stripe } from '@integrations/stripe/Stripe.util';

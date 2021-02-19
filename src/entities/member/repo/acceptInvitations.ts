@@ -17,7 +17,9 @@ const acceptInvitations = async ({
   const members: Member[] = await bm.find(Member, { user: { email } });
 
   members.forEach((member: Member) => {
-    if (member.status === 'INVITED') member.status = MemberStatus.ACCEPTED;
+    if (member.status === MemberStatus.INVITED) {
+      member.status = MemberStatus.ACCEPTED;
+    }
   });
 
   await bm.flush({ event: 'ACCEPT_INVITATIONS' });

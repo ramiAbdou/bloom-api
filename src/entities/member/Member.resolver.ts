@@ -5,7 +5,7 @@ import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { Member } from '@entities/entities';
 import { CreateSubsciptionArgs } from '../member-payment/repo/createSubscription';
-import { AdminArgs } from './Member.types';
+import { AdminArgs, MemberStatus } from './Member.types';
 import addMembers, { AddMembersArgs } from './repo/addMembers';
 import applyForMembership, {
   ApplyForMembershipArgs
@@ -73,7 +73,7 @@ export default class MemberResolver {
   async getApplicants(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
     return new BloomManager().find(
       Member,
-      { community: { id: communityId }, status: 'PENDING' },
+      { community: { id: communityId }, status: MemberStatus.PENDING },
       {
         cacheKey: `${QueryEvent.GET_APPLICANTS}-${communityId}`,
         orderBy: { createdAt: QueryOrder.DESC },
@@ -96,7 +96,7 @@ export default class MemberResolver {
   async getDatabase(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
     return new BloomManager().find(
       Member,
-      { community: { id: communityId }, status: ['ACCEPTED'] },
+      { community: { id: communityId }, status: MemberStatus.ACCEPTED },
       {
         cacheKey: `${QueryEvent.GET_DATABASE}-${communityId}`,
         orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC },
@@ -110,7 +110,7 @@ export default class MemberResolver {
   async getDirectory(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
     return new BloomManager().find(
       Member,
-      { community: { id: communityId }, status: 'ACCEPTED' },
+      { community: { id: communityId }, status: MemberStatus.ACCEPTED },
       {
         cacheKey: `${QueryEvent.GET_DIRECTORY}-${communityId}`,
         orderBy: { createdAt: QueryOrder.DESC },

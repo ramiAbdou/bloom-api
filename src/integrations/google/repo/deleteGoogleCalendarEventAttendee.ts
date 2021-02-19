@@ -15,6 +15,8 @@ const deleteGoogleCalendarEventAttendee = async (
   eventId: string,
   attendee: calendar_v3.Schema$EventAttendee
 ) => {
+  if (!eventId) return null;
+
   // Need to fetch all of the previous event attendees first to append
   // the new attendee to.
   const { data: event } = await eventsCalendar.events.get({

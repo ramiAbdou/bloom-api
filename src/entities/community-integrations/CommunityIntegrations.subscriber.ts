@@ -10,6 +10,11 @@ export default class CommunityIntegrationsSubscriber
     return [CommunityIntegrations];
   }
 
+  /**
+   * Invalidates GET_INTEGRATIONS.
+   *
+   * Sends email confirmation to all admins of the community as well.
+   */
   async afterUpdate({ entity }: EventArgs<CommunityIntegrations>) {
     cache.invalidateEntries([
       `${QueryEvent.GET_INTEGRATIONS}-${entity.community.id}`

@@ -6,6 +6,7 @@ import addToMailchimpAudience from '../../community-integrations/repo/addToMailc
 import Community from '../../community/Community';
 import User from '../../user/User';
 import Member from '../Member';
+import { MemberStatus } from '../Member.types';
 
 @InputType()
 class AddMemberInput {
@@ -55,7 +56,7 @@ const addMembers = async (
       return bm.create(Member, {
         community,
         role: isAdmin ? 'ADMIN' : null,
-        status: 'INVITED',
+        status: MemberStatus.INVITED,
         // The user can potentially already exist if they are a part of other
         // communities.
         user:

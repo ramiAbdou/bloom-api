@@ -29,19 +29,6 @@ const respondToApplicants = async ({
     { event: 'MEMBERS_ACCEPTED' }
   );
 
-  // Send the appropriate emails based on the response. Also, add the members
-  // to the Mailchimp audience.
-  setTimeout(async () => {
-    // const community: Community = await communityRepo.findOne(
-    //   { id: communityId },
-    //   ['integrations']
-    // );
-    // if (response === 'ACCEPTED') {
-    //   await memberRepo.sendMemberAcceptedEmails(members, community);
-    //   await addToMailchimpAudience(members, community);
-    // } else await memberRepo.sendMemberIgnoredEmails(members, community);
-  }, 0);
-
   return members;
 };
 

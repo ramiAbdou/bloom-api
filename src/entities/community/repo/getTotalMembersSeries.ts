@@ -3,6 +3,7 @@ import day from 'dayjs';
 import { GQLContext, QueryEvent } from '@constants';
 import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
+import { MemberStatus } from '@entities/member/Member.types';
 import { TimeSeriesData } from '@util/gql.types';
 import Member from '../../member/Member';
 
@@ -25,7 +26,7 @@ const getTotalGrowthSeries = async ({
 
   const members = await new BloomManager().find(Member, {
     community: { id: communityId },
-    status: ['ACCEPTED']
+    status: MemberStatus.ACCEPTED
   });
 
   const endOfToday = day.utc().endOf('day');

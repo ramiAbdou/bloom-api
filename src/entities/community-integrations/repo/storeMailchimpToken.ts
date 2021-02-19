@@ -38,7 +38,7 @@ const storeMailchimpToken = async (
     CommunityIntegrations,
     { community: { urlName } },
     { mailchimpAccessToken: data?.access_token },
-    { event: 'MAILCHIMP_TOKEN_STORED' }
+    { event: 'STORE_MAILCHIMP_TOKEN' }
   );
 
   return integrations;

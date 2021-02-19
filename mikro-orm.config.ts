@@ -21,6 +21,9 @@ export default {
   entities: [BaseEntity, BaseCompositeEntity, ...Object.values(entities)],
   filters: { notDeleted: { args: false, cond: { deletedAt: null } } },
   namingStrategy: NamingStrategy,
-  subscribers: [new BloomManagerSubscriber(), ...Object.values(subscribers)],
+  subscribers: [
+    new BloomManagerSubscriber(),
+    ...Object.values(subscribers).map((Subscriber) => new Subscriber())
+  ],
   type: 'postgresql'
 } as Options<IDatabaseDriver<Connection>>;

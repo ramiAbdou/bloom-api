@@ -6,7 +6,7 @@ import BloomManager from '@core/db/BloomManager';
 import MemberData from '../../member-data/MemberData';
 import MemberType from '../../member-type/MemberType';
 import Member from '../../member/Member';
-import { MemberRole } from '../../member/Member.types';
+import { MemberRole, MemberStatus } from '../../member/Member.types';
 import Question from '../../question/Question';
 import { QuestionCategory } from '../../question/Question.types';
 import User from '../../user/User';
@@ -70,7 +70,7 @@ const processRow = async ({
   const member: Member = bm.create(Member, {
     community,
     role: email === ownerEmail ? MemberRole.OWNER : null,
-    status: 'ACCEPTED',
+    status: MemberStatus.ACCEPTED,
     user
   });
 
