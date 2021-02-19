@@ -1,35 +1,34 @@
+import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
 
+import { FlushEvent, GQLContext } from '@constants';
+import BloomManager from '@core/db/BloomManager';
 import { RecurrenceType } from '@entities/member-type/MemberType.types';
 import { stripe } from '@integrations/stripe/Stripe.util';
+import CommunityIntegrations from '../../community-integrations/CommunityIntegrations';
 import MemberType from '../MemberType';
 
-type CreateStripeProductArgs = {
+interface CreateStripeProductArgs {
   stripeAccountId: string;
   type: MemberType;
-};
-
-type CreateStripeProductsArgs = {
-  stripeAccountId: string;
-  types: MemberType[];
-};
+}
 
 /**
  * Updates the MemberType's stripePriceId and stripeProductId for all types
  * that are not free. Calls the Stripe SDK product and price creation methods
  * for the community.
  */
-const createStripeProduct = async ({
+const attachStripeProduct = async ({
   stripeAccountId,
   type
-}: CreateStripeProductArgs) => {
+}: CreateStripeProductArgs): Promise<MemberType> => {
   const { amount, id, name, recurrence } = type;
 
   // Create the subscription even if the product is LIFETIME fulfilled
   // subscription.
-  const { id: stripeProductId } = await stripe.products.create(
+  const product: Stripe.Product = await stripe.products.create(
     { id, name },
-    { stripeAccount: stripeAccountId }
+    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
   let recurring: Partial<Stripe.PriceCreateParams> = {};
@@ -42,18 +41,20 @@ const createStripeProduct = async ({
     };
   }
 
-  const { id: stripePriceId } = await stripe.prices.create(
+  const price: Stripe.Price = await stripe.prices.create(
     {
       ...recurring,
       currency: 'usd',
-      product: stripeProductId,
+      product: product.id,
       unit_amount: amount
     },
-    { stripeAccount: stripeAccountId }
+    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
-  type.stripePriceId = stripePriceId;
-  type.stripeProductId = stripeProductId;
+  type.stripePriceId = price.id;
+  type.stripeProductId = product.id;
+
+  return type;
 };
 
 /**
@@ -61,14 +62,29 @@ const createStripeProduct = async ({
  * that isn't free. Updates the MemberType entity as well.
  */
 const createStripeProducts = async ({
-  stripeAccountId,
-  types
-}: CreateStripeProductsArgs) => {
-  await Promise.all(
-    types.map(async (type: MemberType) =>
-      createStripeProduct({ stripeAccountId, type })
-    )
+  communityId
+}: Pick<GQLContext, 'communityId'>) => {
+  const bm = new BloomManager();
+
+  const [integrations, types]: [
+    CommunityIntegrations,
+    MemberType[]
+  ] = await Promise.all([
+    bm.findOne(CommunityIntegrations, { community: { id: communityId } }),
+    bm.find(MemberType, { community: { id: communityId } })
+  ]);
+
+  const updatedTypes: MemberType[] = await Promise.all(
+    types.map(async (type: MemberType) => {
+      return attachStripeProduct({
+        stripeAccountId: integrations.stripeAccountId,
+        type
+      });
+    })
   );
+
+  await bm.flush(FlushEvent.CREATE_STRIPE_PRODUCTS);
+  return updatedTypes;
 };
 
 export default createStripeProducts;

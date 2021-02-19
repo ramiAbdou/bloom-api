@@ -4,6 +4,11 @@ import createStripeProducts from '@entities/member-type/repo/createStripeProduct
 import { stripe } from '@integrations/stripe/Stripe.util';
 import CommunityIntegrations from '../CommunityIntegrations';
 
+interface StoreStripeTokensArgs {
+  code: string;
+  urlName: string;
+}
+
 /**
  * Stores the Stripe tokens in the database after executing the
  * OAuth token flow.
@@ -11,32 +16,25 @@ import CommunityIntegrations from '../CommunityIntegrations';
  * @param code Stripe's API produced authorization code that we exchange for
  * tokens.
  */
-const storeStripeTokens = async (
-  urlName: string,
-  code: string
-): Promise<CommunityIntegrations> => {
-  const bm = new BloomManager();
-
-  const integrations = await bm.findOne(
-    CommunityIntegrations,
-    { community: { urlName } },
-    { populate: ['community.types'] }
-  );
-
+const storeStripeAccount = async ({
+  code,
+  urlName
+}: StoreStripeTokensArgs): Promise<CommunityIntegrations> => {
   const { stripe_user_id: stripeAccountId } = await stripe.oauth.token({
     code,
     grant_type: 'authorization_code'
   });
 
-  await createStripeProducts({
-    stripeAccountId,
-    types: integrations.community.types.getItems()
-  });
+  const integrations: CommunityIntegrations = await new BloomManager().findOneAndUpdate(
+    CommunityIntegrations,
+    { community: { urlName } },
+    { stripeAccountId },
+    { event: FlushEvent.STORE_STRIPE_ACCOUNT, populate: ['community'] }
+  );
 
-  integrations.stripeAccountId = stripeAccountId;
-  await bm.flush(FlushEvent.STORE_STRIPE_ACCOUNT);
+  await createStripeProducts({ communityId: integrations.community.id });
 
   return integrations;
 };
 
-export default storeStripeTokens;
+export default storeStripeAccount;
