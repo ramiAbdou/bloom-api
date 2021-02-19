@@ -5,6 +5,11 @@ interface FormatPersonalizationData {
   to: { email: string };
 }
 
+/**
+ * Returns the formatted personalizations for a SendGrid email.
+ *
+ * @param variables Variables for an email template.
+ */
 export const formatPersonalizations = (
   variables: SendEmailsVars[]
 ): FormatPersonalizationData[] => {

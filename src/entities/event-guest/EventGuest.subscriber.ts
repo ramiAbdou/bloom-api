@@ -19,10 +19,7 @@ export default class EventGuestSubscriber
       `${QueryEvent.GET_EVENT_GUESTS}-${guest.event.id}`
     ]);
 
-    const bm = new BloomManager();
-    const event = await bm.findOne(Event, { id: guest.event.id });
-
-    await addGoogleCalendarEventAttendee(event.googleCalendarEventId, {
+    await addGoogleCalendarEventAttendee(guest.event.googleCalendarEventId, {
       displayName: `${guest.firstName} ${guest.lastName}`,
       email: guest.email,
       responseStatus: 'accepted'

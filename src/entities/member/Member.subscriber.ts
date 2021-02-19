@@ -18,13 +18,13 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
    * Adds a newly created member to the Mailchimp list, regardless if
    * member's status is PENDING, INVITED or ACCEPTED.
    */
-  async afterCreate({ changeSet, entity }: EventArgs<Member>) {
+  async afterCreate({ entity: member }: EventArgs<Member>) {
     const bm = new BloomManager();
 
-    const [integrations, member] = await Promise.all([
-      bm.findOne(CommunityIntegrations, { id: entity.id }),
-      bm.findOne(Member, { id: changeSet.entity.id }, { populate: ['user'] })
-    ]);
+    const integrations: CommunityIntegrations = await bm.findOne(
+      CommunityIntegrations,
+      { community: { id: member.community.id } }
+    );
 
     await addToMailchimpAudience({
       email: member.user.email,

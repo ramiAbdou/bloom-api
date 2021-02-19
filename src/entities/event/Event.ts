@@ -15,6 +15,7 @@ import BaseEntity from '@core/db/BaseEntity';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
+import EventInvitee from '../event-invitee/EventInvitee';
 import EventWatch from '../event-watch/EventWatch';
 
 @ObjectType()
@@ -90,6 +91,10 @@ export default class Event extends BaseEntity {
   @Field(() => [EventGuest])
   @OneToMany(() => EventGuest, ({ event }) => event)
   guests = new Collection<EventGuest>(this);
+
+  @Field(() => [EventInvitee])
+  @OneToMany(() => EventInvitee, ({ event }) => event)
+  invitees = new Collection<EventInvitee>(this);
 
   @Field(() => [EventWatch])
   @OneToMany(() => EventWatch, ({ event }) => event)

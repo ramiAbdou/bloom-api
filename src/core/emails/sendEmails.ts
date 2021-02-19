@@ -14,15 +14,15 @@ import { formatPersonalizations } from './emails.util';
 const sendEmails = async ({ template, variables }: SendEmailsArgs) => {
   // Shouldn't send any emails in development. If needed, comment this line
   // out manually each time.
-  // if (!isProduction) return;
+  if (!isProduction) return;
+
+  const options: MailDataRequired = {
+    from: 'team@bl.community',
+    personalizations: formatPersonalizations(variables),
+    templateId: process.env[`SENDGRID_${template}_TEMPLATE_ID`]
+  };
 
   try {
-    const options: MailDataRequired = {
-      from: 'rami@bl.community',
-      personalizations: formatPersonalizations(variables),
-      templateId: process.env[`SENDGRID_${template}_TEMPLATE_ID`]
-    };
-
     await sg.send(options);
   } catch (e) {
     logger.log({

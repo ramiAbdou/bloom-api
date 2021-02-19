@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
-import express from 'express';
+import { Response } from 'express';
 import path from 'path'; // Before constants.
-import { Field, ObjectType } from 'type-graphql';
 
 import sg from '@sendgrid/mail';
 
@@ -19,7 +18,6 @@ export const APP = {
   CLIENT_URL: isProduction
     ? process.env.APP_CLIENT_URL
     : 'http://localhost:3000',
-  CRYPTR_SECRET: process.env.CRYPTR_SECRET,
   DB_URL: isProduction
     ? process.env.DB_PROD
     : 'postgresql://localhost:5432/bloom',
@@ -144,15 +142,6 @@ export enum QueryEvent {
 export type GQLContext = {
   communityId: string;
   memberId: string;
-  res: express.Response;
+  res: Response;
   userId: string;
 };
-
-@ObjectType()
-export class TimeSeriesData {
-  @Field({ nullable: true })
-  name: string;
-
-  @Field({ nullable: true })
-  value: number;
-}

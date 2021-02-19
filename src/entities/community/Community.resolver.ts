@@ -1,7 +1,8 @@
 import { Args, Authorized, Ctx, Query, Resolver } from 'type-graphql';
 
-import { GQLContext, TimeSeriesData } from '@constants';
+import { GQLContext } from '@constants';
 import { Community } from '@entities/entities';
+import { TimeSeriesData } from '@util/gql';
 import getActiveDuesGrowth from './repo/getActiveDuesGrowth';
 import getActiveMembersGrowth from './repo/getActiveMembersGrowth';
 import getActiveMembersSeries from './repo/getActiveMembersSeries';

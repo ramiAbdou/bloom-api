@@ -128,6 +128,9 @@ class BloomManager {
   ): Promise<Loaded<T, P>> {
     // If not found, get it from the DB.
     const result = await this.findOne<T, P>(entityName, where, options);
+
+    if (!result) return null;
+
     wrap(result).assign(data);
 
     await this.flush(options?.event);
