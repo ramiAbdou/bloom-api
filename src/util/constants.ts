@@ -3,12 +3,16 @@ import express from 'express';
 import path from 'path'; // Before constants.
 import { Field, ObjectType } from 'type-graphql';
 
+import sg from '@sendgrid/mail';
+
 export const isProduction = process.env.NODE_ENV === 'production';
 export const isTesting = process.env.NODE_ENV === 'testing';
 
 // Environment configuration must happen before loading the constants file
 // because the constants depend on the environment being configured.
 dotenv.config({ path: path.join(__dirname, '../../.env') });
+
+sg.setApiKey(process.env.SENDGRID_API_KEY);
 
 export const APP = {
   CACHE_TTL: 60 * 60 * 1000, // 1 hour, represented as ms.

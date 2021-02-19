@@ -1,18 +1,11 @@
-import { readFileSync } from 'fs';
-import { compile } from 'handlebars';
 import mjml2html from 'mjml';
 import path from 'path';
 
 import { FlushEvent, isProduction } from '@constants';
-import sg from '@sendgrid/mail';
+import sg, { MailDataRequired } from '@sendgrid/mail';
 import logger from '@util/logger';
-import {
-  emailSubjectFns,
-  emailTemplateFiles,
-  SendEmailArgs
-} from './email.types';
-
-sg.setApiKey(process.env.SENDGRID_API_KEY);
+import { SendEmailsArgs } from './emails.types';
+import { formatPersonalizations, getHandlebarsTemplate } from './emails.util';
 
 /**
  * Sends an email using the given MJML template and the data that is needed
@@ -21,36 +14,33 @@ sg.setApiKey(process.env.SENDGRID_API_KEY);
  * @param mjml Name of the MJML file (including the .mjml extension).
  * @param variables Optional variables that populate the Handlebars template.
  */
-const sendEmail = async ({ template, to, variables }: SendEmailArgs) => {
+const sendEmails = async ({ template, variables }: SendEmailsArgs) => {
   // Shouldn't send any emails in development. If needed, comment this line
   // out manually each time.
   if (!isProduction) return;
 
-  const templateFileName = emailTemplateFiles[template];
-  const pathToFile = `./src/core/emails/templates/${templateFileName}.mjml`;
-  const hbsTemplate = compile(readFileSync(pathToFile, 'utf8'));
+  const handlebarsTemplate = getHandlebarsTemplate(template);
 
-  const { html } = mjml2html(hbsTemplate(variables), {
+  const { html } = mjml2html(handlebarsTemplate, {
     // Needed to use mj-include with relative paths.
     filePath: path.join(__dirname, 'templates')
   });
 
   try {
-    const options = {
+    const options: MailDataRequired = {
       from: 'rami@bl.community',
       html,
-      subject: emailSubjectFns[template](variables),
-      to
+      personalizations: formatPersonalizations({ template, variables })
     };
 
     await sg.send(options);
   } catch (e) {
     logger.log({
-      error: `Failed to send SendGrid mail to ${to}: ${e.stack}`,
+      // error: `Failed to send SendGrid mail to ${to}: ${e.stack}`,
       event: FlushEvent.EMAIL_FAILED,
       level: 'ERROR'
     });
   }
 };
 
-export default sendEmail;
+export default sendEmails;

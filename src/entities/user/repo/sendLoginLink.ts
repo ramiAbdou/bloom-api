@@ -2,8 +2,8 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { APP } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { EmailTemplate, LoginVars } from '@core/emails/email.types';
-import sendEmail from '@core/emails/sendEmail';
+import { EmailTemplate, LoginLinkVars } from '@core/emails/emails.types';
+import sendEmails from '@core/emails/sendEmails';
 import URLBuilder from '@util/URLBuilder';
 import User from '../User';
 import getLoginError, { LoginError } from './getLoginError';
@@ -43,8 +43,9 @@ const sendLoginLink = async ({
   ).addParam('token', token).url;
 
   const { firstName } = await new BloomManager().findOne(User, { email });
-  const variables: LoginVars = { firstName, loginUrl };
-  await sendEmail({ template: EmailTemplate.LOGIN_LINK, to: email, variables });
+
+  const variables: LoginLinkVars[] = [{ email, firstName, loginUrl }];
+  await sendEmails({ template: EmailTemplate.LOGIN_LINK, variables });
 };
 
 export default sendLoginLink;
