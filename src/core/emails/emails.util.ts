@@ -1,16 +1,10 @@
 import { isProduction } from '@constants';
 import { EmailEvent } from '@util/events';
 import logger from '@util/logger';
-import { SendEmailsArgs } from './emails.types';
-import prepareCreateEventCoordinatorEmail, {
-  CreateEventCoordinatorContext
-} from './util/prepareCreateEventCoordinatorEmail';
-import prepareLoginLinkEmail, {
-  LoginLinkContext
-} from './util/prepareLoginLinkEmail';
-import preparePaymentReceiptEmail, {
-  PaymentReceiptContext
-} from './util/preparePaymentReceiptEmail';
+import { EmailsVars, SendEmailsArgs } from './emails.types';
+import prepareCreateEventCoordinatorVars from './util/prepareCreateEventCoordinatorVars';
+import prepareLoginLinkVars from './util/prepareLoginLinkVars';
+import preparePaymentReceiptVars from './util/preparePaymentReceiptVars';
 
 export interface FormatPersonalizationData {
   dynamicTemplateData?: Record<string, any>;
@@ -20,18 +14,20 @@ export interface FormatPersonalizationData {
 /**
  * Returns the formatted personalizations for a SendGrid email.
  *
+ * If development environment, filters all personalizations out that aren't
+ * going to rami@bl.community.
+ *
  * @param variables Variables for an email template.
  */
 const formatPersonalizations = (
-  variables: any[]
+  variables: EmailsVars[]
 ): FormatPersonalizationData[] => {
   return variables
-    .filter((args: any) => {
-      if (isProduction) return true;
-      return args.user.email === 'rami@bl.community';
+    .filter((vars: EmailsVars) => {
+      return !!isProduction || vars.user.email === 'rami@bl.community';
     })
-    .map((args: any) => {
-      return { dynamicTemplateData: args, to: { email: args.user.email } };
+    .map((vars: EmailsVars) => {
+      return { dynamicTemplateData: vars, to: { email: vars.user.email } };
     });
 };
 
@@ -39,25 +35,19 @@ export const prepareEmailPersonalizations = async ({
   emailContext,
   emailEvent
 }: SendEmailsArgs): Promise<FormatPersonalizationData[]> => {
-  let result: any = [];
+  let result: EmailsVars[] = [];
 
   switch (emailEvent) {
     case EmailEvent.CREATE_EVENT_COORDINATOR:
-      result = await prepareCreateEventCoordinatorEmail(
-        emailContext as CreateEventCoordinatorContext
-      );
-
+      result = await prepareCreateEventCoordinatorVars(emailContext);
       break;
 
     case EmailEvent.LOGIN_LINK:
-      result = await prepareLoginLinkEmail(emailContext as LoginLinkContext);
+      result = await prepareLoginLinkVars(emailContext);
       break;
 
     case EmailEvent.PAYMENT_RECEIPT:
-      result = await preparePaymentReceiptEmail(
-        emailContext as PaymentReceiptContext
-      );
-
+      result = await preparePaymentReceiptVars(emailContext);
       break;
 
     default:

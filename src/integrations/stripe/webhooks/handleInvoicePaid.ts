@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 
 import BloomManager from '@core/db/BloomManager';
-import { PaymentReceiptContext } from '@core/emails/util/preparePaymentReceiptEmail';
+import { PaymentReceiptContext } from '@core/emails/util/preparePaymentReceiptVars';
 import eventBus from '@core/eventBus';
 import { Community, Member, MemberPayment } from '@entities/entities';
 import createMemberPayment from '@entities/member-payment/repo/createMemberPayment';

@@ -1,5 +1,6 @@
 import BloomManager from '@core/db/BloomManager';
 import User from '@entities/user/User';
+import { EmailsContext } from '../emails.types';
 
 export interface LoginLinkContext {
   email: string;
@@ -11,15 +12,13 @@ export interface LoginLinkVars {
   user: User;
 }
 
-const prepareLoginLinkEmail = async (
-  context: LoginLinkContext
+const prepareLoginLinkVars = async (
+  context: EmailsContext
 ): Promise<LoginLinkVars[]> => {
-  const { email, loginUrl } = context;
-
+  const { email, loginUrl } = context as LoginLinkContext;
   const user: User = await new BloomManager().findOne(User, { email });
   const variables: LoginLinkVars[] = [{ loginUrl, user }];
-
   return variables;
 };
 
-export default prepareLoginLinkEmail;
+export default prepareLoginLinkVars;
