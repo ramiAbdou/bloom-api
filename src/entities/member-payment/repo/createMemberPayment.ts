@@ -2,7 +2,7 @@ import Stripe from 'stripe';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import Member from '../../member/Member';
+import Member from '@entities/member/Member';
 import MemberPayment from '../MemberPayment';
 
 interface CreateMemberPaymentArgs {

@@ -1,7 +1,7 @@
 import BloomManager from '@core/db/BloomManager';
 import { MemberStatus } from '@entities/member/Member.types';
 import acceptInvitations from '@entities/member/repo/acceptInvitations';
-import Member from '../../member/Member';
+import Member from '@entities/member/Member';
 import User from '../User';
 
 export type LoginError =

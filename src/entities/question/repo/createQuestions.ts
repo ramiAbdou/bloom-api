@@ -3,8 +3,8 @@ import { EntityData } from '@mikro-orm/core';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import Community from '@entities/community/Community';
 import { FlushEvent } from '@util/events';
-import Community from '../../community/Community';
 import Question from '../Question';
 
 @ArgsType()

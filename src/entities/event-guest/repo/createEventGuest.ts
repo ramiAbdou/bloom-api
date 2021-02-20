@@ -3,8 +3,8 @@ import { FilterQuery } from '@mikro-orm/core';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import User from '@entities/user/User';
 import { FlushEvent } from '@util/events';
-import User from '../../user/User';
 import EventGuest from '../EventGuest';
 
 @ArgsType()

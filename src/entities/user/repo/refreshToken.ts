@@ -3,10 +3,10 @@ import { FilterQuery } from '@mikro-orm/core';
 
 import { AuthTokens } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import createMemberRefresh from '@entities/member-refresh/repo/createMemberRefresh';
+import Member from '@entities/member/Member';
 import { FlushEvent } from '@util/events';
 import { generateTokens, setHttpOnlyTokens } from '@util/util';
-import createMemberRefresh from '../../member-refresh/repo/createMemberRefresh';
-import Member from '../../member/Member';
 import User from '../User';
 
 interface RefreshTokenArgs {

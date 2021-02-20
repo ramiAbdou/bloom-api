@@ -1,12 +1,14 @@
 import { EntityData } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
+import {
+  Community,
+  CommunityApplication,
+  CommunityIntegrations,
+  Question
+} from '@entities/entities';
+import { QuestionCategory } from '@entities/question/Question.types';
 import { FlushEvent } from '@util/events';
-import CommunityApplication from '../../community-application/CommunityApplication';
-import CommunityIntegrations from '../../community-integrations/CommunityIntegrations';
-import Question from '../../question/Question';
-import { QuestionCategory } from '../../question/Question.types';
-import Community from '../Community';
 
 /**
  * Creates a new community when Bloom has a new customer. Omits the addition

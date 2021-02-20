@@ -1,9 +1,11 @@
 import { APP, IntegrationsBrand, KeyValue } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
-import { Community } from '@entities/entities';
-import Member from '@entities/member/Member';
-import User from '@entities/user/User';
+import {
+  Community,
+  CommunityIntegrations,
+  Member,
+  User
+} from '@entities/entities';
 import { EmailsContext } from '../emails.types';
 
 export interface ConnectIntegrationsContext {

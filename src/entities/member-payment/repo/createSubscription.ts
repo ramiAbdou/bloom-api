@@ -3,6 +3,10 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import Community from '@entities/community/Community';
+import MemberType from '@entities/member-type/MemberType';
+import Member from '@entities/member/Member';
+import createStripeCustomer from '@entities/member/repo/createStripeCustomer';
 import createStripeSubscription, {
   CreateStripeSubscriptionArgs
 } from '@integrations/stripe/repo/createStripeSubscription';
@@ -10,10 +14,6 @@ import updateStripeSubscription, {
   UpdateStripeSubscriptionArgs
 } from '@integrations/stripe/repo/updateStripeSubscription';
 import { FlushEvent } from '@util/events';
-import Community from '../../community/Community';
-import MemberType from '../../member-type/MemberType';
-import Member from '../../member/Member';
-import createStripeCustomer from '../../member/repo/createStripeCustomer';
 import MemberPayment from '../MemberPayment';
 import createMemberPayment from './createMemberPayment';
 

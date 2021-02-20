@@ -3,9 +3,9 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import Community from '@entities/community/Community';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { FlushEvent } from '@util/events';
-import Community from '../../community/Community';
 import Member from '../Member';
 import createStripeCustomer from './createStripeCustomer';
 

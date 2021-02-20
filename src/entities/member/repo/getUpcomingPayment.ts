@@ -4,8 +4,8 @@ import { Field, ObjectType } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import { stripe } from '@integrations/stripe/Stripe.util';
-import CommunityIntegrations from '../../community-integrations/CommunityIntegrations';
 import Member from '../Member';
 
 @ObjectType()

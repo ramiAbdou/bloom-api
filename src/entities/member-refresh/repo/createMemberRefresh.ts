@@ -1,6 +1,6 @@
 import BloomManager from '@core/db/BloomManager';
+import { MemberIdArgs } from '@entities/member/Member.types';
 import { FlushEvent } from '@util/events';
-import { MemberIdArgs } from '../../member/Member.types';
 import MemberRefresh from '../MemberRefresh';
 
 const createMemberRefresh = async ({

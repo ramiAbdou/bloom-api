@@ -5,7 +5,7 @@ import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
 import { QueryEvent } from '@util/events';
 import { TimeSeriesData } from '@util/gql';
-import MemberPayment from '../../member-payment/MemberPayment';
+import MemberPayment from '@entities/member-payment/MemberPayment';
 
 /**
  * Returns the total growth of the accepted members within the community,

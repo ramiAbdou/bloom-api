@@ -6,7 +6,7 @@ import cache from '@core/db/cache';
 import { MemberStatus } from '@entities/member/Member.types';
 import { QueryEvent } from '@util/events';
 import { TimeSeriesData } from '@util/gql';
-import Member from '../../member/Member';
+import Member from '@entities/member/Member';
 
 /**
  * Returns the total growth of the accepted members within the community,

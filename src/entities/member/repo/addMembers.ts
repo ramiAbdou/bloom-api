@@ -2,9 +2,9 @@ import { ArgsType, Field, InputType } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import Community from '@entities/community/Community';
+import User from '@entities/user/User';
 import { FlushEvent } from '@util/events';
-import Community from '../../community/Community';
-import User from '../../user/User';
 import Member from '../Member';
 import { MemberStatus } from '../Member.types';
 

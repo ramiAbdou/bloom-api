@@ -4,8 +4,8 @@ import { QueryOrder } from '@mikro-orm/core';
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
+import MemberPayment from '@entities/member-payment/MemberPayment';
 import { QueryEvent } from '@util/events';
-import MemberPayment from '../../member-payment/MemberPayment';
 
 const getTotalDuesGrowth = async ({
   communityId

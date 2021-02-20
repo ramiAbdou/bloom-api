@@ -1,11 +1,11 @@
 import day, { Dayjs } from 'dayjs';
 
 import { GQLContext } from '@constants';
-import { QueryEvent } from '@util/events';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
+import Member from '@entities/member/Member';
 import { MemberStatus } from '@entities/member/Member.types';
-import Member from '../../member/Member';
+import { QueryEvent } from '@util/events';
 
 /**
  * Returns the total growth of the accepted members within the community,

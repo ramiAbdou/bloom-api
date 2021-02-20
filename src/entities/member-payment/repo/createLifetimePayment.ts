@@ -4,13 +4,13 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
+import MemberType from '@entities/member-type/MemberType';
+import Member from '@entities/member/Member';
+import createStripeCustomer from '@entities/member/repo/createStripeCustomer';
 import createAndPayStripeInvoice from '@integrations/stripe/repo/createAndPayStripeInvoice';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { FlushEvent } from '@util/events';
-import CommunityIntegrations from '../../community-integrations/CommunityIntegrations';
-import MemberType from '../../member-type/MemberType';
-import Member from '../../member/Member';
-import createStripeCustomer from '../../member/repo/createStripeCustomer';
 import MemberPayment from '../MemberPayment';
 import createMemberPayment from './createMemberPayment';
 
