@@ -1,6 +1,7 @@
 import { isProduction } from '@constants';
 import { EmailEvent } from '@util/events';
 import logger from '@util/logger';
+import { splitArrayIntoChunks } from '@util/util';
 import { EmailsVars, SendEmailsArgs } from './emails.types';
 import prepareCreateEventCoordinatorVars from './util/prepareCreateEventCoordinatorVars';
 import prepareLoginLinkVars from './util/prepareLoginLinkVars';
@@ -34,7 +35,7 @@ const formatPersonalizations = (
 export const prepareEmailPersonalizations = async ({
   emailContext,
   emailEvent
-}: SendEmailsArgs): Promise<FormatPersonalizationData[]> => {
+}: SendEmailsArgs): Promise<FormatPersonalizationData[][]> => {
   let result: EmailsVars[] = [];
 
   switch (emailEvent) {
@@ -57,7 +58,10 @@ export const prepareEmailPersonalizations = async ({
       });
   }
 
-  return formatPersonalizations(result);
+  const personalizations = formatPersonalizations(result);
+  const chunkedPersonalizations = splitArrayIntoChunks(personalizations, 1000);
+
+  return chunkedPersonalizations;
 };
 
 export default prepareEmailPersonalizations;

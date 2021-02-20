@@ -81,3 +81,29 @@ export const setHttpOnlyTokens = (
     maxAge: JWT.EXPIRES_IN * 1000 // x1000 because represented as milliseconds.
   });
 };
+
+/**
+ * Returns the original array split into chunks with a maximum size of N. If
+ * original array is less than size N, just returns original array.
+ *
+ * @param arr Original array to split.
+ * @param maxChunkSize Maximum size of a chunk.
+ */
+export const splitArrayIntoChunks = (
+  arr: any[],
+  maxChunkSize: number
+): any[][] => {
+  if (arr.length <= maxChunkSize) return [arr];
+
+  return arr.reduce((acc: any[][], item: any, i: number) => {
+    const chunkIndex: number = Math.floor(i / maxChunkSize);
+
+    // Start a new chunk.
+    if (!acc[chunkIndex]) acc[chunkIndex] = [];
+
+    // Push the new item onto the correct chunk.
+    acc[chunkIndex].push(item);
+
+    return acc;
+  }, []);
+};

@@ -3,7 +3,32 @@ import sg, { MailDataRequired } from '@sendgrid/mail';
 import { MiscEvent } from '@util/events';
 import logger from '@util/logger';
 import { SendEmailsArgs } from './emails.types';
-import { prepareEmailPersonalizations } from './emails.util';
+import {
+  FormatPersonalizationData,
+  prepareEmailPersonalizations
+} from './emails.util';
+
+interface SendEmailsBatch extends SendEmailsArgs {
+  personalizations: FormatPersonalizationData[];
+}
+
+const sendEmailsBatch = async (args: SendEmailsBatch) => {
+  const options: MailDataRequired = {
+    from: 'team@bl.community',
+    personalizations: args.personalizations,
+    templateId: process.env[`SENDGRID_${args.emailEvent}_TEMPLATE_ID`]
+  };
+
+  try {
+    await sg.send(options);
+  } catch (e) {
+    logger.log({
+      error: `Failed to send SendGrid mail: ${e.stack}`,
+      event: MiscEvent.EMAIL_FAILED,
+      level: 'ERROR'
+    });
+  }
+};
 
 /**
  * Sends an email using the given MJML template and the data that is needed
@@ -17,23 +42,15 @@ const sendEmails = async (args: SendEmailsArgs) => {
   // out manually each time.
   if (!isProduction) return;
 
-  const personalizations = await prepareEmailPersonalizations(args);
+  const chunkedPersonalizations = await prepareEmailPersonalizations(args);
 
-  const options: MailDataRequired = {
-    from: 'team@bl.community',
-    personalizations,
-    templateId: process.env[`SENDGRID_${args.emailEvent}_TEMPLATE_ID`]
-  };
-
-  try {
-    await sg.send(options);
-  } catch (e) {
-    logger.log({
-      error: `Failed to send SendGrid mail: ${e.stack}`,
-      event: MiscEvent.EMAIL_FAILED,
-      level: 'ERROR'
-    });
-  }
+  await Promise.all(
+    chunkedPersonalizations.map(
+      async (personalizations: FormatPersonalizationData[]) => {
+        await sendEmailsBatch({ ...args, personalizations });
+      }
+    )
+  );
 };
 
 export default sendEmails;
