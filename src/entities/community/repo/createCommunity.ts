@@ -29,14 +29,7 @@ const createCommunity = async ({
   ];
 
   const persistedQuestions: Question[] = allQuestions.map(
-    (question: EntityData<Question>, i: number) => {
-      const persistedQuestion: Question = bm.create(Question, {
-        ...question,
-        order: i
-      });
-
-      return persistedQuestion;
-    }
+    (question: EntityData<Question>) => bm.create(Question, question)
   );
 
   const community: Community = bm.create(Community, {

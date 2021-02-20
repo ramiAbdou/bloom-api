@@ -1,4 +1,4 @@
-import { Field, InputType, Int, ObjectType } from 'type-graphql';
+import { Field, InputType, ObjectType } from 'type-graphql';
 import {
   ArrayType,
   BeforeCreate,
@@ -39,11 +39,6 @@ export default class Question extends BaseEntity {
   @Field(() => [String], { nullable: true })
   @Property({ nullable: true, type: ArrayType })
   options?: string[];
-
-  // Order that the question appears. Similar to an index in an array.
-  @Field(() => Int)
-  @Property()
-  order?: number;
 
   @Field()
   @Property()

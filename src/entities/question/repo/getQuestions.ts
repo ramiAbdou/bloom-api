@@ -27,7 +27,7 @@ const getQuestions = async (
     { ...args },
     {
       cacheKey: `${QueryEvent.GET_QUESTIONS}-${key}`,
-      orderBy: { createdAt: QueryOrder.ASC, order: QueryOrder.ASC }
+      orderBy: { createdAt: QueryOrder.ASC }
     }
   );
 };
