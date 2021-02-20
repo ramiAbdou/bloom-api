@@ -6,6 +6,9 @@ import prepareCreateEventCoordinatorEmail, {
 import prepareLoginLinkEmail, {
   LoginLinkContext
 } from './prepareLoginLinkEmail';
+import preparePaymentReceiptEmail, {
+  PaymentReceiptContext
+} from './preparePaymentReceiptEmail';
 
 const prepareEmailPersonalizations = async ({
   emailContext,
@@ -19,6 +22,10 @@ const prepareEmailPersonalizations = async ({
 
   if (emailEvent === EmailEvent.LOGIN_LINK) {
     return prepareLoginLinkEmail(emailContext as LoginLinkContext);
+  }
+
+  if (emailEvent === EmailEvent.PAYMENT_RECEIPT) {
+    return preparePaymentReceiptEmail(emailContext as PaymentReceiptContext);
   }
 
   return [];

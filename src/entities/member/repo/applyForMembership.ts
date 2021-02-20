@@ -78,7 +78,7 @@ const createApplicationPayment = async (
       return;
     }
 
-    await createSubscription({ autoRenew: true, memberTypeId }, ctx);
+    await createSubscription({ memberTypeId }, ctx);
   } catch (e) {
     await new BloomManager().findOneAndDelete(Member, { id: ctx.memberId });
     throw new Error(`There was a problem processing your payment.`);

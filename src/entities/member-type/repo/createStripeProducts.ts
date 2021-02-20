@@ -47,7 +47,7 @@ const attachStripeProduct = async ({
       ...recurring,
       currency: 'usd',
       product: product.id,
-      unit_amount: amount
+      unit_amount: amount * 100
     },
     { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );

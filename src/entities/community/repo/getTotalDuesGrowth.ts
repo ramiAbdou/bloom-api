@@ -25,10 +25,12 @@ const getTotalDuesGrowth = async ({
     { orderBy: { createdAt: QueryOrder.ASC } }
   );
 
-  const amountThisYear =
-    paymentsThisYear.reduce((acc: number, payment: MemberPayment) => {
+  const amountThisYear = paymentsThisYear.reduce(
+    (acc: number, payment: MemberPayment) => {
       return acc + payment.amount;
-    }, 0) / 100;
+    },
+    0
+  );
 
   cache.set(cacheKey, amountThisYear);
 

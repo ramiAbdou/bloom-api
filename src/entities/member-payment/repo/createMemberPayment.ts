@@ -31,7 +31,7 @@ const createMemberPayment = async (
 
   if (invoice.status === 'paid' && invoice.amount_paid) {
     payment = bm.create(MemberPayment, {
-      amount: invoice.amount_paid,
+      amount: invoice.amount_paid / 100,
       community: { id: communityId },
       member,
       stripeInvoiceId: invoice.id,

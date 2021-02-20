@@ -7,15 +7,15 @@
     <mj-section background-color="#E0E0E0" border-radius="8px" padding="1px">
       <mj-column background-color="#FFFFFF" padding="8px 8px 16px 8px" border-radius="8px">
         <mj-include path="./hi.mjml" />
-        <mj-text padding-bottom="16px">We received your payment of ${{amount}} USD to {{communityName}} on {{paymentDate}}. You are now an active member and your membership will auto-renew on {{renewalDate}}. </mj-text>
+        <mj-text padding-bottom="16px">We received your payment of ${{ payment.amount }} USD to {{ community.name }} on {{formatDate payment.createdAt "MMMM D, YYYY" "-0800"}}. </mj-text>
         <mj-text font-size="13px" font-weight="500"> Transaction Details </mj-text>
-        <mj-text font-size="13px"> Payment Source: {{cardCompany}} &bull; {{last4}}
+        <mj-text font-size="13px"> Payment Source: {{ card.brand }} &bull; {{ card.last4 }}
         </mj-text>
-        <mj-text font-size="13px"> Invoice ID: {{stripeInvoiceId}}
+        <mj-text font-size="13px"> Invoice ID: {{payment.stripeInvoiceId}}
         </mj-text>
-        <mj-text font-size="13px" padding-bottom="16px"> Date of Payment: {{paymentDateAndTime}}
+        <mj-text font-size="13px" padding-bottom="16px"> Date of Payment: {{ formatDate payment.createdAt "MMMM D, YYYY @ h:mm A" "-0800" }}
         </mj-text>
-        <mj-text font-size="13px" line-height="20px"> If you believe this was a mistake, you can dispute this with the administrators of {{communityName}}, where they will be able to issue you a refund if needed. </mj-text>
+        <mj-text font-size="13px" line-height="20px"> If you believe this was a mistake, you can dispute this with the administrators of {{ community.name }}, where they will be able to issue you a refund if needed. </mj-text>
       </mj-column>
     </mj-section>
     <mj-include path="./footer.mjml" />

@@ -16,7 +16,7 @@ import { RecurrenceType } from './MemberType.types';
 @Entity()
 export default class MemberType extends BaseEntity {
   @Field(() => Float)
-  @Property({ type: Number })
+  @Property({ columnType: 'decimal', type: Number })
   amount = 0.0;
 
   @Field()

@@ -1,5 +1,5 @@
 import { IsUrl } from 'class-validator';
-import { Field, ObjectType } from 'type-graphql';
+import { Field, Float, ObjectType } from 'type-graphql';
 import { Entity, ManyToOne, Property } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
@@ -10,8 +10,8 @@ import Member from '../member/Member';
 @ObjectType()
 @Entity()
 export default class MemberPayment extends BaseEntity {
-  @Field()
-  @Property()
+  @Field(() => Float)
+  @Property({ columnType: 'decimal' })
   amount: number;
 
   @Property({ unique: true })

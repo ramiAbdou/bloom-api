@@ -1,6 +1,7 @@
 import { EmailEvent } from '@util/events';
 import { CreateEventCoordinatorContext } from './prepareCreateEventCoordinatorEmail';
 import { LoginLinkContext } from './prepareLoginLinkEmail';
+import { PaymentReceiptContext } from './preparePaymentReceiptEmail';
 
 export interface FormatPersonalizationData {
   dynamicTemplateData?: Record<string, any>;
@@ -8,7 +9,10 @@ export interface FormatPersonalizationData {
 }
 
 export interface EmailsArgs {
-  emailContext: CreateEventCoordinatorContext | LoginLinkContext;
+  emailContext:
+    | CreateEventCoordinatorContext
+    | LoginLinkContext
+    | PaymentReceiptContext;
   emailEvent: EmailEvent;
 }
 

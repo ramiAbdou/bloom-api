@@ -11,7 +11,7 @@ export interface BloomFindOptions<T, P> extends FindOptions<T, P> {
   cacheKey?: string;
 }
 
-export interface FlushArgs extends EmailsArgs {
+export interface FlushArgs extends Partial<EmailsArgs> {
   flushEvent?: FlushEvent;
 }
 
