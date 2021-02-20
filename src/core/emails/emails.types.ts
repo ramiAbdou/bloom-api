@@ -1,7 +1,7 @@
 import { EmailEvent } from '@util/events';
-import { CreateEventCoordinatorContext } from './prepareCreateEventCoordinatorEmail';
-import { LoginLinkContext } from './prepareLoginLinkEmail';
-import { PaymentReceiptContext } from './preparePaymentReceiptEmail';
+import { CreateEventCoordinatorContext } from './util/prepareCreateEventCoordinatorEmail';
+import { LoginLinkContext } from './util/prepareLoginLinkEmail';
+import { PaymentReceiptContext } from './util/preparePaymentReceiptEmail';
 
 export interface FormatPersonalizationData {
   dynamicTemplateData?: Record<string, any>;

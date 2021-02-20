@@ -1,12 +1,10 @@
 import Stripe from 'stripe';
 
+import BloomManager from '@core/db/BloomManager';
+import Community from '@entities/community/Community';
+import MemberPayment from '@entities/member-payment/MemberPayment';
+import Member from '@entities/member/Member';
 import User from '@entities/user/User';
-import Community from '../../entities/community/Community';
-import MemberPayment from '../../entities/member-payment/MemberPayment';
-import Member from '../../entities/member/Member';
-import BloomManager from '../db/BloomManager';
-import { FormatPersonalizationData } from './emails.types';
-import formatPersonalizations from './formatPersonalizations';
 
 export interface PaymentReceiptContext {
   card: Stripe.PaymentMethod.Card;
@@ -25,7 +23,7 @@ const preparePaymentReceiptEmail = async ({
   card,
   paymentId,
   stripeAccountId
-}: PaymentReceiptContext): Promise<FormatPersonalizationData[]> => {
+}: PaymentReceiptContext): Promise<PaymentReceiptVars[]> => {
   const bm = new BloomManager();
 
   const [community, payment]: [Community, MemberPayment] = await Promise.all([
@@ -45,7 +43,7 @@ const preparePaymentReceiptEmail = async ({
     { card, community, payment, user: member.user }
   ];
 
-  return formatPersonalizations(variables);
+  return variables;
 };
 
 export default preparePaymentReceiptEmail;

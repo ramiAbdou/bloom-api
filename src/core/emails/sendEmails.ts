@@ -3,7 +3,7 @@ import sg, { MailDataRequired } from '@sendgrid/mail';
 import { MiscEvent } from '@util/events';
 import logger from '@util/logger';
 import { SendEmailsArgs } from './emails.types';
-import prepareEmailPersonalizations from './prepareEmailPersonalizations';
+import { prepareEmailPersonalizations } from './emails.util';
 
 /**
  * Sends an email using the given MJML template and the data that is needed

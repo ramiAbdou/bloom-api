@@ -1,9 +1,7 @@
 import BloomManager from '@core/db/BloomManager';
+import Event from '@entities/event/Event';
+import Member from '@entities/member/Member';
 import User from '@entities/user/User';
-import Event from '../../entities/event/Event';
-import Member from '../../entities/member/Member';
-import { FormatPersonalizationData } from './emails.types';
-import formatPersonalizations from './formatPersonalizations';
 
 export interface CreateEventCoordinatorContext {
   coordinatorId: string;
@@ -17,7 +15,7 @@ export interface CreateEventCoordinatorVars {
 
 const prepareCreateEventCoordinatorEmail = async (
   context: CreateEventCoordinatorContext
-): Promise<FormatPersonalizationData[]> => {
+): Promise<CreateEventCoordinatorVars[]> => {
   const bm = new BloomManager();
 
   const [coordinator, event]: [Member, Event] = await Promise.all([
@@ -29,7 +27,7 @@ const prepareCreateEventCoordinatorEmail = async (
     { event, user: coordinator.user }
   ];
 
-  return formatPersonalizations(variables);
+  return variables;
 };
 
 export default prepareCreateEventCoordinatorEmail;
