@@ -22,7 +22,7 @@ const sendEmails = async (args: SendEmailsArgs) => {
   const options: MailDataRequired = {
     from: 'team@bl.community',
     personalizations,
-    templateId: process.env[`SENDGRID_${args.event}_TEMPLATE_ID`]
+    templateId: process.env[`SENDGRID_${args.emailEvent}_TEMPLATE_ID`]
   };
 
   try {

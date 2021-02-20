@@ -1,5 +1,6 @@
 import User from '@entities/user/User';
 import BloomManager from '../db/BloomManager';
+import { FormatPersonalizationData } from './emails.types';
 import formatPersonalizations from './formatPersonalizations';
 
 export interface LoginLinkContext {
@@ -12,7 +13,9 @@ export interface LoginLinkVars {
   user: User;
 }
 
-const prepareLoginLinkEmail = async (context: LoginLinkContext) => {
+const prepareLoginLinkEmail = async (
+  context: LoginLinkContext
+): Promise<FormatPersonalizationData[]> => {
   const { email, loginUrl } = context;
 
   const user: User = await new BloomManager().findOne(User, { email });
