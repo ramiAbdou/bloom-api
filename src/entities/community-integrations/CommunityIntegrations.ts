@@ -26,7 +26,7 @@ export default class CommunityIntegrations extends BaseEntity {
   @Property({ nullable: true, unique: true })
   zapierApiKey: string;
 
-  @Field(() => Boolean)
+  @Field()
   isMailchimpAuthenticated(): boolean {
     return !!this.mailchimpAccessToken;
   }

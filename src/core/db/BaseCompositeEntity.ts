@@ -20,7 +20,7 @@ export default abstract class BaseCompositeEntity {
 
   @Field({ nullable: true })
   @Property({ nullable: true })
-  deletedAt: string;
+  deletedAt?: string;
 
   @Field()
   @Property({ onUpdate: () => now() })

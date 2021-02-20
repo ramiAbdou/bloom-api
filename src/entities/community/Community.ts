@@ -1,5 +1,5 @@
 import { IsUrl } from 'class-validator';
-import { Field, ObjectType } from 'type-graphql';
+import { Field, InputType, ObjectType } from 'type-graphql';
 import {
   BeforeCreate,
   Collection,
@@ -21,27 +21,28 @@ import Member from '../member/Member';
 import Question from '../question/Question';
 
 @ObjectType()
+@InputType('CommunityInput')
 @Entity()
 export default class Community extends BaseEntity {
   // ## FIELDS
 
   // True if the member should be accepted automatically.
-  @Field(() => Boolean)
-  @Property({ type: Boolean })
-  autoAccept = false;
+  @Field({ defaultValue: false })
+  @Property()
+  autoAccept: boolean = false;
 
   @Field({ nullable: true })
   @Property({ nullable: true, unique: true })
   @IsUrl()
-  logoUrl: string;
+  logoUrl?: string;
 
   @Field({ nullable: true })
   @Property({ nullable: true })
   @IsUrl()
-  knowledgeHubUrl: string;
+  knowledgeHubUrl?: string;
 
   @Field()
-  @Property({ unique: true })
+  @Property()
   name: string;
 
   @Field()
@@ -80,8 +81,7 @@ export default class Community extends BaseEntity {
   // way for someone to join is if the admin adds them manually.
   @Field(() => CommunityApplication, { nullable: true })
   @OneToOne(() => CommunityApplication, ({ community }) => community, {
-    nullable: true,
-    owner: true
+    nullable: true
   })
   application: CommunityApplication;
 

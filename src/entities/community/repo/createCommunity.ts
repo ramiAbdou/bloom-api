@@ -8,10 +8,6 @@ import Question from '../../question/Question';
 import { QuestionCategory } from '../../question/Question.types';
 import Community from '../Community';
 
-export interface CreateCommunityArgs extends EntityData<Community> {
-  highlightedQuestionTitle?: string;
-}
-
 /**
  * Creates a new community when Bloom has a new customer. Omits the addition
  * of a logo. For now, the community should send Bloom a square logo that
@@ -19,10 +15,8 @@ export interface CreateCommunityArgs extends EntityData<Community> {
  */
 const createCommunity = async ({
   application,
-  highlightedQuestionTitle,
-  questions,
   ...data
-}: CreateCommunityArgs): Promise<Community> => {
+}: EntityData<Community>): Promise<Community> => {
   const bm = new BloomManager();
 
   // Add the first name, last name and joined at dates to array of questions.
@@ -31,11 +25,8 @@ const createCommunity = async ({
     { category: QuestionCategory.LAST_NAME, title: 'Last Name' },
     { category: QuestionCategory.DUES_STATUS, title: 'Status' },
     { category: QuestionCategory.MEMBERSHIP_TYPE, title: 'Membership Type' },
-    ...questions,
     { category: QuestionCategory.JOINED_AT, title: 'Joined At' }
   ];
-
-  let highlightedQuestion: Question = null;
 
   const persistedQuestions: Question[] = allQuestions.map(
     (question: EntityData<Question>, i: number) => {
@@ -43,10 +34,6 @@ const createCommunity = async ({
         ...question,
         order: i
       });
-
-      if (question.title === highlightedQuestionTitle) {
-        highlightedQuestion = persistedQuestion;
-      }
 
       return persistedQuestion;
     }
@@ -57,7 +44,6 @@ const createCommunity = async ({
     application: application
       ? bm.create(CommunityApplication, application)
       : null,
-    highlightedQuestion,
     integrations: bm.create(CommunityIntegrations, {}),
     questions: persistedQuestions
   });

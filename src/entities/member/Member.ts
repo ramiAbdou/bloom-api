@@ -36,14 +36,14 @@ export default class Member extends BaseEntity {
   @Property({ nullable: true, type: 'text' })
   bio: string;
 
-  @Field(() => Boolean)
-  @Property({ type: Boolean })
-  isDuesActive = false;
+  @Field({ defaultValue: false })
+  @Property()
+  isDuesActive: boolean = false;
 
   // Refers to the date that the member was ACCEPTED.
   @Field({ nullable: true })
   @Property({ nullable: true })
-  joinedAt: string;
+  joinedAt?: string;
 
   // If the member has a role, it will either be ADMIN or OWNER. There should
   // only be one OWNER in a community.

@@ -1,22 +1,14 @@
-import { Arg, Query, Resolver } from 'type-graphql';
+import { Args, Query, Resolver } from 'type-graphql';
 
-import { QueryEvent } from '@util/events';
-import BloomManager from '@core/db/BloomManager';
 import CommunityApplication from './CommunityApplication';
+import getApplication, { GetApplicationArgs } from './repo/getApplication';
 
 @Resolver()
 export default class CommunityApplicationResolver {
   @Query(() => CommunityApplication, { nullable: true })
   async getApplication(
-    @Arg('urlName') urlName: string
+    @Args() args: GetApplicationArgs
   ): Promise<CommunityApplication> {
-    return new BloomManager().findOneOrFail(
-      CommunityApplication,
-      { community: { urlName } },
-      {
-        cacheKey: `${QueryEvent.GET_APPLICATION}-${urlName}`,
-        populate: ['community.integrations']
-      }
-    );
+    return getApplication(args);
   }
 }

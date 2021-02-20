@@ -18,6 +18,8 @@ export default class CommunityApplication extends BaseEntity {
   // ## RELATIONSHIPS
 
   @Field(() => Community)
-  @OneToOne(() => Community, ({ application }) => application)
+  @OneToOne(() => Community, ({ application }) => application, {
+    owner: true
+  })
   community: Community;
 }

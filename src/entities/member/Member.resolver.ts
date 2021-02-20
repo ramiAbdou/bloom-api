@@ -2,9 +2,9 @@ import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { QueryOrder } from '@mikro-orm/core';
 
 import { GQLContext } from '@constants';
-import { QueryEvent } from '@util/events';
 import BloomManager from '@core/db/BloomManager';
 import { Member } from '@entities/entities';
+import { QueryEvent } from '@util/events';
 import { CreateSubsciptionArgs } from '../member-payment/repo/createSubscription';
 import { AdminArgs, MemberStatus } from './Member.types';
 import addMembers, { AddMembersArgs } from './repo/addMembers';
@@ -65,7 +65,7 @@ export default class MemberResolver {
   }
 
   @Query(() => Boolean)
-  async isEmailTaken(@Args() args: IsEmailTakenArgs) {
+  async isEmailTaken(@Args() args: IsEmailTakenArgs): Promise<boolean> {
     return isEmailTaken(args);
   }
 
