@@ -1,5 +1,9 @@
 import { EmailEvent } from '@util/events';
 import {
+  ConnectIntegrationsContext,
+  ConnectIntegrationsVars
+} from './util/prepareConnectIntegrationsVars';
+import {
   CreateEventCoordinatorContext,
   CreateEventCoordinatorVars
 } from './util/prepareCreateEventCoordinatorVars';
@@ -15,11 +19,13 @@ export interface FormatPersonalizationData {
 }
 
 export type EmailsContext =
+  | ConnectIntegrationsContext
   | CreateEventCoordinatorContext
   | LoginLinkContext
   | PaymentReceiptContext;
 
 export type EmailsVars =
+  | ConnectIntegrationsVars
   | CreateEventCoordinatorVars
   | LoginLinkVars
   | PaymentReceiptVars;

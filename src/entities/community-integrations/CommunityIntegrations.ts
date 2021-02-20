@@ -32,7 +32,7 @@ export default class CommunityIntegrations extends BaseEntity {
   }
 
   @Field(() => String, { nullable: true })
-  async mailchimpListName(): Promise<string[]> {
+  async mailchimpListName(): Promise<string> {
     const { mailchimpAccessToken, mailchimpListId } = this;
     if (!mailchimpAccessToken || !mailchimpListId) return null;
 

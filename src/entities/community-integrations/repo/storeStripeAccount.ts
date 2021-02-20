@@ -1,7 +1,8 @@
+import { IntegrationsBrand } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import createStripeProducts from '@entities/member-type/repo/createStripeProducts';
 import { stripe } from '@integrations/stripe/Stripe.util';
-import { FlushEvent } from '@util/events';
+import { EmailEvent, FlushEvent } from '@util/events';
 import CommunityIntegrations from '../CommunityIntegrations';
 import { CommunityIntegrationsAuthArgs } from '../CommunityIntegrations.types';
 
@@ -25,7 +26,12 @@ const storeStripeAccount = async ({
     CommunityIntegrations,
     { community: { urlName } },
     { stripeAccountId },
-    { flushEvent: FlushEvent.STORE_STRIPE_ACCOUNT, populate: ['community'] }
+    {
+      emailContext: { brand: IntegrationsBrand.STRIPE, urlName },
+      emailEvent: EmailEvent.CONNECT_INTEGRATIONS,
+      flushEvent: FlushEvent.STORE_STRIPE_ACCOUNT,
+      populate: ['community']
+    }
   );
 
   await createStripeProducts({ communityId: integrations.community.id });

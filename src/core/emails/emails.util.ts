@@ -3,6 +3,7 @@ import { EmailEvent } from '@util/events';
 import logger from '@util/logger';
 import { splitArrayIntoChunks } from '@util/util';
 import { EmailsVars, SendEmailsArgs } from './emails.types';
+import prepareConnectIntegrationsVars from './util/prepareConnectIntegrationsVars';
 import prepareCreateEventCoordinatorVars from './util/prepareCreateEventCoordinatorVars';
 import prepareLoginLinkVars from './util/prepareLoginLinkVars';
 import preparePaymentReceiptVars from './util/preparePaymentReceiptVars';
@@ -39,6 +40,10 @@ export const prepareEmailPersonalizations = async ({
   let result: EmailsVars[] = [];
 
   switch (emailEvent) {
+    case EmailEvent.CONNECT_INTEGRATIONS:
+      result = await prepareConnectIntegrationsVars(emailContext);
+      break;
+
     case EmailEvent.CREATE_EVENT_COORDINATOR:
       result = await prepareCreateEventCoordinatorVars(emailContext);
       break;
