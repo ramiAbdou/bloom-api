@@ -36,15 +36,19 @@ interface CreateEventCoordinatorTemplate {
 
 // ## LOGIN LINK
 
+export interface LoginLinkContext {
+  email: string;
+  loginUrl: string;
+}
+
 export interface LoginLinkVars {
   loginUrl: string;
   user: User;
 }
 
 interface LoginLinkTemplate {
-  context?: CreateEventCoordinatorContext;
+  context?: LoginLinkContext;
   event: EmailEvent.LOGIN_LINK;
-  variables?: LoginLinkVars[];
 }
 
 // ## PAYMENT RECEIPT
@@ -64,12 +68,11 @@ export interface PaymentReceiptVars {
 interface PaymentReceiptTemplate {
   context?: CreateEventCoordinatorContext;
   event: EmailEvent.PAYMENT_RECEIPT;
-  variables?: PaymentReceiptVars[];
 }
 
 // ## EMAIL CONTEXT
 
-export type EmailContext = CreateEventCoordinatorContext;
+export type EmailContext = CreateEventCoordinatorContext | LoginLinkContext;
 
 // ## SEND EMAILS VARS
 

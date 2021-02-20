@@ -2,12 +2,8 @@ import { isProduction } from '@constants';
 import sg, { MailDataRequired } from '@sendgrid/mail';
 import { MiscEvent } from '@util/events';
 import logger from '@util/logger';
-import {
-  EmailRecipientLevel,
-  recipientLevels,
-  SendEmailsArgs
-} from './emails.types';
-import prepareEmailVariables from './prepareEmailVariables';
+import { SendEmailsArgs } from './emails.types';
+import prepareEmailPersonalizations from './prepareEmailPersonalizations';
 
 /**
  * Sends an email using the given MJML template and the data that is needed
@@ -17,15 +13,11 @@ import prepareEmailVariables from './prepareEmailVariables';
  * @param variables Optional variables that populate the Handlebars template.
  */
 const sendEmails = async (args: SendEmailsArgs) => {
-  const recipientLevel = recipientLevels[args?.event];
-
   // Shouldn't send any emails in development. If needed, comment this line
   // out manually each time.
-  if (!isProduction && recipientLevel !== EmailRecipientLevel.COORDINATOR) {
-    return;
-  }
+  if (!isProduction) return;
 
-  const personalizations = await prepareEmailVariables(args);
+  const personalizations = await prepareEmailPersonalizations(args);
 
   const options: MailDataRequired = {
     from: 'team@bl.community',

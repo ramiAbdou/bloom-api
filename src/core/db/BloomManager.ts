@@ -11,6 +11,7 @@ import {
 } from '@mikro-orm/core';
 
 import cache from '@core/db/cache';
+import { MiscEvent } from '@util/events';
 import logger from '@util/logger';
 import { now } from '@util/util';
 import eventBus from '../eventBus';
@@ -58,7 +59,12 @@ class BloomManager {
         level: 'AFTER_FLUSH'
       });
 
-      if (emailEvent && emailContext) eventBus.emit(emailEvent, emailContext);
+      if (emailEvent && emailContext) {
+        eventBus.emit(MiscEvent.SEND_EMAIL, {
+          context: emailContext,
+          event: emailEvent
+        });
+      }
     } catch (e) {
       logger.log({
         contextId: this.em.id,

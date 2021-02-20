@@ -1,16 +1,13 @@
 import { EventEmitter } from 'events';
 
-import { EmailEvent } from '@util/events';
-import { CreateEventCoordinatorContext } from './emails/emails.types';
+import { MiscEvent } from '@util/events';
+import { SendEmailsArgs } from './emails/emails.types';
 import sendEmails from './emails/sendEmails';
 
 const eventBus = new EventEmitter();
 
-eventBus.on(
-  EmailEvent.CREATE_EVENT_COORDINATOR,
-  async (context: CreateEventCoordinatorContext) => {
-    await sendEmails({ context, event: EmailEvent.CREATE_EVENT_COORDINATOR });
-  }
-);
+eventBus.on(MiscEvent.SEND_EMAIL, async (args: SendEmailsArgs) => {
+  await sendEmails(args);
+});
 
 export default eventBus;
