@@ -5,13 +5,13 @@ import { decodeToken } from '@util/util';
 import refreshToken from './refreshToken';
 
 @ArgsType()
-export class VerifyTokenArgs {
+export class VerifyLoginTokenArgs {
   @Field()
   token: string;
 }
 
-const verifyToken = async (
-  { token }: VerifyTokenArgs,
+const verifyLoginToken = async (
+  { token }: VerifyLoginTokenArgs,
   { res }: Pick<GQLContext, 'res'>
 ) => {
   const userId: string = decodeToken(token)?.userId;
@@ -25,4 +25,4 @@ const verifyToken = async (
   return true;
 };
 
-export default verifyToken;
+export default verifyLoginToken;

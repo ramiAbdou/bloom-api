@@ -5,7 +5,9 @@ import getTokens, { GetTokensArgs, GetTokensResult } from './repo/getTokens';
 import getUser, { GetUserArgs } from './repo/getUser';
 import sendLoginLink, { SendLoginLinkArgs } from './repo/sendLoginLink';
 import updateUser, { UpdateUserArgs } from './repo/updateUser';
-import verifyToken, { VerifyTokenArgs } from './repo/verifyToken';
+import verifyLoginToken, {
+  VerifyLoginTokenArgs
+} from './repo/verifyLoginToken';
 import User from './User';
 
 @Resolver()
@@ -48,7 +50,10 @@ export default class UserResolver {
   }
 
   @Query(() => Boolean)
-  async verifyToken(@Args() args: VerifyTokenArgs, @Ctx() ctx: GQLContext) {
-    return verifyToken(args, ctx);
+  async verifyLoginToken(
+    @Args() args: VerifyLoginTokenArgs,
+    @Ctx() ctx: GQLContext
+  ) {
+    return verifyLoginToken(args, ctx);
   }
 }
