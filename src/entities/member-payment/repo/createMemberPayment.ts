@@ -32,11 +32,11 @@ const createMemberPayment = async (
   if (invoice.status === 'paid' && invoice.amount_paid) {
     payment = bm.create(MemberPayment, {
       amount: invoice.amount_paid / 100,
-      community: { id: communityId },
-      member,
+      community: communityId,
+      member: memberId,
       stripeInvoiceId: invoice.id,
       stripeInvoiceUrl: invoice.hosted_invoice_url,
-      type: { id: typeId }
+      type: typeId
     });
   }
 

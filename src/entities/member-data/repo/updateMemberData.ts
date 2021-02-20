@@ -44,8 +44,8 @@ const updateMemberData = async (
 
       if (!entity) {
         entity = bm.create(MemberData, {
-          member: { id: memberId },
-          question: { id: questionId }
+          member: memberId,
+          question: questionId
         });
       }
 

@@ -54,8 +54,6 @@ const refreshToken = async ({
     member = user.members[0];
   }
 
-  bm.em.merge(user);
-
   const tokens = generateTokens({
     communityId: member.community.id,
     memberId: member.id,

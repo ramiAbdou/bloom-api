@@ -4,7 +4,6 @@ import BloomManager from '@core/db/BloomManager';
 import { FlushEvent } from '@util/events';
 import CommunityApplication from '../../community-application/CommunityApplication';
 import CommunityIntegrations from '../../community-integrations/CommunityIntegrations';
-import MemberType from '../../member-type/MemberType';
 import Question from '../../question/Question';
 import { QuestionCategory } from '../../question/Question.types';
 import Community from '../Community';
@@ -22,23 +21,12 @@ const createCommunity = async ({
   application,
   highlightedQuestionTitle,
   questions,
-  types,
   ...data
 }: CreateCommunityArgs): Promise<Community> => {
   const bm = new BloomManager();
 
-  let defaultTypeId: string = null;
-
-  const persistedTypes: MemberType[] = types.map(
-    (type: EntityData<MemberType>) => {
-      const persistedType: MemberType = bm.create(MemberType, type);
-      if (type.isDefault) defaultTypeId = persistedType.id;
-      return persistedType;
-    }
-  );
-
   // Add the first name, last name and joined at dates to array of questions.
-  const questionsWithDefaults: EntityData<Question>[] = [
+  const allQuestions: EntityData<Question>[] = [
     { category: QuestionCategory.FIRST_NAME, title: 'First Name' },
     { category: QuestionCategory.LAST_NAME, title: 'Last Name' },
     { category: QuestionCategory.DUES_STATUS, title: 'Status' },
@@ -47,15 +35,17 @@ const createCommunity = async ({
     { category: QuestionCategory.JOINED_AT, title: 'Joined At' }
   ];
 
-  let highlightedQuestionId: string = null;
+  let highlightedQuestion: Question = null;
 
-  const persistedQuestions: Question[] = questionsWithDefaults.map(
+  const persistedQuestions: Question[] = allQuestions.map(
     (question: EntityData<Question>, i: number) => {
-      question.order = i;
-      const persistedQuestion: Question = bm.create(Question, question);
+      const persistedQuestion: Question = bm.create(Question, {
+        ...question,
+        order: i
+      });
 
       if (question.title === highlightedQuestionTitle) {
-        highlightedQuestionId = persistedQuestion.id;
+        highlightedQuestion = persistedQuestion;
       }
 
       return persistedQuestion;
@@ -67,14 +57,13 @@ const createCommunity = async ({
     application: application
       ? bm.create(CommunityApplication, application)
       : null,
-    defaultType: { id: defaultTypeId },
-    highlightedQuestion: { id: highlightedQuestionId },
+    highlightedQuestion,
     integrations: bm.create(CommunityIntegrations, {}),
-    questions: persistedQuestions,
-    types: persistedTypes
+    questions: persistedQuestions
   });
 
   await bm.flush({ flushEvent: FlushEvent.CREATE_COMMUNITY });
+
   return community;
 };
 

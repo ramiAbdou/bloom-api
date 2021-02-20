@@ -10,8 +10,8 @@ export interface CreateEventCoordinatorContext {
 }
 
 export interface CreateEventCoordinatorVars {
-  event: Event;
-  user: User;
+  event: Pick<Event, 'title'>;
+  user: Pick<User, 'email' | 'firstName'>;
 }
 
 const prepareCreateEventCoordinatorVars = async (
@@ -22,8 +22,12 @@ const prepareCreateEventCoordinatorVars = async (
   const bm = new BloomManager();
 
   const [coordinator, event]: [Member, Event] = await Promise.all([
-    bm.findOne(Member, { id: coordinatorId }, { populate: ['user'] }),
-    bm.findOne(Event, { id: eventId })
+    bm.findOne(
+      Member,
+      { id: coordinatorId },
+      { fields: [{ user: ['email', 'firstName'] }] }
+    ),
+    bm.findOne(Event, { id: eventId }, { fields: ['title'] })
   ]);
 
   const variables: CreateEventCoordinatorVars[] = [

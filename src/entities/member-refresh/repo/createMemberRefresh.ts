@@ -6,9 +6,12 @@ import MemberRefresh from '../MemberRefresh';
 const createMemberRefresh = async ({
   memberId
 }: MemberIdArgs): Promise<MemberRefresh> => {
-  const bm = new BloomManager();
-  const refresh = bm.create(MemberRefresh, { member: { id: memberId } });
-  await bm.flush({ flushEvent: FlushEvent.CREATE_MEMBER_REFRESH });
+  const refresh: MemberRefresh = await new BloomManager().createAndFlush(
+    MemberRefresh,
+    { member: memberId },
+    { flushEvent: FlushEvent.CREATE_MEMBER_REFRESH }
+  );
+
   return refresh;
 };
 
