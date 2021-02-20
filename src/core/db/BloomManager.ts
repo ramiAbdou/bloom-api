@@ -60,10 +60,7 @@ class BloomManager {
       });
 
       if (emailEvent && emailContext) {
-        eventBus.emit(MiscEvent.SEND_EMAIL, {
-          context: emailContext,
-          event: emailEvent
-        });
+        eventBus.emit(MiscEvent.SEND_EMAIL, { emailContext, emailEvent });
       }
     } catch (e) {
       logger.log({

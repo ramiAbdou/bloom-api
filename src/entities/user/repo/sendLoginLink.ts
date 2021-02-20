@@ -41,8 +41,8 @@ const sendLoginLink = async ({
   ).addParam('token', token).url;
 
   eventBus.emit(MiscEvent.SEND_EMAIL, {
-    context: { email, loginUrl },
-    event: EmailEvent.LOGIN_LINK
+    emailContext: { email, loginUrl },
+    emailEvent: EmailEvent.LOGIN_LINK
   });
 };
 

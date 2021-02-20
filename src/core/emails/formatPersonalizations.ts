@@ -1,3 +1,4 @@
+import { isProduction } from '@constants';
 import { FormatPersonalizationData } from './emails.types';
 
 /**
@@ -8,9 +9,14 @@ import { FormatPersonalizationData } from './emails.types';
 const formatPersonalizations = (
   variables: any[]
 ): FormatPersonalizationData[] => {
-  return variables.map((args: any) => {
-    return { dynamicTemplateData: args, to: { email: args.user.email } };
-  });
+  return variables
+    .filter((args: any) => {
+      if (isProduction) return true;
+      return args.user.email === 'rami@bl.community';
+    })
+    .map((args: any) => {
+      return { dynamicTemplateData: args, to: { email: args.user.email } };
+    });
 };
 
 export default formatPersonalizations;
