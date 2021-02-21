@@ -1,16 +1,19 @@
 import { EmailEvent } from '@util/events';
 import {
-  ConnectIntegrationsContext,
-  ConnectIntegrationsVars
+  ConnectIntegrationsEmailContext,
+  ConnectIntegrationsEmailVars
 } from './util/prepareConnectIntegrationsVars';
 import {
   CreateEventCoordinatorContext,
   CreateEventCoordinatorVars
 } from './util/prepareCreateEventCoordinatorVars';
-import { LoginLinkContext, LoginLinkVars } from './util/prepareLoginLinkVars';
 import {
-  PaymentReceiptContext,
-  PaymentReceiptVars
+  LoginLinkEmailContext,
+  LoginLinkEmailVars
+} from './util/prepareLoginLinkVars';
+import {
+  PaymentReceiptEmailContext,
+  PaymentReceiptEmailVars
 } from './util/preparePaymentReceiptVars';
 
 export interface FormatPersonalizationData {
@@ -19,16 +22,16 @@ export interface FormatPersonalizationData {
 }
 
 export type EmailsContext =
-  | ConnectIntegrationsContext
+  | ConnectIntegrationsEmailContext
   | CreateEventCoordinatorContext
-  | LoginLinkContext
-  | PaymentReceiptContext;
+  | LoginLinkEmailContext
+  | PaymentReceiptEmailContext;
 
 export type EmailsVars =
-  | ConnectIntegrationsVars
+  | ConnectIntegrationsEmailVars
   | CreateEventCoordinatorVars
-  | LoginLinkVars
-  | PaymentReceiptVars;
+  | LoginLinkEmailVars
+  | PaymentReceiptEmailVars;
 
 export interface EmailsArgs {
   emailContext: EmailsContext;

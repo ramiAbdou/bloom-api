@@ -7,13 +7,13 @@ import Member from '@entities/member/Member';
 import User from '@entities/user/User';
 import { EmailsContext } from '../emails.types';
 
-export interface PaymentReceiptContext {
+export interface PaymentReceiptEmailContext {
   card: Stripe.PaymentMethod.Card;
   paymentId: string;
   stripeAccountId: string;
 }
 
-export interface PaymentReceiptVars {
+export interface PaymentReceiptEmailVars {
   card: Stripe.PaymentMethod.Card;
   community: Community;
   payment: MemberPayment;
@@ -22,8 +22,12 @@ export interface PaymentReceiptVars {
 
 const preparePaymentReceiptVars = async (
   context: EmailsContext
-): Promise<PaymentReceiptVars[]> => {
-  const { card, paymentId, stripeAccountId } = context as PaymentReceiptContext;
+): Promise<PaymentReceiptEmailVars[]> => {
+  const {
+    card,
+    paymentId,
+    stripeAccountId
+  } = context as PaymentReceiptEmailContext;
 
   const bm = new BloomManager();
 
@@ -40,7 +44,7 @@ const preparePaymentReceiptVars = async (
 
   card.brand = card.brand.charAt(0).toUpperCase() + card.brand.slice(1);
 
-  const variables: PaymentReceiptVars[] = [
+  const variables: PaymentReceiptEmailVars[] = [
     { card, community, payment, user: member.user }
   ];
 

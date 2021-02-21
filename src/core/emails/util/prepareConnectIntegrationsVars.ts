@@ -10,13 +10,13 @@ import {
 } from '@entities/entities';
 import { EmailsContext } from '../emails.types';
 
-export interface ConnectIntegrationsContext {
+export interface ConnectIntegrationsEmailContext {
   brand: IntegrationsBrand;
   communityId?: string;
   urlName?: string;
 }
 
-export interface ConnectIntegrationsVars {
+export interface ConnectIntegrationsEmailVars {
   brand: IntegrationsBrand;
   community: Pick<Community, 'name'>;
   details: KeyValue[];
@@ -26,8 +26,12 @@ export interface ConnectIntegrationsVars {
 
 const prepareConnectIntegrationsVars = async (
   context: EmailsContext
-): Promise<ConnectIntegrationsVars[]> => {
-  const { brand, communityId, urlName } = context as ConnectIntegrationsContext;
+): Promise<ConnectIntegrationsEmailVars[]> => {
+  const {
+    brand,
+    communityId,
+    urlName
+  } = context as ConnectIntegrationsEmailContext;
 
   const bm = new BloomManager();
 
@@ -42,12 +46,14 @@ const prepareConnectIntegrationsVars = async (
   ] = await Promise.all([
     bm.find(
       Member,
-      { community: { urlName }, role: { $ne: null } },
+      { community: { ...communityArgs }, role: { $ne: null } },
       { fields: [{ user: ['email', 'firstName'] }] }
     ),
     bm.findOne(Community, { ...communityArgs }, { fields: ['name'] }),
-    bm.findOne(CommunityIntegrations, { community: { urlName } })
+    bm.findOne(CommunityIntegrations, { community: { ...communityArgs } })
   ]);
+
+  console.log('admins', admins);
 
   let details: KeyValue[] = [];
 
@@ -66,9 +72,13 @@ const prepareConnectIntegrationsVars = async (
 
   const integrationsUrl = `${APP.CLIENT_URL}/${urlName}/integrations`;
 
-  const variables: ConnectIntegrationsVars[] = admins.map((admin: Member) => {
-    return { brand, community, details, integrationsUrl, user: admin.user };
-  });
+  const variables: ConnectIntegrationsEmailVars[] = admins.map(
+    (admin: Member) => {
+      return { brand, community, details, integrationsUrl, user: admin.user };
+    }
+  );
+
+  console.log('variables', variables);
 
   return variables;
 };
