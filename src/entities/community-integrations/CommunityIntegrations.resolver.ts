@@ -4,9 +4,9 @@ import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { QueryEvent } from '@util/events';
 import CommunityIntegrations from './CommunityIntegrations';
-import updateIntegrations, {
-  UpdateIntegrationsArgs
-} from './repo/updateIntegrations';
+import updateMailchimpListId, {
+  UpdateMailchimpListIdArgs
+} from './repo/updateMailchimpListId';
 
 @Resolver()
 export default class CommunityIntegrationsResolver {
@@ -23,10 +23,10 @@ export default class CommunityIntegrationsResolver {
 
   @Authorized('ADMIN')
   @Mutation(() => CommunityIntegrations)
-  async updateIntegrations(
-    @Args() args: UpdateIntegrationsArgs,
+  async updateMailchimpListId(
+    @Args() args: UpdateMailchimpListIdArgs,
     @Ctx() ctx: GQLContext
   ) {
-    return updateIntegrations(args, ctx);
+    return updateMailchimpListId(args, ctx);
   }
 }

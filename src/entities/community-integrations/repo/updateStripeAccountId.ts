@@ -1,10 +1,9 @@
-import { IntegrationsBrand } from '@constants';
+import { AuthQueryArgs, IntegrationsBrand } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import createStripeProducts from '@entities/member-type/repo/createStripeProducts';
 import getStripeAccountId from '@integrations/stripe/repo/getStripeAccountId';
 import { EmailEvent, FlushEvent } from '@util/events';
 import CommunityIntegrations from '../CommunityIntegrations';
-import { CommunityIntegrationsAuthArgs } from '../CommunityIntegrations.types';
 
 /**
  * Stores the Stripe tokens in the database after executing the
@@ -15,8 +14,8 @@ import { CommunityIntegrationsAuthArgs } from '../CommunityIntegrations.types';
  */
 const updateStripeAccountId = async ({
   code,
-  urlName
-}: CommunityIntegrationsAuthArgs): Promise<CommunityIntegrations> => {
+  state: urlName
+}: AuthQueryArgs): Promise<CommunityIntegrations> => {
   const stripeAccountId: string = await getStripeAccountId({ code });
 
   const integrations = await new BloomManager().findOneAndUpdate(
@@ -26,7 +25,7 @@ const updateStripeAccountId = async ({
     {
       emailContext: { brand: IntegrationsBrand.STRIPE, urlName },
       emailEvent: EmailEvent.CONNECT_INTEGRATIONS,
-      flushEvent: FlushEvent.STORE_STRIPE_ACCOUNT
+      flushEvent: FlushEvent.UPDATE_STRIPE_ACCOUNT_ID
     }
   );
 

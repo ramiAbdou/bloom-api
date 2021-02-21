@@ -12,7 +12,7 @@ const router: Router = Router();
 
 router.get('/auth', async ({ query }: Request, res: Response) => {
   const { code, state: urlName } = query as AuthQueryArgs;
-  await updateStripeAccountId({ code, urlName });
+  await updateStripeAccountId({ code, state: urlName });
   res.redirect(`${APP.CLIENT_URL}/${urlName}/integrations`);
 });
 

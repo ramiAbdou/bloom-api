@@ -7,7 +7,7 @@ const router = Router();
 
 router.get('/auth', async ({ query }: Request, res: Response) => {
   const { code, state: urlName } = query as AuthQueryArgs;
-  await updateMailchimpAccessToken({ code, urlName });
+  await updateMailchimpAccessToken({ code, state: urlName });
   res.redirect(`${APP.CLIENT_URL}/${urlName}/integrations?flow=mailchimp`);
 });
 
