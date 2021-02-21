@@ -1,6 +1,5 @@
 import BloomManager from '@core/db/BloomManager';
 import Event from '@entities/event/Event';
-import Member from '@entities/member/Member';
 import User from '@entities/user/User';
 import { EmailsContext } from '../emails.types';
 
@@ -21,18 +20,16 @@ const prepareCreateEventCoordinatorVars = async (
 
   const bm = new BloomManager();
 
-  const [coordinator, event]: [Member, Event] = await Promise.all([
+  const [event, user]: [Event, User] = await Promise.all([
+    bm.findOne(Event, { id: eventId }, { fields: ['title'] }),
     bm.findOne(
-      Member,
-      { id: coordinatorId },
-      { fields: [{ user: ['email', 'firstName'] }] }
-    ),
-    bm.findOne(Event, { id: eventId }, { fields: ['title'] })
+      User,
+      { members: { id: coordinatorId } },
+      { fields: ['email', 'firstName'] }
+    )
   ]);
 
-  const variables: CreateEventCoordinatorVars[] = [
-    { event, user: coordinator.user }
-  ];
+  const variables: CreateEventCoordinatorVars[] = [{ event, user }];
 
   return variables;
 };

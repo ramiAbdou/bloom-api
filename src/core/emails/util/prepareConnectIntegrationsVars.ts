@@ -2,12 +2,7 @@ import { FilterQuery } from '@mikro-orm/core';
 
 import { APP, IntegrationsBrand, KeyValue } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import {
-  Community,
-  CommunityIntegrations,
-  Member,
-  User
-} from '@entities/entities';
+import { Community, CommunityIntegrations, User } from '@entities/entities';
 import { EmailsContext } from '../emails.types';
 
 export interface ConnectIntegrationsEmailContext {
@@ -39,21 +34,19 @@ const prepareConnectIntegrationsVars = async (
     ? { id: communityId }
     : { urlName };
 
-  const [admins, community, integrations]: [
-    Member[],
+  const [community, integrations, users]: [
     Community,
-    CommunityIntegrations
+    CommunityIntegrations,
+    User[]
   ] = await Promise.all([
-    bm.find(
-      Member,
-      { community: { ...communityArgs }, role: { $ne: null } },
-      { fields: [{ user: ['email', 'firstName'] }] }
-    ),
     bm.findOne(Community, { ...communityArgs }, { fields: ['name'] }),
-    bm.findOne(CommunityIntegrations, { community: { ...communityArgs } })
+    bm.findOne(CommunityIntegrations, { community: { ...communityArgs } }),
+    bm.find(
+      User,
+      { members: { community: { ...communityArgs }, role: { $ne: null } } },
+      { fields: ['firstName', 'email'] }
+    )
   ]);
-
-  console.log('admins', admins);
 
   let details: KeyValue[] = [];
 
@@ -70,15 +63,11 @@ const prepareConnectIntegrationsVars = async (
     ];
   }
 
-  const integrationsUrl = `${APP.CLIENT_URL}/${urlName}/integrations`;
+  const integrationsUrl = `${APP.CLIENT_URL}/${community.urlName}/integrations`;
 
-  const variables: ConnectIntegrationsEmailVars[] = admins.map(
-    (admin: Member) => {
-      return { brand, community, details, integrationsUrl, user: admin.user };
-    }
-  );
-
-  console.log('variables', variables);
+  const variables: ConnectIntegrationsEmailVars[] = users.map((user: User) => {
+    return { brand, community, details, integrationsUrl, user };
+  });
 
   return variables;
 };

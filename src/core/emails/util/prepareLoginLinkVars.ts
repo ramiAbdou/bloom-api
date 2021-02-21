@@ -9,14 +9,20 @@ export interface LoginLinkEmailContext {
 
 export interface LoginLinkEmailVars {
   loginUrl: string;
-  user: User;
+  user: Pick<User, 'email' | 'firstName'>;
 }
 
 const prepareLoginLinkVars = async (
   context: EmailsContext
 ): Promise<LoginLinkEmailVars[]> => {
   const { email, loginUrl } = context as LoginLinkEmailContext;
-  const user: User = await new BloomManager().findOne(User, { email });
+
+  const user: User = await new BloomManager().findOne(
+    User,
+    { email },
+    { fields: ['email', 'firstName'] }
+  );
+
   const variables: LoginLinkEmailVars[] = [{ loginUrl, user }];
   return variables;
 };
