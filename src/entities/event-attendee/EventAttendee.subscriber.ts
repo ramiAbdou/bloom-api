@@ -13,7 +13,7 @@ export default class EventAttendeeSubscriber
   async afterCreate({ entity }: EventArgs<EventAttendee>) {
     // `${QueryEvent.GET_EVENT_ATTENDEES_SERIES}-${communityId}`
 
-    cache.invalidateEntries([
+    cache.invalidateKeys([
       `${QueryEvent.GET_EVENT_ATTENDEES}-${entity.event.id}`
     ]);
   }

@@ -153,7 +153,7 @@ const applyForMembership = async (
 
   await bm.flush({ flushEvent: FlushEvent.APPLY_FOR_MEMBERSHIP });
 
-  cache.invalidateEntries(
+  cache.invalidateKeys(
     member.status === MemberStatus.PENDING
       ? [`${QueryEvent.GET_APPLICANTS}-${community.id}`]
       : [`${QueryEvent.GET_DATABASE}-${community.id}`]

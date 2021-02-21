@@ -57,7 +57,7 @@ const updateMemberData = async (
 
   await bm.flush();
 
-  cache.invalidateEntries([
+  cache.invalidateKeys([
     `${QueryEvent.GET_DATABASE}-${communityId}`,
     `${QueryEvent.GET_DIRECTORY}-${communityId}`
   ]);

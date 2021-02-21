@@ -15,9 +15,7 @@ export default class EventGuestSubscriber
   }
 
   async afterCreate({ entity: guest }: EventArgs<EventGuest>) {
-    cache.invalidateEntries([
-      `${QueryEvent.GET_EVENT_GUESTS}-${guest.event.id}`
-    ]);
+    cache.invalidateKeys([`${QueryEvent.GET_EVENT_GUESTS}-${guest.event.id}`]);
 
     await addGoogleCalendarEventAttendee(guest.event.googleCalendarEventId, {
       displayName: `${guest.firstName} ${guest.lastName}`,
@@ -27,9 +25,7 @@ export default class EventGuestSubscriber
   }
 
   async afterDelete({ entity: guest }: EventArgs<EventGuest>) {
-    cache.invalidateEntries([
-      `${QueryEvent.GET_EVENT_GUESTS}-${guest.event.id}`
-    ]);
+    cache.invalidateKeys([`${QueryEvent.GET_EVENT_GUESTS}-${guest.event.id}`]);
 
     const bm = new BloomManager();
     const event = await bm.findOne(Event, { id: guest.event.id });

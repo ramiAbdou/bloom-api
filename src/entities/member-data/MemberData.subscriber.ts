@@ -11,14 +11,10 @@ export default class MemberDataSubscriber
   }
 
   async afterCreate({ entity }: EventArgs<MemberData>) {
-    cache.invalidateEntries([
-      `${QueryEvent.GET_MEMBER_DATA}-${entity.member.id}`
-    ]);
+    cache.invalidateKeys([`${QueryEvent.GET_MEMBER_DATA}-${entity.member.id}`]);
   }
 
   async afterUpdate({ entity }: EventArgs<MemberData>) {
-    cache.invalidateEntries([
-      `${QueryEvent.GET_MEMBER_DATA}-${entity.member.id}`
-    ]);
+    cache.invalidateKeys([`${QueryEvent.GET_MEMBER_DATA}-${entity.member.id}`]);
   }
 }

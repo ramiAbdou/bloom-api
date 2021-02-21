@@ -59,7 +59,7 @@ class BloomManager {
         level: 'AFTER_FLUSH'
       });
 
-      if (emailEvent && emailContext) {
+      if (flushEvent && emailEvent && emailContext) {
         eventBus.emit(MiscEvent.SEND_EMAIL, { emailContext, emailEvent });
       }
     } catch (e) {

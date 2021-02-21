@@ -11,7 +11,7 @@ export default class EventWatchSubscriber
   }
 
   async afterCreate({ entity }: EventArgs<EventWatch>) {
-    cache.invalidateEntries([
+    cache.invalidateKeys([
       `${QueryEvent.GET_EVENT_WATCHES}-${entity.event.id}`
     ]);
   }

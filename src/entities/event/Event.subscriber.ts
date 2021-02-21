@@ -19,7 +19,7 @@ export default class EventSubscriber implements ESubscriber<Event> {
   }
 
   async afterCreate({ entity }: EventArgs<Event>) {
-    cache.invalidateEntries([
+    cache.invalidateKeys([
       `${QueryEvent.GET_UPCOMING_EVENTS}-${entity.community.id}`
     ]);
 
@@ -55,7 +55,7 @@ export default class EventSubscriber implements ESubscriber<Event> {
       return;
     }
 
-    cache.invalidateEntries([
+    cache.invalidateKeys([
       `${QueryEvent.GET_EVENT}-${entity.id}`,
       ...(day().isAfter(day(entity.endTime))
         ? [`${QueryEvent.GET_PAST_EVENTS}-${entity.community.id}`]

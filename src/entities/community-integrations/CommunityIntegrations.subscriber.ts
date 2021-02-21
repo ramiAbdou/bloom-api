@@ -16,7 +16,7 @@ export default class CommunityIntegrationsSubscriber
    * Sends email confirmation to all admins of the community as well.
    */
   async afterUpdate({ entity }: EventArgs<CommunityIntegrations>) {
-    cache.invalidateEntries([
+    cache.invalidateKeys([
       `${QueryEvent.GET_INTEGRATIONS}-${entity.community.id}`
     ]);
   }

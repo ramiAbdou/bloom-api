@@ -10,7 +10,7 @@ export default class QuestionSubscriber implements EventSubscriber<Question> {
   }
 
   async afterUpdate({ entity }: EventArgs<Question>) {
-    cache.invalidateEntries([
+    cache.invalidateKeys([
       `${QueryEvent.GET_QUESTIONS}-${entity.community.id}`
     ]);
   }

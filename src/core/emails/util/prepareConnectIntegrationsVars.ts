@@ -1,3 +1,5 @@
+import { FilterQuery } from '@mikro-orm/core';
+
 import { APP, IntegrationsBrand, KeyValue } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import {
@@ -10,7 +12,8 @@ import { EmailsContext } from '../emails.types';
 
 export interface ConnectIntegrationsContext {
   brand: IntegrationsBrand;
-  urlName: string;
+  communityId?: string;
+  urlName?: string;
 }
 
 export interface ConnectIntegrationsVars {
@@ -24,9 +27,13 @@ export interface ConnectIntegrationsVars {
 const prepareConnectIntegrationsVars = async (
   context: EmailsContext
 ): Promise<ConnectIntegrationsVars[]> => {
-  const { brand, urlName } = context as ConnectIntegrationsContext;
+  const { brand, communityId, urlName } = context as ConnectIntegrationsContext;
 
   const bm = new BloomManager();
+
+  const communityArgs: FilterQuery<Community> = communityId
+    ? { id: communityId }
+    : { urlName };
 
   const [admins, community, integrations]: [
     Member[],
@@ -38,7 +45,7 @@ const prepareConnectIntegrationsVars = async (
       { community: { urlName }, role: { $ne: null } },
       { fields: [{ user: ['email', 'firstName'] }] }
     ),
-    bm.findOne(Community, { urlName }, { fields: ['name'] }),
+    bm.findOne(Community, { ...communityArgs }, { fields: ['name'] }),
     bm.findOne(CommunityIntegrations, { community: { urlName } })
   ]);
 
@@ -62,8 +69,6 @@ const prepareConnectIntegrationsVars = async (
   const variables: ConnectIntegrationsVars[] = admins.map((admin: Member) => {
     return { brand, community, details, integrationsUrl, user: admin.user };
   });
-
-  console.log(variables);
 
   return variables;
 };

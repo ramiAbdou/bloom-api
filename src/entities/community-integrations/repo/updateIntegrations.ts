@@ -1,25 +1,45 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { GQLContext, IntegrationsBrand } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { FlushEvent } from '@util/events';
+import { EmailEvent, FlushEvent } from '@util/events';
 import CommunityIntegrations from '../CommunityIntegrations';
+
+type UpdateIntegrationsFlushEvent =
+  | FlushEvent.UPDATE_MAILCHIMP_LIST_ID
+  | FlushEvent.UPDATE_STRIPE_ACCOUNT_ID;
 
 @ArgsType()
 export class UpdateIntegrationsArgs {
+  @Field(() => String, { nullable: true })
+  flushEvent: UpdateIntegrationsFlushEvent;
+
   @Field({ nullable: true })
   mailchimpListId?: string;
+
+  @Field({ nullable: true })
+  stripeAccountId?: string;
 }
 
 const updateIntegrations = async (
-  args: UpdateIntegrationsArgs,
+  { flushEvent, ...args }: UpdateIntegrationsArgs,
   { communityId }: Pick<GQLContext, 'communityId'>
 ) => {
   return new BloomManager().findOneAndUpdate(
     CommunityIntegrations,
     { community: { id: communityId } },
     { ...args },
-    { flushEvent: args?.mailchimpListId ? FlushEvent.UPDATE_MAILCHIMP : null }
+    {
+      emailContext: {
+        brand:
+          flushEvent === FlushEvent.UPDATE_MAILCHIMP_LIST_ID
+            ? IntegrationsBrand.MAILCHIMP
+            : IntegrationsBrand.STRIPE,
+        communityId
+      },
+      emailEvent: EmailEvent.CONNECT_INTEGRATIONS,
+      flushEvent
+    }
   );
 };
 

@@ -3,7 +3,7 @@ import { Request, Response, Router } from 'express';
 import Stripe from 'stripe';
 
 import { APP, AuthQueryArgs, isProduction } from '@constants';
-import storeStripeAccount from '@entities/community-integrations/repo/storeStripeAccount';
+import updateStripeAccountId from '@entities/community-integrations/repo/updateStripeAccountId';
 import logger from '@logger';
 import { stripe } from './Stripe.util';
 import handleInvoicePaid from './webhooks/handleInvoicePaid';
@@ -12,7 +12,7 @@ const router: Router = Router();
 
 router.get('/auth', async ({ query }: Request, res: Response) => {
   const { code, state: urlName } = query as AuthQueryArgs;
-  await storeStripeAccount({ code, urlName });
+  await updateStripeAccountId({ code, urlName });
   res.redirect(`${APP.CLIENT_URL}/${urlName}/integrations`);
 });
 

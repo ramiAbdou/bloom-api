@@ -39,7 +39,7 @@ export const JWT = {
  * instead of in this globally accessible constants file.
  */
 
-export type AuthQueryArgs = { code: string; state: string };
+export type AuthQueryArgs = { code: string; state?: string };
 export type AuthTokens = { accessToken: string; refreshToken: string };
 
 export enum IntegrationsBrand {

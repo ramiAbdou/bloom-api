@@ -36,7 +36,7 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
   }
 
   async afterUpdate({ changeSet, entity: member }: EventArgs<Member>) {
-    cache.invalidateEntries([`${QueryEvent.GET_MEMBER}-${member.id}`]);
+    cache.invalidateKeys([`${QueryEvent.GET_MEMBER}-${member.id}`]);
 
     const { originalEntity, payload } = changeSet;
 
@@ -44,7 +44,7 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
       originalEntity?.status === MemberStatus.PENDING &&
       member?.status !== MemberStatus.PENDING
     ) {
-      cache.invalidateEntries([
+      cache.invalidateKeys([
         `${QueryEvent.GET_APPLICANTS}-${member.community.id}`
       ]);
     }
@@ -53,7 +53,7 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
       hasKeys(payload, ['deletedAt', 'role']) ||
       payload?.status === MemberStatus.ACCEPTED
     ) {
-      cache.invalidateEntries([
+      cache.invalidateKeys([
         `${QueryEvent.GET_DATABASE}-${member.community.id}`,
         `${QueryEvent.GET_DIRECTORY}-${member.community.id}`
       ]);
