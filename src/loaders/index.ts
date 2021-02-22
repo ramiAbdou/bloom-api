@@ -11,8 +11,8 @@ import { APP } from '@constants';
 import db from '@core/db/db';
 import { LoggerEvent } from '@util/events';
 import logger from '@util/logger';
-import apollo from './apollo';
-import express from './express';
+import loadApollo from './apollo';
+import loadExpress from './express';
 
 import './misc';
 
@@ -27,8 +27,13 @@ day.extend(timezone);
  * wouldn't be loaded so events can be triggered and fired correctly.
  */
 const startServer = async () => {
-  const app = express();
-  const [apolloServer] = await Promise.all([apollo(), db.createConnection()]);
+  const app = loadExpress();
+
+  const [apolloServer] = await Promise.all([
+    loadApollo(),
+    db.createConnection()
+  ]);
+
   apolloServer.applyMiddleware({ app, cors: false, path: '/graphql' });
 
   app.listen(APP.PORT, () =>

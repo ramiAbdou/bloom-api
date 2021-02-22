@@ -68,7 +68,7 @@ export const createSchema = async (): Promise<GraphQLSchema> =>
  * GraphQL resolvers in order to build the schema. Also handles the Express
  * request sessions for users.
  */
-export default async () => {
+const loadApollo = async () => {
   // Set the playground to false so that's it's not accessible to the outside
   // world. Also handles the request context.
   const config: ApolloServerExpressConfig = {
@@ -84,3 +84,5 @@ export default async () => {
 
   return new ApolloServer(config);
 };
+
+export default loadApollo;

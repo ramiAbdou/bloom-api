@@ -45,7 +45,7 @@ const refreshTokenIfExpired = async (
  *
  * @see https://www.npmjs.com/package/helmet#how-it-works
  */
-export default () => {
+const loadExpress = () => {
   const app = express();
 
   // Limit urlencoded and json body sizes to 10 KB.
@@ -77,3 +77,5 @@ export default () => {
 
   return app;
 };
+
+export default loadExpress;
