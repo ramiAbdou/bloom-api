@@ -1,6 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
+import updateGoogleCalendarEvent from '@integrations/google/repo/updateGoogleCalendarEvent';
 import { FlushEvent } from '@util/events';
 import Event, { EventPrivacy } from '../Event';
 
@@ -8,9 +9,6 @@ import Event, { EventPrivacy } from '../Event';
 export class UpdateEventArgs {
   @Field({ nullable: true })
   description?: string;
-
-  @Field({ nullable: true })
-  googleCalendarEventId?: string;
 
   @Field()
   id: string;
@@ -20,9 +18,6 @@ export class UpdateEventArgs {
 
   @Field(() => String, { defaultValue: EventPrivacy.MEMBERS_ONLY })
   privacy?: EventPrivacy;
-
-  @Field({ nullable: true })
-  recordingUrl?: string;
 
   @Field({ nullable: true })
   summary?: string;
@@ -38,19 +33,19 @@ const updateEvent = async ({
   id: eventId,
   ...args
 }: UpdateEventArgs): Promise<Event> => {
-  let flushEvent: FlushEvent;
-
-  if (args?.recordingUrl) flushEvent = FlushEvent.UPDATE_EVENT_RECORDING_LINK;
-  else if (args?.googleCalendarEventId) {
-    flushEvent = FlushEvent.ATTACH_GOOGLE_CALENDAR_EVENT;
-  } else flushEvent = FlushEvent.UPDATE_EVENT;
-
   const event: Event = await new BloomManager().findOneAndUpdate(
     Event,
     { id: eventId },
     { ...args },
-    { flushEvent }
+    { flushEvent: FlushEvent.UPDATE_EVENT }
   );
+
+  await updateGoogleCalendarEvent(event.googleCalendarEventId, {
+    description: event.description,
+    summary: event.title,
+    visibility:
+      event.privacy === EventPrivacy.MEMBERS_ONLY ? 'private' : 'public'
+  });
 
   return event;
 };

@@ -8,6 +8,8 @@ import { eventsCalendar } from '../Google.util';
  * @param eventId ID of the event.
  */
 const deleteGoogleCalendarEvent = async (eventId: string): Promise<boolean> => {
+  if (!eventId) return false;
+
   try {
     await eventsCalendar.events.delete({
       calendarId: process.env.GOOGLE_CALENDAR_ID,

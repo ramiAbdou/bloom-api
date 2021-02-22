@@ -16,6 +16,8 @@ const updateGoogleCalendarEvent = async (
   eventId: string,
   args: Pick<calendar_v3.Schema$Event, 'description' | 'summary' | 'visibility'>
 ): Promise<calendar_v3.Schema$Event> => {
+  if (!eventId) return null;
+
   try {
     const response = await eventsCalendar.events.patch({
       calendarId: process.env.GOOGLE_CALENDAR_ID,

@@ -1,6 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
+import deleteGoogleCalendarEvent from '@integrations/google/repo/deleteGoogleCalendarEvent';
 import { FlushEvent } from '@util/events';
 import Event from '../Event';
 
@@ -18,6 +19,8 @@ const deleteEvent = async ({
     { id: eventId },
     { flushEvent: FlushEvent.DELETE_EVENT, soft: true }
   );
+
+  await deleteGoogleCalendarEvent(event.googleCalendarEventId);
 
   return event;
 };

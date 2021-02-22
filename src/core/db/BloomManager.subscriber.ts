@@ -8,7 +8,7 @@ import {
 import logger, { LoggerChangeSet, LoggerChangeType } from '@util/logger';
 
 export default class BloomManagerSubscriber implements EventSubscriber {
-  async onFlush<T>({ em, uow }: FlushEventArgs): Promise<void> {
+  async onFlush<T>({ uow }: FlushEventArgs): Promise<void> {
     const changes: LoggerChangeSet[] = uow
       .getChangeSets()
       .map((changeSet: ChangeSet<AnyEntity<any>>) => {
@@ -20,6 +20,6 @@ export default class BloomManagerSubscriber implements EventSubscriber {
         return { id: entity.id, payload, table, type: changeType };
       });
 
-    logger.log({ changes, contextId: em.id, level: 'ON_FLUSH' });
+    logger.log({ changes, level: 'ON_FLUSH' });
   }
 }

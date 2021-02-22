@@ -9,6 +9,9 @@ import getEvent, { GetEventArgs } from './repo/getEvent';
 import getPastEvents from './repo/getPastEvents';
 import getUpcomingEvents from './repo/getUpcomingEvents';
 import updateEvent, { UpdateEventArgs } from './repo/updateEvent';
+import updateRecordingUrl, {
+  UpdateRecordingUrlArgs
+} from './repo/updateRecordingUrl';
 
 @Resolver()
 export default class EventResolver {
@@ -48,5 +51,13 @@ export default class EventResolver {
   @Mutation(() => Event, { nullable: true })
   async updateEvent(@Args() args: UpdateEventArgs): Promise<Event> {
     return updateEvent(args);
+  }
+
+  @Authorized(MemberRole.ADMIN)
+  @Mutation(() => Event, { nullable: true })
+  async updateRecordingUrl(
+    @Args() args: UpdateRecordingUrlArgs
+  ): Promise<Event> {
+    return updateRecordingUrl(args);
   }
 }

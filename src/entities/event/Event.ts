@@ -3,6 +3,7 @@ import day from 'dayjs';
 import { Field, ObjectType } from 'type-graphql';
 import {
   AfterCreate,
+  AfterUpdate,
   BeforeCreate,
   Collection,
   Entity,
@@ -105,6 +106,16 @@ export default class Event extends BaseEntity {
   afterCreate() {
     cache.invalidateKeys([
       `${QueryEvent.GET_UPCOMING_EVENTS}-${this.community.id}`
+    ]);
+  }
+
+  @AfterUpdate()
+  afterUpdate() {
+    cache.invalidateKeys([
+      `${QueryEvent.GET_EVENT}-${this.id}`,
+      ...(day().isAfter(day(this.endTime))
+        ? [`${QueryEvent.GET_PAST_EVENTS}-${this.community.id}`]
+        : [`${QueryEvent.GET_UPCOMING_EVENTS}-${this.community.id}`])
     ]);
   }
 

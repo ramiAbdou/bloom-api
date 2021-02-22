@@ -7,7 +7,7 @@ import eventBus from '@core/eventBus';
 import createGoogleCalendarEvent from '@integrations/google/repo/createGoogleCalendarEvent';
 import { EmailEvent, FlushEvent, MiscEvent } from '@util/events';
 import Event, { EventPrivacy } from '../Event';
-import updateEvent from './updateEvent';
+import updateGoogleCalendarEventId from './updateGoogleCalendarEventId';
 
 @ArgsType()
 export class CreateEventArgs {
@@ -63,9 +63,9 @@ const createEvent = async (
       event.privacy === EventPrivacy.MEMBERS_ONLY ? 'private' : 'public'
   });
 
-  await updateEvent({
-    googleCalendarEventId: googleCalendarEvent.id,
-    id: event.id
+  await updateGoogleCalendarEventId({
+    eventId: event.id,
+    googleCalendarEventId: googleCalendarEvent.id
   });
 
   return event;
