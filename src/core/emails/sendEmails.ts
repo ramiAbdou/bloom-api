@@ -14,7 +14,7 @@ interface SendEmailsBatch extends SendEmailsArgs {
 
 const sendEmailsBatch = async (args: SendEmailsBatch) => {
   const options: MailDataRequired = {
-    from: 'team@bl.community',
+    from: { email: 'team@bl.community', name: 'Bloom' },
     personalizations: args.personalizations,
     templateId: process.env[`SENDGRID_${args.emailEvent}_TEMPLATE_ID`]
   };
@@ -40,7 +40,7 @@ const sendEmailsBatch = async (args: SendEmailsBatch) => {
 const sendEmails = async (args: SendEmailsArgs) => {
   // Shouldn't send any emails in development. If needed, comment this line
   // out manually each time.
-  // if (!isProduction) return;
+  if (!isProduction) return;
 
   const chunkedPersonalizations = await prepareEmailPersonalizations(args);
 
