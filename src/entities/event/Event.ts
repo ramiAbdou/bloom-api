@@ -1,6 +1,6 @@
 import { IsUrl } from 'class-validator';
 import day from 'dayjs';
-import { Field, ObjectType } from 'type-graphql';
+import { Field, InputType, ObjectType } from 'type-graphql';
 import {
   BeforeCreate,
   Collection,
@@ -10,16 +10,16 @@ import {
   Property
 } from '@mikro-orm/core';
 
-import { APP } from '@constants';
 import BaseEntity from '@core/db/BaseEntity';
-import BloomManager from '@core/db/BloomManager';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
 import EventInvitee from '../event-invitee/EventInvitee';
 import EventWatch from '../event-watch/EventWatch';
+import getEventUrl from './repo/getEventUrl';
 
 @ObjectType()
+@InputType('EventInput')
 @Entity()
 export default class Event extends BaseEntity {
   @Field()
@@ -30,33 +30,18 @@ export default class Event extends BaseEntity {
   @Property()
   endTime: string;
 
-  @Field(() => String)
-  async eventUrl(): Promise<string> {
-    const community: Community = await new BloomManager().findOne(Community, {
-      id: this.community.id
-    });
-
-    return `${APP.CLIENT_URL}/${community.urlName}/events/${this.id}`;
-  }
-
   @Field({ nullable: true })
   @Property({ nullable: true })
   googleCalendarEventId?: string;
-
-  @Field(() => String, { nullable: true })
-  async googleCalendarEventUrl(): Promise<string> {
-    if (!this.googleCalendarEventId) return null;
-    return `${this.googleCalendarEventId}`;
-  }
 
   @Field({ nullable: true })
   @Property({ nullable: true })
   @IsUrl()
   imageUrl?: string;
 
-  @Field()
-  @Property({ default: true })
-  private: boolean;
+  @Field({ defaultValue: true })
+  @Property()
+  private: boolean = true;
 
   @Field({ nullable: true })
   @Property({ nullable: true })
@@ -79,6 +64,22 @@ export default class Event extends BaseEntity {
   @Property()
   @IsUrl()
   videoUrl: string;
+
+  // ## MEMBER FUNCTIONS
+
+  @Field(() => String)
+  async eventUrl(): Promise<string> {
+    return getEventUrl(
+      { eventId: this.id },
+      { communityId: this.community.id }
+    );
+  }
+
+  @Field(() => String, { nullable: true })
+  async googleCalendarEventUrl(): Promise<string> {
+    if (!this.googleCalendarEventId) return null;
+    return `${this.googleCalendarEventId}`;
+  }
 
   // ## LIFECYCLE
 

@@ -23,8 +23,6 @@ export default class EventSubscriber implements ESubscriber<Event> {
       `${QueryEvent.GET_UPCOMING_EVENTS}-${entity.community.id}`
     ]);
 
-    // send Email
-
     const googleCalendarEvent = await createGoogleCalendarEvent({
       description: entity.description,
       end: { dateTime: entity.endTime },
