@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import {
   AnyEntity,
   EntityData,
@@ -11,10 +12,8 @@ import {
 } from '@mikro-orm/core';
 
 import cache from '@core/db/cache';
-import { MiscEvent } from '@util/events';
 import logger from '@util/logger';
 import { now } from '@util/util';
-import eventBus from '../eventBus';
 import {
   BloomCreateAndFlushArgs,
   BloomFindAndDeleteOptions,
@@ -42,33 +41,17 @@ class BloomManager {
   fork = () => new BloomManager();
 
   async flush?(args?: FlushArgs) {
-    const { emailContext, emailEvent, flushEvent } = args ?? {};
+    const { flushEvent } = args ?? {};
+
+    const contextId = nanoid();
 
     try {
-      logger.log({
-        contextId: this.em.id,
-        event: flushEvent,
-        level: 'BEFORE_FLUSH'
-      });
-
+      logger.log({ contextId, event: flushEvent, level: 'BEFORE_FLUSH' });
       await this.em.flush();
-
-      logger.log({
-        contextId: this.em.id,
-        event: flushEvent,
-        level: 'AFTER_FLUSH'
-      });
-
-      if (args?.cacheKeysToInvalidate) {
-        cache.invalidateKeys(args?.cacheKeysToInvalidate);
-      }
-
-      if (flushEvent && emailEvent && emailContext) {
-        eventBus.emit(MiscEvent.SEND_EMAIL, { emailContext, emailEvent });
-      }
+      logger.log({ contextId, event: flushEvent, level: 'AFTER_FLUSH' });
     } catch (e) {
       logger.log({
-        contextId: this.em.id,
+        contextId,
         error: e.stack,
         event: flushEvent,
         level: 'FLUSH_ERROR'

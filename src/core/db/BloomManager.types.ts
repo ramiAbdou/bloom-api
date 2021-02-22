@@ -1,7 +1,6 @@
 import { FindOneOptions, FindOptions } from '@mikro-orm/core';
 
 import { FlushEvent } from '@util/events';
-import { EmailsArgs } from '../emails/emails.types';
 
 export interface BloomFindOneOptions<T, P> extends FindOneOptions<T, P> {
   cacheKey?: string;
@@ -11,9 +10,8 @@ export interface BloomFindOptions<T, P> extends FindOptions<T, P> {
   cacheKey?: string;
 }
 
-export interface FlushArgs extends Partial<EmailsArgs> {
+export interface FlushArgs {
   flushEvent?: FlushEvent;
-  cacheKeysToInvalidate?: string[];
 }
 
 export interface BloomCreateAndFlushArgs<P> extends FlushArgs {

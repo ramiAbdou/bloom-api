@@ -12,12 +12,7 @@ export interface CreateEventCoordinatorVars {
   community: Pick<Community, 'name'>;
   event: Pick<
     Event,
-    | 'description'
-    | 'endTime'
-    | 'googleCalendarEventUrl'
-    | 'privacy'
-    | 'startTime'
-    | 'title'
+    'description' | 'endTime' | 'privacy' | 'startTime' | 'title'
   >;
   user: Pick<User, 'email' | 'firstName'>;
 }
@@ -39,14 +34,7 @@ const prepareCreateEventCoordinatorVars = async (
       Event,
       { id: eventId },
       {
-        fields: [
-          'description',
-          'endTime',
-          'googleCalendarEventId',
-          'private',
-          'startTime',
-          'title'
-        ]
+        fields: ['description', 'endTime', 'private', 'startTime', 'title']
       }
     ),
     bm.findOne(

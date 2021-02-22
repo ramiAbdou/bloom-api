@@ -1,8 +1,9 @@
 import { AuthQueryArgs, IntegrationsBrand } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import eventBus from '@core/eventBus';
 import createStripeProducts from '@entities/member-type/repo/createStripeProducts';
 import getStripeAccountId from '@integrations/stripe/repo/getStripeAccountId';
-import { EmailEvent, FlushEvent } from '@util/events';
+import { EmailEvent, FlushEvent, MiscEvent } from '@util/events';
 import CommunityIntegrations from '../CommunityIntegrations';
 
 /**
@@ -22,12 +23,13 @@ const updateStripeAccountId = async ({
     CommunityIntegrations,
     { community: { urlName } },
     { stripeAccountId },
-    {
-      emailContext: { brand: IntegrationsBrand.STRIPE, urlName },
-      emailEvent: EmailEvent.CONNECT_INTEGRATIONS,
-      flushEvent: FlushEvent.UPDATE_STRIPE_ACCOUNT_ID
-    }
+    { flushEvent: FlushEvent.UPDATE_STRIPE_ACCOUNT_ID }
   );
+
+  eventBus.emit(MiscEvent.SEND_EMAIL, {
+    emailContext: { brand: IntegrationsBrand.STRIPE, urlName },
+    emailEvent: EmailEvent.CONNECT_INTEGRATIONS
+  });
 
   await createStripeProducts({ communityId: integrations.community.id });
 

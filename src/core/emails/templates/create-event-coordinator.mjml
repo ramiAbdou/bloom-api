@@ -13,7 +13,6 @@
         <mj-text padding-bottom="4px">When: {{ formatDate event.startTime "MMMM D, YYYY" "-0800" }} - {{ formatDate event.endTime "MMMM D, YYYY" "-0800" }}</mj-text>
         <mj-text padding-bottom="4px">Privacy: {{ event.private }}</mj-text>
         <mj-text padding-bottom="16px">Description: {{ event.description }}</mj-text>
-        <mj-text>We've also created a Google Calendar event for you here: {{ event.googleCalendarEventUrl }}.</mj-text>
         <mj-button href="{{ event.eventUrl }}" padding-top="16px">Go to Event</mj-button>
       </mj-column>
     </mj-section>

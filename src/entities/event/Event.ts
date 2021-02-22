@@ -2,6 +2,7 @@ import { IsUrl } from 'class-validator';
 import day from 'dayjs';
 import { Field, ObjectType } from 'type-graphql';
 import {
+  AfterCreate,
   BeforeCreate,
   Collection,
   Entity,
@@ -12,6 +13,8 @@ import {
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
+import cache from '@core/db/cache';
+import { QueryEvent } from '@util/events';
 import getGoogleCalendarEvent from '../../integrations/google/repo/getGoogleCalendarEvent';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
@@ -96,6 +99,13 @@ export default class Event extends BaseEntity {
   beforeCreate() {
     this.endTime = day.utc(this.endTime).format();
     this.startTime = day.utc(this.startTime).format();
+  }
+
+  @AfterCreate()
+  afterCreate() {
+    cache.invalidateKeys([
+      `${QueryEvent.GET_UPCOMING_EVENTS}-${this.community.id}`
+    ]);
   }
 
   // ## RELATIONSHIPS

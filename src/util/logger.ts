@@ -24,7 +24,7 @@ export type LoggerChangeSet = {
 
 interface LoggerLog {
   changes?: LoggerChangeSet[];
-  contextId?: number;
+  contextId?: string;
   error?: string;
   event?: FlushEvent | LoggerEvent | MiscEvent;
   level: LoggerLevel;
