@@ -6,37 +6,14 @@ import {
 } from '@mikro-orm/core';
 
 import cache from '@core/db/cache';
-import createGoogleCalendarEvent from '@integrations/google/repo/createGoogleCalendarEvent';
 import deleteGoogleCalendarEvent from '@integrations/google/repo/deleteGoogleCalendarEvent';
 import updateGoogleCalendarEvent from '@integrations/google/repo/updateGoogleCalendarEvent';
 import { QueryEvent } from '@util/events';
 import Event, { EventPrivacy } from './Event';
-import updateEvent from './repo/updateEvent';
 
 export default class EventSubscriber implements ESubscriber<Event> {
   getSubscribedEntities(): EntityName<Event>[] {
     return [Event];
-  }
-
-  async afterCreate({ entity }: EventArgs<Event>) {
-    cache.invalidateKeys([
-      `${QueryEvent.GET_UPCOMING_EVENTS}-${entity.community.id}`
-    ]);
-
-    const googleCalendarEvent = await createGoogleCalendarEvent({
-      description: entity.description,
-      end: { dateTime: entity.endTime },
-      location: await entity.eventUrl(),
-      start: { dateTime: entity.startTime },
-      summary: entity.title,
-      visibility:
-        entity.privacy === EventPrivacy.MEMBERS_ONLY ? 'private' : 'public'
-    });
-
-    await updateEvent({
-      googleCalendarEventId: googleCalendarEvent.id,
-      id: entity.id
-    });
   }
 
   async afterUpdate({ entity }: EventArgs<Event>) {
