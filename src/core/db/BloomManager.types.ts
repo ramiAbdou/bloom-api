@@ -13,6 +13,7 @@ export interface BloomFindOptions<T, P> extends FindOptions<T, P> {
 
 export interface FlushArgs extends Partial<EmailsArgs> {
   flushEvent?: FlushEvent;
+  cacheKeysToInvalidate?: string[];
 }
 
 export interface BloomCreateAndFlushArgs<P> extends FlushArgs {

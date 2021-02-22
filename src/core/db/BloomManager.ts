@@ -59,6 +59,10 @@ class BloomManager {
         level: 'AFTER_FLUSH'
       });
 
+      if (args?.cacheKeysToInvalidate) {
+        cache.invalidateKeys(args?.cacheKeysToInvalidate);
+      }
+
       if (flushEvent && emailEvent && emailContext) {
         eventBus.emit(MiscEvent.SEND_EMAIL, { emailContext, emailEvent });
       }

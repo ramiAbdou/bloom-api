@@ -1,5 +1,6 @@
 import { Field, ObjectType } from 'type-graphql';
 import {
+  AfterUpdate,
   ArrayType,
   BeforeCreate,
   Entity,
@@ -9,7 +10,9 @@ import {
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
+import cache from '@core/db/cache';
 import { Community } from '@entities/entities';
+import { QueryEvent } from '@util/events';
 
 export enum QuestionCategory {
   DUES_STATUS = 'DUES_STATUS',
@@ -108,6 +111,11 @@ export default class Question extends BaseEntity {
     if (this.category === QuestionCategory.MEMBERSHIP_TYPE) {
       this.options = this.community.types.getItems().map(({ name }) => name);
     }
+  }
+
+  @AfterUpdate()
+  afterUpdate() {
+    cache.invalidateKeys([`${QueryEvent.GET_QUESTIONS}-${this.community.id}`]);
   }
 
   // ## RELATIONSHIPS

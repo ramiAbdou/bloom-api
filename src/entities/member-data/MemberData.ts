@@ -1,7 +1,15 @@
 import { Field, ObjectType } from 'type-graphql';
-import { Entity, ManyToOne, Property } from '@mikro-orm/core';
+import {
+  AfterCreate,
+  AfterUpdate,
+  Entity,
+  ManyToOne,
+  Property
+} from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
+import cache from '@core/db/cache';
+import { QueryEvent } from '@util/events';
 import Member from '../member/Member';
 import Question from '../question/Question';
 
@@ -13,6 +21,18 @@ export default class MemberData extends BaseEntity {
   @Field({ nullable: true })
   @Property({ nullable: true, type: 'text' })
   value: string;
+
+  // ## LIFECYCLE
+
+  @AfterCreate()
+  afterCreate() {
+    cache.invalidateKeys([`${QueryEvent.GET_MEMBER_DATA}-${this.member.id}`]);
+  }
+
+  @AfterUpdate()
+  afterUpdate() {
+    cache.invalidateKeys([`${QueryEvent.GET_MEMBER_DATA}-${this.member.id}`]);
+  }
 
   // ## RELATIONSHIPS
 
