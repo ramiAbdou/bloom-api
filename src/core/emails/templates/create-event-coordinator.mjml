@@ -1,13 +1,20 @@
 <mjml>
   <mj-head>
     <mj-include path="./attributes.mjml" />
+    <mj-preview>You created {{ event.title }} in {{ community.name }}.</mj-preview>
   </mj-head>
   <mj-body background-color="#FFFFFF">
     <mj-include path="./header.mjml" />
     <mj-section background-color="#E0E0E0" border-radius="8px" padding="1px">
       <mj-column background-color="#FFFFFF" border-radius="8px" padding="8px 8px 16px 8px">
         <mj-include path="./hi.mjml" />
-        <mj-text padding-bottom="16px">You've been invited to {{event.title}}.</mj-text>
+        <mj-text padding-bottom="16px">You created {{ event.title }} in {{ community.name }}. Please see the event details below.</mj-text>
+        <mj-text padding-bottom="4px">Title: {{ event.title }}</mj-text>
+        <mj-text padding-bottom="4px">When: {{ formatDate event.startTime "MMMM D, YYYY" "-0800" }} - {{ formatDate event.endTime "MMMM D, YYYY" "-0800" }}</mj-text>
+        <mj-text padding-bottom="4px">Privacy: {{ event.private }}</mj-text>
+        <mj-text padding-bottom="16px">Description: {{ event.description }}</mj-text>
+        <mj-text>We've also created a Google Calendar event for you here: {{ event.googleCalendarEventUrl }}.</mj-text>
+        <mj-button href="{{ event.eventUrl }}" padding-top="16px">Go to Event</mj-button>
       </mj-column>
     </mj-section>
     <mj-include path="./footer.mjml" />

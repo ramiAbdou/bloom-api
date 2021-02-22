@@ -28,7 +28,7 @@ export default class EventSubscriber implements ESubscriber<Event> {
     const googleCalendarEvent = await createGoogleCalendarEvent({
       description: entity.description,
       end: { dateTime: entity.endTime },
-      location: entity.eventUrl,
+      location: await entity.eventUrl(),
       start: { dateTime: entity.startTime },
       summary: entity.title,
       visibility: entity.private ? 'private' : 'public'

@@ -41,9 +41,9 @@ const createEvent = async (
 
   const event: Event = await new BloomManager().createAndFlush(
     Event,
-    { ...args, community: { id: communityId }, id: eventId },
+    { ...args, community: communityId, id: eventId },
     {
-      emailContext: { coordinatorId: memberId, eventId },
+      emailContext: { communityId, coordinatorId: memberId, eventId },
       emailEvent: EmailEvent.CREATE_EVENT_COORDINATOR,
       flushEvent: FlushEvent.CREATE_EVENT,
       populate: ['community']

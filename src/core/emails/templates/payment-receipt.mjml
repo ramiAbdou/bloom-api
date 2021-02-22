@@ -13,9 +13,9 @@
         </mj-text>
         <mj-text> Invoice ID: {{payment.stripeInvoiceId}}
         </mj-text>
-        <mj-text padding-bottom="16px"> Date of Payment: {{ formatDate payment.createdAt "MMMM D, YYYY @ h:mm A" "-0800" }}
+        <mj-text> Date of Payment: {{ formatDate payment.createdAt "MMMM D, YYYY @ h:mm A" "-0800" }}
         </mj-text>
-        <mj-button href="{{ payment.stripeInvoiceUrl }}">See Payment Receipt</mj-button>
+        <mj-button href="{{ payment.stripeInvoiceUrl }}" padding-top="16px">See Payment Receipt</mj-button>
       </mj-column>
     </mj-section>
     <mj-include path="./footer.mjml" />
