@@ -6,7 +6,7 @@ import BloomManager from '@core/db/BloomManager';
 import { Member } from '@entities/entities';
 import { QueryEvent } from '@util/events';
 import { CreateSubsciptionArgs } from '../member-payment/repo/createSubscription';
-import { MemberStatus } from './Member';
+import { MemberRole, MemberStatus } from './Member';
 import addMembers, { AddMembersArgs } from './repo/addMembers';
 import applyForMembership, {
   ApplyForMembershipArgs
@@ -34,7 +34,7 @@ import updatePaymentMethod, {
 
 @Resolver()
 export default class MemberResolver {
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Mutation(() => [Member], { nullable: true })
   async addMembers(@Args() args: AddMembersArgs, @Ctx() ctx: GQLContext) {
     return addMembers(args, ctx);
@@ -52,13 +52,13 @@ export default class MemberResolver {
     return applyForMembership(args, ctx);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Mutation(() => [Member])
   async deleteMembers(@Args() args: DeleteMembersArgs): Promise<Member[]> {
     return deleteMembers(args);
   }
 
-  @Authorized('OWNER')
+  @Authorized(MemberRole.OWNER)
   @Mutation(() => [Member])
   async demoteMembers(@Args() args: DemoteMembersArgs): Promise<Member[]> {
     return demoteMembers(args);
@@ -69,7 +69,7 @@ export default class MemberResolver {
     return isEmailTaken(args);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Query(() => [Member])
   async getApplicants(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
     return new BloomManager().find(
@@ -92,7 +92,7 @@ export default class MemberResolver {
     return getChangePreview(args, ctx);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Query(() => [Member])
   async getDatabase(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
     return new BloomManager().find(
@@ -143,19 +143,19 @@ export default class MemberResolver {
     return getUpcomingPayment(ctx);
   }
 
-  @Authorized('OWNER')
+  @Authorized(MemberRole.OWNER)
   @Mutation(() => [Member])
   async promoteMembers(@Args() args: PromoteMembersArgs) {
     return promoteMembers(args);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Mutation(() => [Member])
   async respondToApplicants(@Args() args: RespondToApplicantsArgs) {
     return respondToApplicants(args);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Mutation(() => [Member])
   async restoreMembers(@Args() args: RestoreMembersArgs): Promise<Member[]> {
     return restoreMembers(args);

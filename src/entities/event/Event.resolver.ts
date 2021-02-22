@@ -1,6 +1,7 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
+import { MemberRole } from '@entities/member/Member';
 import Event from './Event';
 import createEvent, { CreateEventArgs } from './repo/createEvent';
 import deleteEvent, { DeleteEventArgs } from './repo/deleteEvent';
@@ -11,7 +12,7 @@ import updateEvent, { UpdateEventArgs } from './repo/updateEvent';
 
 @Resolver()
 export default class EventResolver {
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Mutation(() => Event, { nullable: true })
   async createEvent(
     @Args() args: CreateEventArgs,
@@ -20,7 +21,7 @@ export default class EventResolver {
     return createEvent(args, ctx);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Mutation(() => Event, { nullable: true })
   async deleteEvent(@Args() args: DeleteEventArgs): Promise<Event> {
     return deleteEvent(args);
@@ -43,7 +44,7 @@ export default class EventResolver {
     return getUpcomingEvents(ctx);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Mutation(() => Event, { nullable: true })
   async updateEvent(@Args() args: UpdateEventArgs): Promise<Event> {
     return updateEvent(args);

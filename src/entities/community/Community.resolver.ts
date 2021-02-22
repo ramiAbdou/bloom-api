@@ -2,6 +2,7 @@ import { Args, Authorized, Ctx, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import { Community } from '@entities/entities';
+import { MemberRole } from '@entities/member/Member';
 import { TimeSeriesData } from '@util/gql';
 import getActiveDuesGrowth from './repo/getActiveDuesGrowth';
 import getActiveMembersGrowth from './repo/getActiveMembersGrowth';
@@ -18,19 +19,19 @@ import getTotalMembersSeries from './repo/getTotalMembersSeries';
 
 @Resolver()
 export default class CommunityResolver {
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Query(() => Number)
   async getActiveDuesGrowth(@Ctx() ctx: GQLContext): Promise<number> {
     return getActiveDuesGrowth(ctx);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Query(() => [Number, Number])
   async getActiveMembersGrowth(@Ctx() ctx: GQLContext): Promise<number[]> {
     return getActiveMembersGrowth(ctx);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Query(() => [TimeSeriesData])
   async getActiveMembersSeries(
     @Ctx() ctx: GQLContext
@@ -53,7 +54,7 @@ export default class CommunityResolver {
     return getCommunityOwner(args);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Query(() => [TimeSeriesData])
   async getEventAttendeesSeries(
     @Ctx() ctx: GQLContext
@@ -61,25 +62,25 @@ export default class CommunityResolver {
     return getEventAttendeesSeries(ctx);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Query(() => Number)
   async getTotalDuesGrowth(@Ctx() ctx: GQLContext): Promise<number> {
     return getTotalDuesGrowth(ctx);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Query(() => [TimeSeriesData])
   async getTotalDuesSeries(@Ctx() ctx: GQLContext): Promise<TimeSeriesData[]> {
     return getTotalDuesSeries(ctx);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Query(() => [Number, Number])
   async getTotalMembersGrowth(@Ctx() ctx: GQLContext): Promise<number[]> {
     return getTotalMembersGrowth(ctx);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Query(() => [TimeSeriesData])
   async getTotalMembersSeries(
     @Ctx() ctx: GQLContext

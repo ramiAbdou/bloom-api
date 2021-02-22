@@ -15,7 +15,7 @@ import EventResolver from '../entities/event/Event.resolver';
 import MemberDataResolver from '../entities/member-data/MemberData.resolver';
 import MemberPaymentResolver from '../entities/member-payment/MemberPayment.resolver';
 import MemberTypeResolver from '../entities/member-type/MemberType.resolver';
-import Member from '../entities/member/Member';
+import Member, { MemberRole } from '../entities/member/Member';
 import MemberResolver from '../entities/member/Member.resolver';
 import QuestionResolver from '../entities/question/Question.resolver';
 import UserResolver from '../entities/user/User.resolver';
@@ -37,7 +37,7 @@ const authChecker: AuthChecker<GQLContext> = async (
   // a userId (as seen from above).
   if (!roles.length) return true;
 
-  return role === 'OWNER' || roles[0] === role;
+  return role === MemberRole.OWNER || roles[0] === role;
 };
 
 /**

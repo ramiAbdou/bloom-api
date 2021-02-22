@@ -2,7 +2,7 @@ import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import { FlushEvent } from '@util/events';
-import Member from '../Member';
+import Member, { MemberRole } from '../Member';
 
 @ArgsType()
 export class PromoteMembersArgs {
@@ -20,7 +20,7 @@ const promoteMembers = async ({
   const members: Member[] = await new BloomManager().findAndUpdate(
     Member,
     { id: memberIds },
-    { role: 'ADMIN' },
+    { role: MemberRole.ADMIN },
     { flushEvent: FlushEvent.PROMOTE_MEMBERS }
   );
 

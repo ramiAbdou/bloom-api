@@ -5,7 +5,7 @@ import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import User from '@entities/user/User';
 import { FlushEvent } from '@util/events';
-import Member, { MemberStatus } from '../Member';
+import Member, { MemberRole, MemberStatus } from '../Member';
 
 @InputType()
 class AddMemberInput {
@@ -54,7 +54,7 @@ const addMembers = async (
     inputs.map(async ({ isAdmin, email, firstName, lastName }) => {
       return bm.create(Member, {
         community,
-        role: isAdmin ? 'ADMIN' : null,
+        role: isAdmin ? MemberRole.ADMIN : null,
         status: MemberStatus.INVITED,
         // The user can potentially already exist if they are a part of other
         // communities.

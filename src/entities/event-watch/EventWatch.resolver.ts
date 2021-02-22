@@ -1,6 +1,7 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
+import { MemberRole } from '@entities/member/Member';
 import EventWatch from './EventWatch';
 import createEventWatch, {
   CreateEventWatchArgs
@@ -19,7 +20,7 @@ export default class EventWatchResolver {
     return createEventWatch(args, ctx);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Query(() => [EventWatch])
   async getEventWatches(
     @Args() args: GetEventWatchesArgs

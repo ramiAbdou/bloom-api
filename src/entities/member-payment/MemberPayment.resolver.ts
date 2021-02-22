@@ -1,8 +1,9 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
-import { QueryEvent } from '@util/events';
 import BloomManager from '@core/db/BloomManager';
+import { MemberRole } from '@entities/member/Member';
+import { QueryEvent } from '@util/events';
 import MemberPayment from './MemberPayment';
 import createLifetimePayment, {
   CreateLifetimePaymentArgs
@@ -43,7 +44,7 @@ export default class MemberPaymentResolver {
     return getMemberPayments(args, ctx);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Query(() => [MemberPayment], { nullable: true })
   async getPayments(
     @Ctx() { communityId }: GQLContext

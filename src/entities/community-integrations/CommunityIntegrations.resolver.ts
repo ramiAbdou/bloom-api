@@ -1,6 +1,7 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
+import { MemberRole } from '@entities/member/Member';
 import CommunityIntegrations from './CommunityIntegrations';
 import getIntegrations from './repo/getIntegrations';
 import updateMailchimpListId, {
@@ -16,7 +17,7 @@ export default class CommunityIntegrationsResolver {
     return getIntegrations(args);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Mutation(() => CommunityIntegrations)
   async updateMailchimpListId(
     @Args() args: UpdateMailchimpListIdArgs,
