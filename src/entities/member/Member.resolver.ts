@@ -6,13 +6,13 @@ import BloomManager from '@core/db/BloomManager';
 import { Member } from '@entities/entities';
 import { QueryEvent } from '@util/events';
 import { CreateSubsciptionArgs } from '../member-payment/repo/createSubscription';
-import { AdminArgs, MemberStatus } from './Member.types';
+import { MemberStatus } from './Member';
 import addMembers, { AddMembersArgs } from './repo/addMembers';
 import applyForMembership, {
   ApplyForMembershipArgs
 } from './repo/applyForMembership';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
-import demoteMembers from './repo/demoteMembers';
+import demoteMembers, { DemoteMembersArgs } from './repo/demoteMembers';
 import getChangePreview, {
   GetChangePreviewResult
 } from './repo/getChangePreview';
@@ -22,7 +22,7 @@ import getUpcomingPayment, {
   GetUpcomingPaymentResult
 } from './repo/getUpcomingPayment';
 import isEmailTaken, { IsEmailTakenArgs } from './repo/isEmailToken';
-import promoteMembers from './repo/promoteMembers';
+import promoteMembers, { PromoteMembersArgs } from './repo/promoteMembers';
 import respondToApplicants, {
   RespondToApplicantsArgs
 } from './repo/respondToApplicants';
@@ -60,7 +60,7 @@ export default class MemberResolver {
 
   @Authorized('OWNER')
   @Mutation(() => [Member])
-  async demoteMembers(@Args() args: AdminArgs): Promise<Member[]> {
+  async demoteMembers(@Args() args: DemoteMembersArgs): Promise<Member[]> {
     return demoteMembers(args);
   }
 
@@ -145,7 +145,7 @@ export default class MemberResolver {
 
   @Authorized('OWNER')
   @Mutation(() => [Member])
-  async promoteMembers(@Args() args: AdminArgs) {
+  async promoteMembers(@Args() args: PromoteMembersArgs) {
     return promoteMembers(args);
   }
 

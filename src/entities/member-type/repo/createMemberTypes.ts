@@ -3,10 +3,9 @@ import { EntityData } from '@mikro-orm/core';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { FlushEvent } from '@util/events';
 import Community from '@entities/community/Community';
-import MemberType from '../MemberType';
-import { RecurrenceType } from '../MemberType.types';
+import { FlushEvent } from '@util/events';
+import MemberType, { RecurrenceType } from '../MemberType';
 
 @InputType()
 export class CreateMemberTypeInput {

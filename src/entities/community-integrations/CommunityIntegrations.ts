@@ -2,10 +2,10 @@ import { Field, ObjectType } from 'type-graphql';
 import { Entity, OneToOne, Property } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
-import getMailchimpAudienceName from '../../integrations/mailchimp/repo/getMailchimpAudiencename';
-import getMailchimpAudiences from '../../integrations/mailchimp/repo/getMailchimpAudiences';
+import getMailchimpAudienceName from '@integrations/mailchimp/repo/getMailchimpAudienceName';
+import getMailchimpAudiences from '@integrations/mailchimp/repo/getMailchimpAudiences';
 import Community from '../community/Community';
-import { MailchimpLists } from './CommunityIntegrations.types';
+import { MailchimpList } from './CommunityIntegrations.types';
 
 @ObjectType()
 @Entity()
@@ -37,8 +37,8 @@ export default class CommunityIntegrations extends BaseEntity {
     });
   }
 
-  @Field(() => [MailchimpLists], { nullable: true })
-  async mailchimpLists(): Promise<string[]> {
+  @Field(() => [MailchimpList], { nullable: true })
+  async mailchimpLists(): Promise<MailchimpList[]> {
     return getMailchimpAudiences({
       mailchimpAccessToken: this.mailchimpAccessToken
     });

@@ -1,12 +1,14 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
+import { MailchimpList } from '@entities/community-integrations/CommunityIntegrations.types';
+
 interface GetMailchimpAudiences {
   mailchimpAccessToken?: string;
 }
 
 const getMailchimpAudiences = async ({
   mailchimpAccessToken
-}: GetMailchimpAudiences) => {
+}: GetMailchimpAudiences): Promise<MailchimpList[]> => {
   if (!mailchimpAccessToken) return [];
 
   const options: AxiosRequestConfig = {

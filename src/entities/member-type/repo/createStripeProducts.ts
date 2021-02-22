@@ -4,10 +4,9 @@ import Stripe from 'stripe';
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
-import { RecurrenceType } from '@entities/member-type/MemberType.types';
+import MemberType, { RecurrenceType } from '@entities/member-type/MemberType';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { FlushEvent } from '@util/events';
-import MemberType from '../MemberType';
 
 interface CreateStripeProductArgs {
   stripeAccountId: string;

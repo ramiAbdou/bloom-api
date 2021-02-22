@@ -1,9 +1,9 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
+import { FlushEvent } from '@util/events';
 import { now } from '@util/util';
-import Member from '../Member';
-import { MemberStatus } from '../Member.types';
+import Member, { MemberStatus } from '../Member';
 
 @ArgsType()
 export class RespondToApplicantsArgs {
@@ -29,8 +29,8 @@ const respondToApplicants = async ({
     {
       flushEvent:
         response === MemberStatus.ACCEPTED
-          ? 'ACCEPT_APPLICANTS'
-          : 'IGNORE_APPLICANTS'
+          ? FlushEvent.ACCEPT_APPLICANTS
+          : FlushEvent.IGNORE_APPLICANTS
     }
   );
 

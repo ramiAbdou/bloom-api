@@ -10,7 +10,12 @@ import {
 
 import BaseEntity from '@core/db/BaseEntity';
 import { Community, Member } from '@entities/entities';
-import { RecurrenceType } from './MemberType.types';
+
+export enum RecurrenceType {
+  LIFETIME = 'Lifetime',
+  MONTHLY = 'Monthly',
+  YEARLY = 'Yearly'
+}
 
 @ObjectType()
 @Entity()

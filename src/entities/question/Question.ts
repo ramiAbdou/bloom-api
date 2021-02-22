@@ -1,4 +1,4 @@
-import { Field, InputType, ObjectType } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
 import {
   ArrayType,
   BeforeCreate,
@@ -10,10 +10,25 @@ import {
 
 import BaseEntity from '@core/db/BaseEntity';
 import { Community } from '@entities/entities';
-import { QuestionCategory, QuestionType } from './Question.types';
+
+export enum QuestionCategory {
+  DUES_STATUS = 'DUES_STATUS',
+  EMAIL = 'EMAIL',
+  FIRST_NAME = 'FIRST_NAME',
+  GENDER = 'GENDER',
+  JOINED_AT = 'JOINED_AT',
+  LAST_NAME = 'LAST_NAME',
+  MEMBERSHIP_TYPE = 'MEMBERSHIP_TYPE'
+}
+
+export enum QuestionType {
+  LONG_TEXT = 'LONG_TEXT',
+  MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
+  MULTIPLE_SELECT = 'MULTIPLE_SELECT',
+  SHORT_TEXT = 'SHORT_TEXT'
+}
 
 @ObjectType()
-@InputType('QuestionInput')
 @Entity()
 export default class Question extends BaseEntity {
   @Field({ defaultValue: true })

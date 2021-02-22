@@ -10,7 +10,7 @@ import createGoogleCalendarEvent from '@integrations/google/repo/createGoogleCal
 import deleteGoogleCalendarEvent from '@integrations/google/repo/deleteGoogleCalendarEvent';
 import updateGoogleCalendarEvent from '@integrations/google/repo/updateGoogleCalendarEvent';
 import { QueryEvent } from '@util/events';
-import Event from './Event';
+import Event, { EventPrivacy } from './Event';
 import updateEvent from './repo/updateEvent';
 
 export default class EventSubscriber implements ESubscriber<Event> {
@@ -29,7 +29,8 @@ export default class EventSubscriber implements ESubscriber<Event> {
       location: await entity.eventUrl(),
       start: { dateTime: entity.startTime },
       summary: entity.title,
-      visibility: entity.private ? 'private' : 'public'
+      visibility:
+        entity.privacy === EventPrivacy.MEMBERS_ONLY ? 'private' : 'public'
     });
 
     await updateEvent({
@@ -47,7 +48,8 @@ export default class EventSubscriber implements ESubscriber<Event> {
       await updateGoogleCalendarEvent(entity.googleCalendarEventId, {
         description: entity.description,
         summary: entity.title,
-        visibility: entity.private ? 'private' : 'public'
+        visibility:
+          entity.privacy === EventPrivacy.MEMBERS_ONLY ? 'private' : 'public'
       });
 
       return;

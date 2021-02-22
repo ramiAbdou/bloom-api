@@ -15,7 +15,7 @@ export interface CreateEventCoordinatorVars {
     | 'description'
     | 'endTime'
     | 'googleCalendarEventUrl'
-    | 'private'
+    | 'privacy'
     | 'startTime'
     | 'title'
   >;

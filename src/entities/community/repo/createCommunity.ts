@@ -7,7 +7,7 @@ import {
   CommunityIntegrations,
   Question
 } from '@entities/entities';
-import { QuestionCategory } from '@entities/question/Question.types';
+import { QuestionCategory } from '@entities/question/Question';
 import { FlushEvent } from '@util/events';
 
 /**

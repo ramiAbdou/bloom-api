@@ -1,7 +1,6 @@
 import BloomManager from '@core/db/BloomManager';
 import { FlushEvent } from '@util/events';
-import Member from '../Member';
-import { MemberStatus } from '../Member.types';
+import Member, { MemberStatus } from '../Member';
 
 interface UpdateInvitedStatusesArgs {
   email: string;

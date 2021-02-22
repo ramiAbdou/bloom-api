@@ -7,14 +7,11 @@ import Community from '@entities/community/Community';
 import MemberData from '@entities/member-data/MemberData';
 import createLifetimePayment from '@entities/member-payment/repo/createLifetimePayment';
 import createSubscription from '@entities/member-payment/repo/createSubscription';
-import MemberType from '@entities/member-type/MemberType';
-import { RecurrenceType } from '@entities/member-type/MemberType.types';
-import Question from '@entities/question/Question';
-import { QuestionCategory } from '@entities/question/Question.types';
+import MemberType, { RecurrenceType } from '@entities/member-type/MemberType';
+import Question, { QuestionCategory } from '@entities/question/Question';
 import User from '@entities/user/User';
 import { FlushEvent, QueryEvent } from '@util/events';
-import Member from '../Member';
-import { MemberStatus } from '../Member.types';
+import Member, { MemberStatus } from '../Member';
 import updatePaymentMethod from './updatePaymentMethod';
 
 @InputType()

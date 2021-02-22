@@ -3,8 +3,7 @@ import day, { Dayjs } from 'dayjs';
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
-import Member from '@entities/member/Member';
-import { MemberStatus } from '@entities/member/Member.types';
+import Member, { MemberStatus } from '@entities/member/Member';
 import { QueryEvent } from '@util/events';
 
 /**

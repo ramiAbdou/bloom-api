@@ -2,7 +2,7 @@ import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import { FlushEvent } from '@util/events';
-import Event from '../Event';
+import Event, { EventPrivacy } from '../Event';
 
 @ArgsType()
 export class UpdateEventArgs {
@@ -18,8 +18,8 @@ export class UpdateEventArgs {
   @Field({ nullable: true })
   imageUrl?: string;
 
-  @Field({ nullable: true })
-  private?: boolean;
+  @Field(() => String, { defaultValue: EventPrivacy.MEMBERS_ONLY })
+  privacy?: EventPrivacy;
 
   @Field({ nullable: true })
   recordingUrl?: string;

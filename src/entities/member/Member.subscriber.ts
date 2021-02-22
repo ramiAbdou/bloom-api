@@ -6,8 +6,7 @@ import { CommunityIntegrations } from '@entities/entities';
 import addToMailchimpAudience from '@integrations/mailchimp/repo/addToMailchimpAudience';
 import { QueryEvent } from '@util/events';
 import { hasKeys } from '@util/util';
-import Member from './Member';
-import { MemberStatus } from './Member.types';
+import Member, { MemberStatus } from './Member';
 
 export default class MemberSubscriber implements EventSubscriber<Member> {
   getSubscribedEntities(): EntityName<Member>[] {

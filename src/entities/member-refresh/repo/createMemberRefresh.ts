@@ -1,11 +1,11 @@
+import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { MemberIdArgs } from '@entities/member/Member.types';
 import { FlushEvent } from '@util/events';
 import MemberRefresh from '../MemberRefresh';
 
 const createMemberRefresh = async ({
   memberId
-}: MemberIdArgs): Promise<MemberRefresh> => {
+}: Pick<GQLContext, 'memberId'>): Promise<MemberRefresh> => {
   const refresh: MemberRefresh = await new BloomManager().createAndFlush(
     MemberRefresh,
     { member: memberId },

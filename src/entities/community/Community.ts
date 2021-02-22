@@ -21,7 +21,6 @@ import Member from '../member/Member';
 import Question from '../question/Question';
 
 @ObjectType()
-@InputType('CommunityInput')
 @Entity()
 export default class Community extends BaseEntity {
   // ## FIELDS

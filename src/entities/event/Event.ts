@@ -1,16 +1,18 @@
 import { IsUrl } from 'class-validator';
 import day from 'dayjs';
-import { Field, InputType, ObjectType } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
 import {
   BeforeCreate,
   Collection,
   Entity,
+  Enum,
   ManyToOne,
   OneToMany,
   Property
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
+import getGoogleCalendarEvent from '../../integrations/google/repo/getGoogleCalendarEvent';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
@@ -18,8 +20,12 @@ import EventInvitee from '../event-invitee/EventInvitee';
 import EventWatch from '../event-watch/EventWatch';
 import getEventUrl from './repo/getEventUrl';
 
+export enum EventPrivacy {
+  MEMBERS_ONLY = 'Members Only',
+  OPEN_TO_ALL = 'Open to All'
+}
+
 @ObjectType()
-@InputType('EventInput')
 @Entity()
 export default class Event extends BaseEntity {
   @Field()
@@ -39,9 +45,9 @@ export default class Event extends BaseEntity {
   @IsUrl()
   imageUrl?: string;
 
-  @Field({ defaultValue: true })
-  @Property()
-  private: boolean = true;
+  @Field(() => String, { defaultValue: EventPrivacy.MEMBERS_ONLY })
+  @Enum({ items: () => EventPrivacy, type: String })
+  privacy: EventPrivacy = EventPrivacy.MEMBERS_ONLY;
 
   @Field({ nullable: true })
   @Property({ nullable: true })
@@ -77,8 +83,11 @@ export default class Event extends BaseEntity {
 
   @Field(() => String, { nullable: true })
   async googleCalendarEventUrl(): Promise<string> {
-    if (!this.googleCalendarEventId) return null;
-    return `${this.googleCalendarEventId}`;
+    const googleCalendarEvent = await getGoogleCalendarEvent(
+      this.googleCalendarEventId
+    );
+
+    return googleCalendarEvent.htmlLink;
   }
 
   // ## LIFECYCLE

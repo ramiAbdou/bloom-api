@@ -4,7 +4,7 @@ import { ArgsType, Field } from 'type-graphql';
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { EmailEvent, FlushEvent } from '@util/events';
-import Event from '../Event';
+import Event, { EventPrivacy } from '../Event';
 
 @ArgsType()
 export class CreateEventArgs {
@@ -20,8 +20,8 @@ export class CreateEventArgs {
   @Field()
   videoUrl: string;
 
-  @Field({ defaultValue: true })
-  private: boolean;
+  @Field(() => String, { defaultValue: EventPrivacy.MEMBERS_ONLY })
+  privacy: EventPrivacy;
 
   @Field()
   startTime: string;

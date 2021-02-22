@@ -23,11 +23,22 @@ import MemberPayment from '../member-payment/MemberPayment';
 import MemberRefresh from '../member-refresh/MemberRefresh';
 import MemberType from '../member-type/MemberType';
 import User from '../user/User';
-import { MemberRole, MemberStatus } from './Member.types';
 import getNextPaymentDate from './repo/getNextPaymentDate';
 import getPaymentMethod, {
   GetPaymentMethodResult
 } from './repo/getPaymentMethod';
+
+export enum MemberRole {
+  ADMIN = 'Admin',
+  OWNER = 'Owner'
+}
+
+export enum MemberStatus {
+  ACCEPTED = 'Accepted',
+  INVITED = 'Invited',
+  PENDING = 'Pending',
+  REJECTED = 'Rejected'
+}
 
 @ObjectType()
 @Entity()

@@ -5,8 +5,7 @@ import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import User from '@entities/user/User';
 import { FlushEvent } from '@util/events';
-import Member from '../Member';
-import { MemberStatus } from '../Member.types';
+import Member, { MemberStatus } from '../Member';
 
 @InputType()
 class AddMemberInput {
