@@ -32,6 +32,12 @@ export const JWT = {
   SECRET: process.env.JWT_SECRET
 };
 
+export const TEST_EMAILS = [
+  'ramiabdou98@gmail.com',
+  'ra494@cornell.edu',
+  'rami@bl.community'
+];
+
 /**
  * All exported TYPE declaration constants are below.
  * NOTE that if any services have types that are specific to them, they will

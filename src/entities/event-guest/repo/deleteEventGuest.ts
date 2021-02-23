@@ -2,7 +2,8 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { FlushEvent } from '@util/events';
+import emitGoogleEvent from '@core/events/emitGoogleEvent';
+import { FlushEvent, GoogleEvent } from '@util/events';
 import EventGuest from '../EventGuest';
 
 @ArgsType()
@@ -28,6 +29,11 @@ const deleteEventGuest = async (
     { event: { id: eventId }, member: { id: memberId } },
     { flushEvent: FlushEvent.DELETE_EVENT_GUEST }
   );
+
+  emitGoogleEvent(GoogleEvent.DELETE_GOOGLE_CALENDAR_EVENT_ATTENDEE, {
+    eventId,
+    guestId: guest.id
+  });
 
   return guest;
 };

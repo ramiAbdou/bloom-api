@@ -1,10 +1,11 @@
-import { isProduction } from '@constants';
+import { isProduction, TEST_EMAILS } from '@constants';
 import { EmailEvent } from '@util/events';
 import logger from '@util/logger';
 import { splitArrayIntoChunks } from '@util/util';
 import { EmailVars, SendEmailsArgs } from './emails.types';
 import getConnectIntegrationsVars from './util/getConnectIntegrationsVars';
 import getCreateEventCoordinatorVars from './util/getCreateEventCoordinatorVars';
+import getCreateEventInviteesVars from './util/getCreateEventInviteesVars';
 import getLoginLinkVars from './util/getLoginLinkVars';
 import getPaymentReceiptVars from './util/getPaymentReceiptVars';
 
@@ -26,7 +27,7 @@ const formatPersonalizations = (
 ): FormatPersonalizationData[] => {
   return variables
     .filter((vars: EmailVars) => {
-      return !!isProduction || vars.user.email === 'rami@bl.community';
+      return !!isProduction || TEST_EMAILS.includes(vars.user.email);
     })
     .map((vars: EmailVars) => {
       return { dynamicTemplateData: vars, to: { email: vars.user.email } };
@@ -46,6 +47,10 @@ export const processEmailPersonalizations = async ({
 
     case EmailEvent.CREATE_EVENT_COORDINATOR:
       vars = await getCreateEventCoordinatorVars(emailContext);
+      break;
+
+    case EmailEvent.CREATE_EVENT_INVITEES:
+      vars = await getCreateEventInviteesVars(emailContext);
       break;
 
     case EmailEvent.LOGIN_LINK:

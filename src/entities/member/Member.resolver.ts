@@ -16,6 +16,7 @@ import demoteMembers, { DemoteMembersArgs } from './repo/demoteMembers';
 import getChangePreview, {
   GetChangePreviewResult
 } from './repo/getChangePreview';
+import getCommunityMembers from './repo/getCommunityMembers';
 import getMember, { GetMemberArgs } from './repo/getMember';
 import getMembers from './repo/getMembers';
 import getUpcomingPayment, {
@@ -92,6 +93,12 @@ export default class MemberResolver {
     return getChangePreview(args, ctx);
   }
 
+  @Authorized()
+  @Query(() => [Member])
+  async getCommunityMembers(@Ctx() ctx: GQLContext): Promise<Member[]> {
+    return getCommunityMembers(ctx);
+  }
+
   @Authorized(MemberRole.ADMIN)
   @Query(() => [Member])
   async getDatabase(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
@@ -151,8 +158,11 @@ export default class MemberResolver {
 
   @Authorized(MemberRole.ADMIN)
   @Mutation(() => [Member])
-  async respondToApplicants(@Args() args: RespondToApplicantsArgs) {
-    return respondToApplicants(args);
+  async respondToApplicants(
+    @Args() args: RespondToApplicantsArgs,
+    @Ctx() ctx: GQLContext
+  ) {
+    return respondToApplicants(args, ctx);
   }
 
   @Authorized(MemberRole.ADMIN)

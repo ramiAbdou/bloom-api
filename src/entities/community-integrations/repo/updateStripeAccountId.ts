@@ -26,9 +26,8 @@ const updateStripeAccountId = async ({
     { flushEvent: FlushEvent.UPDATE_STRIPE_ACCOUNT_ID }
   );
 
-  emitEmailEvent({
-    emailContext: { brand: IntegrationsBrand.STRIPE, urlName },
-    emailEvent: EmailEvent.CONNECT_INTEGRATIONS
+  emitEmailEvent(EmailEvent.CONNECT_INTEGRATIONS, {
+    emailContext: { brand: IntegrationsBrand.STRIPE, urlName }
   });
 
   await createStripeProducts({ communityId: integrations.community.id });

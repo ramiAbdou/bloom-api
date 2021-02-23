@@ -1,9 +1,12 @@
 import { MailchimpEventArgs } from '@integrations/mailchimp/processMailchimpEvent';
-import { BusEvent } from '@util/events';
+import { BusEvent, MailchimpEvent } from '@util/events';
 import eventBus from './eventBus';
 
-const emitMailchimpEvent = (args: MailchimpEventArgs) => {
-  eventBus.emit(BusEvent.MAILCHIMP_EVENT, args);
+const emitMailchimpEvent = (
+  mailchimpEvent: MailchimpEvent,
+  args: Omit<MailchimpEventArgs, 'mailchimpEvent'>
+) => {
+  eventBus.emit(BusEvent.MAILCHIMP_EVENT, { ...args, mailchimpEvent });
 };
 
 export default emitMailchimpEvent;

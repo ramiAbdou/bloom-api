@@ -5,6 +5,7 @@ import BloomManager from '@core/db/BloomManager';
 import emitEmailEvent from '@core/events/emitEmailEvent';
 import emitGoogleEvent from '@core/events/emitGoogleEvent';
 import { EmailEvent, FlushEvent, GoogleEvent } from '@util/events';
+import createEventInvitees from '../../event-invitee/repo/createEventInvitees';
 import Event, { EventPrivacy } from '../Event';
 
 @ArgsType()
@@ -17,6 +18,9 @@ export class CreateEventArgs {
 
   @Field({ nullable: true })
   imageUrl?: string;
+
+  @Field(() => [String])
+  invitees?: string[];
 
   @Field(() => String, { defaultValue: EventPrivacy.MEMBERS_ONLY })
   privacy: EventPrivacy;
@@ -35,23 +39,32 @@ export class CreateEventArgs {
 }
 
 const createEvent = async (
-  args: CreateEventArgs,
+  { invitees: memberIdsToInvite, ...args }: CreateEventArgs,
   { communityId, memberId }: GQLContext
 ): Promise<Event> => {
   const event: Event = await new BloomManager().createAndFlush(
     Event,
-    { ...args, community: communityId },
+    {
+      ...args,
+      community: communityId,
+      invitees: memberIdsToInvite.map((memberIdToInvite: string) => ({
+        member: memberIdToInvite
+      }))
+    },
     { flushEvent: FlushEvent.CREATE_EVENT }
   );
 
-  emitGoogleEvent({
-    eventId: event.id,
-    googleEvent: GoogleEvent.CREATE_GOOGLE_CALENDAR_EVENT
+  await createEventInvitees(
+    { eventId: event.id, memberIds: memberIdsToInvite },
+    { communityId }
+  );
+
+  emitEmailEvent(EmailEvent.CREATE_EVENT_COORDINATOR, {
+    emailContext: { communityId, coordinatorId: memberId, eventId: event.id }
   });
 
-  emitEmailEvent({
-    emailContext: { communityId, coordinatorId: memberId, eventId: event.id },
-    emailEvent: EmailEvent.CREATE_EVENT_COORDINATOR
+  emitGoogleEvent(GoogleEvent.CREATE_GOOGLE_CALENDAR_EVENT, {
+    eventId: event.id
   });
 
   return event;

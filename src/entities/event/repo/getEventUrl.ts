@@ -13,7 +13,7 @@ const getEventUrl = async ({ eventId }: GetEventUrlArgs) => {
     { fields: ['urlName'] }
   );
 
-  return `${APP.CLIENT_URL}/${community.urlName}/events/${eventId}`;
+  return `${APP.CLIENT_URL}/${community?.urlName}/events/${eventId}`;
 };
 
 export default getEventUrl;

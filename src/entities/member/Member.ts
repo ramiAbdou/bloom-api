@@ -1,6 +1,5 @@
 import { Authorized, Field, ObjectType } from 'type-graphql';
 import {
-  AfterCreate,
   BeforeCreate,
   BeforeUpdate,
   Cascade,
@@ -13,9 +12,7 @@ import {
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
-import { MailchimpEvent } from '@util/events';
 import { now } from '@util/util';
-import emitMailchimpEvent from '../../core/events/emitMailchimpEvent';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
@@ -123,15 +120,6 @@ export default class Member extends BaseEntity {
     if (this.status === MemberStatus.ACCEPTED && !this.joinedAt) {
       this.joinedAt = now();
     }
-  }
-
-  @AfterCreate()
-  afterCreate() {
-    emitMailchimpEvent({
-      communityId: this.community.id,
-      mailchimpEvent: MailchimpEvent.ADD_TO_AUDIENCE,
-      memberId: this.id
-    });
   }
 
   // ## RELATIONSHIPS

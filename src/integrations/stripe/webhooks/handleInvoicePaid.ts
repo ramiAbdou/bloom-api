@@ -43,13 +43,12 @@ const handleInvoicePaid = async (event: Stripe.Event) => {
     { stripeAccount: stripeAccountId }
   );
 
-  emitEmailEvent({
+  emitEmailEvent(EmailEvent.PAYMENT_RECEIPT, {
     emailContext: {
       card: method.card,
       paymentId: updatedPayment.id,
       stripeAccountId
-    },
-    emailEvent: EmailEvent.PAYMENT_RECEIPT
+    }
   });
 };
 

@@ -40,9 +40,8 @@ const sendLoginLink = async ({
     APP.CLIENT_URL + (pathname ?? '')
   ).addParam('token', token).url;
 
-  emitEmailEvent({
-    emailContext: { email, loginUrl },
-    emailEvent: EmailEvent.LOGIN_LINK
+  emitEmailEvent(EmailEvent.LOGIN_LINK, {
+    emailContext: { email, loginUrl }
   });
 };
 

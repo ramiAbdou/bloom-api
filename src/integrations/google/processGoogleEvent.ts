@@ -25,10 +25,14 @@ const processGoogleEvent = async ({
 
   const [event, guest]: [Event, EventGuest] = await Promise.all([
     bm.findOne(Event, { id: eventId }, { filters: false }),
-    bm.findOne(EventGuest, { id: guestId }, { filters: false })
+    bm.findOne(EventGuest, { id: guestId })
   ]);
 
-  if (googleEvent === GoogleEvent.ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE) {
+  if (
+    googleEvent === GoogleEvent.ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE &&
+    event &&
+    guest
+  ) {
     await addGoogleCalendarEventAttendee(event.googleCalendarEventId, {
       displayName: `${guest.firstName} ${guest.lastName}`,
       email: guest.email,

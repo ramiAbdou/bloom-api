@@ -1,9 +1,12 @@
 import { GoogleEventArgs } from '@integrations/google/processGoogleEvent';
-import { BusEvent } from '@util/events';
+import { BusEvent, GoogleEvent } from '@util/events';
 import eventBus from './eventBus';
 
-const emitGoogleEvent = (args: GoogleEventArgs) => {
-  eventBus.emit(BusEvent.GOOGLE_EVENT, args);
+const emitGoogleEvent = (
+  googleEvent: GoogleEvent,
+  args: Omit<GoogleEventArgs, 'googleEvent'>
+) => {
+  eventBus.emit(BusEvent.GOOGLE_EVENT, { ...args, googleEvent });
 };
 
 export default emitGoogleEvent;

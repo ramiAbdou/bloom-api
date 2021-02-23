@@ -23,9 +23,8 @@ const updateMailchimpListId = async (
     { flushEvent: FlushEvent.UPDATE_MAILCHIMP_LIST_ID }
   );
 
-  emitEmailEvent({
-    emailContext: { brand: IntegrationsBrand.MAILCHIMP, communityId },
-    emailEvent: EmailEvent.CONNECT_INTEGRATIONS
+  emitEmailEvent(EmailEvent.CONNECT_INTEGRATIONS, {
+    emailContext: { brand: IntegrationsBrand.MAILCHIMP, communityId }
   });
 
   return integrations;

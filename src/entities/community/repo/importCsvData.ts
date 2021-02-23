@@ -1,6 +1,8 @@
 import csv from 'csvtojson';
 import day from 'dayjs';
+import { internet } from 'faker';
 
+import { isProduction, TEST_EMAILS } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import MemberData from '@entities/member-data/MemberData';
 import MemberType from '@entities/member-type/MemberType';
@@ -46,7 +48,11 @@ const processRow = async ({
 }: ProcessRowArgs) => {
   // Precondition: Every row (JSON) should have a field called 'EMAIL'.
   const { EMAIL: dirtyEmail, FIRST_NAME: firstName, LAST_NAME: lastName } = row;
-  const email = dirtyEmail?.toLowerCase();
+
+  const email =
+    isProduction || TEST_EMAILS.includes(dirtyEmail)
+      ? dirtyEmail?.toLowerCase()
+      : internet.email();
 
   // If no email exists or it is a duplicate email, don't process.
   if (!email || uniqueEmails.has(email)) return;

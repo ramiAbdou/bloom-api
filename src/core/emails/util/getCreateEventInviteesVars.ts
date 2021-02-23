@@ -50,6 +50,8 @@ const getCreateEventInviteesVars = async (
     return { community, event, user };
   });
 
+  // console.log(variables);
+
   return variables;
 };
 
