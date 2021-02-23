@@ -9,7 +9,7 @@ import Event from '../Event';
 const getUpcomingEvents = async ({
   communityId
 }: Pick<GQLContext, 'communityId'>) => {
-  return new BloomManager().find(
+  const events: Event[] = await new BloomManager().find(
     Event,
     { community: { id: communityId }, endTime: { $gte: now() } },
     {
@@ -17,6 +17,8 @@ const getUpcomingEvents = async ({
       orderBy: { startTime: QueryOrder.ASC }
     }
   );
+
+  return events;
 };
 
 export default getUpcomingEvents;

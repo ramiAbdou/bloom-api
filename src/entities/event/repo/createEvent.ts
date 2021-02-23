@@ -41,7 +41,7 @@ const createEvent = async (
   const event: Event = await new BloomManager().createAndFlush(
     Event,
     { ...args, community: communityId },
-    { flushEvent: FlushEvent.CREATE_EVENT, populate: ['community'] }
+    { flushEvent: FlushEvent.CREATE_EVENT }
   );
 
   emitGoogleEvent({

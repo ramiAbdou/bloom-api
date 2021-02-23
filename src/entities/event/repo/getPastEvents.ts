@@ -9,7 +9,7 @@ import Event from '../Event';
 const getPastEvents = async ({
   communityId
 }: Pick<GQLContext, 'communityId'>) => {
-  return new BloomManager().find(
+  const events: Event[] = await new BloomManager().find(
     Event,
     { community: { id: communityId }, endTime: { $lt: now() } },
     {
@@ -17,6 +17,8 @@ const getPastEvents = async ({
       orderBy: { startTime: QueryOrder.DESC }
     }
   );
+
+  return events;
 };
 
 export default getPastEvents;
