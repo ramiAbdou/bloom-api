@@ -39,6 +39,8 @@ const processGoogleEvent = async ({
   }
 
   if (googleEvent === GoogleEvent.CREATE_GOOGLE_CALENDAR_EVENT) {
+    await bm.em.populate(event, ['community']);
+
     const googleCalendarEvent = await createGoogleCalendarEvent({
       description: event.description,
       end: { dateTime: event.endTime },

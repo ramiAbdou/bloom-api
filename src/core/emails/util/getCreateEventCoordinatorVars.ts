@@ -11,6 +11,7 @@ export interface CreateEventCoordinatorContext {
 export interface CreateEventCoordinatorVars {
   community: Community;
   event: Event;
+  eventUrl: string;
   user: User;
 }
 
@@ -30,9 +31,7 @@ const getCreateEventCoordinatorVars = async (
     bm.findOne(
       Event,
       { id: eventId },
-      {
-        fields: ['endTime', 'privacy', 'startTime', 'summary', 'title']
-      }
+      { fields: ['endTime', 'privacy', 'startTime', 'summary', 'title'] }
     ),
     bm.findOne(
       User,
@@ -41,7 +40,14 @@ const getCreateEventCoordinatorVars = async (
     )
   ]);
 
-  const variables: CreateEventCoordinatorVars[] = [{ community, event, user }];
+  const variables: CreateEventCoordinatorVars[] = [
+    {
+      community,
+      event,
+      eventUrl: await event.eventUrl(),
+      user
+    }
+  ];
 
   console.log(variables);
 

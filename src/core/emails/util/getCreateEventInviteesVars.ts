@@ -35,7 +35,8 @@ const getCreateEventInviteesVars = async (
       Event,
       { id: eventId },
       {
-        fields: ['endTime', 'privacy', 'startTime', 'summary', 'title']
+        fields: ['endTime', 'privacy', 'startTime', 'summary', 'title'],
+        populate: ['community']
       }
     ),
     bm.find(
