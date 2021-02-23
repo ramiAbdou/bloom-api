@@ -2,19 +2,19 @@ import { EmailEvent } from '@util/events';
 import {
   ConnectIntegrationsEmailContext,
   ConnectIntegrationsEmailVars
-} from './util/prepareConnectIntegrationsVars';
+} from './util/getConnectIntegrationsVars';
 import {
   CreateEventCoordinatorContext,
   CreateEventCoordinatorVars
-} from './util/prepareCreateEventCoordinatorVars';
+} from './util/getCreateEventCoordinatorVars';
 import {
   LoginLinkEmailContext,
   LoginLinkEmailVars
-} from './util/prepareLoginLinkVars';
+} from './util/getLoginLinkVars';
 import {
   PaymentReceiptEmailContext,
   PaymentReceiptEmailVars
-} from './util/preparePaymentReceiptVars';
+} from './util/getPaymentReceiptVars';
 
 export interface FormatPersonalizationData {
   dynamicTemplateData?: Record<string, any>;

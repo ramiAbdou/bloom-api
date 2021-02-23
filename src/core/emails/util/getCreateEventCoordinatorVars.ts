@@ -17,7 +17,7 @@ export interface CreateEventCoordinatorVars {
   user: Pick<User, 'email' | 'firstName'>;
 }
 
-const prepareCreateEventCoordinatorVars = async (
+const getCreateEventCoordinatorVars = async (
   context: EmailContext
 ): Promise<CreateEventCoordinatorVars[]> => {
   const {
@@ -49,4 +49,4 @@ const prepareCreateEventCoordinatorVars = async (
   return variables;
 };
 
-export default prepareCreateEventCoordinatorVars;
+export default getCreateEventCoordinatorVars;

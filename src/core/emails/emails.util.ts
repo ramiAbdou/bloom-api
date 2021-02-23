@@ -3,10 +3,10 @@ import { EmailEvent } from '@util/events';
 import logger from '@util/logger';
 import { splitArrayIntoChunks } from '@util/util';
 import { EmailVars, SendEmailsArgs } from './emails.types';
-import prepareConnectIntegrationsVars from './util/prepareConnectIntegrationsVars';
-import prepareCreateEventCoordinatorVars from './util/prepareCreateEventCoordinatorVars';
-import prepareLoginLinkVars from './util/prepareLoginLinkVars';
-import preparePaymentReceiptVars from './util/preparePaymentReceiptVars';
+import getConnectIntegrationsVars from './util/getConnectIntegrationsVars';
+import getCreateEventCoordinatorVars from './util/getCreateEventCoordinatorVars';
+import getLoginLinkVars from './util/getLoginLinkVars';
+import getPaymentReceiptVars from './util/getPaymentReceiptVars';
 
 export interface FormatPersonalizationData {
   dynamicTemplateData?: Record<string, any>;
@@ -41,19 +41,19 @@ export const prepareEmailPersonalizations = async ({
 
   switch (emailEvent) {
     case EmailEvent.CONNECT_INTEGRATIONS:
-      result = await prepareConnectIntegrationsVars(emailContext);
+      result = await getConnectIntegrationsVars(emailContext);
       break;
 
     case EmailEvent.CREATE_EVENT_COORDINATOR:
-      result = await prepareCreateEventCoordinatorVars(emailContext);
+      result = await getCreateEventCoordinatorVars(emailContext);
       break;
 
     case EmailEvent.LOGIN_LINK:
-      result = await prepareLoginLinkVars(emailContext);
+      result = await getLoginLinkVars(emailContext);
       break;
 
     case EmailEvent.PAYMENT_RECEIPT:
-      result = await preparePaymentReceiptVars(emailContext);
+      result = await getPaymentReceiptVars(emailContext);
       break;
 
     default:

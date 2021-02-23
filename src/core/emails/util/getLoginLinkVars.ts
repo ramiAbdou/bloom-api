@@ -12,7 +12,7 @@ export interface LoginLinkEmailVars {
   user: Pick<User, 'email' | 'firstName'>;
 }
 
-const prepareLoginLinkVars = async (
+const getLoginLinkVars = async (
   context: EmailContext
 ): Promise<LoginLinkEmailVars[]> => {
   const { email, loginUrl } = context as LoginLinkEmailContext;
@@ -27,4 +27,4 @@ const prepareLoginLinkVars = async (
   return variables;
 };
 
-export default prepareLoginLinkVars;
+export default getLoginLinkVars;

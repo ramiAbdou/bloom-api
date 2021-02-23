@@ -19,7 +19,7 @@ export interface PaymentReceiptEmailVars {
   user: User;
 }
 
-const preparePaymentReceiptVars = async (
+const getPaymentReceiptVars = async (
   context: EmailContext
 ): Promise<PaymentReceiptEmailVars[]> => {
   const {
@@ -50,4 +50,4 @@ const preparePaymentReceiptVars = async (
   return variables;
 };
 
-export default preparePaymentReceiptVars;
+export default getPaymentReceiptVars;

@@ -19,7 +19,7 @@ export interface ConnectIntegrationsEmailVars {
   user: Pick<User, 'email' | 'firstName'>;
 }
 
-const prepareConnectIntegrationsVars = async (
+const getConnectIntegrationsVars = async (
   context: EmailContext
 ): Promise<ConnectIntegrationsEmailVars[]> => {
   const {
@@ -72,4 +72,4 @@ const prepareConnectIntegrationsVars = async (
   return variables;
 };
 
-export default prepareConnectIntegrationsVars;
+export default getConnectIntegrationsVars;
