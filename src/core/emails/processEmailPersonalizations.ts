@@ -33,27 +33,27 @@ const formatPersonalizations = (
     });
 };
 
-export const prepareEmailPersonalizations = async ({
+export const processEmailPersonalizations = async ({
   emailContext,
   emailEvent
 }: SendEmailsArgs): Promise<FormatPersonalizationData[][]> => {
-  let result: EmailVars[] = [];
+  let vars: EmailVars[] = [];
 
   switch (emailEvent) {
     case EmailEvent.CONNECT_INTEGRATIONS:
-      result = await getConnectIntegrationsVars(emailContext);
+      vars = await getConnectIntegrationsVars(emailContext);
       break;
 
     case EmailEvent.CREATE_EVENT_COORDINATOR:
-      result = await getCreateEventCoordinatorVars(emailContext);
+      vars = await getCreateEventCoordinatorVars(emailContext);
       break;
 
     case EmailEvent.LOGIN_LINK:
-      result = await getLoginLinkVars(emailContext);
+      vars = await getLoginLinkVars(emailContext);
       break;
 
     case EmailEvent.PAYMENT_RECEIPT:
-      result = await getPaymentReceiptVars(emailContext);
+      vars = await getPaymentReceiptVars(emailContext);
       break;
 
     default:
@@ -63,10 +63,10 @@ export const prepareEmailPersonalizations = async ({
       });
   }
 
-  const personalizations = formatPersonalizations(result);
+  const personalizations = formatPersonalizations(vars);
   const chunkedPersonalizations = splitArrayIntoChunks(personalizations, 1000);
 
   return chunkedPersonalizations;
 };
 
-export default prepareEmailPersonalizations;
+export default processEmailPersonalizations;

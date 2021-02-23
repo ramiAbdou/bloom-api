@@ -54,11 +54,6 @@ const createEvent = async (
     emailEvent: EmailEvent.CREATE_EVENT_COORDINATOR
   });
 
-  // await updateGoogleCalendarEventId({
-  //   eventId: event.id,
-  //   googleCalendarEventId: googleCalendarEvent.id
-  // });
-
   return event;
 };
 

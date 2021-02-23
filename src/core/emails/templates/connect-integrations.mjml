@@ -12,7 +12,7 @@
         <mj-raw>{{#each details}}</mj-raw>
         <mj-text padding-bottom="8px">&bull; {{ this.key }}: {{ this.value }}</mj-text>
         <mj-raw>{{/each}}</mj-raw>
-        <mj-button href="{{ integrationsUrl }}" padding-top="8px">See All Integrations</mj-button>
+        <mj-button href="{{ integrationsUrl }}" padding-top="8px">View All Integrations</mj-button>
       </mj-column>
     </mj-section>
     <mj-include path="./footer.mjml" />

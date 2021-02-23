@@ -2,30 +2,34 @@ import BloomManager from '@core/db/BloomManager';
 import { Community, Event, User } from '@entities/entities';
 import { EmailContext } from '../emails.types';
 
-export interface CreateEventCoordinatorContext {
+export interface CreateEventInviteesContext {
   communityId: string;
-  coordinatorId: string;
   eventId: string;
+  memberIds: string[];
 }
 
-export interface CreateEventCoordinatorVars {
+export interface CreateEventInviteesVars {
   community: Community;
   event: Event;
   user: User;
 }
 
-const getCreateEventCoordinatorVars = async (
+const getCreateEventInviteesVars = async (
   context: EmailContext
-): Promise<CreateEventCoordinatorVars[]> => {
+): Promise<CreateEventInviteesVars[]> => {
   const {
     communityId,
-    coordinatorId,
-    eventId
-  } = context as CreateEventCoordinatorContext;
+    eventId,
+    memberIds
+  } = context as CreateEventInviteesContext;
 
   const bm = new BloomManager();
 
-  const [community, event, user]: [Community, Event, User] = await Promise.all([
+  const [community, event, users]: [
+    Community,
+    Event,
+    User[]
+  ] = await Promise.all([
     bm.findOne(Community, { id: communityId }, { fields: ['name'] }),
     bm.findOne(
       Event,
@@ -34,18 +38,18 @@ const getCreateEventCoordinatorVars = async (
         fields: ['endTime', 'privacy', 'startTime', 'summary', 'title']
       }
     ),
-    bm.findOne(
+    bm.find(
       User,
-      { members: { id: coordinatorId } },
+      { members: { id: memberIds } },
       { fields: ['email', 'firstName'] }
     )
   ]);
 
-  const variables: CreateEventCoordinatorVars[] = [{ community, event, user }];
-
-  console.log(variables);
+  const variables: CreateEventInviteesVars[] = users.map((user: User) => {
+    return { community, event, user };
+  });
 
   return variables;
 };
 
-export default getCreateEventCoordinatorVars;
+export default getCreateEventInviteesVars;

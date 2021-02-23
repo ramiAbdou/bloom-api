@@ -10,10 +10,12 @@
         <mj-include path="./hi.mjml" />
         <mj-text padding-bottom="16px">You created {{ event.title }} in {{ community.name }}. Please see the event details below.</mj-text>
         <mj-text padding-bottom="4px">Title: {{ event.title }}</mj-text>
-        <mj-text padding-bottom="4px">When: {{ formatDate event.startTime "MMMM D, YYYY" "-0800" }} - {{ formatDate event.endTime "MMMM D, YYYY" "-0800" }}</mj-text>
-        <mj-text padding-bottom="4px">Privacy: {{ event.private }}</mj-text>
-        <mj-text padding-bottom="16px">Description: {{ event.description }}</mj-text>
-        <mj-button href="{{ event.eventUrl }}" padding-top="16px">Go to Event</mj-button>
+        <mj-text padding-bottom="4px">When: {{ formatDate event.startTime "MMM D, YYYY @ h:mm A" "-0800" }} - {{ formatDate event.endTime "MMM D, YYYY @ h:mm A" "-0800" }}</mj-text>
+        <mj-text padding-bottom="4px">Privacy: {{ event.privacy }}</mj-text>
+        <mj-raw>{{#if event.summary}}</mj-raw>
+        <mj-text padding-bottom="4px">Summary: {{ event.summary }}</mj-text>
+        <mj-raw>{{/if}}</mj-raw>
+        <mj-button href="{{ event.eventUrl }}" padding-top="16px">View Event</mj-button>
       </mj-column>
     </mj-section>
     <mj-include path="./footer.mjml" />

@@ -7,6 +7,7 @@ import {
   CreateEventCoordinatorContext,
   CreateEventCoordinatorVars
 } from './util/getCreateEventCoordinatorVars';
+import { CreateEventInviteesContext } from './util/getCreateEventInviteesVars';
 import {
   LoginLinkEmailContext,
   LoginLinkEmailVars
@@ -24,6 +25,7 @@ export interface FormatPersonalizationData {
 export type EmailContext =
   | ConnectIntegrationsEmailContext
   | CreateEventCoordinatorContext
+  | CreateEventInviteesContext
   | LoginLinkEmailContext
   | PaymentReceiptEmailContext;
 

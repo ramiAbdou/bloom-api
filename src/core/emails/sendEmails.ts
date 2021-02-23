@@ -4,8 +4,8 @@ import logger from '@util/logger';
 import { SendEmailsArgs } from './emails.types';
 import {
   FormatPersonalizationData,
-  prepareEmailPersonalizations
-} from './emails.util';
+  processEmailPersonalizations
+} from './processEmailPersonalizations';
 
 interface SendEmailsBatch extends SendEmailsArgs {
   personalizations: FormatPersonalizationData[];
@@ -40,7 +40,7 @@ const sendEmails = async (args: SendEmailsArgs) => {
   // out manually each time.
   if (!isProduction) return;
 
-  const chunkedPersonalizations = await prepareEmailPersonalizations(args);
+  const chunkedPersonalizations = await processEmailPersonalizations(args);
 
   await Promise.all(
     chunkedPersonalizations.map(

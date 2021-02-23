@@ -15,7 +15,7 @@
         </mj-text>
         <mj-text> Date of Payment: {{ formatDate payment.createdAt "MMMM D, YYYY @ h:mm A" "-0800" }}
         </mj-text>
-        <mj-button href="{{ payment.stripeInvoiceUrl }}" padding-top="16px">See Payment Receipt</mj-button>
+        <mj-button href="{{ payment.stripeInvoiceUrl }}" padding-top="16px">View Payment Receipt</mj-button>
       </mj-column>
     </mj-section>
     <mj-include path="./footer.mjml" />
