@@ -40,7 +40,7 @@ const updateEvent = async ({
     { flushEvent: FlushEvent.UPDATE_EVENT }
   );
 
-  emitGoogleEvent(GoogleEvent.UPDATE_GOOGLE_CALENDAR_EVENT, {
+  emitGoogleEvent(GoogleEvent.UPDATE_CALENDAR_EVENT, {
     eventId
   });
 

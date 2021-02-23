@@ -1,12 +1,19 @@
 import { BusEvent, EmailEvent } from '@util/events';
-import { EmailArgs } from '../emails/emails.types';
+import { EmailContext } from '../emails/emails.types';
 import eventBus from './eventBus';
+
+interface EmitEmailEventOptions {
+  delay?: number; // In ms.
+}
 
 const emitEmailEvent = (
   emailEvent: EmailEvent,
-  args: Omit<EmailArgs, 'emailEvent'>
+  emailContext: EmailContext,
+  options?: EmitEmailEventOptions
 ) => {
-  eventBus.emit(BusEvent.EMAIL_EVENT, { ...args, emailEvent });
+  setTimeout(() => {
+    eventBus.emit(BusEvent.EMAIL_EVENT, { emailContext, emailEvent });
+  }, options?.delay ?? 0);
 };
 
 export default emitEmailEvent;

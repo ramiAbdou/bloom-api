@@ -27,7 +27,7 @@ const createGoogleCalendarEvent = async (
     });
 
     logger.log({
-      event: GoogleEvent.CREATE_GOOGLE_CALENDAR_EVENT,
+      event: GoogleEvent.CREATE_CALENDAR_EVENT,
       level: 'INFO'
     });
 
@@ -35,7 +35,7 @@ const createGoogleCalendarEvent = async (
   } catch (e) {
     logger.log({
       error: e,
-      event: GoogleEvent.CREATE_GOOGLE_CALENDAR_EVENT,
+      event: GoogleEvent.CREATE_CALENDAR_EVENT,
       level: 'ERROR'
     });
 

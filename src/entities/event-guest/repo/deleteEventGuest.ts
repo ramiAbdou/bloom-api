@@ -30,7 +30,7 @@ const deleteEventGuest = async (
     { flushEvent: FlushEvent.DELETE_EVENT_GUEST }
   );
 
-  emitGoogleEvent(GoogleEvent.DELETE_GOOGLE_CALENDAR_EVENT_ATTENDEE, {
+  emitGoogleEvent(GoogleEvent.DELETE_CALENDAR_EVENT_ATTENDEE, {
     eventId,
     guestId: guest.id
   });

@@ -1,0 +1,18 @@
+<mjml>
+  <mj-head>
+    <mj-include path="./attributes.mjml" />
+  </mj-head>
+  <mj-body background-color="#FFFFFF">
+    <mj-include path="./header.mjml" />
+    <mj-section background-color="#E0E0E0" border-radius="8px" padding="1px">
+      <mj-column background-color="#FFFFFF" border-radius="8px" padding="8px 8px 16px 8px">
+        <mj-include path="./hi.mjml" />
+        <mj-text padding-bottom="16px">You've RSVP'd to the upcoming event {{ event.title }}.</mj-text>
+        <mj-text padding-bottom="16px">We'll send you a reminder 1 day before the event and 1 hour before the event. We've added the event to your Google Calendar as well.</mj-text>
+        <mj-text>You will be able to join the event up to 10 minutes before the event.</mj-text>
+        <mj-button href="{{ event.eventUrl }}" padding-top="16px">View Event</mj-button>
+      </mj-column>
+    </mj-section>
+    <mj-include path="./footer.mjml" />
+  </mj-body>
+</mjml>

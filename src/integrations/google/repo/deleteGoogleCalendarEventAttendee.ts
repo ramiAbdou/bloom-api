@@ -40,7 +40,7 @@ const deleteGoogleCalendarEventAttendee = async (
     });
 
     logger.log({
-      event: GoogleEvent.DELETE_GOOGLE_CALENDAR_EVENT_ATTENDEE,
+      event: GoogleEvent.DELETE_CALENDAR_EVENT_ATTENDEE,
       level: 'INFO'
     });
 
@@ -48,7 +48,7 @@ const deleteGoogleCalendarEventAttendee = async (
   } catch (e) {
     logger.log({
       error: e,
-      event: GoogleEvent.DELETE_GOOGLE_CALENDAR_EVENT_ATTENDEE,
+      event: GoogleEvent.DELETE_CALENDAR_EVENT_ATTENDEE,
       level: 'ERROR'
     });
 

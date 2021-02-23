@@ -6,6 +6,7 @@ import { EmailVars, SendEmailsArgs } from './emails.types';
 import getConnectIntegrationsVars from './util/getConnectIntegrationsVars';
 import getCreateEventCoordinatorVars from './util/getCreateEventCoordinatorVars';
 import getCreateEventInviteesVars from './util/getCreateEventInviteesVars';
+import getEventRsvpVars from './util/getEventRsvpVars';
 import getLoginLinkVars from './util/getLoginLinkVars';
 import getPaymentReceiptVars from './util/getPaymentReceiptVars';
 
@@ -51,6 +52,10 @@ export const processEmailPersonalizations = async ({
 
     case EmailEvent.CREATE_EVENT_INVITEES:
       vars = await getCreateEventInviteesVars(emailContext);
+      break;
+
+    case EmailEvent.EVENT_RSVP:
+      vars = await getEventRsvpVars(emailContext);
       break;
 
     case EmailEvent.LOGIN_LINK:

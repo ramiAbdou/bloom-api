@@ -3,8 +3,9 @@ import { FilterQuery } from '@mikro-orm/core';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import emitEmailEvent from '@core/events/emitEmailEvent';
 import User from '@entities/user/User';
-import { FlushEvent, GoogleEvent } from '@util/events';
+import { EmailEvent, FlushEvent, GoogleEvent } from '@util/events';
 import emitGoogleEvent from '../../../core/events/emitGoogleEvent';
 import EventGuest from '../EventGuest';
 
@@ -62,7 +63,9 @@ const createEventGuest = async (
     { flushEvent: FlushEvent.CREATE_EVENT_GUEST, populate: ['member.user'] }
   );
 
-  emitGoogleEvent(GoogleEvent.ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE, {
+  emitEmailEvent(EmailEvent.EVENT_RSVP, { guestId: guest.id }, { delay: 5000 });
+
+  emitGoogleEvent(GoogleEvent.ADD_CALENDAR_EVENT_ATTENDEE, {
     eventId,
     guestId: guest.id
   });

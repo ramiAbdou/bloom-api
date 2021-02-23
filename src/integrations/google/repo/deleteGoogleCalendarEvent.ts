@@ -17,7 +17,7 @@ const deleteGoogleCalendarEvent = async (eventId: string): Promise<boolean> => {
     });
 
     logger.log({
-      event: GoogleEvent.DELETE_GOOGLE_CALENDAR_EVENT,
+      event: GoogleEvent.DELETE_CALENDAR_EVENT,
       level: 'INFO'
     });
 
@@ -25,7 +25,7 @@ const deleteGoogleCalendarEvent = async (eventId: string): Promise<boolean> => {
   } catch (e) {
     logger.log({
       error: e,
-      event: GoogleEvent.DELETE_GOOGLE_CALENDAR_EVENT,
+      event: GoogleEvent.DELETE_CALENDAR_EVENT,
       level: 'ERROR'
     });
 

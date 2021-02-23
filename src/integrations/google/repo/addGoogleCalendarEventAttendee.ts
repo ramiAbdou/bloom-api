@@ -36,7 +36,7 @@ const addGoogleCalendarEventAttendee = async (
     });
 
     logger.log({
-      event: GoogleEvent.ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE,
+      event: GoogleEvent.ADD_CALENDAR_EVENT_ATTENDEE,
       level: 'INFO'
     });
 
@@ -44,7 +44,7 @@ const addGoogleCalendarEventAttendee = async (
   } catch (e) {
     logger.log({
       error: e,
-      event: GoogleEvent.ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE,
+      event: GoogleEvent.ADD_CALENDAR_EVENT_ATTENDEE,
       level: 'ERROR'
     });
 

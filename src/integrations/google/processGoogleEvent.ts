@@ -29,7 +29,7 @@ const processGoogleEvent = async ({
   ]);
 
   if (
-    googleEvent === GoogleEvent.ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE &&
+    googleEvent === GoogleEvent.ADD_CALENDAR_EVENT_ATTENDEE &&
     event &&
     guest
   ) {
@@ -42,7 +42,7 @@ const processGoogleEvent = async ({
     return;
   }
 
-  if (googleEvent === GoogleEvent.CREATE_GOOGLE_CALENDAR_EVENT) {
+  if (googleEvent === GoogleEvent.CREATE_CALENDAR_EVENT) {
     await bm.em.populate(event, ['community']);
 
     const googleCalendarEvent = await createGoogleCalendarEvent({
@@ -61,17 +61,17 @@ const processGoogleEvent = async ({
     });
   }
 
-  if (googleEvent === GoogleEvent.DELETE_GOOGLE_CALENDAR_EVENT) {
+  if (googleEvent === GoogleEvent.DELETE_CALENDAR_EVENT) {
     await deleteGoogleCalendarEvent(event.googleCalendarEventId);
   }
 
-  if (googleEvent === GoogleEvent.DELETE_GOOGLE_CALENDAR_EVENT_ATTENDEE) {
+  if (googleEvent === GoogleEvent.DELETE_CALENDAR_EVENT_ATTENDEE) {
     await deleteGoogleCalendarEventAttendee(event.googleCalendarEventId, {
       email: guest.email
     });
   }
 
-  if (googleEvent === GoogleEvent.UPDATE_GOOGLE_CALENDAR_EVENT) {
+  if (googleEvent === GoogleEvent.UPDATE_CALENDAR_EVENT) {
     await updateGoogleCalendarEvent(event.googleCalendarEventId, {
       description: event.description,
       summary: event.title,

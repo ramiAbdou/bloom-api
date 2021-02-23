@@ -5,13 +5,13 @@ import BloomManager from '@core/db/BloomManager';
 import { Community, CommunityIntegrations, User } from '@entities/entities';
 import { EmailContext } from '../emails.types';
 
-export interface ConnectIntegrationsEmailContext {
+export interface ConnectIntegrationsContext {
   brand: IntegrationsBrand;
   communityId?: string;
   urlName?: string;
 }
 
-export interface ConnectIntegrationsEmailVars {
+export interface ConnectIntegrationsVars {
   brand: IntegrationsBrand;
   community: Pick<Community, 'name'>;
   details: KeyValue[];
@@ -21,12 +21,8 @@ export interface ConnectIntegrationsEmailVars {
 
 const getConnectIntegrationsVars = async (
   context: EmailContext
-): Promise<ConnectIntegrationsEmailVars[]> => {
-  const {
-    brand,
-    communityId,
-    urlName
-  } = context as ConnectIntegrationsEmailContext;
+): Promise<ConnectIntegrationsVars[]> => {
+  const { brand, communityId, urlName } = context as ConnectIntegrationsContext;
 
   const bm = new BloomManager();
 
@@ -65,7 +61,7 @@ const getConnectIntegrationsVars = async (
 
   const integrationsUrl = `${APP.CLIENT_URL}/${community.urlName}/integrations`;
 
-  const variables: ConnectIntegrationsEmailVars[] = users.map((user: User) => {
+  const variables: ConnectIntegrationsVars[] = users.map((user: User) => {
     return { brand, community, details, integrationsUrl, user };
   });
 

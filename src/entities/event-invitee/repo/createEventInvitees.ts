@@ -13,6 +13,8 @@ const createEventInvitees = async (
   { eventId, memberIds }: CreateEventInviteesArgs,
   { communityId }: Pick<GQLContext, 'communityId'>
 ) => {
+  if (!memberIds.length) return [];
+
   const bm = new BloomManager();
 
   const invitees: EventInvitee[] = memberIds.map((memberId: string) => {
@@ -22,7 +24,9 @@ const createEventInvitees = async (
   await bm.flush({ flushEvent: FlushEvent.CREATE_EVENT_INVITEES });
 
   emitEmailEvent(EmailEvent.CREATE_EVENT_INVITEES, {
-    emailContext: { communityId, eventId, memberIds }
+    communityId,
+    eventId,
+    memberIds
   });
 
   return invitees;

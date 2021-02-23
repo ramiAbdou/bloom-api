@@ -24,7 +24,8 @@ const updateMailchimpListId = async (
   );
 
   emitEmailEvent(EmailEvent.CONNECT_INTEGRATIONS, {
-    emailContext: { brand: IntegrationsBrand.MAILCHIMP, communityId }
+    brand: IntegrationsBrand.MAILCHIMP,
+    communityId
   });
 
   return integrations;

@@ -54,10 +54,12 @@ const createEvent = async (
   );
 
   emitEmailEvent(EmailEvent.CREATE_EVENT_COORDINATOR, {
-    emailContext: { communityId, coordinatorId: memberId, eventId: event.id }
+    communityId,
+    coordinatorId: memberId,
+    eventId: event.id
   });
 
-  emitGoogleEvent(GoogleEvent.CREATE_GOOGLE_CALENDAR_EVENT, {
+  emitGoogleEvent(GoogleEvent.CREATE_CALENDAR_EVENT, {
     eventId: event.id
   });
 

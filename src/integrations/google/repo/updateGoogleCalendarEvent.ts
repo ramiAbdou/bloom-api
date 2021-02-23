@@ -26,7 +26,7 @@ const updateGoogleCalendarEvent = async (
     });
 
     logger.log({
-      event: GoogleEvent.UPDATE_GOOGLE_CALENDAR_EVENT,
+      event: GoogleEvent.UPDATE_CALENDAR_EVENT,
       level: 'INFO'
     });
 
@@ -34,7 +34,7 @@ const updateGoogleCalendarEvent = async (
   } catch (e) {
     logger.log({
       error: e,
-      event: GoogleEvent.UPDATE_GOOGLE_CALENDAR_EVENT,
+      event: GoogleEvent.UPDATE_CALENDAR_EVENT,
       level: 'ERROR'
     });
 
