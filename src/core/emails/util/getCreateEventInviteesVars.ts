@@ -10,8 +10,11 @@ export interface CreateEventInviteesContext {
 
 export interface CreateEventInviteesVars {
   community: Community;
-  event: Event;
-  user: User;
+  event: Pick<
+    Event,
+    'endTime' | 'eventUrl' | 'privacy' | 'startTime' | 'summary' | 'title'
+  >;
+  user: Pick<User, 'email' | 'firstName'>;
 }
 
 const getCreateEventInviteesVars = async (
@@ -34,10 +37,7 @@ const getCreateEventInviteesVars = async (
     bm.findOne(
       Event,
       { id: eventId },
-      {
-        fields: ['endTime', 'privacy', 'startTime', 'summary', 'title'],
-        populate: ['community']
-      }
+      { fields: ['endTime', 'privacy', 'startTime', 'summary', 'title'] }
     ),
     bm.find(
       User,
@@ -46,11 +46,11 @@ const getCreateEventInviteesVars = async (
     )
   ]);
 
-  const variables: CreateEventInviteesVars[] = users.map((user: User) => {
-    return { community, event, user };
-  });
+  const eventUrl = await event.eventUrl;
 
-  // console.log(variables);
+  const variables: CreateEventInviteesVars[] = users.map((user: User) => {
+    return { community, event: { ...event, eventUrl }, user };
+  });
 
   return variables;
 };

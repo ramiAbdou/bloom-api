@@ -44,13 +44,7 @@ const createEvent = async (
 ): Promise<Event> => {
   const event: Event = await new BloomManager().createAndFlush(
     Event,
-    {
-      ...args,
-      community: communityId,
-      invitees: memberIdsToInvite.map((memberIdToInvite: string) => ({
-        member: memberIdToInvite
-      }))
-    },
+    { ...args, community: communityId },
     { flushEvent: FlushEvent.CREATE_EVENT }
   );
 
