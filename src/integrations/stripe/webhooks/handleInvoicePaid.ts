@@ -2,10 +2,10 @@ import Stripe from 'stripe';
 
 import BloomManager from '@core/db/BloomManager';
 import { PaymentReceiptEmailContext } from '@core/emails/util/preparePaymentReceiptVars';
-import eventBus from '@core/eventBus';
+import eventBus from '@core/events/eventBus';
 import { Community, Member, MemberPayment } from '@entities/entities';
 import createMemberPayment from '@entities/member-payment/repo/createMemberPayment';
-import { EmailEvent, MiscEvent } from '@util/events';
+import { EmailEvent, BusEvent } from '@util/events';
 import { stripe } from '../Stripe.util';
 
 /**
@@ -50,7 +50,7 @@ const handleInvoicePaid = async (event: Stripe.Event) => {
     stripeAccountId
   };
 
-  eventBus.emit(MiscEvent.SEND_EMAIL, {
+  eventBus.emit(BusEvent.EMAIL_EVENT, {
     emailContext,
     emailEvent: EmailEvent.PAYMENT_RECEIPT
   });

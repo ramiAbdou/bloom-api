@@ -2,7 +2,7 @@ import { isProduction } from '@constants';
 import { EmailEvent } from '@util/events';
 import logger from '@util/logger';
 import { splitArrayIntoChunks } from '@util/util';
-import { EmailsVars, SendEmailsArgs } from './emails.types';
+import { EmailVars, SendEmailsArgs } from './emails.types';
 import prepareConnectIntegrationsVars from './util/prepareConnectIntegrationsVars';
 import prepareCreateEventCoordinatorVars from './util/prepareCreateEventCoordinatorVars';
 import prepareLoginLinkVars from './util/prepareLoginLinkVars';
@@ -22,13 +22,13 @@ export interface FormatPersonalizationData {
  * @param variables Variables for an email template.
  */
 const formatPersonalizations = (
-  variables: EmailsVars[]
+  variables: EmailVars[]
 ): FormatPersonalizationData[] => {
   return variables
-    .filter((vars: EmailsVars) => {
+    .filter((vars: EmailVars) => {
       return !!isProduction || vars.user.email === 'rami@bl.community';
     })
-    .map((vars: EmailsVars) => {
+    .map((vars: EmailVars) => {
       return { dynamicTemplateData: vars, to: { email: vars.user.email } };
     });
 };
@@ -37,7 +37,7 @@ export const prepareEmailPersonalizations = async ({
   emailContext,
   emailEvent
 }: SendEmailsArgs): Promise<FormatPersonalizationData[][]> => {
-  let result: EmailsVars[] = [];
+  let result: EmailVars[] = [];
 
   switch (emailEvent) {
     case EmailEvent.CONNECT_INTEGRATIONS:

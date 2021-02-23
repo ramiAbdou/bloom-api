@@ -1,6 +1,6 @@
 import { calendar_v3 } from 'googleapis';
 
-import { MiscEvent } from '@util/events';
+import { GoogleEvent } from '@util/events';
 import logger from '@util/logger';
 import { eventsCalendar } from '../Google.util';
 
@@ -40,7 +40,7 @@ const deleteGoogleCalendarEventAttendee = async (
     });
 
     logger.log({
-      event: MiscEvent.DELETE_GOOGLE_CALENDAR_EVENT_ATTENDEE,
+      event: GoogleEvent.DELETE_GOOGLE_CALENDAR_EVENT_ATTENDEE,
       level: 'INFO'
     });
 
@@ -48,7 +48,7 @@ const deleteGoogleCalendarEventAttendee = async (
   } catch (e) {
     logger.log({
       error: e,
-      event: MiscEvent.DELETE_GOOGLE_CALENDAR_EVENT_ATTENDEE,
+      event: GoogleEvent.DELETE_GOOGLE_CALENDAR_EVENT_ATTENDEE,
       level: 'ERROR'
     });
 

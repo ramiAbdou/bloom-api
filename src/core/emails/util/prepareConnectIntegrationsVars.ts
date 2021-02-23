@@ -3,7 +3,7 @@ import { FilterQuery } from '@mikro-orm/core';
 import { APP, IntegrationsBrand, KeyValue } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { Community, CommunityIntegrations, User } from '@entities/entities';
-import { EmailsContext } from '../emails.types';
+import { EmailContext } from '../emails.types';
 
 export interface ConnectIntegrationsEmailContext {
   brand: IntegrationsBrand;
@@ -20,7 +20,7 @@ export interface ConnectIntegrationsEmailVars {
 }
 
 const prepareConnectIntegrationsVars = async (
-  context: EmailsContext
+  context: EmailContext
 ): Promise<ConnectIntegrationsEmailVars[]> => {
   const {
     brand,

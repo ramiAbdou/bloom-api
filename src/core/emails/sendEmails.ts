@@ -1,6 +1,5 @@
 import { isProduction } from '@constants';
 import sg, { MailDataRequired } from '@sendgrid/mail';
-import { MiscEvent } from '@util/events';
 import logger from '@util/logger';
 import { SendEmailsArgs } from './emails.types';
 import {
@@ -24,7 +23,6 @@ const sendEmailsBatch = async (args: SendEmailsBatch) => {
   } catch (e) {
     logger.log({
       error: `Failed to send SendGrid mail: ${e.stack}`,
-      event: MiscEvent.EMAIL_FAILED,
       level: 'ERROR'
     });
   }

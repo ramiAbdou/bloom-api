@@ -1,6 +1,6 @@
 import BloomManager from '@core/db/BloomManager';
 import User from '@entities/user/User';
-import { EmailsContext } from '../emails.types';
+import { EmailContext } from '../emails.types';
 
 export interface LoginLinkEmailContext {
   email: string;
@@ -13,7 +13,7 @@ export interface LoginLinkEmailVars {
 }
 
 const prepareLoginLinkVars = async (
-  context: EmailsContext
+  context: EmailContext
 ): Promise<LoginLinkEmailVars[]> => {
   const { email, loginUrl } = context as LoginLinkEmailContext;
 

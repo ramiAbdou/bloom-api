@@ -1,8 +1,8 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import { APP } from '@constants';
-import eventBus from '@core/eventBus';
-import { EmailEvent, MiscEvent } from '@util/events';
+import eventBus from '@core/events/eventBus';
+import { BusEvent, EmailEvent } from '@util/events';
 import URLBuilder from '@util/URLBuilder';
 import getLoginError, { LoginError } from './getLoginError';
 import refreshToken from './refreshToken';
@@ -40,7 +40,7 @@ const sendLoginLink = async ({
     APP.CLIENT_URL + (pathname ?? '')
   ).addParam('token', token).url;
 
-  eventBus.emit(MiscEvent.SEND_EMAIL, {
+  eventBus.emit(BusEvent.EMAIL_EVENT, {
     emailContext: { email, loginUrl },
     emailEvent: EmailEvent.LOGIN_LINK
   });

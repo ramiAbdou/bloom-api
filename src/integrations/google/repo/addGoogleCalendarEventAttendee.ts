@@ -1,6 +1,6 @@
 import { calendar_v3 } from 'googleapis';
 
-import { MiscEvent } from '@util/events';
+import { GoogleEvent } from '@util/events';
 import logger from '@util/logger';
 import { eventsCalendar } from '../Google.util';
 
@@ -36,7 +36,7 @@ const addGoogleCalendarEventAttendee = async (
     });
 
     logger.log({
-      event: MiscEvent.ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE,
+      event: GoogleEvent.ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE,
       level: 'INFO'
     });
 
@@ -44,7 +44,7 @@ const addGoogleCalendarEventAttendee = async (
   } catch (e) {
     logger.log({
       error: e,
-      event: MiscEvent.ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE,
+      event: GoogleEvent.ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE,
       level: 'ERROR'
     });
 

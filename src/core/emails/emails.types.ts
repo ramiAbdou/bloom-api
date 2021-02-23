@@ -21,21 +21,21 @@ export interface FormatPersonalizationData {
   to: { email: string };
 }
 
-export type EmailsContext =
+export type EmailContext =
   | ConnectIntegrationsEmailContext
   | CreateEventCoordinatorContext
   | LoginLinkEmailContext
   | PaymentReceiptEmailContext;
 
-export type EmailsVars =
+export type EmailVars =
   | ConnectIntegrationsEmailVars
   | CreateEventCoordinatorVars
   | LoginLinkEmailVars
   | PaymentReceiptEmailVars;
 
-export interface EmailsArgs {
-  emailContext: EmailsContext;
+export interface EmailArgs {
+  emailContext: EmailContext;
   emailEvent: EmailEvent;
 }
 
-export type SendEmailsArgs = EmailsArgs;
+export type SendEmailsArgs = EmailArgs;

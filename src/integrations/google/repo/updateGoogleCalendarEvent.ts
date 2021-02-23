@@ -1,6 +1,6 @@
 import { calendar_v3 } from 'googleapis';
 
-import { MiscEvent } from '@util/events';
+import { GoogleEvent } from '@util/events';
 import logger from '@util/logger';
 import { eventsCalendar } from '../Google.util';
 
@@ -26,7 +26,7 @@ const updateGoogleCalendarEvent = async (
     });
 
     logger.log({
-      event: MiscEvent.UPDATE_GOOGLE_CALENDAR_EVENT,
+      event: GoogleEvent.UPDATE_GOOGLE_CALENDAR_EVENT,
       level: 'INFO'
     });
 
@@ -34,7 +34,7 @@ const updateGoogleCalendarEvent = async (
   } catch (e) {
     logger.log({
       error: e,
-      event: MiscEvent.UPDATE_GOOGLE_CALENDAR_EVENT,
+      event: GoogleEvent.UPDATE_GOOGLE_CALENDAR_EVENT,
       level: 'ERROR'
     });
 
