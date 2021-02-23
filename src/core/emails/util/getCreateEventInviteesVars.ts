@@ -9,7 +9,7 @@ export interface CreateEventInviteesContext {
 }
 
 export interface CreateEventInviteesVars {
-  community: Community;
+  community: Pick<Community, 'name'>;
   event: Pick<
     Event,
     'endTime' | 'eventUrl' | 'privacy' | 'startTime' | 'summary' | 'title'
@@ -33,23 +33,31 @@ const getCreateEventInviteesVars = async (
     Event,
     User[]
   ] = await Promise.all([
-    bm.findOne(Community, { id: communityId }, { fields: ['name'] }),
-    bm.findOne(
-      Event,
-      { id: eventId },
-      { fields: ['endTime', 'privacy', 'startTime', 'summary', 'title'] }
-    ),
-    bm.find(
-      User,
-      { members: { id: memberIds } },
-      { fields: ['email', 'firstName'] }
-    )
+    bm.findOne(Community, { id: communityId }),
+    bm.findOne(Event, { id: eventId }),
+    bm.find(User, { members: { id: memberIds } })
   ]);
 
-  const eventUrl = await event.eventUrl;
+  const partialCommunity: Pick<Community, 'name'> = { name: community.name };
+
+  const partialEvent: Pick<
+    Event,
+    'endTime' | 'eventUrl' | 'privacy' | 'startTime' | 'summary' | 'title'
+  > = {
+    endTime: event.endTime,
+    eventUrl: await event.eventUrl,
+    privacy: event.privacy,
+    startTime: event.startTime,
+    summary: event.summary,
+    title: event.title
+  };
 
   const variables: CreateEventInviteesVars[] = users.map((user: User) => {
-    return { community, event: { ...event, eventUrl }, user };
+    return {
+      community: partialCommunity,
+      event: partialEvent,
+      user: { email: user.email, firstName: user.firstName }
+    };
   });
 
   return variables;

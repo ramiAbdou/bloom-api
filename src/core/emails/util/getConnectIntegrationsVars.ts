@@ -61,8 +61,17 @@ const getConnectIntegrationsVars = async (
 
   const integrationsUrl = `${APP.CLIENT_URL}/${community.urlName}/integrations`;
 
+  const partialVars: Pick<
+    ConnectIntegrationsVars,
+    'brand' | 'details' | 'integrationsUrl'
+  > = {
+    brand,
+    details,
+    integrationsUrl
+  };
+
   const variables: ConnectIntegrationsVars[] = users.map((user: User) => {
-    return { brand, community, details, integrationsUrl, user };
+    return { ...partialVars, community, user };
   });
 
   return variables;

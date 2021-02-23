@@ -9,7 +9,7 @@ export interface CreateEventCoordinatorContext {
 }
 
 export interface CreateEventCoordinatorVars {
-  community: Community;
+  community: Pick<Community, 'name'>;
   event: Pick<
     Event,
     'endTime' | 'eventUrl' | 'privacy' | 'startTime' | 'summary' | 'title'
@@ -42,12 +42,22 @@ const getCreateEventCoordinatorVars = async (
     )
   ]);
 
+  const partialCommunity: Pick<Community, 'name'> = { name: community.name };
+
+  const partialEvent: Pick<
+    Event,
+    'endTime' | 'eventUrl' | 'privacy' | 'startTime' | 'summary' | 'title'
+  > = {
+    endTime: event.endTime,
+    eventUrl: await event.eventUrl,
+    privacy: event.privacy,
+    startTime: event.startTime,
+    summary: event.summary,
+    title: event.title
+  };
+
   const variables: CreateEventCoordinatorVars[] = [
-    {
-      community,
-      event: { ...event, eventUrl: await event.eventUrl },
-      user
-    }
+    { community: partialCommunity, event: partialEvent, user }
   ];
 
   return variables;

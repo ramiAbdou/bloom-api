@@ -19,15 +19,15 @@ const getEventRsvpVars = async (
   const bm = new BloomManager();
 
   const [event, guest]: [Event, EventGuest] = await Promise.all([
-    bm.findOne(Event, { guests: { id: guestId } }, { fields: ['title'] }),
-    bm.findOne(EventGuest, { id: guestId }, { fields: ['email', 'firstName'] })
+    bm.findOne(Event, { guests: { id: guestId } }),
+    bm.findOne(EventGuest, { id: guestId })
   ]);
 
   if (!guest) throw new Error('Event guest no longer exists.');
 
   const variables: GetEventRsvpVars[] = [
     {
-      event: { ...event, eventUrl: await event.eventUrl },
+      event: { eventUrl: await event.eventUrl, title: event.title },
       user: { email: guest.email, firstName: guest.firstName }
     }
   ];
