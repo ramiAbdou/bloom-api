@@ -78,11 +78,9 @@ export default class Event extends BaseEntity {
   // ## MEMBER FUNCTIONS
 
   @Field(() => String)
-  eventUrl(): Promise<string> | string {
-    return getEventUrl(
-      { eventId: this.id },
-      { communityId: this.community.id }
-    );
+  @Property({ persist: false })
+  get eventUrl(): Promise<string> | string {
+    return getEventUrl({ eventId: this.id });
   }
 
   @Field(() => String, { nullable: true })

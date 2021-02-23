@@ -10,9 +10,11 @@ export interface CreateEventCoordinatorContext {
 
 export interface CreateEventCoordinatorVars {
   community: Community;
-  event: Event;
-  eventUrl: string;
-  user: User;
+  event: Pick<
+    Event,
+    'endTime' | 'eventUrl' | 'privacy' | 'startTime' | 'summary' | 'title'
+  >;
+  user: Pick<User, 'email' | 'firstName'>;
 }
 
 const getCreateEventCoordinatorVars = async (
@@ -43,13 +45,10 @@ const getCreateEventCoordinatorVars = async (
   const variables: CreateEventCoordinatorVars[] = [
     {
       community,
-      event,
-      eventUrl: await event.eventUrl(),
+      event: { ...event, eventUrl: await event.eventUrl },
       user
     }
   ];
-
-  console.log(variables);
 
   return variables;
 };

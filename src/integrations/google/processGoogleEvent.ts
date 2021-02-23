@@ -24,8 +24,8 @@ const processGoogleEvent = async ({
   const bm = new BloomManager();
 
   const [event, guest]: [Event, EventGuest] = await Promise.all([
-    bm.findOne(Event, { id: eventId }),
-    bm.findOne(EventGuest, { id: guestId })
+    bm.findOne(Event, { id: eventId }, { filters: false }),
+    bm.findOne(EventGuest, { id: guestId }, { filters: false })
   ]);
 
   if (googleEvent === GoogleEvent.ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE) {
@@ -44,7 +44,7 @@ const processGoogleEvent = async ({
     const googleCalendarEvent = await createGoogleCalendarEvent({
       description: event.description,
       end: { dateTime: event.endTime },
-      location: await event.eventUrl(),
+      location: await event.eventUrl,
       start: { dateTime: event.startTime },
       summary: event.title,
       visibility:
