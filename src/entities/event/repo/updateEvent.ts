@@ -1,8 +1,8 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
-import eventBus from '@core/events/eventBus';
-import { BusEvent, FlushEvent, GoogleEvent } from '@util/events';
+import emitGoogleEvent from '@core/events/emitGoogleEvent';
+import { FlushEvent, GoogleEvent } from '@util/events';
 import Event, { EventPrivacy } from '../Event';
 
 @ArgsType()
@@ -40,7 +40,7 @@ const updateEvent = async ({
     { flushEvent: FlushEvent.UPDATE_EVENT }
   );
 
-  eventBus.emit(BusEvent.GOOGLE_EVENT, {
+  emitGoogleEvent({
     eventId,
     googleEvent: GoogleEvent.UPDATE_GOOGLE_CALENDAR_EVENT
   });

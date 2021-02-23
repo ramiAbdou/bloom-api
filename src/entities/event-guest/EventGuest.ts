@@ -12,8 +12,8 @@ import {
 
 import BaseCompositeEntity from '@core/db/BaseCompositeEntity';
 import cache from '@core/db/cache';
-import eventBus from '@core/events/eventBus';
-import { BusEvent, GoogleEvent, QueryEvent } from '@util/events';
+import emitGoogleEvent from '@core/events/emitGoogleEvent';
+import { GoogleEvent, QueryEvent } from '@util/events';
 import Event from '../event/Event';
 import Member from '../member/Member';
 
@@ -46,7 +46,7 @@ export default class EventGuest extends BaseCompositeEntity {
   afterCreate() {
     cache.invalidateKeys([`${QueryEvent.GET_EVENT_GUESTS}-${this.event.id}`]);
 
-    eventBus.emit(BusEvent.GOOGLE_EVENT, {
+    emitGoogleEvent({
       eventId: this.event.id,
       googleEvent: GoogleEvent.ADD_GOOGLE_CALENDAR_EVENT_ATTENDEE,
       guestId: this.id
@@ -57,7 +57,7 @@ export default class EventGuest extends BaseCompositeEntity {
   afterDelete() {
     cache.invalidateKeys([`${QueryEvent.GET_EVENT_GUESTS}-${this.event.id}`]);
 
-    eventBus.emit(BusEvent.GOOGLE_EVENT, {
+    emitGoogleEvent({
       eventId: this.event.id,
       googleEvent: GoogleEvent.DELETE_GOOGLE_CALENDAR_EVENT_ATTENDEE,
       guestId: this.id

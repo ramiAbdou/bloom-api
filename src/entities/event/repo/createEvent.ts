@@ -2,8 +2,9 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import eventBus from '@core/events/eventBus';
-import { BusEvent, EmailEvent, FlushEvent, GoogleEvent } from '@util/events';
+import emitEmailEvent from '@core/events/emitEmailEvent';
+import emitGoogleEvent from '@core/events/emitGoogleEvent';
+import { EmailEvent, FlushEvent, GoogleEvent } from '@util/events';
 import Event, { EventPrivacy } from '../Event';
 
 @ArgsType()
@@ -43,12 +44,12 @@ const createEvent = async (
     { flushEvent: FlushEvent.CREATE_EVENT, populate: ['community'] }
   );
 
-  eventBus.emit(BusEvent.GOOGLE_EVENT, {
+  emitGoogleEvent({
     eventId: event.id,
     googleEvent: GoogleEvent.CREATE_GOOGLE_CALENDAR_EVENT
   });
 
-  eventBus.emit(BusEvent.EMAIL_EVENT, {
+  emitEmailEvent({
     emailContext: { communityId, coordinatorId: memberId, eventId: event.id },
     emailEvent: EmailEvent.CREATE_EVENT_COORDINATOR
   });

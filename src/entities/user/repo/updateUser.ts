@@ -36,12 +36,14 @@ const updateUser = async (
   args: UpdateUserArgs,
   { userId }: Pick<GQLContext, 'userId'>
 ): Promise<User> => {
-  return new BloomManager().findOneAndUpdate(
+  const user: User = await new BloomManager().findOneAndUpdate(
     User,
     { id: userId },
     { ...args },
     { flushEvent: FlushEvent.UPDATE_USER }
   );
+
+  return user;
 };
 
 export default updateUser;

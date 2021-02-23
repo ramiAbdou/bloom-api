@@ -1,9 +1,6 @@
 import { EntityName, EventArgs, EventSubscriber } from '@mikro-orm/core';
 
-import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
-import { CommunityIntegrations } from '@entities/entities';
-import addToMailchimpAudience from '@integrations/mailchimp/repo/addToMailchimpAudience';
 import { QueryEvent } from '@util/events';
 import { hasKeys } from '@util/util';
 import Member, { MemberStatus } from './Member';
@@ -11,27 +8,6 @@ import Member, { MemberStatus } from './Member';
 export default class MemberSubscriber implements EventSubscriber<Member> {
   getSubscribedEntities(): EntityName<Member>[] {
     return [Member];
-  }
-
-  /**
-   * Adds a newly created member to the Mailchimp list, regardless if
-   * member's status is PENDING, INVITED or ACCEPTED.
-   */
-  async afterCreate({ entity: member }: EventArgs<Member>) {
-    const bm = new BloomManager();
-
-    const integrations: CommunityIntegrations = await bm.findOne(
-      CommunityIntegrations,
-      { community: { id: member.community.id } }
-    );
-
-    await addToMailchimpAudience({
-      email: member.user.email,
-      firstName: member.user.firstName,
-      lastName: member.user.lastName,
-      mailchimpAccessToken: integrations.mailchimpAccessToken,
-      mailchimpListId: integrations.mailchimpListId
-    });
   }
 
   async afterUpdate({ changeSet, entity: member }: EventArgs<Member>) {

@@ -7,10 +7,10 @@ import deleteGoogleCalendarEvent from '@integrations/google/repo/deleteGoogleCal
 import deleteGoogleCalendarEventAttendee from '@integrations/google/repo/deleteGoogleCalendarEventAttendee';
 import updateGoogleCalendarEvent from '@integrations/google/repo/updateGoogleCalendarEvent';
 import { GoogleEvent } from '@util/events';
-import addGoogleCalendarEventAttendee from './addGoogleCalendarEventAttendee';
-import createGoogleCalendarEvent from './createGoogleCalendarEvent';
+import addGoogleCalendarEventAttendee from './repo/addGoogleCalendarEventAttendee';
+import createGoogleCalendarEvent from './repo/createGoogleCalendarEvent';
 
-export interface ProcessGoogleEventArgs {
+export interface GoogleEventArgs {
   eventId: string;
   guestId?: string;
   googleEvent: GoogleEvent;
@@ -20,7 +20,7 @@ const processGoogleEvent = async ({
   eventId,
   guestId,
   googleEvent
-}: ProcessGoogleEventArgs) => {
+}: GoogleEventArgs) => {
   const bm = new BloomManager();
 
   const [event, guest]: [Event, EventGuest] = await Promise.all([

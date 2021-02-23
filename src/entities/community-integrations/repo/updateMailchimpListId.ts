@@ -2,8 +2,8 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext, IntegrationsBrand } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import eventBus from '@core/events/eventBus';
-import { BusEvent, EmailEvent, FlushEvent } from '@util/events';
+import emitEmailEvent from '@core/events/emitEmailEvent';
+import { EmailEvent, FlushEvent } from '@util/events';
 import CommunityIntegrations from '../CommunityIntegrations';
 
 @ArgsType()
@@ -23,7 +23,7 @@ const updateMailchimpListId = async (
     { flushEvent: FlushEvent.UPDATE_MAILCHIMP_LIST_ID }
   );
 
-  eventBus.emit(BusEvent.EMAIL_EVENT, {
+  emitEmailEvent({
     emailContext: { brand: IntegrationsBrand.MAILCHIMP, communityId },
     emailEvent: EmailEvent.CONNECT_INTEGRATIONS
   });

@@ -11,12 +11,14 @@ export default class UserSubscriber implements EventSubscriber<User> {
   }
 
   async afterUpdate({ changeSet, entity }: EventArgs<User>) {
-    const { payload } = changeSet;
     cache.invalidateKeys([`${QueryEvent.GET_USER}-${entity.id}`]);
 
     const communityId = decodeToken(entity.refreshToken)?.communityId;
 
-    if (hasKeys(payload, ['firstName', 'lastName', 'pictureUrl'])) {
+    if (
+      communityId &&
+      hasKeys(changeSet.payload, ['firstName', 'lastName', 'pictureUrl'])
+    ) {
       cache.invalidateKeys([`${QueryEvent.GET_DIRECTORY}-${communityId}`]);
     }
   }

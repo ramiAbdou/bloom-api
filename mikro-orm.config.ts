@@ -6,7 +6,6 @@ import BaseEntity from '@core/db/BaseEntity';
 import BloomManagerSubscriber from '@core/db/BloomManager.subscriber';
 import NamingStrategy from '@core/db/NamingStrategy';
 import * as entities from '@entities/entities';
-import EventGuestSubscriber from '@entities/event-guest/EventGuest.subscriber';
 import MemberSubscriber from '@entities/member/Member.subscriber';
 import UserSubscriber from '@entities/user/User.subscriber';
 
@@ -25,7 +24,6 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
   namingStrategy: NamingStrategy,
   subscribers: [
     new BloomManagerSubscriber(),
-    new EventGuestSubscriber(),
     new MemberSubscriber(),
     new UserSubscriber()
   ],

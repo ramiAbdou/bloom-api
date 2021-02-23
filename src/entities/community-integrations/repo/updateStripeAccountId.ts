@@ -1,9 +1,9 @@
 import { AuthQueryArgs, IntegrationsBrand } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import eventBus from '@core/events/eventBus';
+import emitEmailEvent from '@core/events/emitEmailEvent';
 import createStripeProducts from '@entities/member-type/repo/createStripeProducts';
 import getStripeAccountId from '@integrations/stripe/repo/getStripeAccountId';
-import { BusEvent, EmailEvent, FlushEvent } from '@util/events';
+import { EmailEvent, FlushEvent } from '@util/events';
 import CommunityIntegrations from '../CommunityIntegrations';
 
 /**
@@ -26,7 +26,7 @@ const updateStripeAccountId = async ({
     { flushEvent: FlushEvent.UPDATE_STRIPE_ACCOUNT_ID }
   );
 
-  eventBus.emit(BusEvent.EMAIL_EVENT, {
+  emitEmailEvent({
     emailContext: { brand: IntegrationsBrand.STRIPE, urlName },
     emailEvent: EmailEvent.CONNECT_INTEGRATIONS
   });
