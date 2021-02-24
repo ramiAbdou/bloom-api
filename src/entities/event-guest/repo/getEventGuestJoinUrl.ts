@@ -24,7 +24,7 @@ const getEventGuestJoinUrl = async ({
 
   const joinUrl: string = new URLBuilder(
     `${APP.CLIENT_URL}/${community?.urlName}/events/${eventId}`
-  ).addParam('joinToken', token).url;
+  ).addParam('token', token).url;
 
   return joinUrl;
 };

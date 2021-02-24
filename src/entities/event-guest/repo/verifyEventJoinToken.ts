@@ -2,8 +2,8 @@ import day from 'dayjs';
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
+import createEventAttendee from '@entities/event-attendee/repo/createEventAttendee';
 import { decodeToken } from '@util/util';
-import refreshToken from '../../user/repo/refreshToken';
 import EventGuest from '../EventGuest';
 
 @ArgsType()
@@ -20,16 +20,20 @@ const verifyEventJoinToken = async ({
   const guest: EventGuest = await new BloomManager().findOne(
     EventGuest,
     { id: guestId },
-    { populate: ['event'] }
+    { populate: ['event', 'member'] }
   );
 
-  if (guest.member) {
-    refreshToken({ email: guest.email, memberId: guest.member.id });
+  const isValid: boolean =
+    guest && day().isAfter(day(guest.event?.startTime).subtract(10, 'minute'));
+
+  if (isValid) {
+    await createEventAttendee(
+      { eventId: guest.event.id },
+      { memberId: guest.member.id, userId: guest.member.user.id }
+    );
   }
 
-  return (
-    guest && day().isAfter(day(guest.event?.startTime).subtract(10, 'minute'))
-  );
+  return isValid;
 };
 
 export default verifyEventJoinToken;

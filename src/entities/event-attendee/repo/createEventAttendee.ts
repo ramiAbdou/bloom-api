@@ -33,26 +33,26 @@ export class CreateEventAttendeeArgs {
  * @param ctx.userId - Identifier of the user.
  */
 const createEventAttendee = async (
-  { email, firstName, lastName, eventId }: CreateEventAttendeeArgs,
+  { eventId, ...args }: CreateEventAttendeeArgs,
   { memberId, userId }: Pick<GQLContext, 'memberId' | 'userId'>
 ) => {
-  const partialUser: Pick<User, 'email' | 'firstName' | 'lastName'> = email
-    ? { email, firstName, lastName }
-    : await new BloomManager().findOne(
-        User,
-        { id: userId },
-        { fields: ['email', 'firstName', 'lastName'] }
-      );
+  const user = await new BloomManager().findOne(
+    User,
+    { id: userId },
+    { fields: ['email', 'firstName', 'lastName'] }
+  );
 
-  const baseArgs: FilterQuery<EventAttendee> = {
-    email: partialUser.email,
-    event: { id: eventId },
-    member: { id: memberId }
+  const attendeeArgs: FilterQuery<EventAttendee> = {
+    email: args.email ?? user.email,
+    event: eventId,
+    firstName: args.email ?? user.firstName,
+    lastName: args.email ?? user.lastName,
+    member: memberId
   };
 
   const existingAttendee = await new BloomManager().findOne(
     EventAttendee,
-    baseArgs,
+    attendeeArgs,
     { populate: ['member.user'] }
   );
 
@@ -60,7 +60,7 @@ const createEventAttendee = async (
 
   const attendee = await new BloomManager().createAndFlush(
     EventAttendee,
-    { ...baseArgs, ...partialUser },
+    attendeeArgs,
     { flushEvent: FlushEvent.CREATE_EVENT_ATTENDEE, populate: ['member.user'] }
   );
 
