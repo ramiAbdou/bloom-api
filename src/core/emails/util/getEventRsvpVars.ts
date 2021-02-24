@@ -3,23 +3,25 @@ import { Event, EventGuest, User } from '@entities/entities';
 import { EmailContext } from '../emails.types';
 
 export interface GetEventRsvpContext {
+  eventId: string;
   guestId: string;
 }
 
 export interface GetEventRsvpVars {
-  event: Pick<Event, 'eventUrl' | 'title'>;
+  event: Pick<Event, 'title'>;
+  guest: Pick<EventGuest, 'joinUrl'>;
   user: Pick<User, 'email' | 'firstName'>;
 }
 
 const getEventRsvpVars = async (
   context: EmailContext
 ): Promise<GetEventRsvpVars[]> => {
-  const { guestId } = context as GetEventRsvpContext;
+  const { eventId, guestId } = context as GetEventRsvpContext;
 
   const bm = new BloomManager();
 
   const [event, guest]: [Event, EventGuest] = await Promise.all([
-    bm.findOne(Event, { guests: { id: guestId } }),
+    bm.findOne(Event, { id: eventId }),
     bm.findOne(EventGuest, { id: guestId })
   ]);
 
@@ -27,7 +29,8 @@ const getEventRsvpVars = async (
 
   const variables: GetEventRsvpVars[] = [
     {
-      event: { eventUrl: await event.eventUrl, title: event.title },
+      event: { title: event.title },
+      guest: { joinUrl: await guest.joinUrl },
       user: { email: guest.email, firstName: guest.firstName }
     }
   ];

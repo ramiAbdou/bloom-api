@@ -35,21 +35,21 @@ const createEventGuest = async (
   { eventId, ...args }: CreateEventGuestArgs,
   { memberId, userId }: Pick<GQLContext, 'memberId' | 'userId'>
 ) => {
-  const partialUser: Partial<User> = args.email
-    ? { ...args }
-    : await new BloomManager().findOne(
-        User,
-        { id: userId },
-        { fields: ['email', 'firstName', 'lastName'] }
-      );
+  const user = await new BloomManager().findOne(
+    User,
+    { id: userId },
+    { fields: ['email', 'firstName', 'lastName'] }
+  );
 
-  const baseArgs: FilterQuery<EventGuest> = {
-    email: partialUser.email,
-    event: { id: eventId },
-    member: { id: memberId }
+  const guestArgs: FilterQuery<EventGuest> = {
+    email: args.email ?? user.email,
+    event: eventId,
+    firstName: args.email ?? user.firstName,
+    lastName: args.email ?? user.lastName,
+    member: memberId
   };
 
-  const existingGuest = await new BloomManager().findOne(EventGuest, baseArgs);
+  const existingGuest = await new BloomManager().findOne(EventGuest, guestArgs);
 
   if (existingGuest) {
     throw new Error(
@@ -59,11 +59,15 @@ const createEventGuest = async (
 
   const guest: EventGuest = await new BloomManager().createAndFlush(
     EventGuest,
-    { ...baseArgs, ...partialUser },
+    guestArgs,
     { flushEvent: FlushEvent.CREATE_EVENT_GUEST, populate: ['member.user'] }
   );
 
-  emitEmailEvent(EmailEvent.EVENT_RSVP, { guestId: guest.id }, { delay: 5000 });
+  emitEmailEvent(
+    EmailEvent.EVENT_RSVP,
+    { eventId, guestId: guest.id },
+    { delay: 5000 }
+  );
 
   emitGoogleEvent(GoogleEvent.ADD_CALENDAR_EVENT_ATTENDEE, {
     eventId,

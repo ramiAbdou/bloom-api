@@ -1,12 +1,13 @@
 import { Response } from 'express';
+import jwt from 'jsonwebtoken';
 import { FilterQuery } from '@mikro-orm/core';
 
-import { AuthTokens } from '@constants';
+import { AuthTokens, JWT } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import createMemberRefresh from '@entities/member-refresh/repo/createMemberRefresh';
 import Member from '@entities/member/Member';
 import { FlushEvent } from '@util/events';
-import { generateTokens, setHttpOnlyTokens } from '@util/util';
+import { setHttpOnlyTokens } from '@util/util';
 import User from '../User';
 
 interface RefreshTokenArgs {
@@ -54,11 +55,16 @@ const refreshToken = async ({
     member = user.members[0];
   }
 
-  const tokens = generateTokens({
+  const payload = {
     communityId: member.community.id,
     memberId: member.id,
     userId: user.id
-  });
+  };
+
+  const tokens: AuthTokens = {
+    accessToken: jwt.sign(payload, JWT.SECRET, { expiresIn: JWT.EXPIRES_IN }),
+    refreshToken: jwt.sign(payload, JWT.SECRET)
+  };
 
   // If an Express Response object is passed in, set the HTTP only cookies.
   if (res) setHttpOnlyTokens(res, tokens);

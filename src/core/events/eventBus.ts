@@ -10,6 +10,10 @@ import { BusEvent } from '@util/events';
 import { EmailArgs } from '../emails/emails.types';
 import sendEmails from '../emails/sendEmails';
 
+export interface EmitEventOptions {
+  delay?: number; // In ms.
+}
+
 const eventBus = new EventEmitter();
 
 eventBus.on(BusEvent.EMAIL_EVENT, async (args: EmailArgs) => {

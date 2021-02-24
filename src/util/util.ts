@@ -19,20 +19,6 @@ export const decodeToken = (token: string): any => {
 };
 
 /**
- * Generates and signs both a token and refreshToken. The refreshToken does
- * not expire, but the token expires after a limited amount of time.
- */
-export const generateTokens = (
-  payload: string | object,
-  expiresIn?: number
-): AuthTokens => ({
-  accessToken: jwt.sign(payload, JWT.SECRET, {
-    expiresIn: expiresIn ?? JWT.EXPIRES_IN
-  }),
-  refreshToken: jwt.sign(payload, JWT.SECRET)
-});
-
-/**
  * Returns true if the entity has and of the keys in the given entity, even
  * if the value of the key is null.
  *

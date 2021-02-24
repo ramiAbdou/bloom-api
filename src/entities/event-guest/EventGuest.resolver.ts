@@ -11,6 +11,9 @@ import deleteEventGuest, {
 import getEventGuests, { GetEventGuestsArgs } from './repo/getEventGuests';
 import getPastEventGuests from './repo/getPastEventGuests';
 import getUpcomingEventGuests from './repo/getUpcomingEventGuests';
+import verifyEventJoinToken, {
+  VerifyEventJoinTokenArgs
+} from './repo/verifyEventJoinToken';
 
 @Resolver()
 export default class EventGuestResolver {
@@ -46,5 +49,10 @@ export default class EventGuestResolver {
   @Query(() => [EventGuest])
   async getUpcomingEventGuests(@Ctx() ctx: GQLContext): Promise<EventGuest[]> {
     return getUpcomingEventGuests(ctx);
+  }
+
+  @Mutation(() => Boolean)
+  async verifyEventJoinToken(@Args() args: VerifyEventJoinTokenArgs) {
+    return verifyEventJoinToken(args);
   }
 }

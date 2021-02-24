@@ -40,6 +40,12 @@ export default class Event extends BaseEntity {
   @Property()
   endTime: string;
 
+  @Field(() => String)
+  @Property({ persist: false })
+  get eventUrl(): Promise<string> | string {
+    return getEventUrl({ eventId: this.id });
+  }
+
   @Field({ nullable: true })
   @Property({ nullable: true })
   googleCalendarEventId?: string;
@@ -76,12 +82,6 @@ export default class Event extends BaseEntity {
   videoUrl: string;
 
   // ## MEMBER FUNCTIONS
-
-  @Field(() => String)
-  @Property({ persist: false })
-  get eventUrl(): Promise<string> | string {
-    return getEventUrl({ eventId: this.id });
-  }
 
   @Field(() => String, { nullable: true })
   async googleCalendarEventUrl(): Promise<string> {
