@@ -3,6 +3,7 @@ import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import createEventAttendee from '@entities/event-attendee/repo/createEventAttendee';
+import { ErrorType } from '@util/errors';
 import { decodeToken } from '@util/util';
 import EventGuest from '../EventGuest';
 
@@ -26,6 +27,17 @@ const verifyEventJoinToken = async ({
   const isValid: boolean =
     guest && day().isAfter(day(guest.event?.startTime).subtract(10, 'minute'));
 
+  if (
+    guest &&
+    day().isBefore(day(guest.event?.startTime).subtract(10, 'minute'))
+  ) {
+    throw new Error(ErrorType.EVENT_HASNT_STARTED);
+  }
+
+  if (guest && day().isAfter(day(guest.event?.endTime).add(10, 'minute'))) {
+    throw new Error(ErrorType.EVENT_FINISHED);
+  }
+
   if (isValid) {
     await createEventAttendee(
       { eventId: guest.event.id },
@@ -33,7 +45,7 @@ const verifyEventJoinToken = async ({
     );
   }
 
-  return isValid;
+  return !!guest;
 };
 
 export default verifyEventJoinToken;
