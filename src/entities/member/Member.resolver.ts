@@ -49,8 +49,11 @@ export default class MemberResolver {
 
   @Authorized(MemberRole.ADMIN)
   @Mutation(() => [Member])
-  async deleteMembers(@Args() args: DeleteMembersArgs): Promise<Member[]> {
-    return deleteMembers(args);
+  async deleteMembers(
+    @Args() args: DeleteMembersArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<Member[]> {
+    return deleteMembers(args, ctx);
   }
 
   @Authorized(MemberRole.OWNER)

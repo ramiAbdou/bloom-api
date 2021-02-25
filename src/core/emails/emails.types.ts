@@ -26,7 +26,15 @@ import {
   DeleteEventCoordinatorVars
 } from './util/getDeleteEventCoordinatorVars';
 import { DeleteEventGuestsVars } from './util/getDeleteEventGuestsVars';
+import {
+  DeleteMembersContext,
+  DeleteMembersVars
+} from './util/getDeleteMembersVars';
 import { EventRsvpContext, EventRsvpVars } from './util/getEventRsvpVars';
+import {
+  InviteMembersContext,
+  InviteMembersVars
+} from './util/getInviteMembersVars';
 import {
   LoginLinkEmailContext,
   LoginLinkEmailVars
@@ -50,7 +58,9 @@ export type EmailContext =
   | CreateEventInviteesContext
   | DeleteEventCoordinatorContext
   | DeleteEventGuestArgs
+  | DeleteMembersContext
   | EventRsvpContext
+  | InviteMembersContext
   | LoginLinkEmailContext
   | PaymentReceiptContext;
 
@@ -62,7 +72,9 @@ export type EmailVars =
   | CreateEventCoordinatorVars
   | DeleteEventCoordinatorVars
   | DeleteEventGuestsVars
+  | DeleteMembersVars
   | EventRsvpVars
+  | InviteMembersVars
   | LoginLinkEmailVars
   | PaymentReceiptVars;
 
