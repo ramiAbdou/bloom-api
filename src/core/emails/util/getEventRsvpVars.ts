@@ -40,7 +40,11 @@ const getEventRsvpVars = async (
   if (!guest) throw new Error('Event guest no longer exists.');
 
   const token: string = jwt.sign(
-    { event: VerifyEvent.JOIN_EVENT, guestId } as VerifiedToken,
+    {
+      event: VerifyEvent.JOIN_EVENT,
+      guestId,
+      memberId: guest.member.id
+    } as VerifiedToken,
     JWT.SECRET
   );
 
