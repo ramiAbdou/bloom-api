@@ -10,15 +10,17 @@ export class GetEventArgs {
   eventId: string;
 }
 
-const getEvent = async ({ eventId }: GetEventArgs) => {
-  return new BloomManager().findOne(
+const getEvent = async (args: GetEventArgs) => {
+  const event: Event = await new BloomManager().findOne(
     Event,
-    { id: eventId },
+    { id: args.eventId },
     {
-      cacheKey: `${QueryEvent.GET_EVENT}-${eventId}`,
+      cacheKey: `${QueryEvent.GET_EVENT}-${args.eventId}`,
       populate: ['community.owner.user']
     }
   );
+
+  return event;
 };
 
 export default getEvent;

@@ -2,10 +2,11 @@ import { ArgsType, Field, InputType } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { InviteMembersContext } from '@core/emails/util/getInviteMembersVars';
 import emitEmailEvent from '@core/events/emitEmailEvent';
+import { Community } from '@entities/entities';
 import User from '@entities/user/User';
 import { EmailEvent, FlushEvent } from '@util/events';
-import { InviteMembersContext } from '../../../core/emails/util/getInviteMembersVars';
 import Member, { MemberRole, MemberStatus } from '../Member';
 
 @InputType()
@@ -30,21 +31,18 @@ export class InviteMembersArgs {
 }
 
 /**
- * Creates new Members (and maybe Users) based on the data given.
- * Precondition: Only members who are admins can call this function.
+ * Throws error if one member has an email that already exists.
  *
- * @param {AddMemberInput[]} args.members - Data for new members to create.
+ * @param {AddMemberInput[]} args.members
  * @param {string} args.members.email
- * @param {string} args.members.firstName
- * @param {string} args.members.lastName
  * @param {string} ctx.communityId
  */
-const inviteMembers = async (
+const assertInviteMembers = async (
   args: InviteMembersArgs,
-  ctx: Pick<GQLContext, 'communityId' | 'memberId'>
-): Promise<Member[]> => {
+  ctx: Pick<GQLContext, 'communityId'>
+): Promise<void> => {
   const { members: inputs } = args;
-  const { communityId, memberId } = ctx;
+  const { communityId } = ctx;
 
   const bm = new BloomManager();
 
@@ -58,6 +56,30 @@ const inviteMembers = async (
       'At least 1 of these emails already exists in this community.'
     );
   }
+};
+
+/**
+ * Creates new Members (and maybe Users) based on the data given.
+ * Precondition: Only members who are admins can call this function.
+ *
+ * @param {AddMemberInput[]} args.members - Data for new members to create.
+ * @param {string} args.members.email
+ * @param {string} args.members.firstName
+ * @param {string} args.members.lastName
+ * @param {string} ctx.communityId
+ */
+const inviteMembers = async (
+  args: InviteMembersArgs,
+  ctx: Pick<GQLContext, 'communityId' | 'memberId'>
+): Promise<Member[]> => {
+  await assertInviteMembers(args, ctx);
+
+  const { members: inputs } = args;
+  const { communityId, memberId } = ctx;
+
+  const bm = new BloomManager();
+
+  const community = await bm.findOne(Community, { id: communityId });
 
   const members: Member[] = await Promise.all(
     inputs.map(async ({ isAdmin, email, firstName, lastName }) => {
@@ -68,9 +90,10 @@ const inviteMembers = async (
       );
 
       return bm.create(Member, {
-        community: communityId,
+        community,
         role: isAdmin ? MemberRole.ADMIN : null,
         status: MemberStatus.INVITED,
+        type: community.defaultType.id,
         user
       });
     })

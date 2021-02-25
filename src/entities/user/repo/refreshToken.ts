@@ -20,24 +20,30 @@ interface RefreshTokenArgs {
 
 /**
  * Refreshes the user's tokens and sets the HTTP only cookies if Express
- * res object is provided. If the refreshing succeeds, the tokenw il
+ * res object is provided.
+ *
+ * @param {RefreshTokenArgs} args
+ * @param {string} [args.email]
+ * @param {string} [args.memberId]
+ * @param {string} [args.rToken]
+ * @param {string} [args.res]
+ * @param {string} [args.userId]
  */
-const refreshToken = async ({
-  email,
-  memberId,
-  res,
-  rToken,
-  userId
-}: RefreshTokenArgs): Promise<AuthTokens> => {
-  let args: FilterQuery<User>;
+const refreshToken = async (args: RefreshTokenArgs): Promise<AuthTokens> => {
+  const { email, memberId, res, rToken, userId } = args;
 
-  if (userId) args = { id: userId };
-  else if (email) args = { email };
-  else if (rToken) args = { refreshToken: rToken };
+  if (!email && !memberId && !rToken && !userId) return null;
+
+  let queryArgs: FilterQuery<User>;
+
+  if (userId) queryArgs = { id: userId };
+  else if (email) queryArgs = { email };
+  else if (rToken) queryArgs = { refreshToken: rToken };
+  else if (memberId) queryArgs = { members: { id: memberId } };
 
   const bm = new BloomManager();
 
-  const user: User = await bm.findOne(User, args);
+  const user: User = await bm.findOne(User, queryArgs);
 
   // If no user found with the given arguments or a user is found and
   // the access token is expired, then exit. Also, if there is a loginToken

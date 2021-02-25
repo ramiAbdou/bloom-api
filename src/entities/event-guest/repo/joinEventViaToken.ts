@@ -4,19 +4,22 @@ import { ArgsType, Field } from 'type-graphql';
 import BloomManager from '@core/db/BloomManager';
 import createEventAttendee from '@entities/event-attendee/repo/createEventAttendee';
 import { ErrorType } from '@util/errors';
-import { decodeToken } from '@util/util';
 import EventGuest from '../EventGuest';
 
 @ArgsType()
-export class VerifyEventJoinTokenArgs {
+export class JoinEventArgs {
   @Field()
-  token: string;
+  guestId: string;
 }
 
-const verifyEventJoinToken = async ({
-  token
-}: VerifyEventJoinTokenArgs): Promise<boolean> => {
-  const guestId: string = decodeToken(token)?.guestId;
+/**
+ * @param {JoinEventArgs} args
+ * @param {string} args.guestId - ID of the EventGuest.
+ */
+const joinEventViaToken = async (args: JoinEventArgs): Promise<boolean> => {
+  const { guestId } = args;
+
+  if (!guestId) throw new Error('guestId was not supplied.');
 
   const guest: EventGuest = await new BloomManager().findOne(
     EventGuest,
@@ -48,4 +51,4 @@ const verifyEventJoinToken = async ({
   return !!guest;
 };
 
-export default verifyEventJoinToken;
+export default joinEventViaToken;

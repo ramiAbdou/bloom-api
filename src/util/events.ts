@@ -122,3 +122,8 @@ export enum TaskEvent {
   EVENT_REMINDER_1_DAY = 'EVENT_REMINDER_1_DAY',
   EVENT_REMINDER_1_HOUR = 'EVENT_REMINDER_1_HOUR'
 }
+
+export enum VerifyEvent {
+  JOIN_EVENT = 'JOIN_EVENT',
+  LOG_IN = 'LOG_IN'
+}

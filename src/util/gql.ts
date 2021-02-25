@@ -6,6 +6,12 @@ export class PopulateArgs {
   populate?: string[];
 }
 
+@ArgsType()
+export class TokenArgs {
+  @Field()
+  token: string;
+}
+
 @ObjectType()
 export class TimeSeriesData {
   @Field({ nullable: true })

@@ -1,3 +1,5 @@
+import { FilterQuery } from '@mikro-orm/core';
+
 import BloomManager from '@core/db/BloomManager';
 import { AcceptedIntoCommunityContext } from '@core/emails/util/getAcceptedIntoCommunityVars';
 import emitEmailEvent from '@core/events/emitEmailEvent';
@@ -5,7 +7,8 @@ import { EmailEvent, FlushEvent } from '@util/events';
 import Member, { MemberStatus } from '../Member';
 
 interface AcceptInvitationsArgs {
-  email: string;
+  email?: string;
+  memberIds?: string[];
 }
 
 /**
@@ -14,13 +17,18 @@ interface AcceptInvitationsArgs {
  *
  * @param {AcceptInvitationsArgs} args
  * @param {string} args.email
+ * @param {string[]} args.memberIds
  */
 const acceptInvitations = async (
   args: AcceptInvitationsArgs
 ): Promise<Member[]> => {
+  const queryArgs: FilterQuery<Member> = args.email
+    ? { user: { email: args.email } }
+    : { id: args.memberIds };
+
   const members: Member[] = await new BloomManager().findAndUpdate(
     Member,
-    { status: MemberStatus.INVITED, user: { email: args.email } },
+    { ...queryArgs, status: MemberStatus.INVITED },
     { status: MemberStatus.ACCEPTED },
     { flushEvent: FlushEvent.ACCEPT_INVITATIONS }
   );

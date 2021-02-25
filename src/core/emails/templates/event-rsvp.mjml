@@ -10,7 +10,7 @@
         <mj-text padding-bottom="16px">You've RSVP'd to the upcoming event {{ event.title }}.</mj-text>
         <mj-text padding-bottom="16px">We'll send you a reminder 1 day before the event and 1 hour before the event. We've added the event to your Google Calendar as well.</mj-text>
         <mj-text>You will be able to join the event up to 10 minutes before the event.</mj-text>
-        <mj-button href="{{ guest.joinUrl }}" padding-top="16px">Join Event</mj-button>
+        <mj-button href="{{ joinUrl }}" padding-top="16px">Join Event</mj-button>
       </mj-column>
     </mj-section>
     <mj-include path="./footer.mjml" />

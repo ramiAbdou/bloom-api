@@ -1,13 +1,12 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
+import { TokenArgs } from '@util/gql';
 import getTokens, { GetTokensArgs, GetTokensResult } from './repo/getTokens';
 import getUser, { GetUserArgs } from './repo/getUser';
 import sendLoginLink, { SendLoginLinkArgs } from './repo/sendLoginLink';
 import updateUser, { UpdateUserArgs } from './repo/updateUser';
-import verifyLoginToken, {
-  VerifyLoginTokenArgs
-} from './repo/verifyLoginToken';
+import verifyToken, { VerifiedToken } from './repo/verifyToken';
 import User from './User';
 
 @Resolver()
@@ -49,11 +48,8 @@ export default class UserResolver {
     return updateUser(args, ctx);
   }
 
-  @Query(() => Boolean)
-  async verifyLoginToken(
-    @Args() args: VerifyLoginTokenArgs,
-    @Ctx() ctx: GQLContext
-  ) {
-    return verifyLoginToken(args, ctx);
+  @Query(() => VerifiedToken)
+  async verifyToken(@Args() args: TokenArgs, @Ctx() ctx: GQLContext) {
+    return verifyToken(args, ctx);
   }
 }

@@ -4,6 +4,7 @@ import { APP } from '@constants';
 import emitEmailEvent from '@core/events/emitEmailEvent';
 import { EmailEvent } from '@util/events';
 import URLBuilder from '@util/URLBuilder';
+import { LoginLinkEmailContext } from '../../../core/emails/util/getLoginLinkVars';
 import getLoginError, { LoginError } from './getLoginError';
 import refreshToken from './refreshToken';
 
@@ -40,7 +41,10 @@ const sendLoginLink = async ({
     APP.CLIENT_URL + (pathname ?? '')
   ).addParam('token', token).url;
 
-  emitEmailEvent(EmailEvent.LOGIN_LINK, { email, loginUrl });
+  emitEmailEvent(EmailEvent.LOGIN_LINK, {
+    email,
+    loginUrl
+  } as LoginLinkEmailContext);
 };
 
 export default sendLoginLink;

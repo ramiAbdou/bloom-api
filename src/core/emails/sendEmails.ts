@@ -37,9 +37,9 @@ const sendEmailsBatch = async (args: SendEmailsBatch) => {
 const sendEmails = async (args: SendEmailsArgs) => {
   // Shouldn't send any emails in development. If needed, comment this line
   // out manually each time.
-  if (!isProduction) return;
+  // if (!isProduction) return;
 
-  // console.log('args', args);
+  console.log('args', args);
 
   const chunkedPersonalizations = await getEmailPersonalizations(args);
 

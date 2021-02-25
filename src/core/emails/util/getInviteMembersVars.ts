@@ -1,6 +1,9 @@
-import { APP } from '@constants';
+import jwt from 'jsonwebtoken';
+
+import { APP, JWT } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { Community, User } from '@entities/entities';
+import { Community, Member, User } from '@entities/entities';
+import URLBuilder from '@util/URLBuilder';
 import { EmailContext } from '../emails.types';
 
 export interface InviteMembersContext {
@@ -34,22 +37,28 @@ const getInviteMembersVars = async (
 
   const bm = new BloomManager();
 
-  const [community, coordinator, users]: [
+  const [community, coordinator, members]: [
     Community,
     User,
-    User[]
+    Member[]
   ] = await Promise.all([
     bm.findOne(Community, { id: communityId }),
     bm.findOne(User, { members: { id: coordinatorId } }),
-    bm.find(User, { members: { id: memberIds } })
+    bm.find(Member, { id: memberIds }, { populate: ['user'] })
   ]);
 
-  const variables: InviteMembersVars[] = users.map((user: User) => {
+  const variables: InviteMembersVars[] = members.map((member: Member) => {
+    const token: string = jwt.sign({ memberId: member.id }, JWT.SECRET);
+
+    const invitationUrl: string = new URLBuilder(
+      `${APP.CLIENT_URL}/${community.urlName}`
+    ).addParam('token', token).url;
+
     return {
       community: { name: community.name },
       coordinator: { fullName: coordinator.fullName },
-      invitationUrl: `${APP.CLIENT_URL}/${community.urlName}`,
-      user: { email: user.email, firstName: user.firstName }
+      invitationUrl,
+      user: { email: member.user.email, firstName: member.user.firstName }
     };
   });
 

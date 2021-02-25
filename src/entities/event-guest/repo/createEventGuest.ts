@@ -32,21 +32,21 @@ export class CreateEventGuestArgs {
  * @param ctx.userId - Identifier of the user.
  */
 const createEventGuest = async (
-  { eventId, ...args }: CreateEventGuestArgs,
-  { memberId, userId }: Pick<GQLContext, 'memberId' | 'userId'>
+  args: CreateEventGuestArgs,
+  ctx: Pick<GQLContext, 'communityId' | 'memberId' | 'userId'>
 ) => {
   const user = await new BloomManager().findOne(
     User,
-    { id: userId },
+    { id: ctx.userId },
     { fields: ['email', 'firstName', 'lastName'] }
   );
 
   const guestArgs: FilterQuery<EventGuest> = {
     email: args.email ?? user.email,
-    event: eventId,
+    event: args.eventId,
     firstName: args.email ?? user.firstName,
     lastName: args.email ?? user.lastName,
-    member: memberId
+    member: ctx.memberId
   };
 
   const existingGuest = await new BloomManager().findOne(EventGuest, guestArgs);
@@ -65,12 +65,12 @@ const createEventGuest = async (
 
   emitEmailEvent(
     EmailEvent.EVENT_RSVP,
-    { eventId, guestId: guest.id },
+    { communityId: ctx.communityId, eventId: args.eventId, guestId: guest.id },
     { delay: 5000 }
   );
 
   emitGoogleEvent(GoogleEvent.ADD_CALENDAR_EVENT_ATTENDEE, {
-    eventId,
+    eventId: args.eventId,
     guestId: guest.id
   });
 

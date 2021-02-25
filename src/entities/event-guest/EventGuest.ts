@@ -15,7 +15,6 @@ import cache from '@core/db/cache';
 import { QueryEvent } from '@util/events';
 import Event from '../event/Event';
 import Member from '../member/Member';
-import getEventGuestJoinUrl from './repo/getEventGuestJoinUrl';
 
 @ObjectType()
 @Entity()
@@ -28,11 +27,6 @@ export default class EventGuest extends BaseCompositeEntity {
   @Field({ nullable: true })
   @Property({ nullable: true })
   firstName: string;
-
-  @Property({ persist: false })
-  get joinUrl(): string | Promise<string> {
-    return getEventGuestJoinUrl({ eventId: this.event.id, guestId: this.id });
-  }
 
   @Field({ nullable: true })
   @Property({ nullable: true })
