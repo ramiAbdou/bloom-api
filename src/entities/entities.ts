@@ -12,4 +12,5 @@ export { default as MemberPayment } from './member-payment/MemberPayment';
 export { default as MemberRefresh } from './member-refresh/MemberRefresh';
 export { default as MemberType } from './member-type/MemberType';
 export { default as Question } from './question/Question';
+export { default as Task } from './task/Task';
 export { default as User } from './user/User';
