@@ -43,8 +43,6 @@ const sendEmails = async (args: SendEmailsArgs) => {
 
   const chunkedPersonalizations = await getEmailPersonalizations(args);
 
-  console.log('chunked', chunkedPersonalizations);
-
   await Promise.all(
     chunkedPersonalizations.map(
       async (personalizations: FormatPersonalizationData[]) => {

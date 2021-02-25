@@ -3,6 +3,7 @@ import { EmailEvent } from '@util/events';
 import logger from '@util/logger';
 import { splitArrayIntoChunks } from '@util/util';
 import { EmailVars, SendEmailsArgs } from './emails.types';
+import getApplyToCommunityAdminsVars from './util/getApplyToCommunityAdminsVars';
 import getApplyToCommunityVars from './util/getApplyToCommunityVars';
 import getConnectIntegrationsVars from './util/getConnectIntegrationsVars';
 import getCreateEventCoordinatorVars from './util/getCreateEventCoordinatorVars';
@@ -56,6 +57,10 @@ const getEmailPersonalizations = async (
   switch (emailEvent) {
     case EmailEvent.APPLY_TO_COMMUNITY:
       vars = await getApplyToCommunityVars(emailContext);
+      break;
+
+    case EmailEvent.APPLY_TO_COMMUNITY_ADMINS:
+      vars = await getApplyToCommunityAdminsVars(emailContext);
       break;
 
     case EmailEvent.CONNECT_INTEGRATIONS:

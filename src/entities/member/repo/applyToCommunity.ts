@@ -3,6 +3,7 @@ import { ArgsType, Field, InputType } from 'type-graphql';
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
+import { ApplyToCommunityAdminsContext } from '@core/emails/util/getApplyToCommunityAdminsVars';
 import { ApplyToCommunityContext } from '@core/emails/util/getApplyToCommunityVars';
 import emitEmailEvent from '@core/events/emitEmailEvent';
 import Community from '@entities/community/Community';
@@ -150,6 +151,11 @@ const applyToCommunity = async (
     communityId: community.id,
     memberId: member.id
   } as ApplyToCommunityContext);
+
+  emitEmailEvent(EmailEvent.APPLY_TO_COMMUNITY_ADMINS, {
+    applicantId: member.id,
+    communityId: community.id
+  } as ApplyToCommunityAdminsContext);
 
   cache.invalidateKeys(
     member.status === MemberStatus.PENDING

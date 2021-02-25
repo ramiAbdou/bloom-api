@@ -41,8 +41,6 @@ const getApplyToCommunityVars = async (
     { community: partialCommunity, user: partialUser }
   ];
 
-  console.log(variables);
-
   return variables;
 };
 
