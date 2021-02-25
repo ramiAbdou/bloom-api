@@ -1,0 +1,19 @@
+<mjml>
+  <mj-head>
+    <mj-include path="./attributes.mjml" />
+    <mj-preview>Sorry to let you know that {{ event.title }} has been cancelled.</mj-preview>
+  </mj-head>
+  <mj-body background-color="#FFFFFF">
+    <mj-include path="./header.mjml" />
+    <mj-section background-color="#E0E0E0" border-radius="8px" padding="1px">
+      <mj-column background-color="#FFFFFF" border-radius="8px" padding="8px 8px 16px 8px">
+        <mj-include path="./hi.mjml" />
+        <mj-text padding-bottom="16px">Unfortunately, the following event that you had RSVP'd to was deleted from {{ community.name }}.</mj-text>
+        <mj-text>Title: {{ event.title }}</mj-text>
+        <mj-text>Date of Event: {{ formatDate event.startTime "dddd, MMMM D, YYYY" "-0800" }}</mj-text>
+        <mj-text></mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-include path="./footer.mjml" />
+  </mj-body>
+</mjml>

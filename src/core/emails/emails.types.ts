@@ -1,4 +1,5 @@
 import { EmailEvent } from '@util/events';
+import { DeleteEventGuestArgs } from '../../entities/event-guest/repo/deleteEventGuest';
 import {
   ConnectIntegrationsContext,
   ConnectIntegrationsVars
@@ -8,6 +9,11 @@ import {
   CreateEventCoordinatorVars
 } from './util/getCreateEventCoordinatorVars';
 import { CreateEventInviteesContext } from './util/getCreateEventInviteesVars';
+import {
+  DeleteEventCoordinatorContext,
+  DeleteEventCoordinatorVars
+} from './util/getDeleteEventCoordinatorVars';
+import { DeleteEventGuestsVars } from './util/getDeleteEventGuestsVars';
 import { GetEventRsvpContext, GetEventRsvpVars } from './util/getEventRsvpVars';
 import {
   LoginLinkEmailContext,
@@ -27,6 +33,8 @@ export type EmailContext =
   | ConnectIntegrationsContext
   | CreateEventCoordinatorContext
   | CreateEventInviteesContext
+  | DeleteEventCoordinatorContext
+  | DeleteEventGuestArgs
   | GetEventRsvpContext
   | LoginLinkEmailContext
   | PaymentReceiptContext;
@@ -34,6 +42,8 @@ export type EmailContext =
 export type EmailVars =
   | ConnectIntegrationsVars
   | CreateEventCoordinatorVars
+  | DeleteEventCoordinatorVars
+  | DeleteEventGuestsVars
   | GetEventRsvpVars
   | LoginLinkEmailVars
   | PaymentReceiptVars;

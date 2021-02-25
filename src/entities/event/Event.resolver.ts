@@ -25,9 +25,12 @@ export default class EventResolver {
   }
 
   @Authorized(MemberRole.ADMIN)
-  @Mutation(() => Event, { nullable: true })
-  async deleteEvent(@Args() args: DeleteEventArgs): Promise<Event> {
-    return deleteEvent(args);
+  @Mutation(() => Event)
+  async deleteEvent(
+    @Args() args: DeleteEventArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<Event> {
+    return deleteEvent(args, ctx);
   }
 
   @Query(() => Event)

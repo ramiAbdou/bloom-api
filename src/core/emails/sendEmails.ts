@@ -2,10 +2,9 @@ import { isProduction } from '@constants';
 import sg, { MailDataRequired } from '@sendgrid/mail';
 import logger from '@util/logger';
 import { SendEmailsArgs } from './emails.types';
-import {
-  FormatPersonalizationData,
-  processEmailPersonalizations
-} from './processEmailPersonalizations';
+import getEmailPersonalizations, {
+  FormatPersonalizationData
+} from './getEmailPersonalizations';
 
 interface SendEmailsBatch extends SendEmailsArgs {
   personalizations: FormatPersonalizationData[];
@@ -40,7 +39,7 @@ const sendEmails = async (args: SendEmailsArgs) => {
   // out manually each time.
   if (!isProduction) return;
 
-  const chunkedPersonalizations = await processEmailPersonalizations(args);
+  const chunkedPersonalizations = await getEmailPersonalizations(args);
 
   await Promise.all(
     chunkedPersonalizations.map(
