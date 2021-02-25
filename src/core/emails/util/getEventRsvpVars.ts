@@ -2,12 +2,12 @@ import BloomManager from '@core/db/BloomManager';
 import { Event, EventGuest, User } from '@entities/entities';
 import { EmailContext } from '../emails.types';
 
-export interface GetEventRsvpContext {
+export interface EventRsvpContext {
   eventId: string;
   guestId: string;
 }
 
-export interface GetEventRsvpVars {
+export interface EventRsvpVars {
   event: Pick<Event, 'title'>;
   guest: Pick<EventGuest, 'joinUrl'>;
   user: Pick<User, 'email' | 'firstName'>;
@@ -15,8 +15,8 @@ export interface GetEventRsvpVars {
 
 const getEventRsvpVars = async (
   context: EmailContext
-): Promise<GetEventRsvpVars[]> => {
-  const { eventId, guestId } = context as GetEventRsvpContext;
+): Promise<EventRsvpVars[]> => {
+  const { eventId, guestId } = context as EventRsvpContext;
 
   const bm = new BloomManager();
 
@@ -27,7 +27,7 @@ const getEventRsvpVars = async (
 
   if (!guest) throw new Error('Event guest no longer exists.');
 
-  const variables: GetEventRsvpVars[] = [
+  const variables: EventRsvpVars[] = [
     {
       event: { title: event.title },
       guest: { joinUrl: await guest.joinUrl },

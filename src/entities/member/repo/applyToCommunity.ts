@@ -3,6 +3,8 @@ import { ArgsType, Field, InputType } from 'type-graphql';
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
+import { ApplyToCommunityContext } from '@core/emails/util/getApplyToCommunityVars';
+import emitEmailEvent from '@core/events/emitEmailEvent';
 import Community from '@entities/community/Community';
 import MemberData from '@entities/member-data/MemberData';
 import createLifetimePayment from '@entities/member-payment/repo/createLifetimePayment';
@@ -10,7 +12,7 @@ import createSubscription from '@entities/member-payment/repo/createSubscription
 import MemberType, { RecurrenceType } from '@entities/member-type/MemberType';
 import Question, { QuestionCategory } from '@entities/question/Question';
 import User from '@entities/user/User';
-import { FlushEvent, QueryEvent } from '@util/events';
+import { EmailEvent, FlushEvent, QueryEvent } from '@util/events';
 import Member, { MemberStatus } from '../Member';
 import updatePaymentMethod from './updatePaymentMethod';
 
@@ -27,7 +29,7 @@ export class MemberDataInput {
 }
 
 @ArgsType()
-export class ApplyForMembershipArgs {
+export class ApplyToCommunityArgs {
   @Field(() => [MemberDataInput])
   data: MemberDataInput[];
 
@@ -86,15 +88,9 @@ const createApplicationPayment = async (
  * Applies for member in the community using the given email and data.
  * A user is either created OR fetched based on the email.
  */
-const applyForMembership = async (
-  {
-    data,
-    email,
-    memberTypeId,
-    paymentMethodId,
-    urlName
-  }: ApplyForMembershipArgs,
-  { res }: Pick<GQLContext, 'res'>
+const applyToCommunity = async (
+  { data, email, memberTypeId, paymentMethodId, urlName }: ApplyToCommunityArgs,
+  ctx: Pick<GQLContext, 'res'>
 ): Promise<Member> => {
   const bm = new BloomManager();
 
@@ -148,7 +144,12 @@ const applyForMembership = async (
     else bm.create(MemberData, { member, question, value });
   });
 
-  await bm.flush({ flushEvent: FlushEvent.APPLY_FOR_MEMBERSHIP });
+  await bm.flush({ flushEvent: FlushEvent.APPLY_TO_COMMUNITY });
+
+  emitEmailEvent(EmailEvent.APPLY_TO_COMMUNITY, {
+    communityId: community.id,
+    memberId: member.id
+  } as ApplyToCommunityContext);
 
   cache.invalidateKeys(
     member.status === MemberStatus.PENDING
@@ -161,10 +162,10 @@ const applyForMembership = async (
     { communityId: community.id, memberId: member.id }
   );
 
-  res.clearCookie('accessToken');
-  res.clearCookie('refreshToken');
+  ctx.res.clearCookie('accessToken');
+  ctx.res.clearCookie('refreshToken');
 
   return member;
 };
 
-export default applyForMembership;
+export default applyToCommunity;

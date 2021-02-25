@@ -3,6 +3,7 @@ import { EmailEvent } from '@util/events';
 import logger from '@util/logger';
 import { splitArrayIntoChunks } from '@util/util';
 import { EmailVars, SendEmailsArgs } from './emails.types';
+import getApplyToCommunityVars from './util/getApplyToCommunityVars';
 import getConnectIntegrationsVars from './util/getConnectIntegrationsVars';
 import getCreateEventCoordinatorVars from './util/getCreateEventCoordinatorVars';
 import getCreateEventInviteesVars from './util/getCreateEventInviteesVars';
@@ -23,7 +24,7 @@ export interface FormatPersonalizationData {
  * If development environment, filters all personalizations out that aren't
  * going to rami@bl.community.
  *
- * @param variables Variables for an email template.
+ * @param {EmailVars[]} variables - Variables for an email template.
  */
 const formatPersonalizations = (
   variables: EmailVars[]
@@ -37,13 +38,26 @@ const formatPersonalizations = (
     });
 };
 
-const getEmailPersonalizations = async ({
-  emailContext,
-  emailEvent
-}: SendEmailsArgs): Promise<FormatPersonalizationData[][]> => {
+/**
+ * Returns the email personalizations according to the args.emailEvent.
+ *
+ * @param {EmailContext} args.emailContext
+ * @param {EmailEvent} args.emailEvent
+ *
+ * @returns {FormatPersonalizationData[][]} - Nested array of personalizations.
+ */
+const getEmailPersonalizations = async (
+  args: SendEmailsArgs
+): Promise<FormatPersonalizationData[][]> => {
+  const { emailContext, emailEvent } = args;
+
   let vars: EmailVars[] = [];
 
   switch (emailEvent) {
+    case EmailEvent.APPLY_TO_COMMUNITY:
+      vars = await getApplyToCommunityVars(emailContext);
+      break;
+
     case EmailEvent.CONNECT_INTEGRATIONS:
       vars = await getConnectIntegrationsVars(emailContext);
       break;

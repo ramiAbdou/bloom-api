@@ -1,5 +1,9 @@
+import { DeleteEventGuestArgs } from '@entities/event-guest/repo/deleteEventGuest';
 import { EmailEvent } from '@util/events';
-import { DeleteEventGuestArgs } from '../../entities/event-guest/repo/deleteEventGuest';
+import {
+  ApplyToCommunityContext,
+  ApplyToCommunityVars
+} from './util/getApplyToCommunityVars';
 import {
   ConnectIntegrationsContext,
   ConnectIntegrationsVars
@@ -14,7 +18,7 @@ import {
   DeleteEventCoordinatorVars
 } from './util/getDeleteEventCoordinatorVars';
 import { DeleteEventGuestsVars } from './util/getDeleteEventGuestsVars';
-import { GetEventRsvpContext, GetEventRsvpVars } from './util/getEventRsvpVars';
+import { EventRsvpContext, EventRsvpVars } from './util/getEventRsvpVars';
 import {
   LoginLinkEmailContext,
   LoginLinkEmailVars
@@ -30,21 +34,23 @@ export interface FormatPersonalizationData {
 }
 
 export type EmailContext =
+  | ApplyToCommunityContext
   | ConnectIntegrationsContext
   | CreateEventCoordinatorContext
   | CreateEventInviteesContext
   | DeleteEventCoordinatorContext
   | DeleteEventGuestArgs
-  | GetEventRsvpContext
+  | EventRsvpContext
   | LoginLinkEmailContext
   | PaymentReceiptContext;
 
 export type EmailVars =
+  | ApplyToCommunityVars
   | ConnectIntegrationsVars
   | CreateEventCoordinatorVars
   | DeleteEventCoordinatorVars
   | DeleteEventGuestsVars
-  | GetEventRsvpVars
+  | EventRsvpVars
   | LoginLinkEmailVars
   | PaymentReceiptVars;
 

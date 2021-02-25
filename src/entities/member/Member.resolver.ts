@@ -8,9 +8,9 @@ import { QueryEvent } from '@util/events';
 import { CreateSubsciptionArgs } from '../member-payment/repo/createSubscription';
 import { MemberRole, MemberStatus } from './Member';
 import addMembers, { AddMembersArgs } from './repo/addMembers';
-import applyForMembership, {
-  ApplyForMembershipArgs
-} from './repo/applyForMembership';
+import applyToCommunity, {
+  ApplyToCommunityArgs
+} from './repo/applyToCommunity';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import demoteMembers, { DemoteMembersArgs } from './repo/demoteMembers';
 import getChangePreview, {
@@ -46,11 +46,11 @@ export default class MemberResolver {
    * User with the basic information from the member data.
    */
   @Mutation(() => Member, { nullable: true })
-  async applyForMembership(
-    @Args() args: ApplyForMembershipArgs,
+  async applyToCommunity(
+    @Args() args: ApplyToCommunityArgs,
     @Ctx() ctx: GQLContext
   ): Promise<Member> {
-    return applyForMembership(args, ctx);
+    return applyToCommunity(args, ctx);
   }
 
   @Authorized(MemberRole.ADMIN)

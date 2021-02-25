@@ -10,7 +10,7 @@ import MemberType, { RecurrenceType } from '../MemberType';
 @InputType()
 export class CreateMemberTypeInput {
   @Field(() => Float, { defaultValue: 0.0 })
-  amount: number;
+  amount?: number;
 
   @Field()
   name: string;
