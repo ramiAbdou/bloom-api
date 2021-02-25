@@ -1,6 +1,10 @@
 import { DeleteEventGuestArgs } from '@entities/event-guest/repo/deleteEventGuest';
 import { EmailEvent } from '@util/events';
 import {
+  AcceptedIntoCommunityContext,
+  AcceptedIntoCommunityVars
+} from './util/getAcceptedIntoCommunityVars';
+import {
   ApplyToCommunityAdminsContext,
   ApplyToCommunityAdminsVars
 } from './util/getApplyToCommunityAdminsVars';
@@ -38,6 +42,7 @@ export interface FormatPersonalizationData {
 }
 
 export type EmailContext =
+  | AcceptedIntoCommunityContext
   | ApplyToCommunityContext
   | ApplyToCommunityAdminsContext
   | ConnectIntegrationsContext
@@ -50,6 +55,7 @@ export type EmailContext =
   | PaymentReceiptContext;
 
 export type EmailVars =
+  | AcceptedIntoCommunityVars
   | ApplyToCommunityVars
   | ApplyToCommunityAdminsVars
   | ConnectIntegrationsVars

@@ -1,28 +1,37 @@
 import BloomManager from '@core/db/BloomManager';
-import { FlushEvent } from '@util/events';
+import { AcceptedIntoCommunityContext } from '@core/emails/util/getAcceptedIntoCommunityVars';
+import emitEmailEvent from '@core/events/emitEmailEvent';
+import { EmailEvent, FlushEvent } from '@util/events';
 import Member, { MemberStatus } from '../Member';
 
-interface UpdateInvitedStatusesArgs {
+interface AcceptInvitationsArgs {
   email: string;
 }
 
 /**
  * Updates all of the INVITED statuses to ACCEPTED on a member.
  * Precondition: Should only be called when a user is logging into Bloom.
+ *
+ * @param {AcceptInvitationsArgs} args
+ * @param {string} args.email
  */
-const acceptInvitations = async ({
-  email
-}: UpdateInvitedStatusesArgs): Promise<Member[]> => {
-  const bm = new BloomManager();
-  const members: Member[] = await bm.find(Member, { user: { email } });
+const acceptInvitations = async (
+  args: AcceptInvitationsArgs
+): Promise<Member[]> => {
+  const members: Member[] = await new BloomManager().findAndUpdate(
+    Member,
+    { status: MemberStatus.INVITED, user: { email: args.email } },
+    { status: MemberStatus.ACCEPTED },
+    { flushEvent: FlushEvent.ACCEPT_INVITATIONS }
+  );
 
   members.forEach((member: Member) => {
-    if (member.status === MemberStatus.INVITED) {
-      member.status = MemberStatus.ACCEPTED;
-    }
+    emitEmailEvent(EmailEvent.ACCEPTED_INTO_COMMUNITY, {
+      communityId: member.community.id,
+      memberIds: [member.id]
+    } as AcceptedIntoCommunityContext);
   });
 
-  await bm.flush({ flushEvent: FlushEvent.ACCEPT_INVITATIONS });
   return members;
 };
 

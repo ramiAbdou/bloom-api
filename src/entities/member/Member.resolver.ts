@@ -7,7 +7,6 @@ import { Member } from '@entities/entities';
 import { QueryEvent } from '@util/events';
 import { CreateSubsciptionArgs } from '../member-payment/repo/createSubscription';
 import { MemberRole, MemberStatus } from './Member';
-import addMembers, { AddMembersArgs } from './repo/addMembers';
 import applyToCommunity, {
   ApplyToCommunityArgs
 } from './repo/applyToCommunity';
@@ -22,7 +21,8 @@ import getMembers from './repo/getMembers';
 import getUpcomingPayment, {
   GetUpcomingPaymentResult
 } from './repo/getUpcomingPayment';
-import isEmailTaken, { IsEmailTakenArgs } from './repo/isEmailToken';
+import inviteMembers, { InviteMembersArgs } from './repo/inviteMembers';
+import isEmailTaken, { IsEmailTakenArgs } from './repo/isEmailTaken';
 import promoteMembers, { PromoteMembersArgs } from './repo/promoteMembers';
 import respondToApplicants, {
   RespondToApplicantsArgs
@@ -35,12 +35,6 @@ import updatePaymentMethod, {
 
 @Resolver()
 export default class MemberResolver {
-  @Authorized(MemberRole.ADMIN)
-  @Mutation(() => [Member], { nullable: true })
-  async addMembers(@Args() args: AddMembersArgs, @Ctx() ctx: GQLContext) {
-    return addMembers(args, ctx);
-  }
-
   /**
    * Creates a Member is for the given Community ID, and also creates a
    * User with the basic information from the member data.
@@ -63,11 +57,6 @@ export default class MemberResolver {
   @Mutation(() => [Member])
   async demoteMembers(@Args() args: DemoteMembersArgs): Promise<Member[]> {
     return demoteMembers(args);
-  }
-
-  @Query(() => Boolean)
-  async isEmailTaken(@Args() args: IsEmailTakenArgs): Promise<boolean> {
-    return isEmailTaken(args);
   }
 
   @Authorized(MemberRole.ADMIN)
@@ -148,6 +137,17 @@ export default class MemberResolver {
     @Ctx() ctx: GQLContext
   ): Promise<GetUpcomingPaymentResult> {
     return getUpcomingPayment(ctx);
+  }
+
+  @Authorized(MemberRole.ADMIN)
+  @Mutation(() => [Member])
+  async inviteMembers(@Args() args: InviteMembersArgs, @Ctx() ctx: GQLContext) {
+    return inviteMembers(args, ctx);
+  }
+
+  @Query(() => Boolean)
+  async isEmailTaken(@Args() args: IsEmailTakenArgs): Promise<boolean> {
+    return isEmailTaken(args);
   }
 
   @Authorized(MemberRole.OWNER)

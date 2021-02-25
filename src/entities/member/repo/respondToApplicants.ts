@@ -2,8 +2,10 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { AcceptedIntoCommunityContext } from '@core/emails/util/getAcceptedIntoCommunityVars';
+import emitEmailEvent from '@core/events/emitEmailEvent';
 import emitMailchimpEvent from '@core/events/emitMailchimpEvent';
-import { FlushEvent, MailchimpEvent } from '@util/events';
+import { EmailEvent, FlushEvent, MailchimpEvent } from '@util/events';
 import { now } from '@util/util';
 import Member, { MemberStatus } from '../Member';
 
@@ -19,11 +21,17 @@ export class RespondToApplicantsArgs {
 /**
  * An admin has the option to either accept or reject a Member when they
  * apply to the organization.
+ *
+ * @param {string[]} args.memberIds - IDs of members to either ACCEPT/REJECT.
+ * @param {MemberStatus} args.response
  */
 const respondToApplicants = async (
-  { memberIds, response }: RespondToApplicantsArgs,
-  { communityId }: Pick<GQLContext, 'communityId'>
+  args: RespondToApplicantsArgs,
+  ctx: Pick<GQLContext, 'communityId'>
 ): Promise<Member[]> => {
+  const { memberIds, response } = args;
+  const { communityId } = ctx;
+
   const members: Member[] = await new BloomManager().findAndUpdate(
     Member,
     { id: memberIds },
@@ -37,6 +45,11 @@ const respondToApplicants = async (
   );
 
   if (response === MemberStatus.ACCEPTED) {
+    emitEmailEvent(EmailEvent.ACCEPTED_INTO_COMMUNITY, {
+      communityId,
+      memberIds
+    } as AcceptedIntoCommunityContext);
+
     memberIds.forEach((memberId: string) => {
       emitMailchimpEvent(MailchimpEvent.ADD_TO_AUDIENCE, {
         communityId,

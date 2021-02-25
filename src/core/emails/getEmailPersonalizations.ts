@@ -3,6 +3,7 @@ import { EmailEvent } from '@util/events';
 import logger from '@util/logger';
 import { splitArrayIntoChunks } from '@util/util';
 import { EmailVars, SendEmailsArgs } from './emails.types';
+import getAcceptedIntoCommunityVars from './util/getAcceptedIntoCommunityVars';
 import getApplyToCommunityAdminsVars from './util/getApplyToCommunityAdminsVars';
 import getApplyToCommunityVars from './util/getApplyToCommunityVars';
 import getConnectIntegrationsVars from './util/getConnectIntegrationsVars';
@@ -11,6 +12,7 @@ import getCreateEventInviteesVars from './util/getCreateEventInviteesVars';
 import getDeleteEventCoordinatorVars from './util/getDeleteEventCoordinatorVars';
 import getDeleteEventGuestsVars from './util/getDeleteEventGuestsVars';
 import getEventRsvpVars from './util/getEventRsvpVars';
+import getInviteMembersVars from './util/getInviteMembersVars';
 import getLoginLinkVars from './util/getLoginLinkVars';
 import getPaymentReceiptVars from './util/getPaymentReceiptVars';
 
@@ -55,6 +57,10 @@ const getEmailPersonalizations = async (
   let vars: EmailVars[] = [];
 
   switch (emailEvent) {
+    case EmailEvent.ACCEPTED_INTO_COMMUNITY:
+      vars = await getAcceptedIntoCommunityVars(emailContext);
+      break;
+
     case EmailEvent.APPLY_TO_COMMUNITY:
       vars = await getApplyToCommunityVars(emailContext);
       break;
@@ -85,6 +91,10 @@ const getEmailPersonalizations = async (
 
     case EmailEvent.EVENT_RSVP:
       vars = await getEventRsvpVars(emailContext);
+      break;
+
+    case EmailEvent.INVITE_MEMBERS:
+      vars = await getInviteMembersVars(emailContext);
       break;
 
     case EmailEvent.LOGIN_LINK:

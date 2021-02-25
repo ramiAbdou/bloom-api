@@ -1,0 +1,17 @@
+<mjml>
+  <mj-head>
+    <mj-include path="./attributes.mjml" />
+    <mj-preview>{{ coordinator.fullName }} invited you to join {{ community.name }}.</mj-preview>
+  </mj-head>
+  <mj-body background-color="#FFFFFF">
+    <mj-include path="./header.mjml" />
+    <mj-section background-color="#E0E0E0" border-radius="8px" padding="1px">
+      <mj-column background-color="#FFFFFF" border-radius="8px" padding="8px 8px 16px 8px">
+        <mj-include path="./hi.mjml" />
+        <mj-text>{{ coordinator.fullName }} invited you to join {{ community.name }}. Accept the invitation below!</mj-text>
+        <mj-button href="{{ invitationUrl }}" padding-top="16px">Accept Invitation</mj-button>
+      </mj-column>
+    </mj-section>
+    <mj-include path="./footer.mjml" />
+  </mj-body>
+</mjml>

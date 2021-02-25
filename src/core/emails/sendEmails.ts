@@ -39,7 +39,7 @@ const sendEmails = async (args: SendEmailsArgs) => {
   // out manually each time.
   if (!isProduction) return;
 
-  console.log('args', args);
+  // console.log('args', args);
 
   const chunkedPersonalizations = await getEmailPersonalizations(args);
 

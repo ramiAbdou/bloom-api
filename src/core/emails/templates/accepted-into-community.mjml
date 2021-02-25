@@ -1,0 +1,22 @@
+<mjml>
+  <mj-head>
+    <mj-include path="./attributes.mjml" />
+    <mj-preview>Congratulations! You've been accepted into {{ community.name }}.</mj-preview>
+  </mj-head>
+  <mj-body background-color="#FFFFFF">
+    <mj-include path="./header.mjml" />
+    <mj-section background-color="#E0E0E0" border-radius="8px" padding="1px">
+      <mj-column background-color="#FFFFFF" border-radius="8px" padding="8px 8px 16px 8px">
+        <mj-include path="./hi.mjml" />
+        <mj-text padding-bottom="16px">Congratulations, you are now an official member of {{ community.name }}! You now have access to the Community Directory, Events and the Knowledge Hub.</mj-text>
+        <mj-text padding-bottom="4px">Here's a short checklist of what do to after you login:</mj-text>
+        <mj-text padding-bottom="4px">&bull; Add a profile picture.</mj-text>
+        <mj-text padding-bottom="4px">&bull; Add a bio.</mj-text>
+        <mj-text padding-bottom="16px">&bull; Link your social media.</mj-text>
+        <mj-text>And most importantly...HAVE FUN!</mj-text>
+        <mj-button href="{{ loginUrl }}" padding-top="16px">Login to {{ community.name }}</mj-button>
+      </mj-column>
+    </mj-section>
+    <mj-include path="./footer.mjml" />
+  </mj-body>
+</mjml>
