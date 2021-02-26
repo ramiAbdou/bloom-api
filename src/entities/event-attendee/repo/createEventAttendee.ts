@@ -28,9 +28,9 @@ export class CreateEventAttendeeArgs {
  * @param args.email - Email of the NON-MEMBER attendee.
  * @param args.firstName - First name of the NON-MEMBER attendee.
  * @param args.lastName - Last name of the NON-MEMBER attendee.
- * @param args.eventId - Identifier of the event.
- * @param ctx.memberId - Identifier of the member.
- * @param ctx.userId - Identifier of the user.
+ * @param args.eventId - ID of the event.
+ * @param ctx.memberId - ID of the member.
+ * @param ctx.userId - ID of the user.
  */
 const createEventAttendee = async (
   { eventId, ...args }: CreateEventAttendeeArgs,

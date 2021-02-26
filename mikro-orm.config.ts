@@ -1,6 +1,5 @@
 import { Connection, IDatabaseDriver, Options } from '@mikro-orm/core';
 
-import { APP, isProduction } from '@util/constants';
 import BaseCompositeEntity from '@core/db/BaseCompositeEntity';
 import BaseEntity from '@core/db/BaseEntity';
 import BloomManagerSubscriber from '@core/db/BloomManager.subscriber';
@@ -20,8 +19,10 @@ import MemberType from '@entities/member-type/MemberType';
 import Member from '@entities/member/Member';
 import MemberSubscriber from '@entities/member/Member.subscriber';
 import Question from '@entities/question/Question';
+import Task from '@entities/task/Task';
 import User from '@entities/user/User';
 import UserSubscriber from '@entities/user/User.subscriber';
+import { APP, isProduction } from '@util/constants';
 
 /**
  * Exports all of the database connection and initialization information.
@@ -50,6 +51,7 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
     MemberType,
     Member,
     Question,
+    Task,
     User
   ],
   filters: { notDeleted: { args: false, cond: { deletedAt: null } } },

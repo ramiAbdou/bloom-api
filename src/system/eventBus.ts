@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 
+import Task, { TaskPayload } from '@entities/task/Task';
 import processGoogleEvent, {
   GoogleEventArgs
 } from '@integrations/google/processGoogleEvent';
@@ -10,8 +11,10 @@ import {
   BusEvent,
   EmailEvent,
   GoogleEvent,
-  MailchimpEvent
+  MailchimpEvent,
+  TaskEvent
 } from '@util/events';
+import createTask from '../entities/task/repo/createTask';
 import { EmailArgs, EmailPayload } from './emails/emails.types';
 import sendEmails from './emails/sendEmails';
 
@@ -62,5 +65,18 @@ export const emitMailchimpEvent = (
 eventBus.on(BusEvent.MAILCHIMP_EVENT, async (args: MailchimpEventArgs) => {
   await processMailchimpEvent(args);
 });
+
+// ## SCHEDULE TASK
+
+export const scheduleTask = (event: TaskEvent, payload: TaskPayload) => {
+  eventBus.emit(BusEvent.SCHEDULE_TASK, { event, payload });
+};
+
+eventBus.on(
+  BusEvent.SCHEDULE_TASK,
+  async (args: Pick<Task, 'event' | 'payload'>) => {
+    await createTask(args);
+  }
+);
 
 export default eventBus;

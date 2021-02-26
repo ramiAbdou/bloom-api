@@ -1,6 +1,6 @@
-import { isProduction } from '@util/constants';
 import sg, { MailDataRequired } from '@sendgrid/mail';
 import logger from '@system/logger/logger';
+import { isProduction } from '@util/constants';
 import { EmailArgs } from './emails.types';
 import getPersonalizations, {
   FormatPersonalizationData

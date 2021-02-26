@@ -14,8 +14,8 @@ export class CreateEventWatchArgs {
 /**
  * Returns a new EventWatch.
  *
- * @param args.eventId - Identifier of the event.
- * @param ctx.memberId - Identifier of the member.
+ * @param args.eventId - ID of the event.
+ * @param ctx.memberId - ID of the member.
  */
 const createEventWatch = async (
   { eventId }: CreateEventWatchArgs,

@@ -1,6 +1,6 @@
+import logger from '@system/logger/logger';
 import { isProduction, TEST_EMAILS } from '@util/constants';
 import { EmailEvent } from '@util/events';
-import logger from '@system/logger/logger';
 import { splitArrayIntoChunks } from '@util/util';
 import { EmailArgs, EmailVars } from './emails.types';
 import getAcceptedIntoCommunityVars from './util/getAcceptedIntoCommunityVars';

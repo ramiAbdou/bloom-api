@@ -24,7 +24,7 @@ const processGoogleEvent = async ({
 
   const [event, guest]: [Event, EventGuest] = await Promise.all([
     bm.findOne(Event, { id: eventId }, { filters: false }),
-    bm.findOne(EventGuest, { id: guestId })
+    bm.findOne(EventGuest, { id: guestId }, { filters: false })
   ]);
 
   if (
