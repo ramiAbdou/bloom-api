@@ -7,13 +7,13 @@
     <mj-section background-color="#E0E0E0" border-radius="8px" padding="1px">
       <mj-column background-color="#FFFFFF" padding="8px 8px 16px 8px" border-radius="8px">
         <mj-include path="./hi.mjml" />
-        <mj-text padding-bottom="16px">We received your payment of ${{ payment.amount }} USD to {{ community.name }} on {{ formatDate payment.createdAt "MMMM D, YYYY" "-0800" }}. </mj-text>
+        <mj-text padding-bottom="16px">We received your payment of ${{ payment.amount }} USD to {{ community.name }}.</mj-text>
         <mj-text font-weight="500" padding-bottom="8px"> Transaction Details </mj-text>
-        <mj-text> Payment Source: {{ card.brand }} ending in {{ card.last4 }}
-        </mj-text>
-        <mj-text> Invoice ID: {{payment.stripeInvoiceId}}
-        </mj-text>
         <mj-text> Date of Payment: {{ formatDate payment.createdAt "MMMM D, YYYY @ h:mm A" "-0800" }}
+          <mj-text> Payment Source: {{ card.brand }} ending in {{ card.last4 }}
+          </mj-text>
+          <mj-text> Invoice ID: {{payment.stripeInvoiceId}}
+          </mj-text>
         </mj-text>
         <mj-button href="{{ payment.stripeInvoiceUrl }}" padding-top="16px">View Payment Receipt</mj-button>
       </mj-column>

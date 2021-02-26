@@ -12,10 +12,12 @@ import getCreateEventInviteesVars from './util/getCreateEventInviteesVars';
 import getDeleteEventCoordinatorVars from './util/getDeleteEventCoordinatorVars';
 import getDeleteEventGuestsVars from './util/getDeleteEventGuestsVars';
 import getDeleteMembersVars from './util/getDeleteMembersVars';
+import getDemoteMembersVars from './util/getDemoteMembersVars';
 import getEventRsvpVars from './util/getEventRsvpVars';
 import getInviteMembersVars from './util/getInviteMembersVars';
 import getLoginLinkVars from './util/getLoginLinkVars';
 import getPaymentReceiptVars from './util/getPaymentReceiptVars';
+import getPromoteMembersVars from './util/getPromoteMembersVars';
 
 export interface FormatPersonalizationData {
   dynamicTemplateData?: Record<string, any>;
@@ -94,6 +96,10 @@ const getEmailPersonalizations = async (
       vars = await getDeleteMembersVars(emailContext);
       break;
 
+    case EmailEvent.DEMOTE_MEMBERS:
+      vars = await getDemoteMembersVars(emailContext);
+      break;
+
     case EmailEvent.EVENT_RSVP:
       vars = await getEventRsvpVars(emailContext);
       break;
@@ -108,6 +114,10 @@ const getEmailPersonalizations = async (
 
     case EmailEvent.PAYMENT_RECEIPT:
       vars = await getPaymentReceiptVars(emailContext);
+      break;
+
+    case EmailEvent.PROMOTE_MEMBERS:
+      vars = await getPromoteMembersVars(emailContext);
       break;
 
     default:

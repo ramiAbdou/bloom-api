@@ -30,6 +30,10 @@ import {
   DeleteMembersContext,
   DeleteMembersVars
 } from './util/getDeleteMembersVars';
+import {
+  DemoteMembersContext,
+  DemoteMembersVars
+} from './util/getDemoteMembersVars';
 import { EventRsvpContext, EventRsvpVars } from './util/getEventRsvpVars';
 import {
   InviteMembersContext,
@@ -43,6 +47,10 @@ import {
   PaymentReceiptContext,
   PaymentReceiptVars
 } from './util/getPaymentReceiptVars';
+import {
+  PromoteMembersContext,
+  PromoteMembersVars
+} from './util/getPromoteMembersVars';
 
 export interface FormatPersonalizationData {
   dynamicTemplateData?: Record<string, any>;
@@ -59,10 +67,12 @@ export type EmailContext =
   | DeleteEventCoordinatorContext
   | DeleteEventGuestArgs
   | DeleteMembersContext
+  | DemoteMembersContext
   | EventRsvpContext
   | InviteMembersContext
   | LoginLinkEmailContext
-  | PaymentReceiptContext;
+  | PaymentReceiptContext
+  | PromoteMembersContext;
 
 export type EmailVars =
   | AcceptedIntoCommunityVars
@@ -73,10 +83,12 @@ export type EmailVars =
   | DeleteEventCoordinatorVars
   | DeleteEventGuestsVars
   | DeleteMembersVars
+  | DemoteMembersVars
   | EventRsvpVars
   | InviteMembersVars
   | LoginLinkEmailVars
-  | PaymentReceiptVars;
+  | PaymentReceiptVars
+  | PromoteMembersVars;
 
 export interface EmailArgs {
   emailContext: EmailContext;

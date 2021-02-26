@@ -14,9 +14,9 @@ export class DeleteMembersArgs {
 }
 
 /**
- * Returns the soft-deleted [Member].
+ * Returns the soft-deleted Members.
  *
- * @param {string[]} args.memberIds - IDs of the [Member] to delete.
+ * @param {string[]} args.memberIds - IDs of the Members to delete.
  * @param {string} ctx.communityId - ID of the Community.
  */
 const deleteMembers = async (
