@@ -36,6 +36,10 @@ import {
   DemoteMembersPayload,
   DemoteMembersVars
 } from './util/getDemoteMembersVars';
+import {
+  EventReminderPayload,
+  EventReminderVars
+} from './util/getEventReminderVars';
 import { EventRsvpPayload, EventRsvpVars } from './util/getEventRsvpVars';
 import {
   InviteMembersPayload,
@@ -70,6 +74,7 @@ export type EmailPayload =
   | DeleteEventGuestsPayload
   | DeleteMembersPayload
   | DemoteMembersPayload
+  | EventReminderPayload
   | EventRsvpPayload
   | InviteMembersPayload
   | LoginLinkEmailPayload
@@ -86,6 +91,7 @@ export type EmailVars =
   | DeleteEventGuestsVars
   | DeleteMembersVars
   | DemoteMembersVars
+  | EventReminderVars
   | EventRsvpVars
   | InviteMembersVars
   | LoginLinkEmailVars

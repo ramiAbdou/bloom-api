@@ -1,3 +1,4 @@
+import utc from 'dayjs/plugin/utc';
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';

@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
 
-import { APP, JWT } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import EventGuest from '@entities/event-guest/EventGuest';
 import Event from '@entities/event/Event';
 import { VerifiedToken } from '@entities/user/repo/verifyToken';
 import User from '@entities/user/User';
+import { APP, JWT } from '@util/constants';
 import { VerifyEvent } from '@util/events';
 import URLBuilder from '@util/URLBuilder';
 import { EmailPayload } from '../emails.types';

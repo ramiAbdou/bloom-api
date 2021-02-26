@@ -1,18 +1,13 @@
 import { Entity, Enum, Property } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
-import { TaskEvent } from '@util/events';
+import { EventReminderPayload } from '@system/emails/util/getEventReminderVars';
+import { emitEmailEvent } from '@system/eventBus';
+import { EmailEvent, TaskEvent } from '@util/events';
 
 export interface TaskPayload {
   communityId?: string;
   eventId?: string;
-}
-
-export enum TaskStatus {
-  FAILED = 'FAILED',
-  FINISHED = 'FINISHED',
-  STARTED = 'STARTED',
-  WAITING = 'WAITING'
 }
 
 @Entity()
@@ -26,6 +21,26 @@ export default class Task extends BaseEntity {
   @Property({ type: 'json' })
   payload: TaskPayload;
 
-  @Enum({ items: () => TaskStatus, type: String })
-  status: TaskStatus = TaskStatus.WAITING;
+  // ## METHODS
+
+  execute() {
+    switch (this.event) {
+      case TaskEvent.EVENT_REMINDER_1_DAY:
+        emitEmailEvent(EmailEvent.EVENT_REMINDER, {
+          eventId: this.payload.eventId
+        } as EventReminderPayload);
+
+        break;
+
+      case TaskEvent.EVENT_REMINDER_1_HOUR:
+        emitEmailEvent(EmailEvent.EVENT_REMINDER, {
+          eventId: this.payload.eventId
+        } as EventReminderPayload);
+
+        break;
+
+      default:
+        break;
+    }
+  }
 }

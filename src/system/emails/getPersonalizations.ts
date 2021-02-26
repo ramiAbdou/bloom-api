@@ -13,6 +13,7 @@ import getDeleteEventCoordinatorVars from './util/getDeleteEventCoordinatorVars'
 import getDeleteEventGuestsVars from './util/getDeleteEventGuestsVars';
 import getDeleteMembersVars from './util/getDeleteMembersVars';
 import getDemoteMembersVars from './util/getDemoteMembersVars';
+import getEventReminderVars from './util/getEventReminderVars';
 import getEventRsvpVars from './util/getEventRsvpVars';
 import getInviteMembersVars from './util/getInviteMembersVars';
 import getLoginLinkVars from './util/getLoginLinkVars';
@@ -98,6 +99,10 @@ const getPersonalizations = async (
 
     case EmailEvent.DEMOTE_MEMBERS:
       vars = await getDemoteMembersVars(emailPayload);
+      break;
+
+    case EmailEvent.EVENT_REMINDER:
+      vars = await getEventReminderVars(emailPayload);
       break;
 
     case EmailEvent.EVENT_RSVP:

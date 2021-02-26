@@ -12,8 +12,6 @@ import calculateExecuteAt from './calculateExecuteAt';
  * @param {TaskPayload} args.payload - Ex: { eventId: "1", userId: "2" }
  */
 const createTask = async (args: EntityData<Task>): Promise<Task> => {
-  console.log(await calculateExecuteAt(args));
-
   const task: Task = await new BloomManager().createAndFlush(
     Task,
     { ...args, executeAt: args.executeAt ?? (await calculateExecuteAt(args)) },
