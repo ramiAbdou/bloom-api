@@ -1,7 +1,7 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { QueryOrder } from '@mikro-orm/core';
 
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import Member, { MemberRole, MemberStatus } from '@entities/member/Member';
 import { QueryEvent } from '@util/events';

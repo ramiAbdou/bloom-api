@@ -2,7 +2,7 @@ import { ApplyToCommunityAdminsPayload } from 'src/system/emails/util/getApplyTo
 import { ApplyToCommunityPayload } from 'src/system/emails/util/getApplyToCommunityVars';
 import { ArgsType, Field, InputType } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
 import Community from '@entities/community/Community';

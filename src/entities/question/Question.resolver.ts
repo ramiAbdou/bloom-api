@@ -1,6 +1,6 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
 import { MemberRole } from '@entities/member/Member';
 import Question from './Question';
 import getQuestions, { GetQuestionsArgs } from './repo/getQuestions';

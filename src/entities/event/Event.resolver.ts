@@ -1,7 +1,7 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { GQLContext } from '@constants';
 import { MemberRole } from '@entities/member/Member';
+import { GQLContext } from '@util/constants';
 import Event from './Event';
 import createEvent, { CreateEventArgs } from './repo/createEvent';
 import deleteEvent, { DeleteEventArgs } from './repo/deleteEvent';

@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import jwt from 'jsonwebtoken';
 
-import { APP } from '@constants';
+import { APP } from '@util/constants';
 
 interface JwtGoogleToken {
   email: string;

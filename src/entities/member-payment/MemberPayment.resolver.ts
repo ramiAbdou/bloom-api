@@ -1,6 +1,6 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import { MemberRole } from '@entities/member/Member';
 import { QueryEvent } from '@util/events';

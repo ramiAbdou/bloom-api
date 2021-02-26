@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import Member from '@entities/member/Member';
 import MemberPayment from '../MemberPayment';

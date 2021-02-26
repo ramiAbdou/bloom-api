@@ -2,7 +2,7 @@ import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
 import { GraphQLSchema } from 'graphql';
 import { AuthChecker, buildSchema } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import { decodeToken } from '@util/util';
 import CommunityApplicationResolver from '../entities/community-application/CommunityApplication.resolver';

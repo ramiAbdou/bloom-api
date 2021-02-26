@@ -1,6 +1,6 @@
 import { Field, ObjectType } from 'type-graphql';
 
-import { AuthTokens, GQLContext } from '@constants';
+import { AuthTokens, GQLContext } from '@util/constants';
 import { VerifyEvent } from '@util/events';
 import { TokenArgs } from '@util/gql';
 import { decodeToken } from '@util/util';

@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 
-import { APP } from '@constants';
+import { APP } from '@util/constants';
 import getLoginError, { LoginError } from '@entities/user/repo/getLoginError';
 import refreshToken from '@entities/user/repo/refreshToken';
 import getGoogleToken from './repo/getGoogleToken';

@@ -1,6 +1,6 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
 import { TokenArgs } from '@util/gql';
 import getTokens, { GetTokensArgs, GetTokensResult } from './repo/getTokens';
 import getUser, { GetUserArgs } from './repo/getUser';

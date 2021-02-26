@@ -1,6 +1,6 @@
 import { Args, Ctx, Query, Resolver } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
 import MemberType from './MemberType';
 import getMemberTypes, { GetMemberTypesArgs } from './repo/getMemberTypes';
 

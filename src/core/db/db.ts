@@ -1,7 +1,7 @@
 import dbConfig from 'mikro-orm.config';
 import { EntityManager, MikroORM } from '@mikro-orm/core';
 
-import { isProduction } from '@constants';
+import { isProduction } from '@util/constants';
 
 class Db {
   em: EntityManager;

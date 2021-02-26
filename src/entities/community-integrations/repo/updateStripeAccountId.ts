@@ -1,4 +1,4 @@
-import { AuthQueryArgs, IntegrationsBrand } from '@constants';
+import { AuthQueryArgs, IntegrationsBrand } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import createStripeProducts from '@entities/member-type/repo/createStripeProducts';
 import getStripeAccountId from '@integrations/stripe/repo/getStripeAccountId';

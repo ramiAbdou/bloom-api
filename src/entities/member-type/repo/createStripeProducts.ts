@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
 
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import MemberType, { RecurrenceType } from '@entities/member-type/MemberType';

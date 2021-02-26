@@ -1,4 +1,4 @@
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import { FlushEvent } from '@util/events';
 import MemberRefresh from '../MemberRefresh';

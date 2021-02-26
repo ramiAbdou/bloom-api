@@ -1,6 +1,6 @@
 import LRUCache from 'lru-cache';
 
-import { APP } from '@constants';
+import { APP } from '@util/constants';
 
 class Cache extends LRUCache<string, any> {
   constructor() {

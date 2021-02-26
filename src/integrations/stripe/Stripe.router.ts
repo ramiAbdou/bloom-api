@@ -2,7 +2,7 @@ import bodyParser from 'body-parser';
 import { Request, Response, Router } from 'express';
 import Stripe from 'stripe';
 
-import { APP, AuthQueryArgs, isProduction } from '@constants';
+import { APP, AuthQueryArgs, isProduction } from '@util/constants';
 import updateStripeAccountId from '@entities/community-integrations/repo/updateStripeAccountId';
 import logger from '@system/logger/logger';
 import { stripe } from './Stripe.util';

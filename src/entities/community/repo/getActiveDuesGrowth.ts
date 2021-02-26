@@ -1,4 +1,4 @@
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
 import Member, { MemberStatus } from '@entities/member/Member';

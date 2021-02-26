@@ -1,8 +1,8 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { emitEmailEvent, emitGoogleEvent } from '@system/eventBus';
+import { GQLContext } from '@util/constants';
 import { EmailEvent, FlushEvent, GoogleEvent } from '@util/events';
 import Event from '../Event';
 

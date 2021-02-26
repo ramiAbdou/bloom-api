@@ -1,6 +1,6 @@
 import { FilterQuery } from '@mikro-orm/core';
 
-import { APP, IntegrationsBrand, KeyValue } from '@constants';
+import { APP, IntegrationsBrand, KeyValue } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';

@@ -4,7 +4,7 @@ import day from 'dayjs';
 import { Response } from 'express';
 import jwt from 'jsonwebtoken';
 
-import { AuthTokens, isProduction, JWT } from '@constants';
+import { AuthTokens, isProduction, JWT } from '@util/constants';
 
 /**
  * Returns the decoded information stored inside the JWT token. We first

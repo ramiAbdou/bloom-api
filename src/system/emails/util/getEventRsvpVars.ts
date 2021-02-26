@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-import { APP, JWT } from '@constants';
+import { APP, JWT } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import EventGuest from '@entities/event-guest/EventGuest';

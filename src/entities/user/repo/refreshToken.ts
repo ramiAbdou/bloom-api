@@ -2,7 +2,7 @@ import { Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { FilterQuery } from '@mikro-orm/core';
 
-import { AuthTokens, JWT } from '@constants';
+import { AuthTokens, JWT } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import createMemberRefresh from '@entities/member-refresh/repo/createMemberRefresh';
 import Member from '@entities/member/Member';

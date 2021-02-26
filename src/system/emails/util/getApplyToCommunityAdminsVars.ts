@@ -1,4 +1,4 @@
-import { APP } from '@constants';
+import { APP } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import User from '@entities/user/User';

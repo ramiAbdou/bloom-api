@@ -1,6 +1,6 @@
-import { APP } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
+import { APP } from '@util/constants';
 
 interface GetEventUrlArgs {
   eventId: string;

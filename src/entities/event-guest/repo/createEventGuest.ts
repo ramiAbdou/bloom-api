@@ -1,7 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
 import { FilterQuery } from '@mikro-orm/core';
 
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import { emitEmailEvent, emitGoogleEvent } from '@system/eventBus';
 import User from '@entities/user/User';

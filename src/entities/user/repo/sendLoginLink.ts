@@ -1,6 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { APP } from '@constants';
+import { APP } from '@util/constants';
 import { LoginLinkEmailPayload } from '@system/emails/util/getLoginLinkVars';
 import { emitEmailEvent } from '@system/eventBus';
 import { EmailEvent } from '@util/events';

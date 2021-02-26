@@ -1,7 +1,7 @@
 import day from 'dayjs';
 import { QueryOrder } from '@mikro-orm/core';
 
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
 import MemberPayment from '@entities/member-payment/MemberPayment';

@@ -1,6 +1,6 @@
 import { ArgsType, Field, ObjectType } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import { decodeToken } from '@util/util';
 import Member from '@entities/member/Member';

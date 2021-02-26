@@ -10,7 +10,7 @@ import {
   QueryOrder
 } from '@mikro-orm/core';
 
-import { isProduction } from '@constants';
+import { isProduction } from '@util/constants';
 import BaseEntity from '@core/db/BaseEntity';
 import CommunityApplication from '../community-application/CommunityApplication';
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';

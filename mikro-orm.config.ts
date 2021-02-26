@@ -1,6 +1,6 @@
 import { Connection, IDatabaseDriver, Options } from '@mikro-orm/core';
 
-import { APP, isProduction } from '@constants';
+import { APP, isProduction } from '@util/constants';
 import BaseCompositeEntity from '@core/db/BaseCompositeEntity';
 import BaseEntity from '@core/db/BaseEntity';
 import BloomManagerSubscriber from '@core/db/BloomManager.subscriber';

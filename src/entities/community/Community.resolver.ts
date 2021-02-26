@@ -1,6 +1,6 @@
 import { Args, Authorized, Ctx, Query, Resolver } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
 import { MemberRole } from '@entities/member/Member';
 import { TimeSeriesData } from '@util/gql';
 import Community from './Community';

@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { URLSearchParams } from 'url';
 
-import { APP, AuthQueryArgs, isProduction } from '@constants';
+import { APP, AuthQueryArgs, isProduction } from '@util/constants';
 
 const getMailchimpAccessToken = async ({
   code

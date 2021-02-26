@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import { stripe } from '@integrations/stripe/Stripe.util';

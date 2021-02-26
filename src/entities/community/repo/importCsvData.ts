@@ -2,7 +2,7 @@ import csv from 'csvtojson';
 import day from 'dayjs';
 import { internet } from 'faker';
 
-import { isProduction, TEST_EMAILS } from '@constants';
+import { isProduction, TEST_EMAILS } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import MemberData from '@entities/member-data/MemberData';
 import MemberType from '@entities/member-type/MemberType';

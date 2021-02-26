@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 
-import { AuthQueryArgs } from '@constants';
+import { AuthQueryArgs } from '@util/constants';
 import { stripe } from '../Stripe.util';
 
 const getStripeAccountId = async ({ code }: AuthQueryArgs): Promise<string> => {
