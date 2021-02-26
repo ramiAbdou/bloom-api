@@ -23,8 +23,7 @@ const createCommunity = async ({
     { category: QuestionCategory.FIRST_NAME, title: 'First Name' },
     { category: QuestionCategory.LAST_NAME, title: 'Last Name' },
     { category: QuestionCategory.DUES_STATUS, title: 'Status' },
-    { category: QuestionCategory.MEMBERSHIP_TYPE, title: 'Membership Type' },
-    { category: QuestionCategory.JOINED_AT, title: 'Joined At' }
+    { category: QuestionCategory.MEMBERSHIP_TYPE, title: 'Membership Type' }
   ];
 
   const persistedQuestions: Question[] = allQuestions.map(

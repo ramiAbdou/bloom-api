@@ -108,6 +108,10 @@ export default class Question extends BaseEntity {
       this.options = ['Male', 'Female', 'Non-Binary', 'Prefer Not to Say'];
     }
 
+    if (this.category === QuestionCategory.DUES_STATUS) {
+      this.options = ['Active', 'Inactive'];
+    }
+
     if (this.category === QuestionCategory.MEMBERSHIP_TYPE) {
       this.options = this.community.types.getItems().map(({ name }) => name);
     }
