@@ -35,7 +35,7 @@ class BloomManager {
   em: EntityManager;
 
   constructor(em?: EntityManager) {
-    this.em = em || db.em.fork();
+    this.em = em || db.em?.fork();
   }
 
   fork = () => new BloomManager();

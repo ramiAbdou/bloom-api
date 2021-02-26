@@ -1,8 +1,8 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import { MemberRole } from '@entities/member/Member';
+import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
 import MemberPayment from './MemberPayment';
 import createLifetimePayment, {

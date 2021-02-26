@@ -1,7 +1,6 @@
 import Stripe from 'stripe';
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import MemberType from '@entities/member-type/MemberType';
@@ -13,6 +12,7 @@ import createStripeSubscription, {
 import updateStripeSubscription, {
   UpdateStripeSubscriptionArgs
 } from '@integrations/stripe/repo/updateStripeSubscription';
+import { GQLContext } from '@util/constants';
 import { FlushEvent } from '@util/events';
 import MemberPayment from '../MemberPayment';
 import createMemberPayment from './createMemberPayment';
@@ -27,9 +27,12 @@ export class CreateSubsciptionArgs {
 }
 
 const createSubscription = async (
-  { memberTypeId, prorationDate }: CreateSubsciptionArgs,
-  { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
+  args: CreateSubsciptionArgs,
+  ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<MemberPayment> => {
+  const { memberTypeId, prorationDate } = args;
+  const { communityId, memberId } = ctx;
+
   await createStripeCustomer({ memberId });
 
   const bm = new BloomManager();
@@ -71,7 +74,7 @@ const createSubscription = async (
 
   const payment: MemberPayment = await createMemberPayment(
     { invoice, typeId: memberTypeId },
-    { communityId, memberId }
+    ctx
   );
 
   return payment;

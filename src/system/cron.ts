@@ -5,7 +5,7 @@ import BloomManager from '@core/db/BloomManager';
 import Task from '../entities/task/Task';
 
 // Runs every 5 minutes.
-cron.schedule('*/1 * * * *', async () => {
+cron.schedule('*/5 * * * *', async () => {
   const bm = new BloomManager();
 
   // Get all the Tasks with executeAt time that is before the current time

@@ -1,8 +1,8 @@
 import Stripe from 'stripe';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import Member from '@entities/member/Member';
+import { GQLContext } from '@util/constants';
 import MemberPayment from '../MemberPayment';
 
 interface CreateMemberPaymentArgs {
