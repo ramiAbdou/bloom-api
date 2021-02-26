@@ -2,8 +2,8 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { DeleteMembersContext } from '@core/emails/util/getDeleteMembersVars';
-import emitEmailEvent from '@core/events/emitEmailEvent';
+import { DeleteMembersPayload } from '@core/emails/util/getDeleteMembersVars';
+import { emitEmailEvent } from '@core/eventBus';
 import { EmailEvent, FlushEvent } from '@util/events';
 import Member from '../Member';
 
@@ -34,7 +34,7 @@ const deleteMembers = async (
 
   emitEmailEvent(
     EmailEvent.DELETE_MEMBERS,
-    { communityId, memberIds } as DeleteMembersContext,
+    { communityId, memberIds } as DeleteMembersPayload,
     { delay: 5000 }
   );
 

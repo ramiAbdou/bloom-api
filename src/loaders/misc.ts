@@ -1,1 +1,1 @@
-import '../core/events/eventBus';
+import '../core/eventBus';

@@ -6,9 +6,9 @@ import { Community, Event, EventGuest, User } from '@entities/entities';
 import { VerifiedToken } from '@entities/user/repo/verifyToken';
 import { VerifyEvent } from '@util/events';
 import URLBuilder from '@util/URLBuilder';
-import { EmailContext } from '../emails.types';
+import { EmailPayload } from '../emails.types';
 
-export interface EventRsvpContext {
+export interface EventRsvpPayload {
   communityId: string;
   eventId: string;
   guestId: string;
@@ -21,9 +21,9 @@ export interface EventRsvpVars {
 }
 
 const getEventRsvpVars = async (
-  context: EmailContext
+  context: EmailPayload
 ): Promise<EventRsvpVars[]> => {
-  const { communityId, eventId, guestId } = context as EventRsvpContext;
+  const { communityId, eventId, guestId } = context as EventRsvpPayload;
 
   const bm = new BloomManager();
 

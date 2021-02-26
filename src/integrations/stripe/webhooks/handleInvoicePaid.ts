@@ -1,8 +1,8 @@
 import Stripe from 'stripe';
 
 import BloomManager from '@core/db/BloomManager';
-import { PaymentReceiptContext } from '@core/emails/util/getPaymentReceiptVars';
-import emitEmailEvent from '@core/events/emitEmailEvent';
+import { PaymentReceiptPayload } from '@core/emails/util/getPaymentReceiptVars';
+import { emitEmailEvent } from '@core/eventBus';
 import { Community, Member, MemberPayment } from '@entities/entities';
 import createMemberPayment from '@entities/member-payment/repo/createMemberPayment';
 import { EmailEvent } from '@util/events';
@@ -48,7 +48,7 @@ const handleInvoicePaid = async (event: Stripe.Event) => {
     card: method.card,
     paymentId: updatedPayment.id,
     stripeAccountId
-  } as PaymentReceiptContext);
+  } as PaymentReceiptPayload);
 };
 
 export default handleInvoicePaid;

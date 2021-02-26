@@ -2,8 +2,8 @@ import { ArgsType, Field, InputType } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { InviteMembersContext } from '@core/emails/util/getInviteMembersVars';
-import emitEmailEvent from '@core/events/emitEmailEvent';
+import { InviteMembersPayload } from '@core/emails/util/getInviteMembersVars';
+import { emitEmailEvent } from '@core/eventBus';
 import { Community } from '@entities/entities';
 import User from '@entities/user/User';
 import { EmailEvent, FlushEvent } from '@util/events';
@@ -105,7 +105,7 @@ const inviteMembers = async (
     communityId,
     coordinatorId: memberId,
     memberIds: members.map((member: Member) => member.id)
-  } as InviteMembersContext);
+  } as InviteMembersPayload);
 
   return members;
 };

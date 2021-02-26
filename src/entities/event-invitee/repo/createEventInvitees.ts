@@ -1,6 +1,6 @@
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import emitEmailEvent from '@core/events/emitEmailEvent';
+import { emitEmailEvent } from '@core/eventBus';
 import { EmailEvent, FlushEvent } from '@util/events';
 import EventInvitee from '../EventInvitee';
 

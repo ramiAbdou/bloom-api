@@ -1,8 +1,8 @@
 import BloomManager from '@core/db/BloomManager';
 import { Community, Event, User } from '@entities/entities';
-import { EmailContext } from '../emails.types';
+import { EmailPayload } from '../emails.types';
 
-export interface DeleteEventCoordinatorContext {
+export interface DeleteEventCoordinatorPayload {
   communityId: string;
   coordinatorId: string;
   eventId: string;
@@ -22,13 +22,13 @@ export interface DeleteEventCoordinatorVars {
  * @param {string} context.eventId
  */
 const getDeleteEventCoordinatorVars = async (
-  context: EmailContext
+  context: EmailPayload
 ): Promise<DeleteEventCoordinatorVars[]> => {
   const {
     communityId,
     coordinatorId,
     eventId
-  } = context as DeleteEventCoordinatorContext;
+  } = context as DeleteEventCoordinatorPayload;
 
   const bm = new BloomManager();
 

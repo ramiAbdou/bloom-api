@@ -1,54 +1,56 @@
-import { DeleteEventGuestArgs } from '@entities/event-guest/repo/deleteEventGuest';
 import { EmailEvent } from '@util/events';
 import {
-  AcceptedIntoCommunityContext,
+  AcceptedIntoCommunityPayload,
   AcceptedIntoCommunityVars
 } from './util/getAcceptedIntoCommunityVars';
 import {
-  ApplyToCommunityAdminsContext,
+  ApplyToCommunityAdminsPayload,
   ApplyToCommunityAdminsVars
 } from './util/getApplyToCommunityAdminsVars';
 import {
-  ApplyToCommunityContext,
+  ApplyToCommunityPayload,
   ApplyToCommunityVars
 } from './util/getApplyToCommunityVars';
 import {
-  ConnectIntegrationsContext,
+  ConnectIntegrationsPayload,
   ConnectIntegrationsVars
 } from './util/getConnectIntegrationsVars';
 import {
-  CreateEventCoordinatorContext,
+  CreateEventCoordinatorPayload,
   CreateEventCoordinatorVars
 } from './util/getCreateEventCoordinatorVars';
-import { CreateEventInviteesContext } from './util/getCreateEventInviteesVars';
+import { CreateEventInviteesPayload } from './util/getCreateEventInviteesVars';
 import {
-  DeleteEventCoordinatorContext,
+  DeleteEventCoordinatorPayload,
   DeleteEventCoordinatorVars
 } from './util/getDeleteEventCoordinatorVars';
-import { DeleteEventGuestsVars } from './util/getDeleteEventGuestsVars';
 import {
-  DeleteMembersContext,
+  DeleteEventGuestsPayload,
+  DeleteEventGuestsVars
+} from './util/getDeleteEventGuestsVars';
+import {
+  DeleteMembersPayload,
   DeleteMembersVars
 } from './util/getDeleteMembersVars';
 import {
-  DemoteMembersContext,
+  DemoteMembersPayload,
   DemoteMembersVars
 } from './util/getDemoteMembersVars';
-import { EventRsvpContext, EventRsvpVars } from './util/getEventRsvpVars';
+import { EventRsvpPayload, EventRsvpVars } from './util/getEventRsvpVars';
 import {
-  InviteMembersContext,
+  InviteMembersPayload,
   InviteMembersVars
 } from './util/getInviteMembersVars';
 import {
-  LoginLinkEmailContext,
+  LoginLinkEmailPayload,
   LoginLinkEmailVars
 } from './util/getLoginLinkVars';
 import {
-  PaymentReceiptContext,
+  PaymentReceiptPayload,
   PaymentReceiptVars
 } from './util/getPaymentReceiptVars';
 import {
-  PromoteMembersContext,
+  PromoteMembersPayload,
   PromoteMembersVars
 } from './util/getPromoteMembersVars';
 
@@ -57,22 +59,22 @@ export interface FormatPersonalizationData {
   to: { email: string };
 }
 
-export type EmailContext =
-  | AcceptedIntoCommunityContext
-  | ApplyToCommunityContext
-  | ApplyToCommunityAdminsContext
-  | ConnectIntegrationsContext
-  | CreateEventCoordinatorContext
-  | CreateEventInviteesContext
-  | DeleteEventCoordinatorContext
-  | DeleteEventGuestArgs
-  | DeleteMembersContext
-  | DemoteMembersContext
-  | EventRsvpContext
-  | InviteMembersContext
-  | LoginLinkEmailContext
-  | PaymentReceiptContext
-  | PromoteMembersContext;
+export type EmailPayload =
+  | AcceptedIntoCommunityPayload
+  | ApplyToCommunityPayload
+  | ApplyToCommunityAdminsPayload
+  | ConnectIntegrationsPayload
+  | CreateEventCoordinatorPayload
+  | CreateEventInviteesPayload
+  | DeleteEventCoordinatorPayload
+  | DeleteEventGuestsPayload
+  | DeleteMembersPayload
+  | DemoteMembersPayload
+  | EventRsvpPayload
+  | InviteMembersPayload
+  | LoginLinkEmailPayload
+  | PaymentReceiptPayload
+  | PromoteMembersPayload;
 
 export type EmailVars =
   | AcceptedIntoCommunityVars
@@ -91,8 +93,6 @@ export type EmailVars =
   | PromoteMembersVars;
 
 export interface EmailArgs {
-  emailContext: EmailContext;
+  emailPayload: EmailPayload;
   emailEvent: EmailEvent;
 }
-
-export type SendEmailsArgs = EmailArgs;

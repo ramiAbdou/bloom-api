@@ -3,9 +3,9 @@ import { FilterQuery } from '@mikro-orm/core';
 import { APP, IntegrationsBrand, KeyValue } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { Community, CommunityIntegrations, User } from '@entities/entities';
-import { EmailContext } from '../emails.types';
+import { EmailPayload } from '../emails.types';
 
-export interface ConnectIntegrationsContext {
+export interface ConnectIntegrationsPayload {
   brand: IntegrationsBrand;
   communityId?: string;
   urlName?: string;
@@ -20,9 +20,9 @@ export interface ConnectIntegrationsVars {
 }
 
 const getConnectIntegrationsVars = async (
-  context: EmailContext
+  context: EmailPayload
 ): Promise<ConnectIntegrationsVars[]> => {
-  const { brand, communityId, urlName } = context as ConnectIntegrationsContext;
+  const { brand, communityId, urlName } = context as ConnectIntegrationsPayload;
 
   const bm = new BloomManager();
 

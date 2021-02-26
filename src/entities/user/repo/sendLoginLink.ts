@@ -1,10 +1,10 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import { APP } from '@constants';
-import emitEmailEvent from '@core/events/emitEmailEvent';
+import { emitEmailEvent } from '@core/eventBus';
 import { EmailEvent } from '@util/events';
 import URLBuilder from '@util/URLBuilder';
-import { LoginLinkEmailContext } from '../../../core/emails/util/getLoginLinkVars';
+import { LoginLinkEmailPayload } from '../../../core/emails/util/getLoginLinkVars';
 import getLoginError, { LoginError } from './getLoginError';
 import refreshToken from './refreshToken';
 
@@ -44,7 +44,7 @@ const sendLoginLink = async ({
   emitEmailEvent(EmailEvent.LOGIN_LINK, {
     email,
     loginUrl
-  } as LoginLinkEmailContext);
+  } as LoginLinkEmailPayload);
 };
 
 export default sendLoginLink;

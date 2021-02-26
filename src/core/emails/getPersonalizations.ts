@@ -2,7 +2,7 @@ import { isProduction, TEST_EMAILS } from '@constants';
 import { EmailEvent } from '@util/events';
 import logger from '@util/logger';
 import { splitArrayIntoChunks } from '@util/util';
-import { EmailVars, SendEmailsArgs } from './emails.types';
+import { EmailArgs, EmailVars } from './emails.types';
 import getAcceptedIntoCommunityVars from './util/getAcceptedIntoCommunityVars';
 import getApplyToCommunityAdminsVars from './util/getApplyToCommunityAdminsVars';
 import getApplyToCommunityVars from './util/getApplyToCommunityVars';
@@ -47,77 +47,77 @@ const formatPersonalizations = (
 /**
  * Returns the email personalizations according to the args.emailEvent.
  *
- * @param {EmailContext} args.emailContext
+ * @param {EmailPayload} args.emailPayload
  * @param {EmailEvent} args.emailEvent
  *
  * @returns {FormatPersonalizationData[][]} - Nested array of personalizations.
  */
-const getEmailPersonalizations = async (
-  args: SendEmailsArgs
+const getPersonalizations = async (
+  args: EmailArgs
 ): Promise<FormatPersonalizationData[][]> => {
-  const { emailContext, emailEvent } = args;
+  const { emailPayload, emailEvent } = args;
 
   let vars: EmailVars[] = [];
 
   switch (emailEvent) {
     case EmailEvent.ACCEPTED_INTO_COMMUNITY:
-      vars = await getAcceptedIntoCommunityVars(emailContext);
+      vars = await getAcceptedIntoCommunityVars(emailPayload);
       break;
 
     case EmailEvent.APPLY_TO_COMMUNITY:
-      vars = await getApplyToCommunityVars(emailContext);
+      vars = await getApplyToCommunityVars(emailPayload);
       break;
 
     case EmailEvent.APPLY_TO_COMMUNITY_ADMINS:
-      vars = await getApplyToCommunityAdminsVars(emailContext);
+      vars = await getApplyToCommunityAdminsVars(emailPayload);
       break;
 
     case EmailEvent.CONNECT_INTEGRATIONS:
-      vars = await getConnectIntegrationsVars(emailContext);
+      vars = await getConnectIntegrationsVars(emailPayload);
       break;
 
     case EmailEvent.CREATE_EVENT_COORDINATOR:
-      vars = await getCreateEventCoordinatorVars(emailContext);
+      vars = await getCreateEventCoordinatorVars(emailPayload);
       break;
 
     case EmailEvent.CREATE_EVENT_INVITEES:
-      vars = await getCreateEventInviteesVars(emailContext);
+      vars = await getCreateEventInviteesVars(emailPayload);
       break;
 
     case EmailEvent.DELETE_EVENT_COORDINATOR:
-      vars = await getDeleteEventCoordinatorVars(emailContext);
+      vars = await getDeleteEventCoordinatorVars(emailPayload);
       break;
 
     case EmailEvent.DELETE_EVENT_GUESTS:
-      vars = await getDeleteEventGuestsVars(emailContext);
+      vars = await getDeleteEventGuestsVars(emailPayload);
       break;
 
     case EmailEvent.DELETE_MEMBERS:
-      vars = await getDeleteMembersVars(emailContext);
+      vars = await getDeleteMembersVars(emailPayload);
       break;
 
     case EmailEvent.DEMOTE_MEMBERS:
-      vars = await getDemoteMembersVars(emailContext);
+      vars = await getDemoteMembersVars(emailPayload);
       break;
 
     case EmailEvent.EVENT_RSVP:
-      vars = await getEventRsvpVars(emailContext);
+      vars = await getEventRsvpVars(emailPayload);
       break;
 
     case EmailEvent.INVITE_MEMBERS:
-      vars = await getInviteMembersVars(emailContext);
+      vars = await getInviteMembersVars(emailPayload);
       break;
 
     case EmailEvent.LOGIN_LINK:
-      vars = await getLoginLinkVars(emailContext);
+      vars = await getLoginLinkVars(emailPayload);
       break;
 
     case EmailEvent.PAYMENT_RECEIPT:
-      vars = await getPaymentReceiptVars(emailContext);
+      vars = await getPaymentReceiptVars(emailPayload);
       break;
 
     case EmailEvent.PROMOTE_MEMBERS:
-      vars = await getPromoteMembersVars(emailContext);
+      vars = await getPromoteMembersVars(emailPayload);
       break;
 
     default:
@@ -129,8 +129,7 @@ const getEmailPersonalizations = async (
 
   const personalizations = formatPersonalizations(vars);
   const chunkedPersonalizations = splitArrayIntoChunks(personalizations, 1000);
-
   return chunkedPersonalizations;
 };
 
-export default getEmailPersonalizations;
+export default getPersonalizations;

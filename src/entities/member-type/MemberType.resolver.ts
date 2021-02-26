@@ -2,15 +2,15 @@ import { Args, Ctx, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import MemberType from './MemberType';
-import getTypes, { GetTypesArgs } from './repo/getTypes';
+import getMemberTypes, { GetMemberTypesArgs } from './repo/getMemberTypes';
 
 @Resolver()
 export default class MemberTypeResolver {
   @Query(() => [MemberType])
   async getTypes(
-    @Args() args: GetTypesArgs,
+    @Args() args: GetMemberTypesArgs,
     @Ctx() ctx: GQLContext
   ): Promise<MemberType[]> {
-    return getTypes(args, ctx);
+    return getMemberTypes(args, ctx);
   }
 }

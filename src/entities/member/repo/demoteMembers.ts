@@ -2,8 +2,8 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { DemoteMembersContext } from '@core/emails/util/getDemoteMembersVars';
-import emitEmailEvent from '@core/events/emitEmailEvent';
+import { DemoteMembersPayload } from '@core/emails/util/getDemoteMembersVars';
+import { emitEmailEvent } from '@core/eventBus';
 import { EmailEvent, FlushEvent } from '@util/events';
 import Member from '../Member';
 
@@ -36,7 +36,7 @@ const demoteMembers = async (
   emitEmailEvent(EmailEvent.DEMOTE_MEMBERS, {
     communityId,
     memberIds
-  } as DemoteMembersContext);
+  } as DemoteMembersPayload);
 
   return members;
 };

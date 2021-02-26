@@ -2,7 +2,7 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext, IntegrationsBrand } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import emitEmailEvent from '@core/events/emitEmailEvent';
+import { emitEmailEvent } from '@core/eventBus';
 import { EmailEvent, FlushEvent } from '@util/events';
 import CommunityIntegrations from '../CommunityIntegrations';
 

@@ -1,8 +1,8 @@
 import { FilterQuery } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
-import { AcceptedIntoCommunityContext } from '@core/emails/util/getAcceptedIntoCommunityVars';
-import emitEmailEvent from '@core/events/emitEmailEvent';
+import { AcceptedIntoCommunityPayload } from '@core/emails/util/getAcceptedIntoCommunityVars';
+import { emitEmailEvent } from '@core/eventBus';
 import { EmailEvent, FlushEvent } from '@util/events';
 import Member, { MemberStatus } from '../Member';
 
@@ -37,7 +37,7 @@ const acceptInvitations = async (
     emitEmailEvent(EmailEvent.ACCEPTED_INTO_COMMUNITY, {
       communityId: member.community.id,
       memberIds: [member.id]
-    } as AcceptedIntoCommunityContext);
+    } as AcceptedIntoCommunityPayload);
   });
 
   return members;

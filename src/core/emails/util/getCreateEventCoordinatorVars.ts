@@ -1,8 +1,8 @@
 import BloomManager from '@core/db/BloomManager';
 import { Community, Event, User } from '@entities/entities';
-import { EmailContext } from '../emails.types';
+import { EmailPayload } from '../emails.types';
 
-export interface CreateEventCoordinatorContext {
+export interface CreateEventCoordinatorPayload {
   communityId: string;
   coordinatorId: string;
   eventId: string;
@@ -18,13 +18,13 @@ export interface CreateEventCoordinatorVars {
 }
 
 const getCreateEventCoordinatorVars = async (
-  context: EmailContext
+  context: EmailPayload
 ): Promise<CreateEventCoordinatorVars[]> => {
   const {
     communityId,
     coordinatorId,
     eventId
-  } = context as CreateEventCoordinatorContext;
+  } = context as CreateEventCoordinatorPayload;
 
   const bm = new BloomManager();
 

@@ -1,6 +1,6 @@
 import { AuthQueryArgs, IntegrationsBrand } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import emitEmailEvent from '@core/events/emitEmailEvent';
+import { emitEmailEvent } from '@core/eventBus';
 import createStripeProducts from '@entities/member-type/repo/createStripeProducts';
 import getStripeAccountId from '@integrations/stripe/repo/getStripeAccountId';
 import { EmailEvent, FlushEvent } from '@util/events';

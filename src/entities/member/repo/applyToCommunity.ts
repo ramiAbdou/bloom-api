@@ -3,9 +3,9 @@ import { ArgsType, Field, InputType } from 'type-graphql';
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
-import { ApplyToCommunityAdminsContext } from '@core/emails/util/getApplyToCommunityAdminsVars';
-import { ApplyToCommunityContext } from '@core/emails/util/getApplyToCommunityVars';
-import emitEmailEvent from '@core/events/emitEmailEvent';
+import { ApplyToCommunityAdminsPayload } from '@core/emails/util/getApplyToCommunityAdminsVars';
+import { ApplyToCommunityPayload } from '@core/emails/util/getApplyToCommunityVars';
+import { emitEmailEvent } from '@core/eventBus';
 import Community from '@entities/community/Community';
 import MemberData from '@entities/member-data/MemberData';
 import createLifetimePayment from '@entities/member-payment/repo/createLifetimePayment';
@@ -150,12 +150,12 @@ const applyToCommunity = async (
   emitEmailEvent(EmailEvent.APPLY_TO_COMMUNITY, {
     communityId: community.id,
     memberId: member.id
-  } as ApplyToCommunityContext);
+  } as ApplyToCommunityPayload);
 
   emitEmailEvent(EmailEvent.APPLY_TO_COMMUNITY_ADMINS, {
     applicantId: member.id,
     communityId: community.id
-  } as ApplyToCommunityAdminsContext);
+  } as ApplyToCommunityAdminsPayload);
 
   cache.invalidateKeys(
     member.status === MemberStatus.PENDING

@@ -1,9 +1,9 @@
 import BloomManager from '@core/db/BloomManager';
 import { Community, User } from '@entities/entities';
 import { MemberRole } from '@entities/member/Member';
-import { EmailContext } from '../emails.types';
+import { EmailPayload } from '../emails.types';
 
-export interface DeleteMembersContext {
+export interface DeleteMembersPayload {
   communityId: string;
   memberIds: string[];
 }
@@ -16,14 +16,14 @@ export interface DeleteMembersVars {
 
 /**
  *
- * @param {DeleteMembersContext} context
+ * @param {DeleteMembersPayload} context
  * @param {string} context.communityId
  * @param {string[]} context.memberIds
  */
 const getDeleteMembersVars = async (
-  context: EmailContext
+  context: EmailPayload
 ): Promise<DeleteMembersVars[]> => {
-  const { communityId, memberIds } = context as DeleteMembersContext;
+  const { communityId, memberIds } = context as DeleteMembersPayload;
 
   const bm = new BloomManager();
 

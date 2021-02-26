@@ -3,10 +3,9 @@ import { FilterQuery } from '@mikro-orm/core';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import emitEmailEvent from '@core/events/emitEmailEvent';
+import { emitEmailEvent, emitGoogleEvent } from '@core/eventBus';
 import User from '@entities/user/User';
 import { EmailEvent, FlushEvent, GoogleEvent } from '@util/events';
-import emitGoogleEvent from '../../../core/events/emitGoogleEvent';
 import EventGuest from '../EventGuest';
 
 @ArgsType()

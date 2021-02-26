@@ -1,9 +1,9 @@
 import BloomManager from '@core/db/BloomManager';
 import { Community, User } from '@entities/entities';
 import { MemberRole } from '@entities/member/Member';
-import { EmailContext } from '../emails.types';
+import { EmailPayload } from '../emails.types';
 
-export interface DemoteMembersContext {
+export interface DemoteMembersPayload {
   communityId: string;
   memberIds: string[];
 }
@@ -17,14 +17,14 @@ export interface DemoteMembersVars {
 /**
  * Returns the variables for the DEMOTE_MEMBERS email.
  *
- * @param {DeleteMembersContext} context
+ * @param {DeleteMembersPayload} context
  * @param {string} context.communityId
  * @param {string[]} context.memberIds
  */
 const getDemoteMembersVars = async (
-  context: EmailContext
+  context: EmailPayload
 ): Promise<DemoteMembersVars[]> => {
-  const { communityId, memberIds } = context as DemoteMembersContext;
+  const { communityId, memberIds } = context as DemoteMembersPayload;
 
   const bm = new BloomManager();
 

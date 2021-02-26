@@ -2,8 +2,8 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { PromoteMembersContext } from '@core/emails/util/getPromoteMembersVars';
-import emitEmailEvent from '@core/events/emitEmailEvent';
+import { PromoteMembersPayload } from '@core/emails/util/getPromoteMembersVars';
+import { emitEmailEvent } from '@core/eventBus';
 import { EmailEvent, FlushEvent } from '@util/events';
 import Member, { MemberRole } from '../Member';
 
@@ -36,7 +36,7 @@ const promoteMembers = async (
   emitEmailEvent(EmailEvent.PROMOTE_MEMBERS, {
     communityId,
     memberIds
-  } as PromoteMembersContext);
+  } as PromoteMembersPayload);
 
   return members;
 };

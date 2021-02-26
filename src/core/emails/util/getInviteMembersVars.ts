@@ -4,9 +4,9 @@ import { APP, JWT } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { Community, Member, User } from '@entities/entities';
 import URLBuilder from '@util/URLBuilder';
-import { EmailContext } from '../emails.types';
+import { EmailPayload } from '../emails.types';
 
-export interface InviteMembersContext {
+export interface InviteMembersPayload {
   communityId: string;
   coordinatorId: string;
   memberIds: string[];
@@ -27,13 +27,13 @@ export interface InviteMembersVars {
  * @param {string} context.memberId
  */
 const getInviteMembersVars = async (
-  context: EmailContext
+  context: EmailPayload
 ): Promise<InviteMembersVars[]> => {
   const {
     communityId,
     coordinatorId,
     memberIds
-  } = context as InviteMembersContext;
+  } = context as InviteMembersPayload;
 
   const bm = new BloomManager();
 

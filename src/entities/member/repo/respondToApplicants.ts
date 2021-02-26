@@ -2,9 +2,8 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { AcceptedIntoCommunityContext } from '@core/emails/util/getAcceptedIntoCommunityVars';
-import emitEmailEvent from '@core/events/emitEmailEvent';
-import emitMailchimpEvent from '@core/events/emitMailchimpEvent';
+import { AcceptedIntoCommunityPayload } from '@core/emails/util/getAcceptedIntoCommunityVars';
+import { emitEmailEvent, emitMailchimpEvent } from '@core/eventBus';
 import { EmailEvent, FlushEvent, MailchimpEvent } from '@util/events';
 import { now } from '@util/util';
 import Member, { MemberStatus } from '../Member';
@@ -48,7 +47,7 @@ const respondToApplicants = async (
     emitEmailEvent(EmailEvent.ACCEPTED_INTO_COMMUNITY, {
       communityId,
       memberIds
-    } as AcceptedIntoCommunityContext);
+    } as AcceptedIntoCommunityPayload);
 
     memberIds.forEach((memberId: string) => {
       emitMailchimpEvent(MailchimpEvent.ADD_TO_AUDIENCE, {

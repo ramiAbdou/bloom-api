@@ -1,9 +1,9 @@
 import BloomManager from '@core/db/BloomManager';
 import { Community, User } from '@entities/entities';
 import { MemberRole } from '@entities/member/Member';
-import { EmailContext } from '../emails.types';
+import { EmailPayload } from '../emails.types';
 
-export interface PromoteMembersContext {
+export interface PromoteMembersPayload {
   communityId: string;
   memberIds: string[];
 }
@@ -17,14 +17,14 @@ export interface PromoteMembersVars {
 /**
  * Returns the variables for the PROMOTE_MEMBERS email.
  *
- * @param {DeleteMembersContext} context
+ * @param {DeleteMembersPayload} context
  * @param {string} context.communityId
  * @param {string[]} context.memberIds
  */
 const getPromoteMembersVars = async (
-  context: EmailContext
+  context: EmailPayload
 ): Promise<PromoteMembersVars[]> => {
-  const { communityId, memberIds } = context as PromoteMembersContext;
+  const { communityId, memberIds } = context as PromoteMembersPayload;
 
   const bm = new BloomManager();
 

@@ -1,12 +1,12 @@
 import { isProduction } from '@constants';
 import sg, { MailDataRequired } from '@sendgrid/mail';
 import logger from '@util/logger';
-import { SendEmailsArgs } from './emails.types';
-import getEmailPersonalizations, {
+import { EmailArgs } from './emails.types';
+import getPersonalizations, {
   FormatPersonalizationData
-} from './getEmailPersonalizations';
+} from './getPersonalizations';
 
-interface SendEmailsBatch extends SendEmailsArgs {
+interface SendEmailsBatch extends EmailArgs {
   personalizations: FormatPersonalizationData[];
 }
 
@@ -34,12 +34,12 @@ const sendEmailsBatch = async (args: SendEmailsBatch) => {
  * @param mjml Name of the MJML file (including the .mjml extension).
  * @param variables Optional variables that populate the Handlebars template.
  */
-const sendEmails = async (args: SendEmailsArgs) => {
+const sendEmails = async (args: EmailArgs) => {
   // Shouldn't send any emails in development. If needed, comment this line
   // out manually each time.
   if (!isProduction) return;
 
-  const chunkedPersonalizations = await getEmailPersonalizations(args);
+  const chunkedPersonalizations = await getPersonalizations(args);
 
   await Promise.all(
     chunkedPersonalizations.map(

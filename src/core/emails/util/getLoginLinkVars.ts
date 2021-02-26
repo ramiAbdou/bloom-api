@@ -1,8 +1,8 @@
 import BloomManager from '@core/db/BloomManager';
 import User from '@entities/user/User';
-import { EmailContext } from '../emails.types';
+import { EmailPayload } from '../emails.types';
 
-export interface LoginLinkEmailContext {
+export interface LoginLinkEmailPayload {
   email: string;
   loginUrl: string;
 }
@@ -13,9 +13,9 @@ export interface LoginLinkEmailVars {
 }
 
 const getLoginLinkVars = async (
-  context: EmailContext
+  context: EmailPayload
 ): Promise<LoginLinkEmailVars[]> => {
-  const { email, loginUrl } = context as LoginLinkEmailContext;
+  const { email, loginUrl } = context as LoginLinkEmailPayload;
 
   const user: User = await new BloomManager().findOne(
     User,
