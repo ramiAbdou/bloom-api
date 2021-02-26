@@ -3,7 +3,7 @@ import { FilterQuery } from '@mikro-orm/core';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { emitEmailEvent, emitGoogleEvent } from '@core/eventBus';
+import { emitEmailEvent, emitGoogleEvent } from '@system/eventBus';
 import User from '@entities/user/User';
 import { EmailEvent, FlushEvent, GoogleEvent } from '@util/events';
 import EventGuest from '../EventGuest';

@@ -4,7 +4,7 @@ import Stripe from 'stripe';
 
 import { APP, AuthQueryArgs, isProduction } from '@constants';
 import updateStripeAccountId from '@entities/community-integrations/repo/updateStripeAccountId';
-import logger from '@logger';
+import logger from '@system/logger/logger';
 import { stripe } from './Stripe.util';
 import handleInvoicePaid from './webhooks/handleInvoicePaid';
 

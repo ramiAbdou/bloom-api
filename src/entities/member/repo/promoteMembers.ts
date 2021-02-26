@@ -1,9 +1,9 @@
+import { PromoteMembersPayload } from 'src/system/emails/util/getPromoteMembersVars';
 import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { PromoteMembersPayload } from '@core/emails/util/getPromoteMembersVars';
-import { emitEmailEvent } from '@core/eventBus';
+import { emitEmailEvent } from '@system/eventBus';
 import { EmailEvent, FlushEvent } from '@util/events';
 import Member, { MemberRole } from '../Member';
 

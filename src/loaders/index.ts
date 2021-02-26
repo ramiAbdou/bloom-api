@@ -10,7 +10,7 @@ import utc from 'dayjs/plugin/utc';
 import { APP } from '@constants';
 import db from '@core/db/db';
 import { LoggerEvent } from '@util/events';
-import logger from '@util/logger';
+import logger from '@system/logger/logger';
 import loadApollo from './apollo';
 import loadExpress from './express';
 

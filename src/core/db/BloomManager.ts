@@ -12,7 +12,7 @@ import {
 } from '@mikro-orm/core';
 
 import cache from '@core/db/cache';
-import logger from '@util/logger';
+import logger from '@system/logger/logger';
 import { now } from '@util/util';
 import {
   BloomCreateAndFlushArgs,

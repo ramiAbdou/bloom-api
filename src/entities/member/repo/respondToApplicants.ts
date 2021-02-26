@@ -1,9 +1,9 @@
+import { AcceptedIntoCommunityPayload } from 'src/system/emails/util/getAcceptedIntoCommunityVars';
 import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { AcceptedIntoCommunityPayload } from '@core/emails/util/getAcceptedIntoCommunityVars';
-import { emitEmailEvent, emitMailchimpEvent } from '@core/eventBus';
+import { emitEmailEvent, emitMailchimpEvent } from '@system/eventBus';
 import { EmailEvent, FlushEvent, MailchimpEvent } from '@util/events';
 import { now } from '@util/util';
 import Member, { MemberStatus } from '../Member';

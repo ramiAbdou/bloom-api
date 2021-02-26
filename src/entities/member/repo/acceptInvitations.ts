@@ -1,8 +1,8 @@
+import { AcceptedIntoCommunityPayload } from 'src/system/emails/util/getAcceptedIntoCommunityVars';
 import { FilterQuery } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
-import { AcceptedIntoCommunityPayload } from '@core/emails/util/getAcceptedIntoCommunityVars';
-import { emitEmailEvent } from '@core/eventBus';
+import { emitEmailEvent } from '@system/eventBus';
 import { EmailEvent, FlushEvent } from '@util/events';
 import Member, { MemberStatus } from '../Member';
 

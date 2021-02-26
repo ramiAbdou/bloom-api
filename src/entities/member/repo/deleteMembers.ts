@@ -2,8 +2,8 @@ import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { DeleteMembersPayload } from '@core/emails/util/getDeleteMembersVars';
-import { emitEmailEvent } from '@core/eventBus';
+import { DeleteMembersPayload } from '@system/emails/util/getDeleteMembersVars';
+import { emitEmailEvent } from '@system/eventBus';
 import { EmailEvent, FlushEvent } from '@util/events';
 import Member from '../Member';
 

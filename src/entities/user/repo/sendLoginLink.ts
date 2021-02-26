@@ -1,10 +1,10 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import { APP } from '@constants';
-import { emitEmailEvent } from '@core/eventBus';
+import { LoginLinkEmailPayload } from '@system/emails/util/getLoginLinkVars';
+import { emitEmailEvent } from '@system/eventBus';
 import { EmailEvent } from '@util/events';
 import URLBuilder from '@util/URLBuilder';
-import { LoginLinkEmailPayload } from '../../../core/emails/util/getLoginLinkVars';
 import getLoginError, { LoginError } from './getLoginError';
 import refreshToken from './refreshToken';
 

@@ -1,9 +1,9 @@
+import { DemoteMembersPayload } from 'src/system/emails/util/getDemoteMembersVars';
 import { ArgsType, Field } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { DemoteMembersPayload } from '@core/emails/util/getDemoteMembersVars';
-import { emitEmailEvent } from '@core/eventBus';
+import { emitEmailEvent } from '@system/eventBus';
 import { EmailEvent, FlushEvent } from '@util/events';
 import Member from '../Member';
 

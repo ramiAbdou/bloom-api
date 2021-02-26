@@ -1,10 +1,10 @@
+import { PaymentReceiptPayload } from 'src/system/emails/util/getPaymentReceiptVars';
 import Stripe from 'stripe';
 
 import BloomManager from '@core/db/BloomManager';
-import { PaymentReceiptPayload } from '@core/emails/util/getPaymentReceiptVars';
-import { emitEmailEvent } from '@core/eventBus';
 import { Community, Member, MemberPayment } from '@entities/entities';
 import createMemberPayment from '@entities/member-payment/repo/createMemberPayment';
+import { emitEmailEvent } from '@system/eventBus';
 import { EmailEvent } from '@util/events';
 import { stripe } from '../Stripe.util';
 

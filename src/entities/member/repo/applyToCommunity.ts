@@ -1,11 +1,10 @@
+import { ApplyToCommunityAdminsPayload } from 'src/system/emails/util/getApplyToCommunityAdminsVars';
+import { ApplyToCommunityPayload } from 'src/system/emails/util/getApplyToCommunityVars';
 import { ArgsType, Field, InputType } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
-import { ApplyToCommunityAdminsPayload } from '@core/emails/util/getApplyToCommunityAdminsVars';
-import { ApplyToCommunityPayload } from '@core/emails/util/getApplyToCommunityVars';
-import { emitEmailEvent } from '@core/eventBus';
 import Community from '@entities/community/Community';
 import MemberData from '@entities/member-data/MemberData';
 import createLifetimePayment from '@entities/member-payment/repo/createLifetimePayment';
@@ -13,6 +12,7 @@ import createSubscription from '@entities/member-payment/repo/createSubscription
 import MemberType, { RecurrenceType } from '@entities/member-type/MemberType';
 import Question, { QuestionCategory } from '@entities/question/Question';
 import User from '@entities/user/User';
+import { emitEmailEvent } from '@system/eventBus';
 import { EmailEvent, FlushEvent, QueryEvent } from '@util/events';
 import Member, { MemberStatus } from '../Member';
 import updatePaymentMethod from './updatePaymentMethod';
