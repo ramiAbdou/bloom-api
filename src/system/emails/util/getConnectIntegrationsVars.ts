@@ -2,7 +2,9 @@ import { FilterQuery } from '@mikro-orm/core';
 
 import { APP, IntegrationsBrand, KeyValue } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { Community, CommunityIntegrations, User } from '@entities/entities';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
+import Community from '@entities/community/Community';
+import User from '@entities/user/User';
 import { EmailPayload } from '../emails.types';
 
 export interface ConnectIntegrationsPayload {

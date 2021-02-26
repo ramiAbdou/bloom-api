@@ -9,7 +9,8 @@ import {
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
-import { Community, Member } from '@entities/entities';
+import Community from '@entities/community/Community';
+import Member from '@entities/member/Member';
 
 export enum RecurrenceType {
   LIFETIME = 'Lifetime',

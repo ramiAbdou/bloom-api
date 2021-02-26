@@ -3,7 +3,7 @@ import { ArgsType, Field, InputType } from 'type-graphql';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { Community } from '@entities/entities';
+import Community from '@entities/community/Community';
 import User from '@entities/user/User';
 import { emitEmailEvent } from '@system/eventBus';
 import { EmailEvent, FlushEvent } from '@util/events';

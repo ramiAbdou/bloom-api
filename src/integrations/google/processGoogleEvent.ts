@@ -1,7 +1,6 @@
 import BloomManager from '@core/db/BloomManager';
-import { Event } from '@entities/entities';
 import EventGuest from '@entities/event-guest/EventGuest';
-import { EventPrivacy } from '@entities/event/Event';
+import Event, { EventPrivacy } from '@entities/event/Event';
 import updateGoogleCalendarEventId from '@entities/event/repo/updateGoogleCalendarEventId';
 import deleteGoogleCalendarEvent from '@integrations/google/repo/deleteGoogleCalendarEvent';
 import deleteGoogleCalendarEventAttendee from '@integrations/google/repo/deleteGoogleCalendarEventAttendee';

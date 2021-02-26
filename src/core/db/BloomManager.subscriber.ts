@@ -5,7 +5,10 @@ import {
   FlushEventArgs
 } from '@mikro-orm/core';
 
-import logger, { LoggerChangeSet, LoggerChangeType } from '@util/logger';
+import logger, {
+  LoggerChangeSet,
+  LoggerChangeType
+} from '@system/logger/logger';
 
 export default class BloomManagerSubscriber implements EventSubscriber {
   async onFlush<T>({ uow }: FlushEventArgs): Promise<void> {

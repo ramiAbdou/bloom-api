@@ -1,6 +1,7 @@
 import { APP } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { Community, User } from '@entities/entities';
+import Community from '@entities/community/Community';
+import User from '@entities/user/User';
 import { EmailPayload } from '../emails.types';
 
 export interface ApplyToCommunityAdminsPayload {

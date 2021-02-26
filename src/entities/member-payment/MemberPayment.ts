@@ -4,7 +4,7 @@ import { AfterCreate, Entity, ManyToOne, Property } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
 import cache from '@core/db/cache';
-import { Community } from '@entities/entities';
+import Community from '@entities/community/Community';
 import { QueryEvent } from '@util/events';
 import MemberType from '../member-type/MemberType';
 import Member from '../member/Member';

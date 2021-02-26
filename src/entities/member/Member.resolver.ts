@@ -3,10 +3,9 @@ import { QueryOrder } from '@mikro-orm/core';
 
 import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { Member } from '@entities/entities';
+import Member, { MemberRole, MemberStatus } from '@entities/member/Member';
 import { QueryEvent } from '@util/events';
 import { CreateSubsciptionArgs } from '../member-payment/repo/createSubscription';
-import { MemberRole, MemberStatus } from './Member';
 import applyToCommunity, {
   ApplyToCommunityArgs
 } from './repo/applyToCommunity';

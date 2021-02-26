@@ -1,5 +1,7 @@
 import BloomManager from '@core/db/BloomManager';
-import { Community, Event, User } from '@entities/entities';
+import Community from '@entities/community/Community';
+import Event from '@entities/event/Event';
+import User from '@entities/user/User';
 import { EmailPayload } from '../emails.types';
 
 export interface CreateEventCoordinatorPayload {

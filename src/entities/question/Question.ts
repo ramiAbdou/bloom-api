@@ -11,7 +11,7 @@ import {
 
 import BaseEntity from '@core/db/BaseEntity';
 import cache from '@core/db/cache';
-import { Community } from '@entities/entities';
+import Community from '@entities/community/Community';
 import { QueryEvent } from '@util/events';
 
 export enum QuestionCategory {

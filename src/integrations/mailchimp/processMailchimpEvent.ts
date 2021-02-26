@@ -1,5 +1,6 @@
 import BloomManager from '@core/db/BloomManager';
-import { CommunityIntegrations, User } from '@entities/entities';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
+import User from '@entities/user/User';
 import { MailchimpEvent } from '@util/events';
 import addToMailchimpAudience from './repo/addToMailchimpAudience';
 

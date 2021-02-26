@@ -1,13 +1,10 @@
 import { EntityData } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
-import {
-  Community,
-  CommunityApplication,
-  CommunityIntegrations,
-  Question
-} from '@entities/entities';
-import { QuestionCategory } from '@entities/question/Question';
+import CommunityApplication from '@entities/community-application/CommunityApplication';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
+import Community from '@entities/community/Community';
+import Question, { QuestionCategory } from '@entities/question/Question';
 import { FlushEvent } from '@util/events';
 
 /**

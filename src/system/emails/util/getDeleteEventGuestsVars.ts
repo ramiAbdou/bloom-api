@@ -1,5 +1,8 @@
 import BloomManager from '@core/db/BloomManager';
-import { Community, Event, EventGuest, User } from '@entities/entities';
+import Community from '@entities/community/Community';
+import EventGuest from '@entities/event-guest/EventGuest';
+import Event from '@entities/event/Event';
+import User from '@entities/user/User';
 import { EmailPayload } from '../emails.types';
 
 export interface DeleteEventGuestsPayload {

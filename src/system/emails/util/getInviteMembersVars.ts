@@ -2,7 +2,9 @@ import jwt from 'jsonwebtoken';
 
 import { APP, JWT } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import { Community, Member, User } from '@entities/entities';
+import Community from '@entities/community/Community';
+import Member from '@entities/member/Member';
+import User from '@entities/user/User';
 import URLBuilder from '@util/URLBuilder';
 import { EmailPayload } from '../emails.types';
 

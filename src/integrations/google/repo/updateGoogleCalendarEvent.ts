@@ -1,7 +1,7 @@
 import { calendar_v3 } from 'googleapis';
 
-import { GoogleEvent } from '@util/events';
 import logger from '@system/logger/logger';
+import { GoogleEvent } from '@util/events';
 import { eventsCalendar } from '../Google.util';
 
 /**
