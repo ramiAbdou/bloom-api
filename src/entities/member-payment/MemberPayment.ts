@@ -13,7 +13,7 @@ import Member from '../member/Member';
 @Entity()
 export default class MemberPayment extends BaseEntity {
   @Field(() => Float)
-  @Property({ columnType: 'decimal' })
+  @Property({ columnType: 'decimal', serializer: (value) => Number(value) })
   amount: number;
 
   @Property({ unique: true })
@@ -29,7 +29,6 @@ export default class MemberPayment extends BaseEntity {
   @AfterCreate()
   afterCreate() {
     cache.invalidateKeys([
-      `${QueryEvent.GET_ACTIVE_DUES_GROWTH}-${this.community.id}`,
       `${QueryEvent.GET_DATABASE}-${this.community.id}`,
       `${QueryEvent.GET_PAYMENTS}-${this.community.id}`,
       `${QueryEvent.GET_PAYMENTS}-${this.member.id}`,

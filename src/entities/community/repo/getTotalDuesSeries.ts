@@ -1,11 +1,11 @@
 import day from 'dayjs';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
+import MemberPayment from '@entities/member-payment/MemberPayment';
+import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
 import { TimeSeriesData } from '@util/gql';
-import MemberPayment from '@entities/member-payment/MemberPayment';
 
 /**
  * Returns the total growth of the accepted members within the community,
@@ -41,11 +41,15 @@ const getTotalDuesSeries = async ({
 
       const totalAmount: number = payments
         .filter(({ createdAt }) => createdAt < dateKey)
-        .reduce((acc: number, { amount }) => acc + amount, 0);
+        .reduce((acc: number, { amount }) => {
+          return acc + Number(amount);
+        }, 0);
 
       return { name: dateKey, value: totalAmount };
     })
   );
+
+  console.log(result);
 
   return result;
 };

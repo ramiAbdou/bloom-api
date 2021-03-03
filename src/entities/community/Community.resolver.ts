@@ -4,7 +4,6 @@ import { MemberRole } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import { TimeSeriesData } from '@util/gql';
 import Community from './Community';
-import getActiveDuesGrowth from './repo/getActiveDuesGrowth';
 import getActiveMembersGrowth from './repo/getActiveMembersGrowth';
 import getActiveMembersSeries from './repo/getActiveMembersSeries';
 import getCommunity, { GetCommunityArgs } from './repo/getCommunity';
@@ -18,12 +17,6 @@ import getTotalMembersSeries from './repo/getTotalMembersSeries';
 
 @Resolver()
 export default class CommunityResolver {
-  @Authorized(MemberRole.ADMIN)
-  @Query(() => Number)
-  async getActiveDuesGrowth(@Ctx() ctx: GQLContext): Promise<number> {
-    return getActiveDuesGrowth(ctx);
-  }
-
   @Authorized(MemberRole.ADMIN)
   @Query(() => [Number, Number])
   async getActiveMembersGrowth(@Ctx() ctx: GQLContext): Promise<number[]> {
