@@ -1,5 +1,5 @@
 import { IsUrl } from 'class-validator';
-import { Field, InputType, ObjectType } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
 import {
   BeforeCreate,
   Collection,
@@ -10,8 +10,8 @@ import {
   QueryOrder
 } from '@mikro-orm/core';
 
-import { isProduction } from '@util/constants';
 import BaseEntity from '@core/db/BaseEntity';
+import { isProduction } from '@util/constants';
 import CommunityApplication from '../community-application/CommunityApplication';
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
 import Event from '../event/Event';

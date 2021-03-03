@@ -1,7 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
+import { GQLContext } from '@util/constants';
 import { FlushEvent } from '@util/events';
 import Member from '../Member';
 
@@ -21,12 +21,14 @@ const updateMember = async (
   args: UpdateMemberArgs,
   { memberId }: Pick<GQLContext, 'memberId'>
 ): Promise<Member> => {
-  return new BloomManager().findOneAndUpdate(
+  const updatedMember: Member = await new BloomManager().findOneAndUpdate(
     Member,
-    { id: memberId },
-    { ...args },
+    memberId,
+    args,
     { flushEvent: FlushEvent.UPDATE_MEMBER }
   );
+
+  return updatedMember;
 };
 
 export default updateMember;

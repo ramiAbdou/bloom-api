@@ -1,7 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
+import { GQLContext } from '@util/constants';
 import { FlushEvent } from '@util/events';
 import EventWatch from '../EventWatch';
 
@@ -25,8 +25,8 @@ const createEventWatch = async (
 
   const [watch, wasFound]: [EventWatch, boolean] = await bm.findOneOrCreate(
     EventWatch,
-    { event: { id: eventId }, member: { id: memberId } },
-    { event: { id: eventId }, member: { id: memberId } }
+    { event: eventId, member: memberId },
+    { event: eventId, member: memberId }
   );
 
   if (!wasFound) await bm.flush({ flushEvent: FlushEvent.CREATE_EVENT_WATCH });

@@ -2,7 +2,6 @@ import { ApplyToCommunityAdminsPayload } from 'src/system/emails/util/getApplyTo
 import { ApplyToCommunityPayload } from 'src/system/emails/util/getApplyToCommunityVars';
 import { ArgsType, Field, InputType } from 'type-graphql';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
 import Community from '@entities/community/Community';
@@ -13,6 +12,7 @@ import MemberType, { RecurrenceType } from '@entities/member-type/MemberType';
 import Question, { QuestionCategory } from '@entities/question/Question';
 import User from '@entities/user/User';
 import { emitEmailEvent } from '@system/eventBus';
+import { GQLContext } from '@util/constants';
 import { EmailEvent, FlushEvent, QueryEvent } from '@util/events';
 import Member, { MemberStatus } from '../Member';
 import updatePaymentMethod from './updatePaymentMethod';

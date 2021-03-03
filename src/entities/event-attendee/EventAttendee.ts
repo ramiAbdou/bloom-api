@@ -2,7 +2,6 @@ import { IsEmail } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
 import {
   AfterCreate,
-  BeforeCreate,
   Entity,
   ManyToOne,
   PrimaryKeyType,
@@ -32,13 +31,6 @@ export default class EventAttendee extends BaseCompositeEntity {
   lastName: string;
 
   // ## LIFECYCLE
-
-  @BeforeCreate()
-  beforeCreate() {
-    if (!this.email) this.email = this.member?.user?.email;
-    if (!this.firstName) this.firstName = this.member?.user?.firstName;
-    if (!this.lastName) this.lastName = this.member?.user?.lastName;
-  }
 
   @AfterCreate()
   afterCreate() {

@@ -1,11 +1,11 @@
 import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import MemberType, { RecurrenceType } from '@entities/member-type/MemberType';
 import { stripe } from '@integrations/stripe/Stripe.util';
+import { GQLContext } from '@util/constants';
 import { FlushEvent } from '@util/events';
 
 interface CreateStripeProductArgs {

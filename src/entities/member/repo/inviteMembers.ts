@@ -1,11 +1,11 @@
 import { InviteMembersPayload } from 'src/system/emails/util/getInviteMembersVars';
 import { ArgsType, Field, InputType } from 'type-graphql';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import User from '@entities/user/User';
 import { emitEmailEvent } from '@system/eventBus';
+import { GQLContext } from '@util/constants';
 import { EmailEvent, FlushEvent } from '@util/events';
 import Member, { MemberRole, MemberStatus } from '../Member';
 
