@@ -1,17 +1,19 @@
 import { IsUrl } from 'class-validator';
-import { Field, ObjectType } from 'type-graphql';
-import { Entity, ManyToOne, Property } from '@mikro-orm/core';
+import { Field, Float, ObjectType } from 'type-graphql';
+import { AfterCreate, Entity, ManyToOne, Property } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
-import { Community } from '@entities/entities';
+import cache from '@core/db/cache';
+import Community from '@entities/community/Community';
+import { QueryEvent } from '@util/events';
 import MemberType from '../member-type/MemberType';
 import Member from '../member/Member';
 
 @ObjectType()
 @Entity()
 export default class MemberPayment extends BaseEntity {
-  @Field()
-  @Property()
+  @Field(() => Float)
+  @Property({ columnType: 'decimal', serializer: (value) => Number(value) })
   amount: number;
 
   @Property({ unique: true })
@@ -21,6 +23,19 @@ export default class MemberPayment extends BaseEntity {
   @Property({ unique: true })
   @IsUrl()
   stripeInvoiceUrl: string;
+
+  // ## LIFECYCLE
+
+  @AfterCreate()
+  afterCreate() {
+    cache.invalidateKeys([
+      `${QueryEvent.GET_DATABASE}-${this.community.id}`,
+      `${QueryEvent.GET_PAYMENTS}-${this.community.id}`,
+      `${QueryEvent.GET_PAYMENTS}-${this.member.id}`,
+      `${QueryEvent.GET_TOTAL_DUES_COLLECTED}-${this.community.id}`,
+      `${QueryEvent.GET_TOTAL_DUES_SERIES}-${this.community.id}`
+    ]);
+  }
 
   // ## RELATIONSHIPS
 

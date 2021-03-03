@@ -16,17 +16,29 @@ import { now } from '@util/util';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
+import EventInvitee from '../event-invitee/EventInvitee';
 import EventWatch from '../event-watch/EventWatch';
 import MemberData from '../member-data/MemberData';
 import MemberPayment from '../member-payment/MemberPayment';
 import MemberRefresh from '../member-refresh/MemberRefresh';
 import MemberType from '../member-type/MemberType';
 import User from '../user/User';
-import { MemberRole, MemberStatus } from './Member.types';
 import getNextPaymentDate from './repo/getNextPaymentDate';
 import getPaymentMethod, {
   GetPaymentMethodResult
 } from './repo/getPaymentMethod';
+
+export enum MemberRole {
+  ADMIN = 'Admin',
+  OWNER = 'Owner'
+}
+
+export enum MemberStatus {
+  ACCEPTED = 'Accepted',
+  INVITED = 'Invited',
+  PENDING = 'Pending',
+  REJECTED = 'Rejected'
+}
 
 @ObjectType()
 @Entity()
@@ -35,14 +47,14 @@ export default class Member extends BaseEntity {
   @Property({ nullable: true, type: 'text' })
   bio: string;
 
-  @Field(() => Boolean)
-  @Property({ type: Boolean })
-  isDuesActive = false;
+  @Field({ defaultValue: false })
+  @Property()
+  isDuesActive: boolean = false;
 
   // Refers to the date that the member was ACCEPTED.
   @Field({ nullable: true })
   @Property({ nullable: true })
-  joinedAt: string;
+  joinedAt?: string;
 
   // If the member has a role, it will either be ADMIN or OWNER. There should
   // only be one OWNER in a community.
@@ -55,10 +67,6 @@ export default class Member extends BaseEntity {
   status: MemberStatus = MemberStatus.PENDING;
 
   // ## STRIPE INFORMATION
-
-  @Field(() => Boolean)
-  @Property({ type: Boolean })
-  autoRenew = true;
 
   // We don't store any of the customer's financial data in our server. Stripe
   // handles all of that for us, we just need Stripe's customer ID in order
@@ -134,6 +142,10 @@ export default class Member extends BaseEntity {
   @Field(() => [EventGuest])
   @OneToMany(() => EventGuest, ({ member }) => member)
   guests = new Collection<EventGuest>(this);
+
+  @Field(() => [EventInvitee])
+  @OneToMany(() => EventInvitee, ({ member }) => member)
+  invitees = new Collection<EventInvitee>(this);
 
   @Field(() => [MemberPayment])
   @OneToMany(() => MemberPayment, ({ member }) => member)

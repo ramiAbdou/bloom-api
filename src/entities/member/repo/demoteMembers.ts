@@ -1,25 +1,42 @@
-import { GQLContext, QueryEvent } from '@constants';
+import { DemoteMembersPayload } from 'src/system/emails/util/getDemoteMembersVars';
+import { ArgsType, Field } from 'type-graphql';
+
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
+import { emitEmailEvent } from '@system/eventBus';
+import { EmailEvent, FlushEvent } from '@util/events';
 import Member from '../Member';
-import { AdminArgs } from '../Member.types';
+
+@ArgsType()
+export class DemoteMembersArgs {
+  @Field(() => [String])
+  memberIds: string[];
+}
 
 /**
- * Toggles the admin status of the member. If the role of the members
- * were previously ADMIN, they become null, and vice versa.
+ * Returns the updated Members.
+ *
+ * @param {string[]} args.memberIds - IDs of the Members to delete.
+ * @param {string} ctx.communityId - ID of the Community.
  */
 const demoteMembers = async (
-  { memberIds }: AdminArgs,
-  { communityId }: GQLContext
+  args: DemoteMembersArgs,
+  ctx: Pick<GQLContext, 'communityId'>
 ): Promise<Member[]> => {
+  const { memberIds } = args;
+  const { communityId } = ctx;
+
   const members: Member[] = await new BloomManager().findAndUpdate(
     Member,
     { id: memberIds },
     { role: null },
-    {
-      cacheKeysToInvalidate: [`${QueryEvent.GET_DATABASE}-${communityId}`],
-      event: 'MEMBERS_DEMOTED'
-    }
+    { flushEvent: FlushEvent.DEMOTE_MEMBERS }
   );
+
+  emitEmailEvent(EmailEvent.DEMOTE_MEMBERS, {
+    communityId,
+    memberIds
+  } as DemoteMembersPayload);
 
   return members;
 };

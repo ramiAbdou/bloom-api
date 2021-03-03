@@ -1,7 +1,9 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
+import { emitGoogleEvent } from '@system/eventBus';
+import { FlushEvent, GoogleEvent } from '@util/events';
 import EventGuest from '../EventGuest';
 
 @ArgsType()
@@ -14,27 +16,26 @@ export class DeleteEventGuestArgs {
  * Hard deletes the EventGuest. Returns true if successful, throws error
  * otherwise.
  *
- * Invalidates QueryEvent.GET_EVENT and QueryEvent.GET_UPCOMING_EVENTS.
- *
- * @param args.eventId - Identifier of the event.
- * @param ctx.communityId - Identifier of the community.
- * @param ctx.memberId - Identifier of the member.
+ * @param args.eventId - ID of the event.
+ * @param ctx.memberId - ID of the member.
+ * @param ctx.userId - ID of the user.
  */
 const deleteEventGuest = async (
   { eventId }: DeleteEventGuestArgs,
-  { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
-): Promise<boolean> => {
-  return new BloomManager().findAndDelete(
+  { memberId }: Pick<GQLContext, 'memberId' | 'userId'>
+): Promise<EventGuest> => {
+  const guest: EventGuest = await new BloomManager().findOneAndDelete(
     EventGuest,
     { event: { id: eventId }, member: { id: memberId } },
-    {
-      cacheKeysToInvalidate: [
-        `${QueryEvent.GET_EVENT_GUESTS}-${eventId}`,
-        `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`
-      ],
-      event: 'DELETE_EVENT_GUEST'
-    }
+    { flushEvent: FlushEvent.DELETE_EVENT_GUEST }
   );
+
+  emitGoogleEvent(GoogleEvent.DELETE_CALENDAR_EVENT_ATTENDEE, {
+    eventId,
+    guestId: guest.id
+  });
+
+  return guest;
 };
 
 export default deleteEventGuest;

@@ -1,10 +1,22 @@
-import { GQLContext, QueryEvent } from '@constants';
+import { ArgsType, Field } from 'type-graphql';
+
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
+import { QueryEvent } from '@util/events';
 import Community from '../Community';
 
-const getCommunity = async ({
-  communityId
-}: Pick<GQLContext, 'communityId'>): Promise<Community> => {
+@ArgsType()
+export class GetCommunityArgs {
+  @Field({ nullable: true })
+  communityId?: string;
+}
+
+const getCommunity = async (
+  args: GetCommunityArgs,
+  ctx: Pick<GQLContext, 'communityId'>
+): Promise<Community> => {
+  const communityId: string = args?.communityId ?? ctx.communityId;
+
   return new BloomManager().findOneOrFail(
     Community,
     { id: communityId },

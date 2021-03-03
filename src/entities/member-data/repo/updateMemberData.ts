@@ -1,7 +1,9 @@
 import { ArgsType, Field, InputType } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import cache from '@core/db/cache';
+import { GQLContext } from '@util/constants';
+import { QueryEvent } from '@util/events';
 import MemberData from '../MemberData';
 
 @InputType()
@@ -19,31 +21,9 @@ export class UpdateMemberDataArgs {
   items: MemberDataArgs[];
 }
 
-interface DidHighlightedValueChangeArgs {
-  data: MemberData[];
-  updatedData: MemberData[];
-}
-
-const didHighlightedValueChange = ({
-  data,
-  updatedData
-}: DidHighlightedValueChangeArgs) => {
-  const highlightedData = data.find(({ question }: MemberData) => {
-    return !!question.inDirectoryCard;
-  })?.value;
-
-  const updatedHighlightedData = updatedData.find(
-    ({ question }: MemberData) => {
-      return !!question.inDirectoryCard;
-    }
-  )?.value;
-
-  return highlightedData !== updatedHighlightedData;
-};
-
 const updateMemberData = async (
   { items }: UpdateMemberDataArgs,
-  { communityId, memberId, userId }: GQLContext
+  { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<MemberData[]> => {
   const bm = new BloomManager();
 
@@ -64,8 +44,8 @@ const updateMemberData = async (
 
       if (!entity) {
         entity = bm.create(MemberData, {
-          member: { id: memberId },
-          question: { id: questionId }
+          member: memberId,
+          question: questionId
         });
       }
 
@@ -75,16 +55,12 @@ const updateMemberData = async (
     data
   );
 
-  await bm.flush({
-    cacheKeysToInvalidate: [
-      `${QueryEvent.GET_DATABASE}-${communityId}`,
-      ...(didHighlightedValueChange({ data, updatedData })
-        ? [`${QueryEvent.GET_DIRECTORY}-${communityId}`]
-        : []),
-      `${QueryEvent.GET_MEMBER_DATA}-${memberId}`,
-      `${QueryEvent.GET_USER}-${userId}`
-    ]
-  });
+  await bm.flush();
+
+  cache.invalidateKeys([
+    `${QueryEvent.GET_DATABASE}-${communityId}`,
+    `${QueryEvent.GET_DIRECTORY}-${communityId}`
+  ]);
 
   return updatedData;
 };

@@ -1,12 +1,11 @@
 import { EntityData } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
-import CommunityApplication from '../../community-application/CommunityApplication';
-import CommunityIntegrations from '../../community-integrations/CommunityIntegrations';
-import MemberType from '../../member-type/MemberType';
-import Question from '../../question/Question';
-import { QuestionCategory } from '../../question/Question.types';
-import Community from '../Community';
+import CommunityApplication from '@entities/community-application/CommunityApplication';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
+import Community from '@entities/community/Community';
+import Question, { QuestionCategory } from '@entities/question/Question';
+import { FlushEvent } from '@util/events';
 
 /**
  * Creates a new community when Bloom has a new customer. Omits the addition
@@ -15,54 +14,33 @@ import Community from '../Community';
  */
 const createCommunity = async ({
   application,
-  questions,
-  types,
   ...data
 }: EntityData<Community>): Promise<Community> => {
   const bm = new BloomManager();
 
-  let defaultTypeId: string = null;
-
-  const persistedTypes: MemberType[] = types.map(
-    (type: EntityData<MemberType>) => {
-      const persistedType: MemberType = bm.create(MemberType, type);
-      if (type.isDefault) defaultTypeId = persistedType.id;
-      return persistedType;
-    }
-  );
-
-  const duesStatusQuestions: EntityData<Question>[] = persistedTypes.some(
-    ({ amount }: MemberType) => !!amount
-  )
-    ? [{ category: QuestionCategory.DUES_STATUS, title: 'Status' }]
-    : [];
-
   // Add the first name, last name and joined at dates to array of questions.
-  const questionsWithDefaults: EntityData<Question>[] = [
+  const allQuestions: EntityData<Question>[] = [
     { category: QuestionCategory.FIRST_NAME, title: 'First Name' },
     { category: QuestionCategory.LAST_NAME, title: 'Last Name' },
-    ...duesStatusQuestions,
-    { category: QuestionCategory.MEMBERSHIP_TYPE, title: 'Membership Type' },
-    ...questions,
-    { category: 'JOINED_AT', title: 'Joined At' }
+    { category: QuestionCategory.DUES_STATUS, title: 'Status' },
+    { category: QuestionCategory.MEMBERSHIP_TYPE, title: 'Membership Type' }
   ];
 
-  const persistedQuestions = questionsWithDefaults.map((question, i: number) =>
-    bm.create(Question, { ...question, order: i })
+  const persistedQuestions: Question[] = allQuestions.map(
+    (question: EntityData<Question>) => bm.create(Question, question)
   );
 
-  const community = bm.create(Community, {
+  const community: Community = bm.create(Community, {
     ...data,
     application: application
       ? bm.create(CommunityApplication, application)
       : null,
-    defaultType: defaultTypeId,
     integrations: bm.create(CommunityIntegrations, {}),
-    questions: persistedQuestions,
-    types: persistedTypes
+    questions: persistedQuestions
   });
 
-  await bm.flush({ event: 'COMMUNITY_CREATED' });
+  await bm.flush({ flushEvent: FlushEvent.CREATE_COMMUNITY });
+
   return community;
 };
 

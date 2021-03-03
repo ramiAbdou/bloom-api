@@ -1,7 +1,7 @@
 import { Field, ObjectType } from 'type-graphql';
 
 @ObjectType()
-export class MailchimpLists {
+export class MailchimpList {
   @Field()
   id: string;
 

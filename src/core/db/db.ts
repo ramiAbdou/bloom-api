@@ -1,9 +1,9 @@
-import options from 'mikro-orm.config';
+import dbConfig from 'mikro-orm.config';
 import { EntityManager, MikroORM } from '@mikro-orm/core';
 
-import { isProduction } from '@constants';
+import { isProduction } from '@util/constants';
 
-class Connection {
+class Db {
   em: EntityManager;
 
   /**
@@ -11,7 +11,7 @@ class Connection {
    * and returns the ORM.
    */
   createConnection = async (): Promise<MikroORM> => {
-    const orm = await MikroORM.init(options);
+    const orm = await MikroORM.init(dbConfig);
     this.em = orm.em;
     return orm;
   };
@@ -30,4 +30,4 @@ class Connection {
   close = async (): Promise<void> => this.em?.getConnection()?.close();
 }
 
-export default new Connection();
+export default new Db();

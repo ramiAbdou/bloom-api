@@ -1,35 +1,27 @@
-import {
-  Arg,
-  Args,
-  Authorized,
-  Ctx,
-  Mutation,
-  Query,
-  Resolver
-} from 'type-graphql';
+import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
+import { TokenArgs } from '@util/gql';
+import getTokens, { GetTokensArgs, GetTokensResult } from './repo/getTokens';
 import getUser, { GetUserArgs } from './repo/getUser';
-import refreshToken from './repo/refreshToken';
 import sendLoginLink, { SendLoginLinkArgs } from './repo/sendLoginLink';
 import updateUser, { UpdateUserArgs } from './repo/updateUser';
-import verifyToken, { VerifyTokenArgs } from './repo/verifyToken';
+import verifyToken, { VerifiedToken } from './repo/verifyToken';
 import User from './User';
 
 @Resolver()
 export default class UserResolver {
+  @Query(() => GetTokensResult, { nullable: true })
+  async getTokens(
+    @Args() args: GetTokensArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<GetTokensResult> {
+    return getTokens(args, ctx);
+  }
+
   @Query(() => User, { nullable: true })
   async getUser(@Args() args: GetUserArgs, @Ctx() ctx: GQLContext) {
     return getUser(args, ctx);
-  }
-
-  /**
-   * Called when a user hits the React /login route. We can't access HTTP only
-   * cookies on the front-end b/c no JS access, so this GQL resolver exists.
-   */
-  @Query(() => Boolean)
-  async isUserLoggedIn(@Ctx() { userId }: GQLContext) {
-    return !!userId;
   }
 
   /**
@@ -48,15 +40,6 @@ export default class UserResolver {
   }
 
   @Authorized()
-  @Mutation(() => Boolean, { nullable: true })
-  async switchMember(
-    @Arg('memberId') memberId: string,
-    @Ctx() ctx: GQLContext
-  ) {
-    await refreshToken({ ...ctx, memberId });
-  }
-
-  @Authorized()
   @Mutation(() => User)
   async updateUser(
     @Args() args: UpdateUserArgs,
@@ -65,8 +48,8 @@ export default class UserResolver {
     return updateUser(args, ctx);
   }
 
-  @Query(() => Boolean)
-  async verifyToken(@Args() args: VerifyTokenArgs, @Ctx() ctx: GQLContext) {
+  @Query(() => VerifiedToken)
+  async verifyToken(@Args() args: TokenArgs, @Ctx() ctx: GQLContext) {
     return verifyToken(args, ctx);
   }
 }

@@ -1,34 +1,43 @@
-import { QueryEvent } from '@constants';
-import BloomManager from '@core/db/BloomManager';
-import Member from '../Member';
-import { MemberStatus } from '../Member.types';
+import { AcceptedIntoCommunityPayload } from 'src/system/emails/util/getAcceptedIntoCommunityVars';
+import { FilterQuery } from '@mikro-orm/core';
 
-interface UpdateInvitedStatusesArgs {
-  communityId: string;
-  email: string;
+import BloomManager from '@core/db/BloomManager';
+import { emitEmailEvent } from '@system/eventBus';
+import { EmailEvent, FlushEvent } from '@util/events';
+import Member, { MemberStatus } from '../Member';
+
+interface AcceptInvitationsArgs {
+  email?: string;
+  memberIds?: string[];
 }
 
 /**
  * Updates all of the INVITED statuses to ACCEPTED on a member.
  * Precondition: Should only be called when a user is logging into Bloom.
+ *
+ * @param {AcceptInvitationsArgs} args
+ * @param {string} args.email
+ * @param {string[]} args.memberIds
  */
-const acceptInvitations = async ({
-  communityId,
-  email
-}: UpdateInvitedStatusesArgs): Promise<Member[]> => {
-  const bm = new BloomManager();
-  const members: Member[] = await bm.find(Member, { user: { email } });
+const acceptInvitations = async (
+  args: AcceptInvitationsArgs
+): Promise<Member[]> => {
+  const queryArgs: FilterQuery<Member> = args.email
+    ? { user: { email: args.email } }
+    : { id: args.memberIds };
+
+  const members: Member[] = await new BloomManager().findAndUpdate(
+    Member,
+    { ...queryArgs, status: MemberStatus.INVITED },
+    { status: MemberStatus.ACCEPTED },
+    { flushEvent: FlushEvent.ACCEPT_INVITATIONS }
+  );
 
   members.forEach((member: Member) => {
-    if (member.status === 'INVITED') member.status = MemberStatus.ACCEPTED;
-  });
-
-  await bm.flush({
-    cacheKeysToInvalidate: [
-      `${QueryEvent.GET_DATABASE}-${communityId}`,
-      `${QueryEvent.GET_DIRECTORY}-${communityId}`
-    ],
-    event: 'ACCEPT_INVITATIONS'
+    emitEmailEvent(EmailEvent.ACCEPTED_INTO_COMMUNITY, {
+      communityId: member.community.id,
+      memberIds: [member.id]
+    } as AcceptedIntoCommunityPayload);
   });
 
   return members;

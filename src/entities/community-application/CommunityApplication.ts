@@ -2,7 +2,7 @@ import { Field, ObjectType } from 'type-graphql';
 import { Entity, OneToOne, Property } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
-import { Community } from '@entities/entities';
+import Community from '@entities/community/Community';
 
 @ObjectType()
 @Entity()
@@ -18,6 +18,6 @@ export default class CommunityApplication extends BaseEntity {
   // ## RELATIONSHIPS
 
   @Field(() => Community)
-  @OneToOne(() => Community, ({ application }) => application)
+  @OneToOne(() => Community, ({ application }) => application, { owner: true })
   community: Community;
 }

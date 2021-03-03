@@ -1,7 +1,9 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { MemberRole } from '@entities/member/Member';
+import { GQLContext } from '@util/constants';
+import { QueryEvent } from '@util/events';
 import MemberPayment from './MemberPayment';
 import createLifetimePayment, {
   CreateLifetimePaymentArgs
@@ -9,15 +11,9 @@ import createLifetimePayment, {
 import createSubscription, {
   CreateSubsciptionArgs
 } from './repo/createSubscription';
-import getChangePreview, {
-  GetChangePreviewResult
-} from './repo/getChangePreview';
 import getMemberPayments, {
   GetMemberPaymentsArgs
 } from './repo/getMemberPayments';
-import getUpcomingPayment, {
-  GetUpcomingPaymentResult
-} from './repo/getUpcomingPayment';
 
 @Resolver()
 export default class MemberPaymentResolver {
@@ -40,15 +36,6 @@ export default class MemberPaymentResolver {
   }
 
   @Authorized()
-  @Query(() => GetChangePreviewResult, { nullable: true })
-  async getChangePreview(
-    @Args() args: CreateSubsciptionArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<GetChangePreviewResult> {
-    return getChangePreview(args, ctx);
-  }
-
-  @Authorized()
   @Query(() => [MemberPayment])
   async getMemberPayments(
     @Args() args: GetMemberPaymentsArgs,
@@ -57,7 +44,7 @@ export default class MemberPaymentResolver {
     return getMemberPayments(args, ctx);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Query(() => [MemberPayment], { nullable: true })
   async getPayments(
     @Ctx() { communityId }: GQLContext
@@ -70,13 +57,5 @@ export default class MemberPaymentResolver {
         populate: ['member.user']
       }
     );
-  }
-
-  @Authorized()
-  @Query(() => GetUpcomingPaymentResult, { nullable: true })
-  async getUpcomingPayment(
-    @Ctx() ctx: GQLContext
-  ): Promise<GetUpcomingPaymentResult> {
-    return getUpcomingPayment(ctx);
   }
 }

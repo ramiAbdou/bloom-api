@@ -1,10 +1,12 @@
+import { AcceptedIntoCommunityPayload } from 'src/system/emails/util/getAcceptedIntoCommunityVars';
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
+import { emitEmailEvent, emitMailchimpEvent } from '@system/eventBus';
+import { EmailEvent, FlushEvent, MailchimpEvent } from '@util/events';
 import { now } from '@util/util';
-import Member from '../Member';
-import { MemberStatus } from '../Member.types';
+import Member, { MemberStatus } from '../Member';
 
 @ArgsType()
 export class RespondToApplicantsArgs {
@@ -18,39 +20,42 @@ export class RespondToApplicantsArgs {
 /**
  * An admin has the option to either accept or reject a Member when they
  * apply to the organization.
+ *
+ * @param {string[]} args.memberIds - IDs of members to either ACCEPT/REJECT.
+ * @param {MemberStatus} args.response
  */
 const respondToApplicants = async (
-  { memberIds, response }: RespondToApplicantsArgs,
-  { communityId }: GQLContext
+  args: RespondToApplicantsArgs,
+  ctx: Pick<GQLContext, 'communityId'>
 ): Promise<Member[]> => {
+  const { memberIds, response } = args;
+  const { communityId } = ctx;
+
   const members: Member[] = await new BloomManager().findAndUpdate(
     Member,
     { id: memberIds },
     { joinedAt: now(), status: response },
     {
-      cacheKeysToInvalidate:
-        response === 'ACCEPTED'
-          ? [
-              `${QueryEvent.GET_APPLICANTS}-${communityId}`,
-              `${QueryEvent.GET_DATABASE}-${communityId}`
-            ]
-          : [`${QueryEvent.GET_APPLICANTS}-${communityId}`],
-      event: 'MEMBERS_ACCEPTED'
+      flushEvent:
+        response === MemberStatus.ACCEPTED
+          ? FlushEvent.ACCEPT_APPLICANTS
+          : FlushEvent.IGNORE_APPLICANTS
     }
   );
 
-  // Send the appropriate emails based on the response. Also, add the members
-  // to the Mailchimp audience.
-  setTimeout(async () => {
-    // const community: Community = await communityRepo.findOne(
-    //   { id: communityId },
-    //   ['integrations']
-    // );
-    // if (response === 'ACCEPTED') {
-    //   await memberRepo.sendMemberAcceptedEmails(members, community);
-    //   await addToMailchimpAudience(members, community);
-    // } else await memberRepo.sendMemberIgnoredEmails(members, community);
-  }, 0);
+  if (response === MemberStatus.ACCEPTED) {
+    emitEmailEvent(EmailEvent.ACCEPTED_INTO_COMMUNITY, {
+      communityId,
+      memberIds
+    } as AcceptedIntoCommunityPayload);
+
+    memberIds.forEach((memberId: string) => {
+      emitMailchimpEvent(MailchimpEvent.ADD_TO_AUDIENCE, {
+        communityId,
+        memberId
+      });
+    });
+  }
 
   return members;
 };

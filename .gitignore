@@ -1,5 +1,6 @@
 .env
 dist
+google.json
 logs
 node_modules
 package-lock.json

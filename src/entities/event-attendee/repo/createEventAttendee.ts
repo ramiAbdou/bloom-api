@@ -1,9 +1,10 @@
 import { ArgsType, Field } from 'type-graphql';
 import { FilterQuery } from '@mikro-orm/core';
 
-import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import User from '../../user/User';
+import User from '@entities/user/User';
+import { GQLContext } from '@util/constants';
+import { FlushEvent } from '@util/events';
 import EventAttendee from '../EventAttendee';
 
 @ArgsType()
@@ -24,57 +25,43 @@ export class CreateEventAttendeeArgs {
 /**
  * Returns a new EventAttendee.
  *
- * Invalidates QueryEvent.GET_EVENT and QueryEvent.GET_PAST_EVENTS.
- *
  * @param args.email - Email of the NON-MEMBER attendee.
  * @param args.firstName - First name of the NON-MEMBER attendee.
  * @param args.lastName - Last name of the NON-MEMBER attendee.
- * @param args.eventId - Identifier of the event.
- * @param ctx.memberId - Identifier of the member.
- * @param ctx.userId - Identifier of the user.
+ * @param args.eventId - ID of the event.
+ * @param ctx.memberId - ID of the member.
+ * @param ctx.userId - ID of the user.
  */
 const createEventAttendee = async (
-  { email, firstName, lastName, eventId }: CreateEventAttendeeArgs,
-  {
-    communityId,
-    memberId,
-    userId
-  }: Pick<GQLContext, 'communityId' | 'memberId' | 'userId'>
+  { eventId, ...args }: CreateEventAttendeeArgs,
+  { memberId, userId }: Pick<GQLContext, 'memberId' | 'userId'>
 ) => {
-  const partialUser: Pick<User, 'email' | 'firstName' | 'lastName'> = email
-    ? { email, firstName, lastName }
-    : await new BloomManager().findOne(
-        User,
-        { id: userId },
-        { fields: ['email', 'firstName', 'lastName'] }
-      );
+  const user = await new BloomManager().findOne(
+    User,
+    { id: userId },
+    { fields: ['email', 'firstName', 'lastName'] }
+  );
 
-  const baseArgs: FilterQuery<EventAttendee> = {
-    email: partialUser.email,
-    event: { id: eventId },
-    member: { id: memberId }
+  const attendeeArgs: FilterQuery<EventAttendee> = {
+    email: args.email ?? user.email,
+    event: eventId,
+    firstName: args.email ?? user.firstName,
+    lastName: args.email ?? user.lastName,
+    member: memberId
   };
 
   const existingAttendee = await new BloomManager().findOne(
     EventAttendee,
-    baseArgs
+    attendeeArgs,
+    { populate: ['member.user'] }
   );
 
-  if (existingAttendee) {
-    throw new Error('An attendee with this email has already joined.');
-  }
+  if (existingAttendee) return existingAttendee;
 
   const attendee = await new BloomManager().createAndFlush(
     EventAttendee,
-    { ...baseArgs, ...partialUser },
-    {
-      cacheKeysToInvalidate: [
-        `${QueryEvent.GET_EVENT_ATTENDEES}-${eventId}`,
-        `${QueryEvent.GET_EVENT_ATTENDEES_SERIES}-${communityId}`
-      ],
-      event: 'CREATE_EVENT_ATTENDEE',
-      populate: ['member.data', 'member.user']
-    }
+    attendeeArgs,
+    { flushEvent: FlushEvent.CREATE_EVENT_ATTENDEE, populate: ['member.user'] }
   );
 
   return attendee;

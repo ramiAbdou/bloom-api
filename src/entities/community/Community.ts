@@ -10,9 +10,8 @@ import {
   QueryOrder
 } from '@mikro-orm/core';
 
-import { isProduction } from '@constants';
 import BaseEntity from '@core/db/BaseEntity';
-import { toLowerCaseDash } from '@util/util';
+import { isProduction } from '@util/constants';
 import CommunityApplication from '../community-application/CommunityApplication';
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
 import Event from '../event/Event';
@@ -27,26 +26,26 @@ export default class Community extends BaseEntity {
   // ## FIELDS
 
   // True if the member should be accepted automatically.
-  @Field(() => Boolean)
-  @Property({ type: Boolean })
-  autoAccept = false;
+  @Field({ defaultValue: false })
+  @Property()
+  autoAccept: boolean = false;
 
   @Field({ nullable: true })
   @Property({ nullable: true, unique: true })
   @IsUrl()
-  logoUrl: string;
+  logoUrl?: string;
 
   @Field({ nullable: true })
   @Property({ nullable: true })
   @IsUrl()
-  knowledgeHubUrl: string;
+  knowledgeHubUrl?: string;
 
   @Field()
-  @Property({ unique: true })
+  @Property()
   name: string;
 
-  @Field({ nullable: true })
-  @Property({ nullable: true })
+  @Field()
+  @Property()
   primaryColor: string;
 
   /**
@@ -66,7 +65,6 @@ export default class Community extends BaseEntity {
 
   @BeforeCreate()
   beforeCreate() {
-    if (!this.urlName) this.urlName = toLowerCaseDash(this.name);
     if (!this.logoUrl) {
       const DIGITAL_OCEAN_URL = isProduction
         ? process.env.DIGITAL_OCEAN_BUCKET_URL
@@ -82,8 +80,7 @@ export default class Community extends BaseEntity {
   // way for someone to join is if the admin adds them manually.
   @Field(() => CommunityApplication, { nullable: true })
   @OneToOne(() => CommunityApplication, ({ community }) => community, {
-    nullable: true,
-    owner: true
+    nullable: true
   })
   application: CommunityApplication;
 
@@ -95,6 +92,10 @@ export default class Community extends BaseEntity {
   @Field(() => [Event])
   @OneToMany(() => Event, ({ community }) => community)
   events = new Collection<Event>(this);
+
+  @Field(() => Question)
+  @OneToOne({ nullable: true })
+  highlightedQuestion: Question;
 
   @Field(() => CommunityIntegrations, { nullable: true })
   @OneToOne(() => CommunityIntegrations, ({ community }) => community, {
@@ -112,12 +113,10 @@ export default class Community extends BaseEntity {
 
   // Should get the questions by the order that they are stored in the DB.
   @Field(() => [Question])
-  @OneToMany(() => Question, ({ community }) => community, {
-    orderBy: { order: QueryOrder.ASC }
-  })
+  @OneToMany(() => Question, ({ community }) => community)
   questions = new Collection<Question>(this);
 
-  @Field(() => Member, { nullable: true })
+  @Field(() => Member)
   @OneToOne({ nullable: true })
   owner: Member;
 

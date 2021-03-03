@@ -1,11 +1,15 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
+import { FlushEvent } from '@util/events';
 import User from '../User';
 
 @ArgsType()
 export class UpdateUserArgs {
+  @Field({ nullable: true })
+  clubhouseUrl?: string;
+
   @Field({ nullable: true })
   facebookUrl?: string;
 
@@ -28,30 +32,18 @@ export class UpdateUserArgs {
   twitterUrl?: string;
 }
 
-/**
- * Returns the updated MEMBER, instead of the updated user so that React App
- * can more easily update it's global state with updated data.
- *
- * Invalidates GET_DIRECTORY and GET_USER calls.
- */
 const updateUser = async (
   args: UpdateUserArgs,
-  { communityId, userId }: GQLContext
+  { userId }: Pick<GQLContext, 'userId'>
 ): Promise<User> => {
-  return new BloomManager().findOneAndUpdate(
+  const user: User = await new BloomManager().findOneAndUpdate(
     User,
     { id: userId },
     { ...args },
-    {
-      cacheKeysToInvalidate: [
-        ...(args.firstName || args.lastName || args.pictureUrl
-          ? `${QueryEvent.GET_DIRECTORY}-${communityId}`
-          : []),
-        `${QueryEvent.GET_USER}-${userId}`
-      ],
-      event: 'UPDATE_USER'
-    }
+    { flushEvent: FlushEvent.UPDATE_USER }
   );
+
+  return user;
 };
 
 export default updateUser;

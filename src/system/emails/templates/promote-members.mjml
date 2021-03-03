@@ -1,0 +1,18 @@
+<mjml>
+  <mj-head>
+    <mj-include path="./attributes.mjml" />
+    <mj-preview>You now have administrator access in {{ community.name }}.</mj-preview>
+  </mj-head>
+  <mj-body background-color="#FFFFFF">
+    <mj-include path="./header.mjml" />
+    <mj-section background-color="#E0E0E0" border-radius="8px" padding="1px">
+      <mj-column background-color="#FFFFFF" border-radius="8px" padding="8px 8px 16px 8px">
+        <mj-include path="./hi.mjml" />
+        <mj-text padding-bottom="16px">Congratulations, you've been promoted to admin in {{ community.name }}! You now have additional access to Analytics, Pending Applicants, Member Database and Integrations.</mj-text>
+        <mj-text>Enjoy your upgraded access!</mj-text>
+        <mj-text></mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-include path="./footer.mjml" />
+  </mj-body>
+</mjml>

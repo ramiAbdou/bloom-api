@@ -1,10 +1,11 @@
 import day from 'dayjs';
 
-import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache/cache';
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
-import { TimeSeriesData } from '@util/gql.types';
-import Member from '../../member/Member';
+import cache from '@core/db/cache';
+import Member, { MemberStatus } from '@entities/member/Member';
+import { QueryEvent } from '@util/events';
+import { TimeSeriesData } from '@util/gql';
 
 /**
  * Returns the total growth of the accepted members within the community,
@@ -25,7 +26,7 @@ const getTotalGrowthSeries = async ({
 
   const members = await new BloomManager().find(Member, {
     community: { id: communityId },
-    status: ['ACCEPTED']
+    status: MemberStatus.ACCEPTED
   });
 
   const endOfToday = day.utc().endOf('day');

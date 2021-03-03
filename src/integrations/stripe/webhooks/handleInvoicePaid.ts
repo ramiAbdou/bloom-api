@@ -1,11 +1,13 @@
-import day, { Dayjs } from 'dayjs';
+import { PaymentReceiptPayload } from 'src/system/emails/util/getPaymentReceiptVars';
 import Stripe from 'stripe';
 
 import BloomManager from '@core/db/BloomManager';
-import sendEmail from '@core/emails/sendEmail';
-import { EmailTemplate, PaymentReceiptVars } from '@core/emails/types';
-import { Community, Member, MemberPayment } from '@entities/entities';
+import Community from '@entities/community/Community';
+import MemberPayment from '@entities/member-payment/MemberPayment';
 import createMemberPayment from '@entities/member-payment/repo/createMemberPayment';
+import Member from '@entities/member/Member';
+import { emitEmailEvent } from '@system/eventBus';
+import { EmailEvent } from '@util/events';
 import { stripe } from '../Stripe.util';
 
 /**
@@ -24,60 +26,31 @@ const handleInvoicePaid = async (event: Stripe.Event) => {
     MemberPayment
   ] = await Promise.all([
     bm.findOne(Community, { integrations: { stripeAccountId } }),
-    bm.findOne(
-      Member,
-      { stripeCustomerId: invoice.customer as string },
-      { populate: ['type', 'user'] }
-    ),
+    bm.findOne(Member, { stripeCustomerId: invoice.customer as string }),
     bm.findOne(MemberPayment, { stripeInvoiceId: invoice.id })
   ]);
 
+  let updatedPayment: MemberPayment = payment;
+
+  // If there is no record of a payment in our DB (likely b/c they paid
+  // somewhere else other than our website, like Stripe hosted website).
   if (!payment) {
-    await createMemberPayment(
+    updatedPayment = await createMemberPayment(
       { invoice, typeId: member.type.id },
       { communityId: community.id, memberId: member.id }
     );
   }
 
-  // Retrieves the next invoice date for the current subscription.
-  const {
-    current_period_end: nextInvoiceDate
-  } = await stripe.subscriptions.retrieve(invoice.subscription as string, {
-    stripeAccount: stripeAccountId
-  });
+  const method: Stripe.PaymentMethod = await stripe.paymentMethods.retrieve(
+    member.stripePaymentMethodId,
+    { stripeAccount: stripeAccountId }
+  );
 
-  // Format the current invoice payment date, as well as the next invoice date.
-  // Date comes as (s), so need to convert to (ms) for Day.js.
-  const paymentDate: Dayjs = day.utc(event.created * 1000);
-  const renewalDate: Dayjs = day.utc(nextInvoiceDate * 1000);
-
-  const stripeChargeId = invoice.charge as string;
-
-  const charge: Stripe.Charge = await stripe.charges.retrieve(stripeChargeId, {
-    stripeAccount: stripeAccountId
-  });
-
-  const { brand: cardCompany, last4 } = charge.payment_method_details.card;
-
-  const emailOpts: PaymentReceiptVars = {
-    amount: invoice.amount_paid / 100,
-    cardCompany: cardCompany.charAt(0).toUpperCase() + cardCompany.slice(1),
-    communityName: community.name,
-    firstName: member.user.firstName,
-    last4,
-    paymentDate: paymentDate.format('MMMM D, YYYY'),
-    paymentDateAndTime: paymentDate
-      .tz('America/New_York')
-      .format('MMMM D, YYYY @ h:mm A z'),
-    renewalDate: renewalDate.format('MMMM D, YYYY'),
-    stripeInvoiceId: invoice.id
-  };
-
-  await sendEmail({
-    template: EmailTemplate.PAYMENT_RECEIPT,
-    to: member.user.email,
-    variables: emailOpts
-  });
+  emitEmailEvent(EmailEvent.PAYMENT_RECEIPT, {
+    card: method.card,
+    paymentId: updatedPayment.id,
+    stripeAccountId
+  } as PaymentReceiptPayload);
 };
 
 export default handleInvoicePaid;

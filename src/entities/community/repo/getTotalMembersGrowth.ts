@@ -1,9 +1,10 @@
 import day, { Dayjs } from 'dayjs';
 
-import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
-import Member from '../../member/Member';
+import cache from '@core/db/cache';
+import Member, { MemberStatus } from '@entities/member/Member';
+import { GQLContext } from '@util/constants';
+import { QueryEvent } from '@util/events';
 
 /**
  * Returns the total growth of the accepted members within the community,
@@ -28,14 +29,14 @@ const getTotalGrowth = async ({
     community: { id: communityId },
     deletedAt: { $eq: null, $gt: endOf30DaysAgo.format() },
     joinedAt: { $lte: endOf30DaysAgo.format() },
-    status: ['ACCEPTED']
+    status: MemberStatus.ACCEPTED
   });
 
   const numMembersAddedSince: number = await bm.em.count(Member, {
     community: { id: communityId },
     deletedAt: { $eq: null, $gt: endOfToday.format() },
     joinedAt: { $gt: endOf30DaysAgo.format() },
-    status: ['ACCEPTED']
+    status: MemberStatus.ACCEPTED
   });
 
   const growthRatio: number =

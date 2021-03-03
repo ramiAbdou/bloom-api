@@ -1,30 +1,42 @@
-import { GQLContext, QueryEvent } from '@constants';
+import { PromoteMembersPayload } from 'src/system/emails/util/getPromoteMembersVars';
+import { ArgsType, Field } from 'type-graphql';
+
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
-import Member from '../Member';
-import { AdminArgs } from '../Member.types';
+import { emitEmailEvent } from '@system/eventBus';
+import { EmailEvent, FlushEvent } from '@util/events';
+import Member, { MemberRole } from '../Member';
+
+@ArgsType()
+export class PromoteMembersArgs {
+  @Field(() => [String])
+  memberIds: string[];
+}
 
 /**
- * Toggles the admin status of the member. If the role of the members
- * were previously ADMIN, they become null, and vice versa.
+ * Returns the updated Members.
+ *
+ * @param {string[]} args.memberIds - IDs of the Members to delete.
+ * @param {string} ctx.communityId - ID of the Community.
  */
 const promoteMembers = async (
-  { memberIds }: AdminArgs,
-  { communityId }: GQLContext
+  args: PromoteMembersArgs,
+  ctx: Pick<GQLContext, 'communityId'>
 ): Promise<Member[]> => {
+  const { memberIds } = args;
+  const { communityId } = ctx;
+
   const members: Member[] = await new BloomManager().findAndUpdate(
     Member,
     { id: memberIds },
-    { role: 'ADMIN' },
-    {
-      cacheKeysToInvalidate: [
-        `${QueryEvent.GET_DATABASE}-${communityId}`,
-        ...memberIds.map(
-          (memberId: string) => `${QueryEvent.GET_MEMBER}-${memberId}`
-        )
-      ],
-      event: 'PROMOTE_MEMBERS'
-    }
+    { role: MemberRole.ADMIN },
+    { flushEvent: FlushEvent.PROMOTE_MEMBERS }
   );
+
+  emitEmailEvent(EmailEvent.PROMOTE_MEMBERS, {
+    communityId,
+    memberIds
+  } as PromoteMembersPayload);
 
   return members;
 };

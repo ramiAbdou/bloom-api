@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 
-import { isProduction } from '@constants';
+import { isProduction } from '@util/constants';
 
 export const stripe = new Stripe(
   isProduction ? process.env.STRIPE_API_KEY : process.env.STRIPE_TEST_API_KEY,

@@ -1,7 +1,7 @@
 import { IsEmail } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
 import {
-  BeforeCreate,
+  AfterCreate,
   Entity,
   ManyToOne,
   PrimaryKeyType,
@@ -9,6 +9,8 @@ import {
 } from '@mikro-orm/core';
 
 import BaseCompositeEntity from '@core/db/BaseCompositeEntity';
+import cache from '@core/db/cache';
+import { QueryEvent } from '@util/events';
 import Event from '../event/Event';
 import Member from '../member/Member';
 
@@ -30,11 +32,11 @@ export default class EventAttendee extends BaseCompositeEntity {
 
   // ## LIFECYCLE
 
-  @BeforeCreate()
-  beforeCreate() {
-    if (!this.email) this.email = this.member?.user?.email;
-    if (!this.firstName) this.firstName = this.member?.user?.firstName;
-    if (!this.lastName) this.lastName = this.member?.user?.lastName;
+  @AfterCreate()
+  afterCreate() {
+    cache.invalidateKeys([
+      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.event.id}`
+    ]);
   }
 
   // ## RELATIONSHIPS

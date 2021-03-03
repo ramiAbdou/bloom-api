@@ -1,11 +1,12 @@
 import day from 'dayjs';
 import { QueryOrder } from '@mikro-orm/core';
 
-import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache/cache';
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
-import { TimeSeriesData } from '@util/gql.types';
-import Member from '../../member/Member';
+import cache from '@core/db/cache';
+import Member from '@entities/member/Member';
+import { QueryEvent } from '@util/events';
+import { TimeSeriesData } from '@util/gql';
 
 const getActiveGrowthSeries = async ({
   communityId

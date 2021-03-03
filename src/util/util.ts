@@ -4,7 +4,7 @@ import day from 'dayjs';
 import { Response } from 'express';
 import jwt from 'jsonwebtoken';
 
-import { AuthTokens, isProduction, JWT } from '@constants';
+import { AuthTokens, isProduction, JWT } from '@util/constants';
 
 /**
  * Returns the decoded information stored inside the JWT token. We first
@@ -19,27 +19,18 @@ export const decodeToken = (token: string): any => {
 };
 
 /**
- * Generates and signs both a token and refreshToken. The refreshToken does
- * not expire, but the token expires after a limited amount of time.
- */
-export const generateTokens = (
-  payload: string | object,
-  expiresIn?: number
-): AuthTokens => ({
-  accessToken: jwt.sign(payload, JWT.SECRET, {
-    expiresIn: expiresIn ?? JWT.EXPIRES_IN
-  }),
-  refreshToken: jwt.sign(payload, JWT.SECRET)
-});
-
-/**
- * Returns the string as lowercase with spaces replaced by dashes.
+ * Returns true if the entity has and of the keys in the given entity, even
+ * if the value of the key is null.
  *
- * @example toLowerCaseDash('ColorStack') => 'colorstack'
- * @example toLowerCaseDash('Color Stack') => 'color-stack'
+ * @param entity Object with keys. Could be empty, but not null.
+ * @param keys List of keys in the object.
+ *
+ * @example hasKeys({ firstName: 'Rami', age: 21 }, ['firstName']) => true
+ * @example hasKeys({ firstName: 'Rami', age: 21 }, ['lastName']) => false
  */
-export const toLowerCaseDash = (str: string) =>
-  str.replace(/\s+/g, '-').toLowerCase();
+export function hasKeys<T>(entity: T, keys: (keyof T)[]) {
+  return keys.some((key: keyof T) => key in entity);
+}
 
 /**
  * Returns the current UTC timestamp as a string to the millisecond.
@@ -75,4 +66,30 @@ export const setHttpOnlyTokens = (
     ...options,
     maxAge: JWT.EXPIRES_IN * 1000 // x1000 because represented as milliseconds.
   });
+};
+
+/**
+ * Returns the original array split into chunks with a maximum size of N. If
+ * original array is less than size N, just returns original array.
+ *
+ * @param arr Original array to split.
+ * @param maxChunkSize Maximum size of a chunk.
+ */
+export const splitArrayIntoChunks = (
+  arr: any[],
+  maxChunkSize: number
+): any[][] => {
+  if (arr.length <= maxChunkSize) return [arr];
+
+  return arr.reduce((acc: any[][], item: any, i: number) => {
+    const chunkIndex: number = Math.floor(i / maxChunkSize);
+
+    // Start a new chunk.
+    if (!acc[chunkIndex]) acc[chunkIndex] = [];
+
+    // Push the new item onto the correct chunk.
+    acc[chunkIndex].push(item);
+
+    return acc;
+  }, []);
 };

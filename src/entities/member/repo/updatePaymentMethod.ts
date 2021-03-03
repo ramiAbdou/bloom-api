@@ -1,11 +1,11 @@
 import { nanoid } from 'nanoid';
 import { ArgsType, Field } from 'type-graphql';
-import { wrap } from '@mikro-orm/core';
 
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
+import Community from '@entities/community/Community';
 import { stripe } from '@integrations/stripe/Stripe.util';
-import Community from '../../community/Community';
+import { FlushEvent } from '@util/events';
 import Member from '../Member';
 import createStripeCustomer from './createStripeCustomer';
 
@@ -26,7 +26,6 @@ const updatePaymentMethod = async (
     bm.findOne(Member, { id: memberId })
   ]);
 
-  const { stripeAccountId } = community.integrations;
   let { stripeCustomerId } = member;
 
   // If no Stripe customer ID exists on the member, create and attach the
@@ -40,7 +39,10 @@ const updatePaymentMethod = async (
   await stripe.paymentMethods.attach(
     paymentMethodId,
     { customer: stripeCustomerId },
-    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
+    {
+      idempotencyKey: nanoid(),
+      stripeAccount: community.integrations.stripeAccountId
+    }
   );
 
   // Sets the PaymentMethod to be the default method for the customer. Will
@@ -48,11 +50,14 @@ const updatePaymentMethod = async (
   await stripe.customers.update(
     stripeCustomerId,
     { invoice_settings: { default_payment_method: paymentMethodId } },
-    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
+    {
+      idempotencyKey: nanoid(),
+      stripeAccount: community.integrations.stripeAccountId
+    }
   );
 
-  wrap(member).assign({ stripePaymentMethodId: paymentMethodId });
-  await bm.flush({ event: 'PAYMENT_METHOD_UPDATED' });
+  member.stripePaymentMethodId = paymentMethodId;
+  await bm.flush({ flushEvent: FlushEvent.UPDATE_PAYMENT_METHOD });
 
   return member;
 };

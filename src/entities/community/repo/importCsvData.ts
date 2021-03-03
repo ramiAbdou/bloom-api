@@ -1,20 +1,21 @@
 import csv from 'csvtojson';
 import day from 'dayjs';
+import { internet } from 'faker';
 
-import { BloomManagerArgs } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import MemberData from '../../member-data/MemberData';
-import MemberType from '../../member-type/MemberType';
-import Member from '../../member/Member';
-import { MemberRole } from '../../member/Member.types';
-import Question from '../../question/Question';
-import { QuestionCategory } from '../../question/Question.types';
-import User from '../../user/User';
+import MemberData from '@entities/member-data/MemberData';
+import MemberType from '@entities/member-type/MemberType';
+import Member, { MemberRole, MemberStatus } from '@entities/member/Member';
+import Question, { QuestionCategory } from '@entities/question/Question';
+import User from '@entities/user/User';
+import { isProduction, TEST_EMAILS } from '@util/constants';
+import { FlushEvent } from '@util/events';
 import Community from '../Community';
 
 type CsvRowData = Record<string | QuestionCategory, any>;
 
-interface ProcessRowArgs extends BloomManagerArgs {
+interface ProcessRowArgs {
+  bm: BloomManager;
   community: Community;
   ownerEmail: string;
   questions: Question[];
@@ -46,14 +47,12 @@ const processRow = async ({
   uniqueEmails
 }: ProcessRowArgs) => {
   // Precondition: Every row (JSON) should have a field called 'EMAIL'.
-  const {
-    EMAIL: dirtyEmail,
-    FIRST_NAME: firstName,
-    LAST_NAME: lastName,
-    GENDER: gender
-  } = row;
+  const { EMAIL: dirtyEmail, FIRST_NAME: firstName, LAST_NAME: lastName } = row;
 
-  const email = dirtyEmail?.toLowerCase();
+  const email =
+    isProduction || TEST_EMAILS.includes(dirtyEmail)
+      ? dirtyEmail?.toLowerCase()
+      : internet.email();
 
   // If no email exists or it is a duplicate email, don't process.
   if (!email || uniqueEmails.has(email)) return;
@@ -62,7 +61,7 @@ const processRow = async ({
   const [user, wasFound] = await bm.findOneOrCreate(
     User,
     { email },
-    { email, firstName, gender, lastName }
+    { email, firstName, lastName }
   );
 
   // If a member already exists for the user, then don't create a new
@@ -76,44 +75,52 @@ const processRow = async ({
   const member: Member = bm.create(Member, {
     community,
     role: email === ownerEmail ? MemberRole.OWNER : null,
-    status: 'ACCEPTED',
+    status: MemberStatus.ACCEPTED,
     user
   });
 
   if (email === ownerEmail) community.owner = member;
 
-  Object.entries(row).forEach(([key, value]) => {
-    // Skip over the empty values and the user-specific information since it
-    // was already processed.
-    if (!value) return;
+  Object.entries(row).forEach(
+    ([key, value]: [string | QuestionCategory, string]) => {
+      // Skip over the empty values and the user-specific information since it
+      // was already processed.
+      if (!value) return;
 
-    if (key === QuestionCategory.MEMBERSHIP_TYPE) {
-      member.type = types.find(({ name }) => value === name);
-      return;
+      if (key === QuestionCategory.MEMBERSHIP_TYPE) {
+        member.type = types.find(({ name }) => value === name);
+        return;
+      }
+
+      if (key === QuestionCategory.LINKEDIN_URL) {
+        user.linkedInUrl = value;
+        return;
+      }
+
+      if (key === QuestionCategory.JOINED_AT) {
+        const dayObject = day.utc(value);
+
+        // Safety check to ensure the date is formatted correctly.
+        const createdAt = dayObject.isValid()
+          ? dayObject.format()
+          : day.utc().format();
+
+        member.createdAt = createdAt;
+        member.joinedAt = createdAt;
+        return;
+      }
+
+      // If the question wasn't a special category question, then we find
+      // the question with the given key as the title. We proceed to make
+      // the appropriate member data.
+
+      const question = questions.find(({ category, title }) => {
+        return key === category || key === title;
+      });
+
+      if (question) bm.create(MemberData, { member, question, value });
     }
-
-    if (key === QuestionCategory.JOINED_AT) {
-      const dayObject = day.utc(value);
-
-      // Safety check to ensure the date is formatted correctly.
-      const createdAt = dayObject.isValid()
-        ? dayObject.format()
-        : day.utc().format();
-
-      member.createdAt = createdAt;
-      member.joinedAt = createdAt;
-      return;
-    }
-
-    // If the question wasn't a special category question, then we find
-    // the question with the given key as the title. We proceed to make
-    // the appropriate member data.
-
-    const question = questions.find(({ title }) => key === title);
-    if (question) {
-      bm.create(MemberData, { member, question, value });
-    }
-  });
+  );
 };
 
 /**
@@ -155,7 +162,7 @@ const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
     })
   );
 
-  await bm.flush({ event: 'COMMUNITY_CSV_IMPORTED' });
+  await bm.flush({ flushEvent: FlushEvent.IMPORT_COMMUNITY_CSV });
   return community;
 };
 

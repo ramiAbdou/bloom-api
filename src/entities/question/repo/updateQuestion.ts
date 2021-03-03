@@ -1,7 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { FlushEvent } from '@util/events';
 import Question from '../Question';
 
 @ArgsType()
@@ -13,18 +13,12 @@ export class UpdateQuestionArgs {
   title: string;
 }
 
-const updateQuestion = async (
-  { questionId, ...args }: UpdateQuestionArgs,
-  { communityId }: GQLContext
-) => {
+const updateQuestion = async ({ questionId, ...args }: UpdateQuestionArgs) => {
   return new BloomManager().findOneAndUpdate(
     Question,
     { id: questionId },
     { ...args },
-    {
-      cacheKeysToInvalidate: [`${QueryEvent.GET_QUESTIONS}-${communityId}`],
-      event: 'UPDATE_QUESTION'
-    }
+    { flushEvent: FlushEvent.UPDATE_QUESTION }
   );
 };
 

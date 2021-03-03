@@ -1,6 +1,7 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
+import { MemberRole } from '@entities/member/Member';
 import EventAttendee from './EventAttendee';
 import createEventAttendee, {
   CreateEventAttendeeArgs
@@ -12,7 +13,6 @@ import getPastEventAttendees from './repo/getPastEventAttendees';
 
 @Resolver()
 export default class EventAttendeeResolver {
-  @Authorized()
   @Mutation(() => EventAttendee)
   async createEventAttendee(
     @Args() args: CreateEventAttendeeArgs,
@@ -21,7 +21,7 @@ export default class EventAttendeeResolver {
     return createEventAttendee(args, ctx);
   }
 
-  @Authorized('ADMIN')
+  @Authorized(MemberRole.ADMIN)
   @Query(() => [EventAttendee])
   async getEventAttendees(
     @Args() args: GetEventAttendeesArgs

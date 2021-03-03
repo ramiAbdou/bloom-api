@@ -1,10 +1,11 @@
 import day from 'dayjs';
 
-import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
-import { TimeSeriesData } from '@util/gql.types';
-import EventAttendee from '../../event-attendee/EventAttendee';
+import cache from '@core/db/cache';
+import EventAttendee from '@entities/event-attendee/EventAttendee';
+import { GQLContext } from '@util/constants';
+import { QueryEvent } from '@util/events';
+import { TimeSeriesData } from '@util/gql';
 
 /**
  * Returns the event attendees series over the last month.

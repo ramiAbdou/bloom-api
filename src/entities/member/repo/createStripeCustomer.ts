@@ -1,9 +1,10 @@
+import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
-import { wrap } from '@mikro-orm/core';
 
-import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
 import { stripe } from '@integrations/stripe/Stripe.util';
+import { GQLContext } from '@util/constants';
+import { FlushEvent } from '@util/events';
 import Member from '../Member';
 
 /**
@@ -14,25 +15,19 @@ const createStripeCustomer = async ({
   memberId
 }: Pick<GQLContext, 'memberId'>): Promise<Member> => {
   const bm = new BloomManager();
-
-  const member: Member = await bm.findOne(
-    Member,
-    { id: memberId },
-    { populate: ['user'] }
-  );
+  const member: Member = await bm.findOne(Member, { id: memberId });
 
   // If the stripeCustomerId already exists, there's no need create a new
   // customer.
   if (member.stripeCustomerId) return member;
 
-  await bm.em.populate(member, ['community.integrations']);
+  await bm.em.populate(member, ['community.integrations', 'user']);
 
-  const { email, fullName } = member.user;
   const { stripeAccountId } = member.community.integrations;
 
   const existingStripeCustomers: Stripe.Customer[] = (
     await stripe.customers.list(
-      { email, limit: 1 },
+      { email: member.user.email, limit: 1 },
       { stripeAccount: stripeAccountId }
     )
   )?.data;
@@ -44,13 +39,13 @@ const createStripeCustomer = async ({
     ? existingStripeCustomers[0].id
     : (
         await stripe.customers.create(
-          { email, name: fullName },
-          { stripeAccount: stripeAccountId }
+          { email: member.user.email, name: member.user.fullName },
+          { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
         )
       ).id;
 
-  wrap(member).assign({ stripeCustomerId });
-  await bm.flush({ event: 'STRIPE_CUSTOMER_CREATED' });
+  member.stripeCustomerId = stripeCustomerId;
+  await bm.flush({ flushEvent: FlushEvent.CREATE_STRIPE_CUSTOMER });
 
   return member;
 };

@@ -1,8 +1,8 @@
 import { ArgsType, Field } from 'type-graphql';
 import { FilterQuery } from '@mikro-orm/core';
 
-import { QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { QueryEvent } from '@util/events';
 import EventGuest from '../EventGuest';
 
 @ArgsType()
@@ -26,6 +26,7 @@ const getEventGuests = async ({ eventId, memberId }: GetEventGuestsArgs) => {
       cacheKey: eventId
         ? `${QueryEvent.GET_EVENT_GUESTS}-${eventId}`
         : `${QueryEvent.GET_EVENT_GUESTS}-${memberId}`,
+      filters: false,
       populate: ['event', 'member.user']
     }
   );

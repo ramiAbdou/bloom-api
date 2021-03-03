@@ -9,14 +9,20 @@ import {
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
-import { Community, Member } from '@entities/entities';
-import { RecurrenceType } from './MemberType.types';
+import Community from '@entities/community/Community';
+import Member from '@entities/member/Member';
+
+export enum RecurrenceType {
+  LIFETIME = 'Lifetime',
+  MONTHLY = 'Monthly',
+  YEARLY = 'Yearly'
+}
 
 @ObjectType()
 @Entity()
 export default class MemberType extends BaseEntity {
   @Field(() => Float)
-  @Property({ type: Number })
+  @Property({ columnType: 'decimal', type: Number })
   amount = 0.0;
 
   @Field()

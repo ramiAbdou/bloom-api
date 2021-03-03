@@ -1,7 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { QueryEvent } from '@util/events';
 import Event from '../Event';
 
 @ArgsType()
@@ -10,15 +10,17 @@ export class GetEventArgs {
   eventId: string;
 }
 
-const getEvent = async ({ eventId }: GetEventArgs) => {
-  return new BloomManager().findOne(
+const getEvent = async (args: GetEventArgs) => {
+  const event: Event = await new BloomManager().findOne(
     Event,
-    { id: eventId },
+    { id: args.eventId },
     {
-      cacheKey: `${QueryEvent.GET_EVENT}-${eventId}`,
+      cacheKey: `${QueryEvent.GET_EVENT}-${args.eventId}`,
       populate: ['community.owner.user']
     }
   );
+
+  return event;
 };
 
 export default getEvent;

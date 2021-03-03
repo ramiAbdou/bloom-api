@@ -4,7 +4,6 @@ import {
   BeforeCreate,
   Collection,
   Entity,
-  Enum,
   OneToMany,
   Property
 } from '@mikro-orm/core';
@@ -17,10 +16,6 @@ import Member from '../member/Member';
 export default class User extends BaseEntity {
   // ## FIELDS
 
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  currentLocation: string;
-
   @Field()
   @Property({ unique: true })
   @IsEmail()
@@ -30,13 +25,11 @@ export default class User extends BaseEntity {
   @Property()
   firstName: string;
 
-  @Field({ nullable: true })
-  @Enum({
-    items: ['Male', 'Female', 'Non-Binary', 'Prefer Not to Say'],
-    nullable: true,
-    type: String
-  })
-  gender: string;
+  @Field()
+  @Property({ persist: false })
+  get fullName(): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
 
   @Field()
   @Property()
@@ -53,6 +46,11 @@ export default class User extends BaseEntity {
   refreshToken: string;
 
   // ## SOCIAL MEDIA INFORMATION
+
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  @IsUrl()
+  clubhouseUrl: string;
 
   @Field({ nullable: true })
   @Property({ nullable: true })
@@ -74,17 +72,13 @@ export default class User extends BaseEntity {
   @IsUrl()
   twitterUrl: string;
 
+  // ## LIFECYCLE
+
   @BeforeCreate()
   async beforeCreate() {
     this.email = this.email.toLowerCase();
     this.firstName = this.firstName.trim();
     this.lastName = this.lastName.trim();
-  }
-
-  @Field()
-  @Property({ persist: false })
-  get fullName(): string {
-    return `${this.firstName} ${this.lastName}`;
   }
 
   // ## RELATIONSHIPS

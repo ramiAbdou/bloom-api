@@ -2,8 +2,8 @@ import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
 import { GraphQLSchema } from 'graphql';
 import { AuthChecker, buildSchema } from 'type-graphql';
 
-import { GQLContext } from '@constants';
 import BloomManager from '@core/db/BloomManager';
+import { GQLContext } from '@util/constants';
 import { decodeToken } from '@util/util';
 import CommunityApplicationResolver from '../entities/community-application/CommunityApplication.resolver';
 import CommunityIntegrationsResolver from '../entities/community-integrations/CommunityIntegrations.resolver';
@@ -15,7 +15,7 @@ import EventResolver from '../entities/event/Event.resolver';
 import MemberDataResolver from '../entities/member-data/MemberData.resolver';
 import MemberPaymentResolver from '../entities/member-payment/MemberPayment.resolver';
 import MemberTypeResolver from '../entities/member-type/MemberType.resolver';
-import Member from '../entities/member/Member';
+import Member, { MemberRole } from '../entities/member/Member';
 import MemberResolver from '../entities/member/Member.resolver';
 import QuestionResolver from '../entities/question/Question.resolver';
 import UserResolver from '../entities/user/User.resolver';
@@ -37,7 +37,7 @@ const authChecker: AuthChecker<GQLContext> = async (
   // a userId (as seen from above).
   if (!roles.length) return true;
 
-  return role === 'OWNER' || roles[0] === role;
+  return role === MemberRole.OWNER || roles[0] === role;
 };
 
 /**
@@ -68,7 +68,7 @@ export const createSchema = async (): Promise<GraphQLSchema> =>
  * GraphQL resolvers in order to build the schema. Also handles the Express
  * request sessions for users.
  */
-export default async () => {
+const loadApollo = async () => {
   // Set the playground to false so that's it's not accessible to the outside
   // world. Also handles the request context.
   const config: ApolloServerExpressConfig = {
@@ -84,3 +84,5 @@ export default async () => {
 
   return new ApolloServer(config);
 };
+
+export default loadApollo;

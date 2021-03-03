@@ -1,30 +1,59 @@
-import axios, { AxiosRequestConfig } from 'axios';
 import { Field, ObjectType } from 'type-graphql';
-import { Entity, OneToOne, Property } from '@mikro-orm/core';
+import { AfterUpdate, Entity, OneToOne, Property } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
+import cache from '@core/db/cache';
+import getMailchimpAudienceName from '@integrations/mailchimp/repo/getMailchimpAudienceName';
+import getMailchimpAudiences from '@integrations/mailchimp/repo/getMailchimpAudiences';
+import { QueryEvent } from '@util/events';
 import Community from '../community/Community';
-import { MailchimpLists } from './CommunityIntegrations.types';
+import { MailchimpList } from './CommunityIntegrations.types';
 
 @ObjectType()
 @Entity()
 export default class CommunityIntegrations extends BaseEntity {
-  // This access token doesn't expire, and does not have a refresh flow.
   @Property({ nullable: true, unique: true })
-  mailchimpAccessToken: string;
-
-  // Represents the audience/list that the user wants to add them as a member
-  // on.
-  @Field({ nullable: true })
-  @Property({ nullable: true, unique: true })
-  mailchimpListId: string;
+  mailchimpAccessToken?: string;
 
   @Field({ nullable: true })
   @Property({ nullable: true, unique: true })
-  stripeAccountId: string;
+  mailchimpListId?: string;
+
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  stripeAccountId?: string;
 
   @Property({ nullable: true, unique: true })
   zapierApiKey: string;
+
+  @Field()
+  isMailchimpAuthenticated(): boolean {
+    return !!this.mailchimpAccessToken;
+  }
+
+  @Field(() => String, { nullable: true })
+  async mailchimpListName(): Promise<string> {
+    return getMailchimpAudienceName({
+      mailchimpAccessToken: this.mailchimpAccessToken,
+      mailchimpListId: this.mailchimpListId
+    });
+  }
+
+  @Field(() => [MailchimpList], { nullable: true })
+  async mailchimpLists(): Promise<MailchimpList[]> {
+    return getMailchimpAudiences({
+      mailchimpAccessToken: this.mailchimpAccessToken
+    });
+  }
+
+  // ## LIFECYCLE
+
+  @AfterUpdate()
+  afterUpdate() {
+    cache.invalidateKeys([
+      `${QueryEvent.GET_INTEGRATIONS}-${this.community.id}`
+    ]);
+  }
 
   // ## RELATIONSHIPS
 
@@ -33,41 +62,4 @@ export default class CommunityIntegrations extends BaseEntity {
     owner: true
   })
   community: Community;
-
-  // ## MEMBER FUNCTIONS
-  // ## MAILCHIMP
-
-  @Field(() => Boolean)
-  isMailchimpAuthenticated(): boolean {
-    return !!this.mailchimpAccessToken;
-  }
-
-  @Field(() => String, { nullable: true })
-  async mailchimpListName(): Promise<string[]> {
-    const { mailchimpAccessToken, mailchimpListId } = this;
-    if (!mailchimpAccessToken || !mailchimpListId) return null;
-
-    const options: AxiosRequestConfig = {
-      headers: { Authorization: `OAuth ${mailchimpAccessToken}` },
-      method: 'GET',
-      url: `https://us2.api.mailchimp.com/3.0/lists/${mailchimpListId}`
-    };
-
-    const { data } = await axios(options);
-    return data?.name;
-  }
-
-  @Field(() => [MailchimpLists], { nullable: true })
-  async mailchimpLists(): Promise<string[]> {
-    if (!this.mailchimpAccessToken) return [];
-
-    const options: AxiosRequestConfig = {
-      headers: { Authorization: `OAuth ${this.mailchimpAccessToken}` },
-      method: 'GET',
-      url: `https://us2.api.mailchimp.com/3.0/lists`
-    };
-
-    const { data } = await axios(options);
-    return data?.lists?.map(({ id, name }) => ({ id, name }));
-  }
 }

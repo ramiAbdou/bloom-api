@@ -4,7 +4,7 @@ import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 
-import { APP } from '@constants';
+import { APP } from '@util/constants';
 import refreshTokenFlow from '@entities/user/repo/refreshToken';
 import googleRouter from '@integrations/google/Google.router';
 import mailchimpRouter from '@integrations/mailchimp/Mailchimp.router';
@@ -45,11 +45,11 @@ const refreshTokenIfExpired = async (
  *
  * @see https://www.npmjs.com/package/helmet#how-it-works
  */
-export default () => {
+const loadExpress = () => {
   const app = express();
 
   // Limit urlencoded and json body sizes to 10 KB.
-  app.use(bodyParser.urlencoded({ extended: true, limit: '10kb' }));
+  app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 
   // Stripe route needs to use the bodyParser's rawBody, not the JSON body,
   // so only enable if it isn't that.
@@ -60,7 +60,7 @@ export default () => {
       next: express.NextFunction
     ) => {
       if (req.originalUrl === '/stripe/webhook') next();
-      else bodyParser.json({ limit: '10kb' })(req, res, next);
+      else bodyParser.json({ limit: '10mb' })(req, res, next);
     }
   );
 
@@ -77,3 +77,5 @@ export default () => {
 
   return app;
 };
+
+export default loadExpress;

@@ -1,11 +1,10 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { APP } from '@constants';
-import BloomManager from '@core/db/BloomManager';
-import sendEmail from '@core/emails/sendEmail';
-import { EmailTemplate, LoginVars } from '@core/emails/types';
+import { APP } from '@util/constants';
+import { LoginLinkEmailPayload } from '@system/emails/util/getLoginLinkVars';
+import { emitEmailEvent } from '@system/eventBus';
+import { EmailEvent } from '@util/events';
 import URLBuilder from '@util/URLBuilder';
-import User from '../User';
 import getLoginError, { LoginError } from './getLoginError';
 import refreshToken from './refreshToken';
 
@@ -42,9 +41,10 @@ const sendLoginLink = async ({
     APP.CLIENT_URL + (pathname ?? '')
   ).addParam('token', token).url;
 
-  const { firstName } = await new BloomManager().findOne(User, { email });
-  const variables: LoginVars = { firstName, loginUrl };
-  await sendEmail({ template: EmailTemplate.LOGIN, to: email, variables });
+  emitEmailEvent(EmailEvent.LOGIN_LINK, {
+    email,
+    loginUrl
+  } as LoginLinkEmailPayload);
 };
 
 export default sendLoginLink;

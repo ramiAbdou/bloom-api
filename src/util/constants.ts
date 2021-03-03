@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { Response } from 'express';
 import path from 'path'; // Before constants.
 
-import BloomManager from '@core/db/BloomManager';
+import sg from '@sendgrid/mail';
 
 export const isProduction = process.env.NODE_ENV === 'production';
 export const isTesting = process.env.NODE_ENV === 'testing';
@@ -11,12 +11,13 @@ export const isTesting = process.env.NODE_ENV === 'testing';
 // because the constants depend on the environment being configured.
 dotenv.config({ path: path.join(__dirname, '../../.env') });
 
+sg.setApiKey(process.env.SENDGRID_API_KEY);
+
 export const APP = {
   CACHE_TTL: 60 * 60 * 1000, // 1 hour, represented as ms.
   CLIENT_URL: isProduction
     ? process.env.APP_CLIENT_URL
     : 'http://localhost:3000',
-  CRYPTR_SECRET: process.env.CRYPTR_SECRET,
   DB_URL: isProduction
     ? process.env.DB_PROD
     : 'postgresql://localhost:5432/bloom',
@@ -31,6 +32,12 @@ export const JWT = {
   SECRET: process.env.JWT_SECRET
 };
 
+export const TEST_EMAILS = [
+  'ramiabdou98@gmail.com',
+  'ra494@cornell.edu',
+  'rami@bl.community'
+];
+
 /**
  * All exported TYPE declaration constants are below.
  * NOTE that if any services have types that are specific to them, they will
@@ -38,78 +45,18 @@ export const JWT = {
  * instead of in this globally accessible constants file.
  */
 
-export type AuthQueryParams = { code: string; state: string };
+export type AuthQueryArgs = { code: string; state?: string };
 export type AuthTokens = { accessToken: string; refreshToken: string };
 
-// Used for caching purposes (building the keys).
-export enum QueryEvent {
-  GET_ACTIVE_DUES_GROWTH = 'GET_ACTIVE_DUES_GROWTH',
-  GET_ACTIVE_MEMBERS_GROWTH = 'GET_ACTIVE_MEMBERS_GROWTH',
-  GET_ACTIVE_MEMBERS_SERIES = 'GET_ACTIVE_MEMBERS_SERIES',
-  GET_APPLICANTS = 'GET_APPLICANTS',
-  GET_APPLICATION = 'GET_APPLICATION',
-  GET_COMMUNITY = 'GET_COMMUNITY',
-  GET_DATABASE = 'GET_DATABASE',
-  GET_DIRECTORY = 'GET_DIRECTORY',
-  GET_EVENT = 'GET_EVENT',
-  GET_EVENT_ATTENDEES = 'GET_EVENT_ATTENDEES',
-  GET_EVENT_ATTENDEES_SERIES = 'GET_EVENT_ATTENDEES_SERIES',
-  GET_EVENT_GUESTS = 'GET_EVENT_GUESTS',
-  GET_EVENT_WATCHES = 'GET_EVENT_WATCHES',
-  GET_INTEGRATIONS = 'GET_INTEGRATIONS',
-  GET_MEMBER_DATA = 'GET_MEMBER_DATA',
-  GET_MEMBER = 'GET_MEMBER',
-  GET_MEMBERS = 'GET_MEMBERS',
-  GET_PAST_EVENTS = 'GET_PAST_EVENTS',
-  GET_PAST_EVENT_ATTENDEES = 'GET_PAST_EVENT_ATTENDEES',
-  GET_PAST_EVENT_GUESTS = 'GET_PAST_EVENT_GUESTS',
-  GET_PAST_EVENT_WATCHES = 'GET_PAST_EVENT_WATCHES',
-  GET_PAYMENTS = 'GET_PAYMENTS',
-  GET_QUESTIONS = 'GET_QUESTIONS',
-  GET_TOTAL_DUES_COLLECTED = 'GET_TOTAL_DUES_COLLECTED',
-  GET_TOTAL_DUES_GROWTH = 'GET_TOTAL_DUES_GROWTH',
-  GET_TOTAL_DUES_SERIES = 'GET_TOTAL_DUES_SERIES',
-  GET_TOTAL_MEMBERS_GROWTH = 'GET_TOTAL_MEMBERS_GROWTH',
-  GET_TOTAL_MEMBERS_SERIES = 'GET_TOTAL_MEMBERS_SERIES',
-  GET_TYPES = 'GET_TYPES',
-  GET_UPCOMING_EVENTS = 'GET_UPCOMING_EVENTS',
-  GET_UPCOMING_EVENT_GUESTS = 'GET_UPCOMING_EVENT_GUESTS',
-  GET_USER = 'GET_USER'
+export enum IntegrationsBrand {
+  MAILCHIMP = 'Mailchimp',
+  STRIPE = 'Stripe',
+  ZAPIER = 'Zapier'
 }
 
-export type LoggerEvent =
-  | 'ACCEPT_INVITATIONS'
-  | 'ADD_TO_MAILCHIMP'
-  | 'APPLY_FOR_MEMBERSHIP'
-  | 'COMMUNITY_CREATED'
-  | 'COMMUNITY_CSV_IMPORTED'
-  | 'CREATE_EVENT'
-  | 'CREATE_EVENT_ATTENDEE'
-  | 'CREATE_EVENT_GUEST'
-  | 'CREATE_EVENT_WATCH'
-  | 'CREATE_MEMBER_REFRESH'
-  | 'DELETE_EVENT'
-  | 'DELETE_EVENT_GUEST'
-  | 'EMAIL_FAILED'
-  | 'MAILCHIMP_TOKEN_STORED'
-  | 'MEMBERS_ACCEPTED'
-  | 'MEMBERS_CREATED'
-  | 'MEMBERS_DEMOTED'
-  | 'ON_FLUSH'
-  | 'PAYMENT_METHOD_UPDATED'
-  | 'PROMOTE_MEMBERS'
-  | 'SERVER_STARTED'
-  | 'STRIPE_CUSTOMER_CREATED'
-  | 'STRIPE_SUBSCRIPTION_CREATED'
-  | 'STORE_STRIPE_ACCOUNT'
-  | 'UPDATE_EVENT'
-  | 'UPDATE_EVENT_RECORDING_LINK'
-  | 'UPDATE_INTEGRATIONS'
-  | 'UPDATE_MAILCHIMP'
-  | 'UPDATE_MEMBER'
-  | 'UPDATE_QUESTION'
-  | 'UPDATE_REFRESH_TOKEN'
-  | 'UPDATE_USER';
+export type KeyValue = { key: string; value: any };
+
+// ## GRAPHQL
 
 export type GQLContext = {
   communityId: string;
@@ -117,5 +64,3 @@ export type GQLContext = {
   res: Response;
   userId: string;
 };
-
-export type BloomManagerArgs = { bm: BloomManager };

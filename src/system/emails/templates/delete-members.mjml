@@ -1,0 +1,18 @@
+<mjml>
+  <mj-head>
+    <mj-include path="./attributes.mjml" />
+    <mj-preview>You will no longer have administrator access to {{ community.name }}.</mj-preview>
+  </mj-head>
+  <mj-body background-color="#FFFFFF">
+    <mj-include path="./header.mjml" />
+    <mj-section background-color="#E0E0E0" border-radius="8px" padding="1px">
+      <mj-column background-color="#FFFFFF" border-radius="8px" padding="8px 8px 16px 8px">
+        <mj-include path="./hi.mjml" />
+        <mj-text padding-bottom="16px">Unfortunately, you no longer have administrator priveleges in {{ community.name }}. This typically happens when you are no longer on the community's board/internal team.</mj-text>
+        <mj-text>If you believe this to be a mistake, please contact {{ owner.fullName }} at {{ owner.email }}.</mj-text>
+        <mj-text></mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-include path="./footer.mjml" />
+  </mj-body>
+</mjml>

@@ -1,28 +1,50 @@
-import { ArgsType, Field } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { AuthTokens, GQLContext } from '@util/constants';
+import { VerifyEvent } from '@util/events';
+import { TokenArgs } from '@util/gql';
 import { decodeToken } from '@util/util';
+import joinEventViaToken from '../../event-guest/repo/joinEventViaToken';
 import refreshToken from './refreshToken';
 
-@ArgsType()
-export class VerifyTokenArgs {
-  @Field()
-  token: string;
+@ObjectType()
+export class VerifiedToken {
+  @Field(() => String, { nullable: true })
+  event?: VerifyEvent;
+
+  @Field({ nullable: true })
+  guestId?: string;
+
+  @Field({ nullable: true })
+  memberId?: string;
+
+  @Field({ nullable: true })
+  userId?: string;
 }
 
 const verifyToken = async (
-  { token }: VerifyTokenArgs,
-  { res }: Pick<GQLContext, 'res'>
-) => {
-  const userId: string = decodeToken(token)?.userId;
-  const tokens = await refreshToken({ res, userId });
+  args: TokenArgs,
+  ctx: Pick<GQLContext, 'res'>
+): Promise<VerifiedToken> => {
+  const verifiedToken: VerifiedToken = decodeToken(args.token) ?? {};
+  const { event, guestId, memberId, userId } = verifiedToken;
 
-  if (!tokens) {
-    res.cookie('LOGIN_LINK_ERROR', 'TOKEN_EXPIRED');
-    return false;
+  let tokens: AuthTokens;
+
+  if (event === VerifyEvent.JOIN_EVENT) {
+    await joinEventViaToken({ guestId });
   }
 
-  return true;
+  if ([VerifyEvent.LOG_IN].includes(event)) {
+    tokens = await refreshToken({ memberId, res: ctx.res, userId });
+  }
+
+  if (event === VerifyEvent.LOG_IN && !tokens) {
+    ctx.res.cookie('LOGIN_LINK_ERROR', 'TOKEN_EXPIRED');
+    return null;
+  }
+
+  return verifiedToken;
 };
 
 export default verifyToken;

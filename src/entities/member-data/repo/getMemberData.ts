@@ -1,6 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext, QueryEvent } from '@constants';
+import { GQLContext } from '@util/constants';
+import { QueryEvent } from '@util/events';
 import BloomManager from '@core/db/BloomManager';
 import MemberData from '../MemberData';
 

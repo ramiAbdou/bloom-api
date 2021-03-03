@@ -1,8 +1,8 @@
 import Stripe from 'stripe';
 
-import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import Member from '../../member/Member';
+import Member from '@entities/member/Member';
+import { GQLContext } from '@util/constants';
 import MemberPayment from '../MemberPayment';
 
 interface CreateMemberPaymentArgs {
@@ -31,27 +31,16 @@ const createMemberPayment = async (
 
   if (invoice.status === 'paid' && invoice.amount_paid) {
     payment = bm.create(MemberPayment, {
-      amount: invoice.amount_paid,
-      community: { id: communityId },
-      member,
+      amount: invoice.amount_paid / 100,
+      community: communityId,
+      member: memberId,
       stripeInvoiceId: invoice.id,
       stripeInvoiceUrl: invoice.hosted_invoice_url,
-      type: { id: typeId }
+      type: typeId
     });
   }
 
-  await bm.flush({
-    cacheKeysToInvalidate: [
-      `${QueryEvent.GET_ACTIVE_DUES_GROWTH}-${communityId}`,
-      `${QueryEvent.GET_DATABASE}-${communityId}`,
-      `${QueryEvent.GET_PAYMENTS}-${member.id}`,
-      `${QueryEvent.GET_PAYMENTS}-${communityId}`,
-      `${QueryEvent.GET_TOTAL_DUES_COLLECTED}-${communityId}`,
-      `${QueryEvent.GET_TOTAL_DUES_GROWTH}-${communityId}`,
-      `${QueryEvent.GET_TOTAL_DUES_SERIES}-${communityId}`,
-      `${QueryEvent.GET_USER}-${member.user.id}`
-    ]
-  });
+  await bm.flush();
 
   return payment;
 };

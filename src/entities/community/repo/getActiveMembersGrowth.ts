@@ -1,9 +1,10 @@
 import day from 'dayjs';
 
-import { GQLContext, QueryEvent } from '@constants';
-import cache from '@core/cache/cache';
 import BloomManager from '@core/db/BloomManager';
-import Member from '../../member/Member';
+import cache from '@core/db/cache';
+import Member from '@entities/member/Member';
+import { GQLContext } from '@util/constants';
+import { QueryEvent } from '@util/events';
 
 const getActiveGrowth = async ({
   communityId

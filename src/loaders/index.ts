@@ -1,3 +1,5 @@
+/* eslint-disable simple-import-sort/sort */
+
 import 'reflect-metadata'; // Needed for type-graphql compilation.
 
 import day from 'dayjs';
@@ -5,11 +7,14 @@ import advancedFormat from 'dayjs/plugin/advancedFormat';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 
-import { APP } from '@constants';
+import { APP } from '@util/constants';
 import db from '@core/db/db';
-import logger from '@util/logger';
-import apollo from './apollo';
-import express from './express';
+import { LoggerEvent } from '@util/events';
+import logger from '@system/logger/logger';
+import loadApollo from './apollo';
+import loadExpress from './express';
+
+import './misc';
 
 day.extend(advancedFormat);
 day.extend(utc);
@@ -22,12 +27,17 @@ day.extend(timezone);
  * wouldn't be loaded so events can be triggered and fired correctly.
  */
 const startServer = async () => {
-  const app = express();
-  const [apolloServer] = await Promise.all([apollo(), db.createConnection()]);
+  const app = loadExpress();
+
+  const [apolloServer] = await Promise.all([
+    loadApollo(),
+    db.createConnection()
+  ]);
+
   apolloServer.applyMiddleware({ app, cors: false, path: '/graphql' });
 
   app.listen(APP.PORT, () =>
-    logger.log({ event: 'SERVER_STARTED', level: 'INFO' })
+    logger.log({ event: LoggerEvent.START_SERVER, level: 'INFO' })
   );
 };
 

@@ -1,9 +1,11 @@
 import { ArgsType, Field } from 'type-graphql';
 import { FilterQuery } from '@mikro-orm/core';
 
-import { GQLContext, QueryEvent } from '@constants';
 import BloomManager from '@core/db/BloomManager';
-import User from '../../user/User';
+import User from '@entities/user/User';
+import { emitEmailEvent, emitGoogleEvent } from '@system/eventBus';
+import { GQLContext } from '@util/constants';
+import { EmailEvent, FlushEvent, GoogleEvent } from '@util/events';
 import EventGuest from '../EventGuest';
 
 @ArgsType()
@@ -21,38 +23,26 @@ export class CreateEventGuestArgs {
   lastName?: string;
 }
 
-/**
- * Returns a new EventGuest.
- *
- * Invalidates QueryEvent.GET_EVENT and QueryEvent.GET_PAST_EVENTS.
- *
- * @param args.eventId - Identifier of the event.
- * @param ctx.communityId - Identifier of the community.
- * @param ctx.memberId - Identifier of the member.
- */
 const createEventGuest = async (
-  { email, firstName, lastName, eventId }: CreateEventGuestArgs,
-  {
-    communityId,
-    memberId,
-    userId
-  }: Pick<GQLContext, 'communityId' | 'memberId' | 'userId'>
+  args: CreateEventGuestArgs,
+  ctx: Pick<GQLContext, 'communityId' | 'memberId' | 'userId'>
 ) => {
-  const partialUser: Pick<User, 'email' | 'firstName' | 'lastName'> = email
-    ? { email, firstName, lastName }
-    : await new BloomManager().findOne(
-        User,
-        { id: userId },
-        { fields: ['email', 'firstName', 'lastName'] }
-      );
+  const { email, eventId, firstName, lastName } = args;
+  const { communityId, memberId, userId } = ctx;
 
-  const baseArgs: FilterQuery<EventGuest> = {
-    email: partialUser.email,
-    event: { id: eventId },
-    member: { id: memberId }
+  const bm = new BloomManager();
+
+  const user: User = await bm.findOne(User, userId);
+
+  const guestArgs: FilterQuery<EventGuest> = {
+    email: email ?? user.email,
+    event: eventId,
+    firstName: firstName ?? user.firstName,
+    lastName: lastName ?? user.lastName,
+    member: memberId
   };
 
-  const existingGuest = await new BloomManager().findOne(EventGuest, baseArgs);
+  const existingGuest = await bm.findOne(EventGuest, guestArgs);
 
   if (existingGuest) {
     throw new Error(
@@ -60,18 +50,21 @@ const createEventGuest = async (
     );
   }
 
-  const guest = await new BloomManager().createAndFlush(
-    EventGuest,
-    { ...baseArgs, ...partialUser },
-    {
-      cacheKeysToInvalidate: [
-        `${QueryEvent.GET_EVENT_GUESTS}-${eventId}`,
-        `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`
-      ],
-      event: 'CREATE_EVENT_GUEST',
-      populate: ['member.user']
-    }
+  const guest: EventGuest = await bm.createAndFlush(EventGuest, guestArgs, {
+    flushEvent: FlushEvent.CREATE_EVENT_GUEST,
+    populate: ['member.user']
+  });
+
+  emitEmailEvent(
+    EmailEvent.EVENT_RSVP,
+    { communityId, eventId, guestId: guest.id },
+    { delay: 5000 }
   );
+
+  emitGoogleEvent(GoogleEvent.ADD_CALENDAR_EVENT_ATTENDEE, {
+    eventId,
+    guestId: guest.id
+  });
 
   return guest;
 };

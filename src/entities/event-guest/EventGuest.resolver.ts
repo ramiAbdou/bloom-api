@@ -1,6 +1,6 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { GQLContext } from '@constants';
+import { GQLContext } from '@util/constants';
 import EventGuest from './EventGuest';
 import createEventGuest, {
   CreateEventGuestArgs
@@ -23,11 +23,11 @@ export default class EventGuestResolver {
   }
 
   @Authorized()
-  @Mutation(() => Boolean, { nullable: true })
+  @Mutation(() => EventGuest, { nullable: true })
   async deleteEventGuest(
     @Args() args: DeleteEventGuestArgs,
     @Ctx() ctx: GQLContext
-  ): Promise<boolean> {
+  ): Promise<EventGuest> {
     return deleteEventGuest(args, ctx);
   }
 

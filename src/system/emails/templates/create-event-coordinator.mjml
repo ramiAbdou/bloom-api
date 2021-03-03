@@ -1,0 +1,23 @@
+<mjml>
+  <mj-head>
+    <mj-include path="./attributes.mjml" />
+    <mj-preview>You created {{ event.title }} in {{ community.name }}.</mj-preview>
+  </mj-head>
+  <mj-body background-color="#FFFFFF">
+    <mj-include path="./header.mjml" />
+    <mj-section background-color="#E0E0E0" border-radius="8px" padding="1px">
+      <mj-column background-color="#FFFFFF" border-radius="8px" padding="8px 8px 16px 8px">
+        <mj-include path="./hi.mjml" />
+        <mj-text padding-bottom="16px">You created {{ event.title }} in {{ community.name }}. Please see the event details below.</mj-text>
+        <mj-text padding-bottom="4px">Title: {{ event.title }}</mj-text>
+        <mj-text padding-bottom="4px">When: {{ formatDate event.startTime "MMM D, YYYY @ h:mm A" "-0800" }} - {{ formatDate event.endTime "MMM D, YYYY @ h:mm A" "-0800" }}</mj-text>
+        <mj-text padding-bottom="4px">Privacy: {{ event.privacy }}</mj-text>
+        <mj-raw>{{#if event.summary}}</mj-raw>
+        <mj-text padding-bottom="4px">Summary: {{ event.summary }}</mj-text>
+        <mj-raw>{{/if}}</mj-raw>
+        <mj-button href="{{ event.eventUrl }}" padding-top="16px">View Event</mj-button>
+      </mj-column>
+    </mj-section>
+    <mj-include path="./footer.mjml" />
+  </mj-body>
+</mjml>

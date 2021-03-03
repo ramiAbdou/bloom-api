@@ -1,58 +1,60 @@
+import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
-import { wrap } from '@mikro-orm/core';
 
-import { RecurrenceType } from '@entities/member-type/MemberType.types';
+import BloomManager from '@core/db/BloomManager';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
+import MemberType, { RecurrenceType } from '@entities/member-type/MemberType';
 import { stripe } from '@integrations/stripe/Stripe.util';
-import MemberType from '../MemberType';
+import { GQLContext } from '@util/constants';
+import { FlushEvent } from '@util/events';
 
-type CreateStripeProductArgs = {
+interface CreateStripeProductArgs {
   stripeAccountId: string;
   type: MemberType;
-};
-
-type CreateStripeProductsArgs = {
-  stripeAccountId: string;
-  types: MemberType[];
-};
+}
 
 /**
  * Updates the MemberType's stripePriceId and stripeProductId for all types
  * that are not free. Calls the Stripe SDK product and price creation methods
  * for the community.
  */
-const createStripeProduct = async ({
+const attachStripeProduct = async ({
   stripeAccountId,
   type
-}: CreateStripeProductArgs) => {
+}: CreateStripeProductArgs): Promise<MemberType> => {
   const { amount, id, name, recurrence } = type;
 
   // Create the subscription even if the product is LIFETIME fulfilled
   // subscription.
-  const { id: stripeProductId } = await stripe.products.create(
+  const product: Stripe.Product = await stripe.products.create(
     { id, name },
-    { stripeAccount: stripeAccountId }
+    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
-  const recurring: Partial<Stripe.PriceCreateParams> =
-    recurrence === RecurrenceType.LIFETIME
-      ? {}
-      : {
-          recurring: {
-            interval: recurrence === RecurrenceType.MONTHLY ? 'month' : 'year'
-          }
-        };
+  let recurring: Partial<Stripe.PriceCreateParams> = {};
 
-  const { id: stripePriceId } = await stripe.prices.create(
+  if (recurrence !== RecurrenceType.LIFETIME) {
+    recurring = {
+      recurring: {
+        interval: recurrence === RecurrenceType.MONTHLY ? 'month' : 'year'
+      }
+    };
+  }
+
+  const price: Stripe.Price = await stripe.prices.create(
     {
       ...recurring,
       currency: 'usd',
-      product: stripeProductId,
-      unit_amount: amount
+      product: product.id,
+      unit_amount: amount * 100
     },
-    { stripeAccount: stripeAccountId }
+    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
-  wrap(type).assign({ stripePriceId, stripeProductId });
+  type.stripePriceId = price.id;
+  type.stripeProductId = product.id;
+
+  return type;
 };
 
 /**
@@ -60,14 +62,29 @@ const createStripeProduct = async ({
  * that isn't free. Updates the MemberType entity as well.
  */
 const createStripeProducts = async ({
-  stripeAccountId,
-  types
-}: CreateStripeProductsArgs) => {
-  await Promise.all(
-    types.map(async (type: MemberType) =>
-      createStripeProduct({ stripeAccountId, type })
-    )
+  communityId
+}: Pick<GQLContext, 'communityId'>) => {
+  const bm = new BloomManager();
+
+  const [integrations, types]: [
+    CommunityIntegrations,
+    MemberType[]
+  ] = await Promise.all([
+    bm.findOne(CommunityIntegrations, { community: { id: communityId } }),
+    bm.find(MemberType, { community: { id: communityId } })
+  ]);
+
+  const updatedTypes: MemberType[] = await Promise.all(
+    types.map(async (type: MemberType) => {
+      return attachStripeProduct({
+        stripeAccountId: integrations.stripeAccountId,
+        type
+      });
+    })
   );
+
+  await bm.flush({ flushEvent: FlushEvent.CREATE_STRIPE_PRODUCTS });
+  return updatedTypes;
 };
 
 export default createStripeProducts;
