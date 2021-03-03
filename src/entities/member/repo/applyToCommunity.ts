@@ -139,9 +139,11 @@ const applyToCommunity = async (
     )?.toString();
 
     if (category === 'EMAIL') user.email = value;
-    else if (category === 'FIRST_NAME') user.firstName = value;
-    else if (category === 'LAST_NAME') user.lastName = value;
-    else if (category === 'MEMBERSHIP_TYPE') member.type = type;
+    else if (category === QuestionCategory.FIRST_NAME) user.firstName = value;
+    else if (category === QuestionCategory.LAST_NAME) user.lastName = value;
+    else if (category === QuestionCategory.LINKEDIN_URL) {
+      user.linkedInUrl = value;
+    } else if (category === 'MEMBERSHIP_TYPE') member.type = type;
     else bm.create(MemberData, { member, question, value });
   });
 

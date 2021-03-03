@@ -49,8 +49,6 @@ const getTotalDuesSeries = async ({
     })
   );
 
-  console.log(result);
-
   return result;
 };
 

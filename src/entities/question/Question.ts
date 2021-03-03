@@ -21,6 +21,7 @@ export enum QuestionCategory {
   GENDER = 'GENDER',
   JOINED_AT = 'JOINED_AT',
   LAST_NAME = 'LAST_NAME',
+  LINKEDIN_URL = 'LINKEDIN_URL',
   MEMBERSHIP_TYPE = 'MEMBERSHIP_TYPE'
 }
 

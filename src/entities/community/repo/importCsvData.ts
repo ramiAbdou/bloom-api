@@ -92,6 +92,11 @@ const processRow = async ({
         return;
       }
 
+      if (key === QuestionCategory.LINKEDIN_URL) {
+        user.linkedInUrl = value;
+        return;
+      }
+
       if (key === QuestionCategory.JOINED_AT) {
         const dayObject = day.utc(value);
 
