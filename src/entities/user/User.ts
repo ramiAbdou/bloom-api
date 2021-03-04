@@ -9,6 +9,7 @@ import {
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
+import Supporter from '@entities/supporter/Supporter';
 import Member from '../member/Member';
 
 @ObjectType()
@@ -38,4 +39,8 @@ export default class User extends BaseEntity {
   @Field(() => [Member])
   @OneToMany(() => Member, ({ user }) => user)
   members: Collection<Member> = new Collection<Member>(this);
+
+  @Field(() => [Supporter])
+  @OneToMany(() => Supporter, ({ user }) => user)
+  supporters: Collection<Supporter> = new Collection<Supporter>(this);
 }

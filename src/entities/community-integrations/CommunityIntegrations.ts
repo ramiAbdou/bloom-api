@@ -12,18 +12,18 @@ import { MailchimpList } from './CommunityIntegrations.types';
 @ObjectType()
 @Entity()
 export default class CommunityIntegrations extends BaseEntity {
-  @Property({ nullable: true, unique: true })
+  @Property({ nullable: true })
   mailchimpAccessToken?: string;
 
   @Field({ nullable: true })
-  @Property({ nullable: true, unique: true })
+  @Property({ nullable: true })
   mailchimpListId?: string;
 
   @Field({ nullable: true })
   @Property({ nullable: true })
   stripeAccountId?: string;
 
-  @Property({ nullable: true, unique: true })
+  @Property({ nullable: true })
   zapierApiKey: string;
 
   @Field()

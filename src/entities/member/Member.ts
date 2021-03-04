@@ -190,9 +190,9 @@ export default class Member extends BaseEntity {
   @ManyToOne(() => MemberType, { nullable: true })
   type: MemberType;
 
-  @Field(() => User, { nullable: true })
-  @ManyToOne(() => User, { nullable: true })
-  user?: User;
+  @Field(() => User)
+  @ManyToOne(() => User)
+  user: User;
 
   // Data will only be populated if a question has ever been answered before.
   @Field(() => [MemberValue])

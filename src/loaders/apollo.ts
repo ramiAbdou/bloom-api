@@ -3,6 +3,7 @@ import { GraphQLSchema } from 'graphql';
 import { AuthChecker, buildSchema } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
+import MemberSocialsResolver from '@entities/member-socials/MemberSocials.resolver';
 import { GQLContext } from '@util/constants';
 import { decodeToken } from '@util/util';
 import CommunityApplicationResolver from '../entities/community-application/CommunityApplication.resolver';
@@ -55,6 +56,7 @@ export const createSchema = async (): Promise<GraphQLSchema> =>
       EventGuestResolver,
       EventWatchResolver,
       MemberResolver,
+      MemberSocialsResolver,
       MemberValueResolver,
       MemberPaymentResolver,
       MemberTypeResolver,

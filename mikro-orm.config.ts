@@ -20,6 +20,7 @@ import MemberValue from '@entities/member-value/MemberValue';
 import Member from '@entities/member/Member';
 import MemberSubscriber from '@entities/member/Member.subscriber';
 import Question from '@entities/question/Question';
+import Supporter from '@entities/supporter/Supporter';
 import Task from '@entities/task/Task';
 import User from '@entities/user/User';
 import { APP, isProduction } from '@util/constants';
@@ -52,6 +53,7 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
     MemberValue,
     Member,
     Question,
+    Supporter,
     Task,
     User
   ],
