@@ -1,10 +1,5 @@
 import { Field, ObjectType } from 'type-graphql';
-import {
-  AfterCreate,
-  Entity,
-  ManyToOne,
-  PrimaryKeyType
-} from '@mikro-orm/core';
+import { AfterCreate, Entity, ManyToOne, Unique } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
 import cache from '@core/db/cache';
@@ -14,6 +9,7 @@ import Member from '../member/Member';
 
 @ObjectType()
 @Entity()
+@Unique({ properties: ['event', 'member'] })
 export default class EventWatch extends BaseEntity {
   // ## LIFECYCLE
 
@@ -25,12 +21,10 @@ export default class EventWatch extends BaseEntity {
   // ## RELATIONSHIPS
 
   @Field(() => Event)
-  @ManyToOne(() => Event, { primary: true })
+  @ManyToOne(() => Event)
   event: Event;
 
   @Field(() => Member)
-  @ManyToOne(() => Member, { primary: true })
+  @ManyToOne(() => Member)
   member: Member;
-
-  [PrimaryKeyType]: [string, string];
 }

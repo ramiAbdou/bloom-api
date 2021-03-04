@@ -1,6 +1,5 @@
 import { Connection, IDatabaseDriver, Options } from '@mikro-orm/core';
 
-import BaseCompositeEntity from '@core/db/BaseCompositeEntity';
 import BaseEntity from '@core/db/BaseEntity';
 import BloomManagerSubscriber from '@core/db/BloomManager.subscriber';
 import NamingStrategy from '@core/db/NamingStrategy';
@@ -37,7 +36,6 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
   driverOptions: { connection: { ssl: isProduction } },
   entities: [
     BaseEntity,
-    BaseCompositeEntity,
     CommunityApplication,
     CommunityIntegrations,
     Community,

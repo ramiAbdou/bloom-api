@@ -1,5 +1,5 @@
 import { Field, ObjectType } from 'type-graphql';
-import { Entity, ManyToOne, PrimaryKeyType } from '@mikro-orm/core';
+import { Entity, ManyToOne, Unique } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
 import Event from '../event/Event';
@@ -7,16 +7,15 @@ import Member from '../member/Member';
 
 @ObjectType()
 @Entity()
+@Unique({ properties: ['event', 'member'] })
 export default class EventInvitee extends BaseEntity {
   // ## RELATIONSHIPS
 
   @Field(() => Event)
-  @ManyToOne(() => Event, { primary: true })
+  @ManyToOne(() => Event)
   event: Event;
 
   @Field(() => Member)
-  @ManyToOne(() => Member, { primary: true })
+  @ManyToOne(() => Member)
   member: Member;
-
-  [PrimaryKeyType]: [string, string];
 }
