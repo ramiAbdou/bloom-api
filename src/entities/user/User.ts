@@ -21,9 +21,8 @@ export default class User extends BaseEntity {
   @IsEmail()
   email: string;
 
-  @Field()
-  @Property()
-  firstName: string;
+  @Property({ nullable: true })
+  firstName?: string;
 
   @Field()
   @Property({ persist: false })
@@ -31,14 +30,8 @@ export default class User extends BaseEntity {
     return `${this.firstName} ${this.lastName}`;
   }
 
-  @Field()
-  @Property()
-  lastName: string;
-
-  @Field({ nullable: true })
   @Property({ nullable: true })
-  @IsUrl()
-  pictureUrl: string;
+  lastName: string;
 
   // Server-generated token that we use to keep the user logged-in when sending
   // GraphQL requests.
@@ -77,8 +70,6 @@ export default class User extends BaseEntity {
   @BeforeCreate()
   async beforeCreate() {
     this.email = this.email.toLowerCase();
-    this.firstName = this.firstName.trim();
-    this.lastName = this.lastName.trim();
   }
 
   // ## RELATIONSHIPS

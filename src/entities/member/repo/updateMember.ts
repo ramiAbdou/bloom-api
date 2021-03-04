@@ -9,6 +9,9 @@ import Member from '../Member';
 export class UpdateMemberArgs {
   @Field({ nullable: true })
   bio?: string;
+
+  @Field({ nullable: true })
+  pictureUrl?: string;
 }
 
 /**

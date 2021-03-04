@@ -5,10 +5,10 @@ import { ArgsType, Field, InputType } from 'type-graphql';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
 import Community from '@entities/community/Community';
-import MemberData from '@entities/member-data/MemberData';
 import createLifetimePayment from '@entities/member-payment/repo/createLifetimePayment';
 import createSubscription from '@entities/member-payment/repo/createSubscription';
 import MemberType, { RecurrenceType } from '@entities/member-type/MemberType';
+import MemberValue from '@entities/member-value/MemberValue';
 import Question, { QuestionCategory } from '@entities/question/Question';
 import User from '@entities/user/User';
 import { emitEmailEvent } from '@system/eventBus';
@@ -18,7 +18,7 @@ import Member, { MemberStatus } from '../Member';
 import updatePaymentMethod from './updatePaymentMethod';
 
 @InputType()
-export class MemberDataInput {
+export class MemberValueInput {
   @Field(() => String, { nullable: true })
   category?: QuestionCategory;
 
@@ -31,8 +31,8 @@ export class MemberDataInput {
 
 @ArgsType()
 export class ApplyToCommunityArgs {
-  @Field(() => [MemberDataInput])
-  data: MemberDataInput[];
+  @Field(() => [MemberValueInput])
+  data: MemberValueInput[];
 
   @Field()
   email: string;
@@ -116,11 +116,12 @@ const applyToCommunity = async (
   }
 
   const member: Member = bm.create(Member, { community, user });
+
   const questions = community.questions.getItems();
 
   // Some data we store on the user entity, and some we store as member
   // data.
-  data.forEach(({ category, questionId, value: values }: MemberDataInput) => {
+  data.forEach(({ category, questionId, value: values }: MemberValueInput) => {
     // If there's no value, then short circuit. Because for the initial
     // creation of data, it must exist.
     if (!values?.length) return;
@@ -138,13 +139,16 @@ const applyToCommunity = async (
       : values[0]
     )?.toString();
 
-    if (category === 'EMAIL') user.email = value;
-    else if (category === QuestionCategory.FIRST_NAME) user.firstName = value;
-    else if (category === QuestionCategory.LAST_NAME) user.lastName = value;
-    else if (category === QuestionCategory.LINKEDIN_URL) {
+    if (category === QuestionCategory.EMAIL) user.email = value;
+    else if (category === QuestionCategory.FIRST_NAME) {
+      member.firstName = value;
+    } else if (category === QuestionCategory.LAST_NAME) {
+      member.lastName = value;
+    } else if (category === QuestionCategory.LINKED_IN_URL) {
       user.linkedInUrl = value;
-    } else if (category === 'MEMBERSHIP_TYPE') member.type = type;
-    else bm.create(MemberData, { member, question, value });
+    } else if (category === QuestionCategory.MEMBERSHIP_TYPE) {
+      member.type = type;
+    } else bm.create(MemberValue, { member, question, value });
   });
 
   await bm.flush({ flushEvent: FlushEvent.APPLY_TO_COMMUNITY });

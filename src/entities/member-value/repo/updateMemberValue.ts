@@ -4,10 +4,10 @@ import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
 import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
-import MemberData from '../MemberData';
+import MemberValue from '../MemberValue';
 
 @InputType()
-class MemberDataArgs {
+class MemberValueArgs {
   @Field()
   questionId: string;
 
@@ -16,34 +16,34 @@ class MemberDataArgs {
 }
 
 @ArgsType()
-export class UpdateMemberDataArgs {
-  @Field(() => [MemberDataArgs])
-  items: MemberDataArgs[];
+export class UpdateMemberValuesArgs {
+  @Field(() => [MemberValueArgs])
+  items: MemberValueArgs[];
 }
 
-const updateMemberData = async (
-  { items }: UpdateMemberDataArgs,
+const updateMemberValues = async (
+  { items }: UpdateMemberValuesArgs,
   { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
-): Promise<MemberData[]> => {
+): Promise<MemberValue[]> => {
   const bm = new BloomManager();
 
-  const data: MemberData[] = await bm.find(MemberData, {
+  const data: MemberValue[] = await bm.find(MemberValue, {
     member: { id: memberId },
     question: { id: items.map(({ questionId }) => questionId) }
   });
 
-  const updatedData: MemberData[] = items.reduce(
-    (acc: MemberData[], { questionId, value }: MemberDataArgs) => {
+  const updatedData: MemberValue[] = items.reduce(
+    (acc: MemberValue[], { questionId, value }: MemberValueArgs) => {
       const stringifiedValue = value?.toString();
 
-      const existingEntity: MemberData = data.find(
-        (element: MemberData) => element.question.id === questionId
+      const existingEntity: MemberValue = data.find(
+        (element: MemberValue) => element.question.id === questionId
       );
 
-      let entity: MemberData = existingEntity;
+      let entity: MemberValue = existingEntity;
 
       if (!entity) {
-        entity = bm.create(MemberData, {
+        entity = bm.create(MemberValue, {
           member: memberId,
           question: questionId
         });
@@ -65,4 +65,4 @@ const updateMemberData = async (
   return updatedData;
 };
 
-export default updateMemberData;
+export default updateMemberValues;

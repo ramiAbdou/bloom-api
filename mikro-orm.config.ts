@@ -12,16 +12,15 @@ import EventGuest from '@entities/event-guest/EventGuest';
 import EventInvitee from '@entities/event-invitee/EventInvitee';
 import EventWatch from '@entities/event-watch/EventWatch';
 import Event from '@entities/event/Event';
-import MemberData from '@entities/member-data/MemberData';
 import MemberPayment from '@entities/member-payment/MemberPayment';
 import MemberRefresh from '@entities/member-refresh/MemberRefresh';
 import MemberType from '@entities/member-type/MemberType';
+import MemberValue from '@entities/member-value/MemberValue';
 import Member from '@entities/member/Member';
 import MemberSubscriber from '@entities/member/Member.subscriber';
 import Question from '@entities/question/Question';
 import Task from '@entities/task/Task';
 import User from '@entities/user/User';
-import UserSubscriber from '@entities/user/User.subscriber';
 import { APP, isProduction } from '@util/constants';
 
 /**
@@ -45,10 +44,10 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
     EventGuest,
     EventInvitee,
     EventWatch,
-    MemberData,
     MemberPayment,
     MemberRefresh,
     MemberType,
+    MemberValue,
     Member,
     Question,
     Task,
@@ -56,11 +55,7 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
   ],
   filters: { notDeleted: { args: false, cond: { deletedAt: null } } },
   namingStrategy: NamingStrategy,
-  subscribers: [
-    new BloomManagerSubscriber(),
-    new MemberSubscriber(),
-    new UserSubscriber()
-  ],
+  subscribers: [new BloomManagerSubscriber(), new MemberSubscriber()],
   type: 'postgresql'
 };
 

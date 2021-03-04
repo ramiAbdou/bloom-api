@@ -15,7 +15,7 @@ import Question from '../question/Question';
 
 @ObjectType()
 @Entity()
-export default class MemberData extends BaseEntity {
+export default class MemberValue extends BaseEntity {
   // We keep this loosely defined as a string to give flexibility, especially
   // for multiple choice and multiple select values.
   @Field({ nullable: true })
@@ -26,12 +26,12 @@ export default class MemberData extends BaseEntity {
 
   @AfterCreate()
   afterCreate() {
-    cache.invalidateKeys([`${QueryEvent.GET_MEMBER_DATA}-${this.member.id}`]);
+    cache.invalidateKeys([`${QueryEvent.GET_MEMBER_VALUES}-${this.member.id}`]);
   }
 
   @AfterUpdate()
   afterUpdate() {
-    cache.invalidateKeys([`${QueryEvent.GET_MEMBER_DATA}-${this.member.id}`]);
+    cache.invalidateKeys([`${QueryEvent.GET_MEMBER_VALUES}-${this.member.id}`]);
   }
 
   // ## RELATIONSHIPS

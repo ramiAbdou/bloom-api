@@ -10,6 +10,8 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
     return [Member];
   }
 
+  // async beforeUpdate()
+
   async afterUpdate({ changeSet, entity: member }: EventArgs<Member>) {
     cache.invalidateKeys([`${QueryEvent.GET_MEMBER}-${member.id}`]);
 
@@ -25,7 +27,13 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
     }
 
     if (
-      hasKeys(payload, ['deletedAt', 'role']) ||
+      hasKeys(payload, [
+        'deletedAt',
+        'firstName',
+        'lastName',
+        'pictureUrl',
+        'role'
+      ]) ||
       payload?.status === MemberStatus.ACCEPTED
     ) {
       cache.invalidateKeys([

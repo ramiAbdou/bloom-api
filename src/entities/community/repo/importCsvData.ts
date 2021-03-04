@@ -3,8 +3,8 @@ import day from 'dayjs';
 import { internet } from 'faker';
 
 import BloomManager from '@core/db/BloomManager';
-import MemberData from '@entities/member-data/MemberData';
 import MemberType from '@entities/member-type/MemberType';
+import MemberValue from '@entities/member-value/MemberValue';
 import Member, { MemberRole, MemberStatus } from '@entities/member/Member';
 import Question, { QuestionCategory } from '@entities/question/Question';
 import User from '@entities/user/User';
@@ -58,11 +58,7 @@ const processRow = async ({
   if (!email || uniqueEmails.has(email)) return;
   uniqueEmails.add(email);
 
-  const [user, wasFound] = await bm.findOneOrCreate(
-    User,
-    { email },
-    { email, firstName, lastName }
-  );
+  const [user, wasFound] = await bm.findOneOrCreate(User, { email }, { email });
 
   // If a member already exists for the user, then don't create a new
   // member. The possible case for this is for an OWNER of a community.
@@ -74,6 +70,8 @@ const processRow = async ({
   // // potentially be persisted already.
   const member: Member = bm.create(Member, {
     community,
+    firstName,
+    lastName,
     role: email === ownerEmail ? MemberRole.OWNER : null,
     status: MemberStatus.ACCEPTED,
     user
@@ -92,7 +90,7 @@ const processRow = async ({
         return;
       }
 
-      if (key === QuestionCategory.LINKEDIN_URL) {
+      if (key === QuestionCategory.LINKED_IN_URL) {
         user.linkedInUrl = value;
         return;
       }
@@ -118,7 +116,7 @@ const processRow = async ({
         return key === category || key === title;
       });
 
-      if (question) bm.create(MemberData, { member, question, value });
+      if (question) bm.create(MemberValue, { member, question, value });
     }
   );
 };

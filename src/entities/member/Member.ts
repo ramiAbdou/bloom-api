@@ -1,3 +1,4 @@
+import { IsUrl } from 'class-validator';
 import { Authorized, Field, ObjectType } from 'type-graphql';
 import {
   BeforeCreate,
@@ -18,10 +19,10 @@ import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
 import EventInvitee from '../event-invitee/EventInvitee';
 import EventWatch from '../event-watch/EventWatch';
-import MemberData from '../member-data/MemberData';
 import MemberPayment from '../member-payment/MemberPayment';
 import MemberRefresh from '../member-refresh/MemberRefresh';
 import MemberType from '../member-type/MemberType';
+import MemberValue from '../member-value/MemberValue';
 import User from '../user/User';
 import getNextPaymentDate from './repo/getNextPaymentDate';
 import getPaymentMethod, {
@@ -47,6 +48,20 @@ export default class Member extends BaseEntity {
   @Property({ nullable: true, type: 'text' })
   bio: string;
 
+  @Field()
+  @Property()
+  firstName: string;
+
+  @Field()
+  @Property({ persist: false })
+  get fullName(): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
+
+  @Field()
+  @Property()
+  lastName: string;
+
   @Field({ defaultValue: false })
   @Property()
   isDuesActive: boolean = false;
@@ -55,6 +70,11 @@ export default class Member extends BaseEntity {
   @Field({ nullable: true })
   @Property({ nullable: true })
   joinedAt?: string;
+
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  @IsUrl()
+  pictureUrl: string;
 
   // If the member has a role, it will either be ADMIN or OWNER. There should
   // only be one OWNER in a community.
@@ -113,6 +133,9 @@ export default class Member extends BaseEntity {
     // Every community should've assigned one default member.
     if (!this.type) this.type = this.community.defaultType;
     if (this.type.isFree) this.isDuesActive = true;
+
+    this.firstName = this.firstName.trim();
+    this.lastName = this.lastName.trim();
   }
 
   @BeforeUpdate()
@@ -131,13 +154,6 @@ export default class Member extends BaseEntity {
   @Field(() => Community)
   @ManyToOne(() => Community)
   community: Community;
-
-  // Data will only be populated if a question has ever been answered before.
-  @Field(() => [MemberData])
-  @OneToMany(() => MemberData, ({ member }) => member, {
-    cascade: [Cascade.ALL]
-  })
-  data = new Collection<MemberData>(this);
 
   @Field(() => [EventGuest])
   @OneToMany(() => EventGuest, ({ member }) => member)
@@ -165,6 +181,13 @@ export default class Member extends BaseEntity {
   @Field(() => User)
   @ManyToOne(() => User)
   user: User;
+
+  // Data will only be populated if a question has ever been answered before.
+  @Field(() => [MemberValue])
+  @OneToMany(() => MemberValue, ({ member }) => member, {
+    cascade: [Cascade.ALL]
+  })
+  values = new Collection<MemberValue>(this);
 
   @Field(() => [EventWatch])
   @OneToMany(() => EventWatch, ({ member }) => member)

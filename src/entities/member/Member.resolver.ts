@@ -73,7 +73,7 @@ export default class MemberResolver {
       {
         cacheKey: `${QueryEvent.GET_APPLICANTS}-${communityId}`,
         orderBy: { createdAt: QueryOrder.DESC },
-        populate: ['data', 'user']
+        populate: ['values', 'user']
       }
     );
   }
@@ -102,7 +102,7 @@ export default class MemberResolver {
       {
         cacheKey: `${QueryEvent.GET_DATABASE}-${communityId}`,
         orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC },
-        populate: ['data', 'user']
+        populate: ['values', 'user']
       }
     );
   }
@@ -116,7 +116,7 @@ export default class MemberResolver {
       {
         cacheKey: `${QueryEvent.GET_DIRECTORY}-${communityId}`,
         orderBy: { createdAt: QueryOrder.DESC },
-        populate: ['data', 'user']
+        populate: ['values', 'user']
       }
     );
   }

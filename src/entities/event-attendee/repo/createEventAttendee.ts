@@ -2,7 +2,7 @@ import { ArgsType, Field } from 'type-graphql';
 import { FilterQuery } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
-import User from '@entities/user/User';
+import Member from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import { FlushEvent } from '@util/events';
 import EventAttendee from '../EventAttendee';
@@ -30,23 +30,20 @@ export class CreateEventAttendeeArgs {
  * @param args.lastName - Last name of the NON-MEMBER attendee.
  * @param args.eventId - ID of the event.
  * @param ctx.memberId - ID of the member.
- * @param ctx.userId - ID of the user.
  */
 const createEventAttendee = async (
   { eventId, ...args }: CreateEventAttendeeArgs,
-  { memberId, userId }: Pick<GQLContext, 'memberId' | 'userId'>
+  { memberId }: Pick<GQLContext, 'memberId'>
 ) => {
-  const user = await new BloomManager().findOne(
-    User,
-    { id: userId },
-    { fields: ['email', 'firstName', 'lastName'] }
-  );
+  const member = await new BloomManager().findOne(Member, memberId, {
+    populate: ['user']
+  });
 
   const attendeeArgs: FilterQuery<EventAttendee> = {
-    email: args.email ?? user.email,
+    email: args.email ?? member.user.email,
     event: eventId,
-    firstName: args.email ?? user.firstName,
-    lastName: args.email ?? user.lastName,
+    firstName: args.email ?? member.firstName,
+    lastName: args.email ?? member.lastName,
     member: memberId
   };
 
