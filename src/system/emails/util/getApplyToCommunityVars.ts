@@ -1,6 +1,6 @@
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
-import User from '@entities/user/User';
+import Member from '@entities/member/Member';
 import { EmailPayload } from '../emails.types';
 
 export interface ApplyToCommunityPayload {
@@ -10,7 +10,7 @@ export interface ApplyToCommunityPayload {
 
 export interface ApplyToCommunityVars {
   community: Pick<Community, 'name'>;
-  user: Pick<User, 'email' | 'firstName'>;
+  member: Pick<Member, 'email' | 'firstName'>;
 }
 
 /**
@@ -26,20 +26,20 @@ const getApplyToCommunityVars = async (
 
   const bm = new BloomManager();
 
-  const [community, user]: [Community, User] = await Promise.all([
+  const [community, user]: [Community, Member] = await Promise.all([
     bm.findOne(Community, { id: communityId }),
-    bm.findOne(User, { members: { id: memberId } })
+    bm.findOne(Member, { id: memberId })
   ]);
 
   const partialCommunity: Pick<Community, 'name'> = { name: community.name };
 
-  const partialUser: Pick<User, 'email' | 'firstName'> = {
+  const partialUser: Pick<Member, 'email' | 'firstName'> = {
     email: user.email,
     firstName: user.firstName
   };
 
   const variables: ApplyToCommunityVars[] = [
-    { community: partialCommunity, user: partialUser }
+    { community: partialCommunity, member: partialUser }
   ];
 
   return variables;

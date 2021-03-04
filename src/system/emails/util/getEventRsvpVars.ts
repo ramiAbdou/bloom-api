@@ -4,8 +4,8 @@ import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import EventGuest from '@entities/event-guest/EventGuest';
 import Event from '@entities/event/Event';
+import Member from '@entities/member/Member';
 import { VerifiedToken } from '@entities/user/repo/verifyToken';
-import User from '@entities/user/User';
 import { APP, JWT } from '@util/constants';
 import { VerifyEvent } from '@util/events';
 import URLBuilder from '@util/URLBuilder';
@@ -20,7 +20,7 @@ export interface EventRsvpPayload {
 export interface EventRsvpVars {
   event: Pick<Event, 'title'>;
   joinUrl: string;
-  user: Pick<User, 'email' | 'firstName'>;
+  member: Pick<Member, 'email' | 'firstName'>;
 }
 
 const getEventRsvpVars = async (
@@ -59,7 +59,7 @@ const getEventRsvpVars = async (
     {
       event: { title: event.title },
       joinUrl,
-      user: { email: guest.email, firstName: guest.firstName }
+      member: { email: guest.email, firstName: guest.firstName }
     }
   ];
 

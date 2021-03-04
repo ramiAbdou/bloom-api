@@ -1,10 +1,10 @@
 import { FilterQuery } from '@mikro-orm/core';
 
-import { APP, IntegrationsBrand, KeyValue } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
-import User from '@entities/user/User';
+import Member from '@entities/member/Member';
+import { APP, IntegrationsBrand, KeyValue } from '@util/constants';
 import { EmailPayload } from '../emails.types';
 
 export interface ConnectIntegrationsPayload {
@@ -18,7 +18,7 @@ export interface ConnectIntegrationsVars {
   community: Pick<Community, 'name'>;
   details: KeyValue[];
   integrationsUrl: string;
-  user: Pick<User, 'email' | 'firstName'>;
+  member: Pick<Member, 'email' | 'firstName'>;
 }
 
 const getConnectIntegrationsVars = async (
@@ -32,10 +32,10 @@ const getConnectIntegrationsVars = async (
     ? { id: communityId }
     : { urlName };
 
-  const [community, integrations, users]: [
+  const [community, integrations, members]: [
     Community,
     CommunityIntegrations,
-    User[]
+    Member[]
   ] = await Promise.all([
     bm.findOne(
       Community,
@@ -44,8 +44,8 @@ const getConnectIntegrationsVars = async (
     ),
     bm.findOne(CommunityIntegrations, { community: { ...communityArgs } }),
     bm.find(
-      User,
-      { members: { community: { ...communityArgs }, role: { $ne: null } } },
+      Member,
+      { community: { ...communityArgs }, role: { $ne: null } },
       { fields: ['firstName', 'email'] }
     )
   ]);
@@ -76,8 +76,8 @@ const getConnectIntegrationsVars = async (
     integrationsUrl
   };
 
-  const variables: ConnectIntegrationsVars[] = users.map((user: User) => {
-    return { ...partialVars, community, user };
+  const variables: ConnectIntegrationsVars[] = members.map((member: Member) => {
+    return { ...partialVars, community, member };
   });
 
   return variables;

@@ -2,7 +2,7 @@ import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import EventGuest from '@entities/event-guest/EventGuest';
 import Event from '@entities/event/Event';
-import User from '@entities/user/User';
+import Member from '@entities/member/Member';
 import { EmailPayload } from '../emails.types';
 
 export interface DeleteEventGuestsPayload {
@@ -13,7 +13,7 @@ export interface DeleteEventGuestsPayload {
 export interface DeleteEventGuestsVars {
   community: Pick<Community, 'name'>;
   event: Pick<Event, 'startTime' | 'title'>;
-  user: Pick<User, 'email' | 'firstName'>;
+  member: Pick<Member, 'email' | 'firstName'>;
 }
 
 const getDeleteEventGuestsVars = async (
@@ -44,7 +44,7 @@ const getDeleteEventGuestsVars = async (
     return {
       community: partialCommunity,
       event: partialEvent,
-      user: { email: guest.email, firstName: guest.firstName }
+      member: { email: guest.email, firstName: guest.firstName }
     };
   });
 

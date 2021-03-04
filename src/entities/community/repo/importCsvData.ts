@@ -3,6 +3,7 @@ import day from 'dayjs';
 import { internet } from 'faker';
 
 import BloomManager from '@core/db/BloomManager';
+import MemberSocials from '@entities/member-socials/MemberSocials';
 import MemberType from '@entities/member-type/MemberType';
 import MemberValue from '@entities/member-value/MemberValue';
 import Member, { MemberRole, MemberStatus } from '@entities/member/Member';
@@ -78,6 +79,8 @@ const processRow = async ({
     user
   });
 
+  const socials: MemberSocials = bm.create(MemberSocials, { member });
+
   if (email === ownerEmail) community.owner = member;
 
   Object.entries(row).forEach(
@@ -92,7 +95,7 @@ const processRow = async ({
       }
 
       if (key === QuestionCategory.LINKED_IN_URL) {
-        user.linkedInUrl = value;
+        socials.linkedInUrl = value;
         return;
       }
 

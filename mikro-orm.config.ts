@@ -14,6 +14,7 @@ import EventWatch from '@entities/event-watch/EventWatch';
 import Event from '@entities/event/Event';
 import MemberPayment from '@entities/member-payment/MemberPayment';
 import MemberRefresh from '@entities/member-refresh/MemberRefresh';
+import MemberSocials from '@entities/member-socials/MemberSocials';
 import MemberType from '@entities/member-type/MemberType';
 import MemberValue from '@entities/member-value/MemberValue';
 import Member from '@entities/member/Member';
@@ -46,6 +47,7 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
     EventWatch,
     MemberPayment,
     MemberRefresh,
+    MemberSocials,
     MemberType,
     MemberValue,
     Member,

@@ -3,10 +3,10 @@ import { ArgsType, Field } from 'type-graphql';
 import BloomManager from '@core/db/BloomManager';
 import { GQLContext } from '@util/constants';
 import { FlushEvent } from '@util/events';
-import User from '../User';
+import MemberSocials from '../MemberSocials';
 
 @ArgsType()
-export class UpdateUserArgs {
+export class UpdateMemberSocialsArgs {
   @Field({ nullable: true })
   clubhouseUrl?: string;
 
@@ -14,13 +14,7 @@ export class UpdateUserArgs {
   facebookUrl?: string;
 
   @Field({ nullable: true })
-  firstName?: string;
-
-  @Field({ nullable: true })
   instagramUrl?: string;
-
-  @Field({ nullable: true })
-  lastName?: string;
 
   @Field({ nullable: true })
   linkedInUrl?: string;
@@ -29,18 +23,18 @@ export class UpdateUserArgs {
   twitterUrl?: string;
 }
 
-const updateUser = async (
-  args: UpdateUserArgs,
-  { userId }: Pick<GQLContext, 'userId'>
-): Promise<User> => {
-  const user: User = await new BloomManager().findOneAndUpdate(
-    User,
-    { id: userId },
+const updateMemberSocials = async (
+  args: UpdateMemberSocialsArgs,
+  ctx: Pick<GQLContext, 'memberId'>
+): Promise<MemberSocials> => {
+  const socials: MemberSocials = await new BloomManager().findOneAndUpdate(
+    MemberSocials,
+    { member: ctx.memberId },
     { ...args },
-    { flushEvent: FlushEvent.UPDATE_USER }
+    { flushEvent: FlushEvent.UPDATE_MEMBER_SOCIALS }
   );
 
-  return user;
+  return socials;
 };
 
-export default updateUser;
+export default updateMemberSocials;

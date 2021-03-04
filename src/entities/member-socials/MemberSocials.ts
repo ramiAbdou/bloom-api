@@ -1,0 +1,41 @@
+import { IsUrl } from 'class-validator';
+import { Field, ObjectType } from 'type-graphql';
+import { Entity, OneToOne, Property } from '@mikro-orm/core';
+
+import BaseEntity from '@core/db/BaseEntity';
+import Member from '../member/Member';
+
+@ObjectType()
+@Entity()
+export default class MemberSocials extends BaseEntity {
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  @IsUrl()
+  clubhouseUrl: string;
+
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  @IsUrl()
+  facebookUrl: string;
+
+  @Field({ nullable: true })
+  @Property({ nullable: true, unique: true })
+  @IsUrl()
+  instagramUrl: string;
+
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  @IsUrl()
+  linkedInUrl: string;
+
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  @IsUrl()
+  twitterUrl: string;
+
+  // ## RELATIONSHIPS
+
+  @Field(() => Member)
+  @OneToOne(() => Member, ({ socials }) => socials, { owner: true })
+  member: Member;
+}

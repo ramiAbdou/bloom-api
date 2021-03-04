@@ -9,6 +9,7 @@ import {
   Enum,
   ManyToOne,
   OneToMany,
+  OneToOne,
   Property,
   Unique
 } from '@mikro-orm/core';
@@ -22,6 +23,7 @@ import EventInvitee from '../event-invitee/EventInvitee';
 import EventWatch from '../event-watch/EventWatch';
 import MemberPayment from '../member-payment/MemberPayment';
 import MemberRefresh from '../member-refresh/MemberRefresh';
+import MemberSocials from '../member-socials/MemberSocials';
 import MemberType from '../member-type/MemberType';
 import MemberValue from '../member-value/MemberValue';
 import User from '../user/User';
@@ -175,6 +177,10 @@ export default class Member extends BaseEntity {
 
   @OneToMany(() => MemberRefresh, ({ member }) => member)
   refreshes: Collection<MemberRefresh> = new Collection<MemberRefresh>(this);
+
+  @Field(() => MemberSocials)
+  @OneToOne(() => MemberSocials, ({ member }) => member)
+  socials: MemberSocials;
 
   // 99% of the time, type MUST exist. However, in some communities, the OWNER
   // or ADMINs are not actually general members of the community. For example,

@@ -7,6 +7,7 @@ import cache from '@core/db/cache';
 import Community from '@entities/community/Community';
 import createLifetimePayment from '@entities/member-payment/repo/createLifetimePayment';
 import createSubscription from '@entities/member-payment/repo/createSubscription';
+import MemberSocials from '@entities/member-socials/MemberSocials';
 import MemberType, { RecurrenceType } from '@entities/member-type/MemberType';
 import MemberValue from '@entities/member-value/MemberValue';
 import Question, { QuestionCategory } from '@entities/question/Question';
@@ -116,6 +117,7 @@ const applyToCommunity = async (
   }
 
   const member: Member = bm.create(Member, { community, email, user });
+  const socials: MemberSocials = bm.create(MemberSocials, { member });
 
   const questions = community.questions.getItems();
 
@@ -145,7 +147,7 @@ const applyToCommunity = async (
     } else if (category === QuestionCategory.LAST_NAME) {
       member.lastName = value;
     } else if (category === QuestionCategory.LINKED_IN_URL) {
-      user.linkedInUrl = value;
+      socials.linkedInUrl = value;
     } else if (category === QuestionCategory.MEMBERSHIP_TYPE) {
       member.type = type;
     } else bm.create(MemberValue, { member, question, value });

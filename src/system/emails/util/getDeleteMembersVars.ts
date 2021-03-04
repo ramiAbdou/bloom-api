@@ -1,7 +1,6 @@
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
-import { MemberRole } from '@entities/member/Member';
-import User from '@entities/user/User';
+import Member, { MemberRole } from '@entities/member/Member';
 import { EmailPayload } from '../emails.types';
 
 export interface DeleteMembersPayload {
@@ -11,8 +10,8 @@ export interface DeleteMembersPayload {
 
 export interface DeleteMembersVars {
   community: Pick<Community, 'name'>;
-  owner: Pick<User, 'email' | 'fullName'>;
-  user: Pick<User, 'email' | 'firstName'>;
+  member: Pick<Member, 'email' | 'firstName'>;
+  owner: Pick<Member, 'email' | 'fullName'>;
 }
 
 /**
@@ -28,23 +27,21 @@ const getDeleteMembersVars = async (
 
   const bm = new BloomManager();
 
-  const [community, owner, users]: [
+  const [community, owner, members]: [
     Community,
-    User,
-    User[]
+    Member,
+    Member[]
   ] = await Promise.all([
     bm.findOne(Community, { id: communityId }),
-    bm.findOne(User, {
-      members: { community: communityId, role: MemberRole.OWNER }
-    }),
-    bm.find(User, { members: { id: memberIds } })
+    bm.findOne(Member, { community: communityId, role: MemberRole.OWNER }),
+    bm.find(Member, { id: memberIds })
   ]);
 
-  const variables: DeleteMembersVars[] = users.map((user: User) => {
+  const variables: DeleteMembersVars[] = members.map((member: Member) => {
     return {
       community: { name: community.name },
-      owner: { email: owner.email, fullName: owner.fullName },
-      user: { email: user.email, firstName: user.firstName }
+      member: { email: member.email, firstName: member.firstName },
+      owner: { email: owner.email, fullName: owner.fullName }
     };
   });
 

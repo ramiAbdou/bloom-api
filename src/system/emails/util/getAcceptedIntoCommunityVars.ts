@@ -1,6 +1,6 @@
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
-import User from '@entities/user/User';
+import Member from '@entities/member/Member';
 import { APP } from '@util/constants';
 import { EmailPayload } from '../emails.types';
 
@@ -12,7 +12,7 @@ export interface AcceptedIntoCommunityPayload {
 export interface AcceptedIntoCommunityVars {
   community: Pick<Community, 'name'>;
   loginUrl: string;
-  user: Pick<User, 'email' | 'firstName'>;
+  member: Pick<Member, 'email' | 'firstName'>;
 }
 
 /**
@@ -28,18 +28,20 @@ const getAcceptedIntoCommunityVars = async (
 
   const bm = new BloomManager();
 
-  const [community, users]: [Community, User[]] = await Promise.all([
+  const [community, members]: [Community, Member[]] = await Promise.all([
     bm.findOne(Community, { id: communityId }),
-    bm.find(User, { members: { id: memberIds } })
+    bm.find(Member, { id: memberIds })
   ]);
 
-  const variables: AcceptedIntoCommunityVars[] = users.map((user: User) => {
-    return {
-      community: { name: community.name },
-      loginUrl: `${APP.CLIENT_URL}/login`,
-      user: { email: user.email, firstName: user.firstName }
-    };
-  });
+  const variables: AcceptedIntoCommunityVars[] = members.map(
+    (member: Member) => {
+      return {
+        community: { name: community.name },
+        loginUrl: `${APP.CLIENT_URL}/login`,
+        member: { email: member.email, firstName: member.firstName }
+      };
+    }
+  );
 
   return variables;
 };
