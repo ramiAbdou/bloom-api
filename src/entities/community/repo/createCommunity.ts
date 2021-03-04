@@ -26,7 +26,7 @@ const createCommunity = async ({
       title: 'First Name'
     },
     { category: QuestionCategory.LAST_NAME, locked: true, title: 'Last Name' },
-    { category: QuestionCategory.BIO, locked: true, title: 'Last Name' },
+    { category: QuestionCategory.BIO, locked: true, title: 'Bio' },
     { category: QuestionCategory.DUES_STATUS, locked: true, title: 'Status' },
     {
       category: QuestionCategory.MEMBERSHIP_TYPE,
