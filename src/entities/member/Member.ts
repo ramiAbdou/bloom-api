@@ -9,7 +9,8 @@ import {
   Enum,
   ManyToOne,
   OneToMany,
-  Property
+  Property,
+  Unique
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
@@ -43,10 +44,15 @@ export enum MemberStatus {
 
 @ObjectType()
 @Entity()
+@Unique({ properties: ['community', 'email'] })
 export default class Member extends BaseEntity {
   @Field({ nullable: true })
   @Property({ nullable: true, type: 'text' })
   bio: string;
+
+  @Field()
+  @Property()
+  email: string;
 
   @Field()
   @Property()
@@ -178,9 +184,9 @@ export default class Member extends BaseEntity {
   @ManyToOne(() => MemberType, { nullable: true })
   type: MemberType;
 
-  @Field(() => User)
-  @ManyToOne(() => User)
-  user: User;
+  @Field(() => User, { nullable: true })
+  @ManyToOne(() => User, { nullable: true })
+  user?: User;
 
   // Data will only be populated if a question has ever been answered before.
   @Field(() => [MemberValue])

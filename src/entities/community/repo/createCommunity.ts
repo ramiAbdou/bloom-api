@@ -20,10 +20,20 @@ const createCommunity = async ({
 
   // Add the first name, last name and joined at dates to array of questions.
   const allQuestions: EntityData<Question>[] = [
-    { category: QuestionCategory.FIRST_NAME, title: 'First Name' },
-    { category: QuestionCategory.LAST_NAME, title: 'Last Name' },
-    { category: QuestionCategory.DUES_STATUS, title: 'Status' },
-    { category: QuestionCategory.MEMBERSHIP_TYPE, title: 'Membership Type' }
+    {
+      category: QuestionCategory.FIRST_NAME,
+      locked: true,
+      title: 'First Name'
+    },
+    { category: QuestionCategory.LAST_NAME, locked: true, title: 'Last Name' },
+    { category: QuestionCategory.BIO, locked: true, title: 'Last Name' },
+    { category: QuestionCategory.DUES_STATUS, locked: true, title: 'Status' },
+    {
+      category: QuestionCategory.MEMBERSHIP_TYPE,
+      locked: true,
+      title: 'Membership Type'
+    },
+    { category: QuestionCategory.JOINED_AT, locked: true, title: 'Joined At' }
   ];
 
   const persistedQuestions: Question[] = allQuestions.map(

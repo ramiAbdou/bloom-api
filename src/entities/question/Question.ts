@@ -15,6 +15,7 @@ import Community from '@entities/community/Community';
 import { QueryEvent } from '@util/events';
 
 export enum QuestionCategory {
+  BIO = 'BIO',
   DUES_STATUS = 'DUES_STATUS',
   EMAIL = 'EMAIL',
   FIRST_NAME = 'FIRST_NAME',

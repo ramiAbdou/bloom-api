@@ -11,6 +11,12 @@ export class UpdateMemberArgs {
   bio?: string;
 
   @Field({ nullable: true })
+  firstName?: string;
+
+  @Field({ nullable: true })
+  lastName?: string;
+
+  @Field({ nullable: true })
   pictureUrl?: string;
 }
 

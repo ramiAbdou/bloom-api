@@ -121,7 +121,8 @@ class BloomManager {
     data: EntityData<T>,
     options?: BloomFindOneOptions<T, P>
   ): Promise<[Loaded<T, P> | T, boolean]> {
-    const result = await this.findOne<T, P>(entityName, where, options);
+    let result = await this.findOne<T, P>(entityName, where, options);
+    if (result && options?.update) result = wrap(result).assign(data);
     return [result ?? this.create(entityName, data), !!result];
   }
 

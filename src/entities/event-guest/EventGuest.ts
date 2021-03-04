@@ -18,6 +18,8 @@ import Member from '../member/Member';
 @ObjectType()
 @Entity()
 export default class EventGuest extends BaseCompositeEntity {
+  [PrimaryKeyType]: [string, string];
+
   @Field({ nullable: true })
   @Property({ nullable: true, primary: true })
   @IsEmail()
@@ -52,6 +54,4 @@ export default class EventGuest extends BaseCompositeEntity {
   @Field(() => Member, { nullable: true })
   @ManyToOne(() => Member, { nullable: true })
   member: Member;
-
-  [PrimaryKeyType]: [string, string];
 }

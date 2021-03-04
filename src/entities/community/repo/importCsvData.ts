@@ -70,6 +70,7 @@ const processRow = async ({
   // // potentially be persisted already.
   const member: Member = bm.create(Member, {
     community,
+    email,
     firstName,
     lastName,
     role: email === ownerEmail ? MemberRole.OWNER : null,

@@ -115,7 +115,7 @@ const applyToCommunity = async (
     );
   }
 
-  const member: Member = bm.create(Member, { community, user });
+  const member: Member = bm.create(Member, { community, email, user });
 
   const questions = community.questions.getItems();
 

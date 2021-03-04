@@ -4,6 +4,7 @@ import { FlushEvent } from '@util/events';
 
 export interface BloomFindOneOptions<T, P> extends FindOneOptions<T, P> {
   cacheKey?: string;
+  update?: boolean;
 }
 
 export interface BloomFindOptions<T, P> extends FindOptions<T, P> {
