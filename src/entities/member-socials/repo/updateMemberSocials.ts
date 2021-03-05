@@ -30,7 +30,7 @@ const updateMemberSocials = async (
   const socials: MemberSocials = await new BloomManager().findOneAndUpdate(
     MemberSocials,
     { member: ctx.memberId },
-    { ...args },
+    args,
     { flushEvent: FlushEvent.UPDATE_MEMBER_SOCIALS }
   );
 

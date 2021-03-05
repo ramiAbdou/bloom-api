@@ -1,7 +1,7 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { GQLContext } from '@util/constants';
 import { MemberRole } from '@entities/member/Member';
+import { GQLContext } from '@util/constants';
 import EventAttendee from './EventAttendee';
 import createEventAttendee, {
   CreateEventAttendeeArgs

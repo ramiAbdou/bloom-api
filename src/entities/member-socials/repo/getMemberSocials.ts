@@ -8,14 +8,14 @@ import { QueryEvent } from '@util/events';
 @ArgsType()
 export class GetMemberSocialsArgs {
   @Field({ nullable: true })
-  userId?: string;
+  memberId?: string;
 }
 
 const getMemberSocials = async (
   args: GetMemberSocialsArgs,
   ctx: Pick<GQLContext, 'memberId'>
 ): Promise<MemberSocials> => {
-  const memberId: string = args?.userId ?? ctx.memberId;
+  const memberId: string = args?.memberId ?? ctx.memberId;
 
   const socials: MemberSocials = await new BloomManager().findOneOrFail(
     MemberSocials,

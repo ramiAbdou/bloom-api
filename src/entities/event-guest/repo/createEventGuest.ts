@@ -37,7 +37,7 @@ const createEventGuest = async (
 
   const existingGuest = await bm.findOne(
     EventGuest,
-    { $or: [{ member }, { supporter }] },
+    member ? { member } : { member: null, supporter },
     { populate: ['member', 'supporter'] }
   );
 
@@ -59,10 +59,14 @@ const createEventGuest = async (
           })
       };
 
-  const guest: EventGuest = await bm.createAndFlush(EventGuest, guestArgs, {
-    flushEvent: FlushEvent.CREATE_EVENT_GUEST,
-    populate: ['member', 'supporter']
-  });
+  const guest: EventGuest = await bm.createAndFlush(
+    EventGuest,
+    { event: args.eventId, ...guestArgs },
+    {
+      flushEvent: FlushEvent.CREATE_EVENT_GUEST,
+      populate: ['member', 'supporter']
+    }
+  );
 
   emitEmailEvent(
     EmailEvent.EVENT_RSVP,
