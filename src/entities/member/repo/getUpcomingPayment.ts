@@ -2,10 +2,10 @@ import day from 'dayjs';
 import Stripe from 'stripe';
 import { Field, ObjectType } from 'type-graphql';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import { stripe } from '@integrations/stripe/Stripe.util';
+import { GQLContext } from '@util/constants';
 import Member from '../Member';
 
 @ObjectType()

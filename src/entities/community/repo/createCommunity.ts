@@ -1,7 +1,7 @@
 import { EntityData } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
-import CommunityApplication from '@entities/community-application/CommunityApplication';
+import Application from '@entities/application/Application';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
 import Question, {
@@ -50,9 +50,7 @@ const createCommunity = async ({
 
   const community: Community = bm.create(Community, {
     ...data,
-    application: application
-      ? bm.create(CommunityApplication, application)
-      : null,
+    application: application ? bm.create(Application, application) : null,
     integrations: bm.create(CommunityIntegrations, {}),
     questions: persistedQuestions
   });

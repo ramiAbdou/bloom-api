@@ -1,8 +1,8 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext, IntegrationsBrand } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import { emitEmailEvent } from '@system/eventBus';
+import { GQLContext, IntegrationsBrand } from '@util/constants';
 import { EmailEvent, FlushEvent } from '@util/events';
 import CommunityIntegrations from '../CommunityIntegrations';
 

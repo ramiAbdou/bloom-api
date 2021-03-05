@@ -76,46 +76,73 @@ export default class Question extends BaseEntity {
 
   @BeforeCreate()
   beforeCreate() {
-    if (
-      [
-        QuestionCategory.EMAIL,
-        QuestionCategory.FIRST_NAME,
-        QuestionCategory.LAST_NAME
-      ].includes(this.category)
-    ) {
+    if (this.category === QuestionCategory.BIO) {
+      if (!this.title) this.title = 'Bio';
+      this.type = QuestionType.LONG_TEXT;
+    }
+
+    if (this.category === QuestionCategory.CLUBHOUSE_URL) {
+      if (!this.title) this.title = 'Clubhouse URL';
       this.type = QuestionType.SHORT_TEXT;
     }
 
-    if (
-      [
-        QuestionCategory.DUES_STATUS,
-        QuestionCategory.JOINED_AT,
-        QuestionCategory.MEMBER_PLAN
-      ].includes(this.category)
-    ) {
+    if (this.category === QuestionCategory.DUES_STATUS) {
+      if (!this.title) this.title = 'Dues Status';
       this.locked = true;
-    }
-
-    if (
-      [
-        QuestionCategory.DUES_STATUS,
-        QuestionCategory.GENDER,
-        QuestionCategory.MEMBER_PLAN
-      ].includes(this.category)
-    ) {
+      this.options = ['Paid', 'Not Paid'];
       this.type = QuestionType.MULTIPLE_CHOICE;
     }
 
-    if (this.category === QuestionCategory.GENDER) {
-      this.options = ['Male', 'Female', 'Non-Binary', 'Prefer Not to Say'];
+    if (this.category === QuestionCategory.EMAIL) {
+      if (!this.title) this.title = 'Email';
+      this.type = QuestionType.SHORT_TEXT;
     }
 
-    if (this.category === QuestionCategory.DUES_STATUS) {
-      this.options = ['Paid', 'Not Paid'];
+    if (this.category === QuestionCategory.FACEBOOK_URL) {
+      if (!this.title) this.title = 'Facebook URL';
+      this.type = QuestionType.SHORT_TEXT;
+    }
+
+    if (this.category === QuestionCategory.FIRST_NAME) {
+      if (!this.title) this.title = 'First Name';
+      this.type = QuestionType.SHORT_TEXT;
+    }
+
+    if (this.category === QuestionCategory.GENDER) {
+      if (!this.title) this.title = 'Gender';
+      this.options = ['Male', 'Female', 'Non-Binary', 'Prefer Not to Say'];
+      this.type = QuestionType.MULTIPLE_CHOICE;
+    }
+
+    if (this.category === QuestionCategory.INSTAGRAM_URL) {
+      if (!this.title) this.title = 'Instagram URL';
+      this.type = QuestionType.SHORT_TEXT;
+    }
+
+    if (this.category === QuestionCategory.JOINED_AT) {
+      if (!this.title) this.title = 'Joined At';
+      this.locked = true;
+    }
+
+    if (this.category === QuestionCategory.LAST_NAME) {
+      if (!this.title) this.title = 'Last Name';
+      this.type = QuestionType.SHORT_TEXT;
+    }
+
+    if (this.category === QuestionCategory.LINKED_IN_URL) {
+      if (!this.title) this.title = 'LinkedIn URL';
+      this.type = QuestionType.SHORT_TEXT;
     }
 
     if (this.category === QuestionCategory.MEMBER_PLAN) {
-      this.options = this.community.plans.getItems().map(({ name }) => name);
+      if (!this.title) this.title = 'Member Plan';
+      this.locked = true;
+      this.type = QuestionType.MULTIPLE_CHOICE;
+    }
+
+    if (this.category === QuestionCategory.TWITTER_URL) {
+      if (!this.title) this.title = 'Twitter URL';
+      this.type = QuestionType.SHORT_TEXT;
     }
   }
 

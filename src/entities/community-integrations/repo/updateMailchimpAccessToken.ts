@@ -1,6 +1,6 @@
-import { AuthQueryArgs } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import getMailchimpAccessToken from '@integrations/mailchimp/repo/getMailchimpAccessToken';
+import { AuthQueryArgs } from '@util/constants';
 import { FlushEvent } from '@util/events';
 import CommunityIntegrations from '../CommunityIntegrations';
 

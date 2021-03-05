@@ -3,7 +3,7 @@ import { Connection, IDatabaseDriver, Options } from '@mikro-orm/core';
 import BaseEntity from '@core/db/BaseEntity';
 import BloomManagerSubscriber from '@core/db/BloomManager.subscriber';
 import NamingStrategy from '@core/db/NamingStrategy';
-import CommunityApplication from '@entities/community-application/CommunityApplication';
+import Application from '@entities/application/Application';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
 import EventAttendee from '@entities/event-attendee/EventAttendee';
@@ -37,7 +37,7 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
   driverOptions: { connection: { ssl: isProduction } },
   entities: [
     BaseEntity,
-    CommunityApplication,
+    Application,
     CommunityIntegrations,
     Community,
     Event,

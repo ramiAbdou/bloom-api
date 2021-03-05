@@ -1,9 +1,9 @@
 import { ArgsType, Field } from 'type-graphql';
 import { EntityData } from '@mikro-orm/core';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
+import { GQLContext } from '@util/constants';
 import { FlushEvent } from '@util/events';
 import Question from '../Question';
 

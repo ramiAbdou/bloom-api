@@ -13,7 +13,7 @@ import {
 import BaseEntity from '@core/db/BaseEntity';
 import Supporter from '@entities/supporter/Supporter';
 import { isProduction } from '@util/constants';
-import CommunityApplication from '../community-application/CommunityApplication';
+import Application from '../application/Application';
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
 import Event from '../event/Event';
 import MemberPlan from '../member-plan/MemberPlan';
@@ -79,11 +79,11 @@ export default class Community extends BaseEntity {
 
   // If the community is invite-only, there will be no application. The only
   // way for someone to join is if the admin adds them manually.
-  @Field(() => CommunityApplication, { nullable: true })
-  @OneToOne(() => CommunityApplication, ({ community }) => community, {
+  @Field(() => Application, { nullable: true })
+  @OneToOne(() => Application, ({ community }) => community, {
     nullable: true
   })
-  application: CommunityApplication;
+  application: Application;
 
   // If the community is invite-only, there will be no application. The only
   // way for someone to join is if the admin adds them manually.

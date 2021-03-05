@@ -1,8 +1,8 @@
 import { ArgsType, Field } from 'type-graphql';
 import { FilterQuery, QueryOrder } from '@mikro-orm/core';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
+import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
 import Question from '../Question';
 

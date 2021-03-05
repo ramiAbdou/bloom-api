@@ -6,7 +6,7 @@ import Community from '@entities/community/Community';
 
 @ObjectType()
 @Entity()
-export default class CommunityApplication extends BaseEntity {
+export default class Application extends BaseEntity {
   @Field()
   @Property({ type: 'text' })
   description: string;

@@ -1,10 +1,10 @@
 import { nanoid } from 'nanoid';
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import { stripe } from '@integrations/stripe/Stripe.util';
+import { GQLContext } from '@util/constants';
 import { FlushEvent } from '@util/events';
 import Member from '../Member';
 import createStripeCustomer from './createStripeCustomer';
