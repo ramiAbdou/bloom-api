@@ -70,7 +70,7 @@ const processGoogleEvent = async ({
 
   if (googleEvent === GoogleEvent.DELETE_CALENDAR_EVENT_ATTENDEE) {
     await deleteGoogleCalendarEventAttendee(event.googleCalendarEventId, {
-      email: guest.email
+      email: guest?.member?.email ?? guest?.supporter?.email
     });
   }
 

@@ -111,7 +111,7 @@ export default class Question extends BaseEntity {
     }
 
     if (this.category === QuestionCategory.MEMBERSHIP_TYPE) {
-      this.options = this.community.types.getItems().map(({ name }) => name);
+      this.options = this.community.plans.getItems().map(({ name }) => name);
     }
   }
 

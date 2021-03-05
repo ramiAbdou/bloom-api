@@ -38,10 +38,10 @@ const formatPersonalizations = (
 ): FormatPersonalizationData[] => {
   return variables
     .filter((vars: EmailVars) => {
-      return !!isProduction || TEST_EMAILS.includes(vars.user.email);
+      return !!isProduction || TEST_EMAILS.includes(vars.member.email);
     })
     .map((vars: EmailVars) => {
-      return { dynamicTemplateData: vars, to: { email: vars.user.email } };
+      return { dynamicTemplateData: vars, to: { email: vars.member.email } };
     });
 };
 

@@ -61,7 +61,7 @@ const createEventGuest = async (
 
   const guest: EventGuest = await bm.createAndFlush(EventGuest, guestArgs, {
     flushEvent: FlushEvent.CREATE_EVENT_GUEST,
-    populate: ['member.user']
+    populate: ['member', 'supporter']
   });
 
   emitEmailEvent(

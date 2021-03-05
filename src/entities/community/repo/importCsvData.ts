@@ -21,7 +21,7 @@ interface ProcessRowArgs {
   ownerEmail: string;
   questions: Question[];
   row: CsvRowData;
-  types: MemberPlan[];
+  plans: MemberPlan[];
   uniqueEmails: Set<string>;
 }
 
@@ -44,7 +44,7 @@ const processRow = async ({
   questions,
   ownerEmail,
   row,
-  types,
+  plans,
   uniqueEmails
 }: ProcessRowArgs) => {
   // Precondition: Every row (JSON) should have a field called 'EMAIL'.
@@ -90,7 +90,7 @@ const processRow = async ({
       if (!value) return;
 
       if (key === QuestionCategory.MEMBERSHIP_TYPE) {
-        member.plan = types.find(({ name }) => value === name);
+        member.plan = plans.find(({ name }) => value === name);
         return;
       }
 
@@ -139,12 +139,12 @@ const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
     Community,
     Record<string, any>[]
   ] = await Promise.all([
-    bm.findOne(Community, { urlName }, { populate: ['questions', 'types'] }),
+    bm.findOne(Community, { urlName }, { populate: ['questions', 'plans'] }),
     csv().fromFile(`./membership-csv/${urlName}.csv`)
   ]);
 
   const questions = community.questions.getItems();
-  const types = community.types.getItems();
+  const plans = community.plans.getItems();
 
   // Adds protection against any emails that are duplicates in the CSV file,
   // INCLUDING case-insensitive duplicates.
@@ -156,9 +156,9 @@ const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
         bm,
         community,
         ownerEmail,
+        plans,
         questions,
         row,
-        types,
         uniqueEmails
       });
     })

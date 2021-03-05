@@ -13,7 +13,7 @@ const getUpcomingEventGuests = async ({
     {
       cacheKey: `${QueryEvent.GET_UPCOMING_EVENT_GUESTS}-${communityId}`,
       filters: false,
-      populate: ['member.user']
+      populate: ['member', 'supporter']
     }
   );
 

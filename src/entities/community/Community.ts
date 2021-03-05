@@ -11,6 +11,7 @@ import {
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
+import Supporter from '@entities/supporter/Supporter';
 import { isProduction } from '@util/constants';
 import CommunityApplication from '../community-application/CommunityApplication';
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
@@ -112,18 +113,22 @@ export default class Community extends BaseEntity {
   payments = new Collection<MemberPayment>(this);
 
   // Should get the questions by the order that they are stored in the DB.
-  @Field(() => [Question])
-  @OneToMany(() => Question, ({ community }) => community)
-  questions = new Collection<Question>(this);
-
-  @Field(() => Member)
-  @OneToOne({ nullable: true })
-  owner: Member;
-
-  // Should get the questions by the order that they are stored in the DB.
   @Field(() => [MemberPlan])
   @OneToMany(() => MemberPlan, ({ community }) => community, {
     orderBy: { amount: QueryOrder.ASC }
   })
-  types = new Collection<MemberPlan>(this);
+  plans = new Collection<MemberPlan>(this);
+
+  // Should get the questions by the order that they are stored in the DB.
+  @Field(() => [Question])
+  @OneToMany(() => Question, ({ community }) => community)
+  questions = new Collection<Question>(this);
+
+  @Field(() => [Supporter])
+  @OneToMany(() => Supporter, ({ community }) => community)
+  supporters = new Collection<Supporter>(this);
+
+  @Field(() => Member)
+  @OneToOne({ nullable: true })
+  owner: Member;
 }

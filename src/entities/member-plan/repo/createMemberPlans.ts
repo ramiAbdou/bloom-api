@@ -25,11 +25,11 @@ export class CreateMemberPlansArgs {
   defaultPlanName: string;
 
   @Field(() => [CreateMemberPlanInput])
-  types: CreateMemberPlanInput[];
+  plans: CreateMemberPlanInput[];
 }
 
 const createMemberPlans = async (
-  { defaultPlanName, types: initialTypes }: CreateMemberPlansArgs,
+  { defaultPlanName, plans: initialPlans }: CreateMemberPlansArgs,
   { communityId }: Pick<GQLContext, 'communityId'>
 ) => {
   const bm = new BloomManager();
@@ -37,7 +37,7 @@ const createMemberPlans = async (
 
   let defaultType: MemberPlan;
 
-  const types: MemberPlan[] = initialTypes.map(
+  const plans: MemberPlan[] = initialPlans.map(
     (type: EntityData<MemberPlan>) => {
       const persistedType: MemberPlan = bm.create(MemberPlan, {
         ...type,
@@ -53,7 +53,7 @@ const createMemberPlans = async (
 
   await bm.flush({ flushEvent: FlushEvent.CREATE_MEMBER_TYPES });
 
-  return types;
+  return plans;
 };
 
 export default createMemberPlans;
