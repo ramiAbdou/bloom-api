@@ -20,7 +20,7 @@ export enum RecurrenceType {
 
 @ObjectType()
 @Entity()
-export default class MemberType extends BaseEntity {
+export default class MemberPlan extends BaseEntity {
   @Field(() => Float)
   @Property({ columnType: 'decimal', type: Number })
   amount = 0.0;
@@ -51,6 +51,6 @@ export default class MemberType extends BaseEntity {
   @ManyToOne(() => Community)
   community: Community;
 
-  @OneToMany(() => Member, ({ type }) => type)
+  @OneToMany(() => Member, (member) => member.plan)
   members = new Collection<Member>(this);
 }

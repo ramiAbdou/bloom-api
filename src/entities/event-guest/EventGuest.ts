@@ -33,7 +33,7 @@ export default class EventGuest extends BaseEntity {
   // ## RELATIONSHIPS
 
   @Field(() => Event)
-  @ManyToOne(() => Event, { nullable: true, primary: true })
+  @ManyToOne(() => Event, { nullable: true })
   event: Event;
 
   @Field(() => Member, { nullable: true })

@@ -26,7 +26,7 @@ const getEventReminderVars = async (
   const { eventId } = context as EventReminderPayload;
 
   const event: Event = await new BloomManager().findOne(Event, eventId, {
-    populate: ['community', 'guests']
+    populate: ['community', 'guests.member', 'guests.supporter']
   });
 
   const guests: EventGuest[] = event.guests.getItems();
@@ -48,7 +48,10 @@ const getEventReminderVars = async (
     return {
       event: { startTime: event.startTime, title: event.title },
       joinUrl,
-      member: { email: guest.email, firstName: guest.firstName }
+      member: {
+        email: guest.member?.email ?? guest.supporter?.email,
+        firstName: guest.member?.firstName ?? guest.supporter?.firstName
+      }
     };
   });
 

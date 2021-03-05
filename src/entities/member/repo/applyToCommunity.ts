@@ -7,8 +7,8 @@ import cache from '@core/db/cache';
 import Community from '@entities/community/Community';
 import createLifetimePayment from '@entities/member-payment/repo/createLifetimePayment';
 import createSubscription from '@entities/member-payment/repo/createSubscription';
+import MemberPlan, { RecurrenceType } from '@entities/member-plan/MemberPlan';
 import MemberSocials from '@entities/member-socials/MemberSocials';
-import MemberType, { RecurrenceType } from '@entities/member-type/MemberType';
 import MemberValue from '@entities/member-value/MemberValue';
 import Question, { QuestionCategory } from '@entities/question/Question';
 import User from '@entities/user/User';
@@ -39,7 +39,7 @@ export class ApplyToCommunityArgs {
   email: string;
 
   @Field({ nullable: true })
-  memberTypeId?: string;
+  memberPlanId?: string;
 
   @Field({ nullable: true })
   paymentMethodId?: string;
@@ -49,7 +49,7 @@ export class ApplyToCommunityArgs {
 }
 
 interface CreateApplicationPaymentArgs {
-  memberTypeId: string;
+  memberPlanId: string;
   paymentMethodId: string;
   recurrence: RecurrenceType;
 }
@@ -59,14 +59,14 @@ interface CreateApplicationPaymentArgs {
  * method ID is provided, nothing happens. If the recurrence is LIFETIME,
  * creates a one-time payment, and otherwise creates a subscription.
  *
- * @param args.memberTypeId Type ID to apply for.
+ * @param args.memberPlanId Type ID to apply for.
  * @param args.paymentMethodId ID of the Stripe Payment Method.
  * @param args.recurrence Recurrence of the new type to apply to.
  * @param ctx.communityId ID of the community.
  * @param ctx.memberId ID of the member.
  */
 const createApplicationPayment = async (
-  { memberTypeId, paymentMethodId, recurrence }: CreateApplicationPaymentArgs,
+  { memberPlanId, paymentMethodId, recurrence }: CreateApplicationPaymentArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ) => {
   if (!paymentMethodId) return;
@@ -75,11 +75,11 @@ const createApplicationPayment = async (
     await updatePaymentMethod({ paymentMethodId }, ctx);
 
     if (recurrence === RecurrenceType.LIFETIME) {
-      await createLifetimePayment({ memberTypeId }, ctx);
+      await createLifetimePayment({ memberPlanId }, ctx);
       return;
     }
 
-    await createSubscription({ memberTypeId }, ctx);
+    await createSubscription({ memberPlanId }, ctx);
   } catch (e) {
     await new BloomManager().findOneAndDelete(Member, { id: ctx.memberId });
     throw new Error(`There was a problem processing your payment.`);
@@ -91,18 +91,18 @@ const createApplicationPayment = async (
  * A user is either created OR fetched based on the email.
  */
 const applyToCommunity = async (
-  { data, email, memberTypeId, paymentMethodId, urlName }: ApplyToCommunityArgs,
+  { data, email, memberPlanId, paymentMethodId, urlName }: ApplyToCommunityArgs,
   ctx: Pick<GQLContext, 'res'>
 ): Promise<Member> => {
   const bm = new BloomManager();
 
   // Populate the questions and types so that we can capture the member
   // data in a relational manner.
-  const [community, type]: [Community, MemberType] = await Promise.all([
+  const [community, plan]: [Community, MemberPlan] = await Promise.all([
     bm.findOne(Community, { urlName }, { populate: ['questions'] }),
     bm.findOne(
-      MemberType,
-      memberTypeId ? { id: memberTypeId } : { community: { urlName } }
+      MemberPlan,
+      memberPlanId ? { id: memberPlanId } : { community: { urlName } }
     )
   ]);
 
@@ -149,7 +149,7 @@ const applyToCommunity = async (
     } else if (category === QuestionCategory.LINKED_IN_URL) {
       socials.linkedInUrl = value;
     } else if (category === QuestionCategory.MEMBERSHIP_TYPE) {
-      member.type = type;
+      member.plan = plan;
     } else bm.create(MemberValue, { member, question, value });
   });
 
@@ -172,7 +172,7 @@ const applyToCommunity = async (
   );
 
   await createApplicationPayment(
-    { memberTypeId, paymentMethodId, recurrence: type.recurrence },
+    { memberPlanId, paymentMethodId, recurrence: plan.recurrence },
     { communityId: community.id, memberId: member.id }
   );
 

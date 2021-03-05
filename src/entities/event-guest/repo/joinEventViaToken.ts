@@ -44,7 +44,7 @@ const joinEventViaToken = async (args: JoinEventArgs): Promise<boolean> => {
   if (isValid) {
     await createEventAttendee(
       { eventId: guest.event.id },
-      { memberId: guest.member.id, userId: guest.member.user.id }
+      { communityId: guest.member.community.id, memberId: guest.member.id }
     );
   }
 

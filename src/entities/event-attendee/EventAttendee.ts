@@ -1,11 +1,5 @@
 import { Field, ObjectType } from 'type-graphql';
-import {
-  AfterCreate,
-  Entity,
-  ManyToOne,
-  PrimaryKeyType,
-  Unique
-} from '@mikro-orm/core';
+import { AfterCreate, Entity, ManyToOne, Unique } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
 import cache from '@core/db/cache';
@@ -30,7 +24,7 @@ export default class EventAttendee extends BaseEntity {
   // ## RELATIONSHIPS
 
   @Field(() => Event)
-  @ManyToOne(() => Event, { primary: true })
+  @ManyToOne(() => Event)
   event: Event;
 
   @Field(() => Member, { nullable: true })
@@ -40,6 +34,4 @@ export default class EventAttendee extends BaseEntity {
   @Field(() => Supporter, { nullable: true })
   @ManyToOne(() => Supporter, { nullable: true })
   supporter: Supporter;
-
-  [PrimaryKeyType]: [string, string];
 }

@@ -5,10 +5,10 @@ import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import { GQLContext } from '@util/constants';
 import { FlushEvent } from '@util/events';
-import MemberType, { RecurrenceType } from '../MemberType';
+import MemberPlan, { RecurrenceType } from '../MemberPlan';
 
 @InputType()
-export class CreateMemberTypeInput {
+export class CreateMemberPlanInput {
   @Field(() => Float, { defaultValue: 0.0 })
   amount?: number;
 
@@ -20,31 +20,31 @@ export class CreateMemberTypeInput {
 }
 
 @ArgsType()
-export class CreateMemberTypesArgs {
+export class CreateMemberPlansArgs {
   @Field()
-  defaultTypeName: string;
+  defaultPlanName: string;
 
-  @Field(() => [CreateMemberTypeInput])
-  types: CreateMemberTypeInput[];
+  @Field(() => [CreateMemberPlanInput])
+  types: CreateMemberPlanInput[];
 }
 
-const createMemberTypes = async (
-  { defaultTypeName, types: initialTypes }: CreateMemberTypesArgs,
+const createMemberPlans = async (
+  { defaultPlanName, types: initialTypes }: CreateMemberPlansArgs,
   { communityId }: Pick<GQLContext, 'communityId'>
 ) => {
   const bm = new BloomManager();
   const community: Community = await bm.findOne(Community, { id: communityId });
 
-  let defaultType: MemberType;
+  let defaultType: MemberPlan;
 
-  const types: MemberType[] = initialTypes.map(
-    (type: EntityData<MemberType>) => {
-      const persistedType: MemberType = bm.create(MemberType, {
+  const types: MemberPlan[] = initialTypes.map(
+    (type: EntityData<MemberPlan>) => {
+      const persistedType: MemberPlan = bm.create(MemberPlan, {
         ...type,
         community: communityId
       });
 
-      if (persistedType.name === defaultTypeName) defaultType = persistedType;
+      if (persistedType.name === defaultPlanName) defaultType = persistedType;
       return persistedType;
     }
   );
@@ -56,4 +56,4 @@ const createMemberTypes = async (
   return types;
 };
 
-export default createMemberTypes;
+export default createMemberPlans;

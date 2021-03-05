@@ -16,7 +16,7 @@ import CommunityApplication from '../community-application/CommunityApplication'
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
 import Event from '../event/Event';
 import MemberPayment from '../member-payment/MemberPayment';
-import MemberType from '../member-type/MemberType';
+import MemberPlan from '../member-plan/MemberPlan';
 import Member from '../member/Member';
 import Question from '../question/Question';
 
@@ -87,7 +87,7 @@ export default class Community extends BaseEntity {
   // If the community is invite-only, there will be no application. The only
   // way for someone to join is if the admin adds them manually.
   @OneToOne({ nullable: true })
-  defaultType: MemberType;
+  defaultType: MemberPlan;
 
   @Field(() => [Event])
   @OneToMany(() => Event, ({ community }) => community)
@@ -121,9 +121,9 @@ export default class Community extends BaseEntity {
   owner: Member;
 
   // Should get the questions by the order that they are stored in the DB.
-  @Field(() => [MemberType])
-  @OneToMany(() => MemberType, ({ community }) => community, {
+  @Field(() => [MemberPlan])
+  @OneToMany(() => MemberPlan, ({ community }) => community, {
     orderBy: { amount: QueryOrder.ASC }
   })
-  types = new Collection<MemberType>(this);
+  types = new Collection<MemberPlan>(this);
 }

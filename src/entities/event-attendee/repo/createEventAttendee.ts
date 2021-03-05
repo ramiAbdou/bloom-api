@@ -1,8 +1,9 @@
 import { ArgsType, Field } from 'type-graphql';
-import { FilterQuery } from '@mikro-orm/core';
+import { EntityData } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
 import Member from '@entities/member/Member';
+import Supporter from '@entities/supporter/Supporter';
 import { GQLContext } from '@util/constants';
 import { FlushEvent } from '@util/events';
 import EventAttendee from '../EventAttendee';
@@ -32,34 +33,40 @@ export class CreateEventAttendeeArgs {
  * @param ctx.memberId - ID of the member.
  */
 const createEventAttendee = async (
-  { eventId, ...args }: CreateEventAttendeeArgs,
-  { memberId }: Pick<GQLContext, 'memberId'>
+  args: CreateEventAttendeeArgs,
+  ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ) => {
-  const member = await new BloomManager().findOne(Member, memberId, {
-    populate: ['user']
-  });
+  const bm = new BloomManager();
 
-  const attendeeArgs: FilterQuery<EventAttendee> = {
-    email: args.email ?? member.user.email,
-    event: eventId,
-    firstName: args.email ?? member.firstName,
-    lastName: args.email ?? member.lastName,
-    member: memberId
-  };
+  const [member, supporter]: [Member, Supporter] = await Promise.all([
+    bm.findOne(Member, ctx.memberId),
+    bm.findOne(Supporter, { community: ctx.communityId, email: args.email })
+  ]);
 
-  const existingAttendee = await new BloomManager().findOne(
+  const existingAttendee = await bm.findOne(
     EventAttendee,
-    attendeeArgs,
-    { populate: ['member.user'] }
+    { $or: [{ member }, { supporter }] },
+    { populate: ['member', 'supporter'] }
   );
 
   if (existingAttendee) return existingAttendee;
 
-  const attendee = await new BloomManager().createAndFlush(
-    EventAttendee,
-    attendeeArgs,
-    { flushEvent: FlushEvent.CREATE_EVENT_ATTENDEE, populate: ['member.user'] }
-  );
+  const attendeeArgs: EntityData<EventAttendee> = member
+    ? { member }
+    : {
+        supporter:
+          supporter ??
+          bm.create(Supporter, {
+            email: args.email,
+            firstName: args.firstName,
+            lastName: args.lastName
+          })
+      };
+
+  const attendee = await bm.createAndFlush(EventAttendee, attendeeArgs, {
+    flushEvent: FlushEvent.CREATE_EVENT_ATTENDEE,
+    populate: ['member', 'supporter']
+  });
 
   return attendee;
 };

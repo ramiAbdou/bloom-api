@@ -22,9 +22,9 @@ import EventGuest from '../event-guest/EventGuest';
 import EventInvitee from '../event-invitee/EventInvitee';
 import EventWatch from '../event-watch/EventWatch';
 import MemberPayment from '../member-payment/MemberPayment';
+import MemberPlan from '../member-plan/MemberPlan';
 import MemberRefresh from '../member-refresh/MemberRefresh';
 import MemberSocials from '../member-socials/MemberSocials';
-import MemberType from '../member-type/MemberType';
 import MemberValue from '../member-value/MemberValue';
 import User from '../user/User';
 import getNextPaymentDate from './repo/getNextPaymentDate';
@@ -139,8 +139,8 @@ export default class Member extends BaseEntity {
 
     // If no member type is provided, assign them the default member.
     // Every community should've assigned one default member.
-    if (!this.type) this.type = this.community.defaultType;
-    if (this.type.isFree) this.isDuesActive = true;
+    if (!this.plan) this.plan = this.community.defaultType;
+    if (this.plan.isFree) this.isDuesActive = true;
 
     this.firstName = this.firstName.trim();
     this.lastName = this.lastName.trim();
@@ -175,20 +175,20 @@ export default class Member extends BaseEntity {
   @OneToMany(() => MemberPayment, ({ member }) => member)
   payments: Collection<MemberPayment> = new Collection<MemberPayment>(this);
 
+  // 99% of the time, type MUST exist. However, in some communities, the OWNER
+  // or ADMINs are not actually general members of the community. For example,
+  // in ColorStack, the Community Manager isn't a part of the community, but
+  // in MALIK, even the National President is a general dues-paying member.
+  @Field(() => MemberPlan)
+  @ManyToOne(() => MemberPlan, { nullable: true })
+  plan: MemberPlan;
+
   @OneToMany(() => MemberRefresh, ({ member }) => member)
   refreshes: Collection<MemberRefresh> = new Collection<MemberRefresh>(this);
 
   @Field(() => MemberSocials)
   @OneToOne(() => MemberSocials, ({ member }) => member)
   socials: MemberSocials;
-
-  // 99% of the time, type MUST exist. However, in some communities, the OWNER
-  // or ADMINs are not actually general members of the community. For example,
-  // in ColorStack, the Community Manager isn't a part of the community, but
-  // in MALIK, even the National President is a general dues-paying member.
-  @Field(() => MemberType)
-  @ManyToOne(() => MemberType, { nullable: true })
-  type: MemberType;
 
   @Field(() => User)
   @ManyToOne(() => User)

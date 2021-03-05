@@ -7,7 +7,7 @@ import MemberPayment from '../MemberPayment';
 
 interface CreateMemberPaymentArgs {
   invoice: Stripe.Invoice;
-  typeId: string;
+  planId: string;
 }
 
 /**
@@ -16,7 +16,7 @@ interface CreateMemberPaymentArgs {
  * initial time, since we want to update our UI immediately.
  */
 const createMemberPayment = async (
-  { invoice, typeId }: CreateMemberPaymentArgs,
+  { invoice, planId }: CreateMemberPaymentArgs,
   { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<MemberPayment> => {
   const bm = new BloomManager();
@@ -25,7 +25,7 @@ const createMemberPayment = async (
   // Only if the subscription worked should the MemberPayment be created.
 
   member.isDuesActive = true;
-  member.type.id = typeId;
+  member.plan.id = planId;
 
   let payment: MemberPayment = null;
 
@@ -34,9 +34,9 @@ const createMemberPayment = async (
       amount: invoice.amount_paid / 100,
       community: communityId,
       member: memberId,
+      plan: planId,
       stripeInvoiceId: invoice.id,
-      stripeInvoiceUrl: invoice.hosted_invoice_url,
-      type: typeId
+      stripeInvoiceUrl: invoice.hosted_invoice_url
     });
   }
 

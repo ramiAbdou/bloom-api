@@ -3,26 +3,26 @@ import Stripe from 'stripe';
 
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
-import MemberType, { RecurrenceType } from '@entities/member-type/MemberType';
+import MemberPlan, { RecurrenceType } from '@entities/member-plan/MemberPlan';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
 import { FlushEvent } from '@util/events';
 
 interface CreateStripeProductArgs {
   stripeAccountId: string;
-  type: MemberType;
+  plan: MemberPlan;
 }
 
 /**
- * Updates the MemberType's stripePriceId and stripeProductId for all types
+ * Updates the MemberPlan's stripePriceId and stripeProductId for all types
  * that are not free. Calls the Stripe SDK product and price creation methods
  * for the community.
  */
 const attachStripeProduct = async ({
   stripeAccountId,
-  type
-}: CreateStripeProductArgs): Promise<MemberType> => {
-  const { amount, id, name, recurrence } = type;
+  plan
+}: CreateStripeProductArgs): Promise<MemberPlan> => {
+  const { amount, id, name, recurrence } = plan;
 
   // Create the subscription even if the product is LIFETIME fulfilled
   // subscription.
@@ -51,34 +51,34 @@ const attachStripeProduct = async ({
     { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
-  type.stripePriceId = price.id;
-  type.stripeProductId = product.id;
+  plan.stripePriceId = price.id;
+  plan.stripeProductId = product.id;
 
-  return type;
+  return plan;
 };
 
 /**
- * Creates the corresponding Stripe products and prices for every MemberType
- * that isn't free. Updates the MemberType entity as well.
+ * Creates the corresponding Stripe products and prices for every MemberPlan
+ * that isn't free. Updates the MemberPlan entity as well.
  */
 const createStripeProducts = async ({
   communityId
 }: Pick<GQLContext, 'communityId'>) => {
   const bm = new BloomManager();
 
-  const [integrations, types]: [
+  const [integrations, plans]: [
     CommunityIntegrations,
-    MemberType[]
+    MemberPlan[]
   ] = await Promise.all([
     bm.findOne(CommunityIntegrations, { community: { id: communityId } }),
-    bm.find(MemberType, { community: { id: communityId } })
+    bm.find(MemberPlan, { community: { id: communityId } })
   ]);
 
-  const updatedTypes: MemberType[] = await Promise.all(
-    types.map(async (type: MemberType) => {
+  const updatedTypes: MemberPlan[] = await Promise.all(
+    plans.map(async (plan: MemberPlan) => {
       return attachStripeProduct({
-        stripeAccountId: integrations.stripeAccountId,
-        type
+        plan,
+        stripeAccountId: integrations.stripeAccountId
       });
     })
   );

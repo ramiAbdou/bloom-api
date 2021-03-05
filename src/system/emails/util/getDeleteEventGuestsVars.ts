@@ -30,7 +30,11 @@ const getDeleteEventGuestsVars = async (
   ] = await Promise.all([
     bm.findOne(Community, { id: communityId }),
     bm.findOne(Event, { id: eventId }, { filters: false }),
-    bm.find(EventGuest, { event: eventId })
+    bm.find(
+      EventGuest,
+      { event: eventId },
+      { populate: ['member', 'supporter'] }
+    )
   ]);
 
   const partialCommunity: Pick<Community, 'name'> = { name: community.name };
@@ -44,7 +48,10 @@ const getDeleteEventGuestsVars = async (
     return {
       community: partialCommunity,
       event: partialEvent,
-      member: { email: guest.email, firstName: guest.firstName }
+      member: {
+        email: guest.member?.email ?? guest.supporter?.email,
+        firstName: guest.member?.firstName ?? guest.supporter?.firstName
+      }
     };
   });
 

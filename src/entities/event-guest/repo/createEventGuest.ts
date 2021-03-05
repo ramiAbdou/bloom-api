@@ -1,8 +1,9 @@
 import { ArgsType, Field } from 'type-graphql';
-import { FilterQuery } from '@mikro-orm/core';
+import { EntityData } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
-import User from '@entities/user/User';
+import Member from '@entities/member/Member';
+import Supporter from '@entities/supporter/Supporter';
 import { emitEmailEvent, emitGoogleEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
 import { EmailEvent, FlushEvent, GoogleEvent } from '@util/events';
@@ -25,30 +26,38 @@ export class CreateEventGuestArgs {
 
 const createEventGuest = async (
   args: CreateEventGuestArgs,
-  ctx: Pick<GQLContext, 'communityId' | 'memberId' | 'userId'>
+  ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ) => {
-  const { email, eventId, firstName, lastName } = args;
-  const { communityId, memberId, userId } = ctx;
-
   const bm = new BloomManager();
 
-  const user: User = await bm.findOne(User, userId);
+  const [member, supporter]: [Member, Supporter] = await Promise.all([
+    bm.findOne(Member, ctx.memberId),
+    bm.findOne(Supporter, { community: ctx.communityId, email: args.email })
+  ]);
 
-  const guestArgs: FilterQuery<EventGuest> = {
-    email: email ?? user.email,
-    event: eventId,
-    firstName: firstName ?? user.firstName,
-    lastName: lastName ?? user.lastName,
-    member: memberId
-  };
-
-  const existingGuest = await bm.findOne(EventGuest, guestArgs);
+  const existingGuest = await bm.findOne(
+    EventGuest,
+    { $or: [{ member }, { supporter }] },
+    { populate: ['member', 'supporter'] }
+  );
 
   if (existingGuest) {
     throw new Error(
       'An RSVP for this event with this email has already been registered.'
     );
   }
+
+  const guestArgs: EntityData<EventGuest> = member
+    ? { member }
+    : {
+        supporter:
+          supporter ??
+          bm.create(Supporter, {
+            email: args.email,
+            firstName: args.firstName,
+            lastName: args.lastName
+          })
+      };
 
   const guest: EventGuest = await bm.createAndFlush(EventGuest, guestArgs, {
     flushEvent: FlushEvent.CREATE_EVENT_GUEST,
@@ -57,12 +66,12 @@ const createEventGuest = async (
 
   emitEmailEvent(
     EmailEvent.EVENT_RSVP,
-    { communityId, eventId, guestId: guest.id },
+    { communityId: ctx.communityId, eventId: args.eventId, guestId: guest.id },
     { delay: 5000 }
   );
 
   emitGoogleEvent(GoogleEvent.ADD_CALENDAR_EVENT_ATTENDEE, {
-    eventId,
+    eventId: args.eventId,
     guestId: guest.id
   });
 

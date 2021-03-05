@@ -36,7 +36,7 @@ const handleInvoicePaid = async (event: Stripe.Event) => {
   // somewhere else other than our website, like Stripe hosted website).
   if (!payment) {
     updatedPayment = await createMemberPayment(
-      { invoice, typeId: member.type.id },
+      { invoice, planId: member.plan.id },
       { communityId: community.id, memberId: member.id }
     );
   }

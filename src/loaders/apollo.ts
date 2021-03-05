@@ -14,7 +14,7 @@ import EventGuestResolver from '../entities/event-guest/EventGuest.resolver';
 import EventWatchResolver from '../entities/event-watch/EventWatch.resolver';
 import EventResolver from '../entities/event/Event.resolver';
 import MemberPaymentResolver from '../entities/member-payment/MemberPayment.resolver';
-import MemberTypeResolver from '../entities/member-type/MemberType.resolver';
+import MemberPlanResolver from '../entities/member-plan/MemberPlan.resolver';
 import MemberValueResolver from '../entities/member-value/MemberValue.resolver';
 import Member, { MemberRole } from '../entities/member/Member';
 import MemberResolver from '../entities/member/Member.resolver';
@@ -59,7 +59,7 @@ export const createSchema = async (): Promise<GraphQLSchema> =>
       MemberSocialsResolver,
       MemberValueResolver,
       MemberPaymentResolver,
-      MemberTypeResolver,
+      MemberPlanResolver,
       QuestionResolver,
       UserResolver
     ]

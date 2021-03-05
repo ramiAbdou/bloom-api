@@ -37,7 +37,11 @@ const getEventRsvpVars = async (
   ] = await Promise.all([
     bm.findOne(Community, { id: communityId }),
     bm.findOne(Event, { id: eventId }),
-    bm.findOne(EventGuest, { id: guestId })
+    bm.findOne(
+      EventGuest,
+      { id: guestId },
+      { populate: ['member', 'supporter'] }
+    )
   ]);
 
   if (!guest) throw new Error('Event guest no longer exists.');
@@ -59,7 +63,10 @@ const getEventRsvpVars = async (
     {
       event: { title: event.title },
       joinUrl,
-      member: { email: guest.email, firstName: guest.firstName }
+      member: {
+        email: guest.member?.email ?? guest.supporter?.email,
+        firstName: guest.member?.firstName ?? guest?.supporter?.firstName
+      }
     }
   ];
 

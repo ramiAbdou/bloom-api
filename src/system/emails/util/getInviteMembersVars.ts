@@ -45,7 +45,7 @@ const getInviteMembersVars = async (
   ] = await Promise.all([
     bm.findOne(Community, communityId),
     bm.findOne(Member, coordinatorId),
-    bm.find(Member, { id: memberIds }, { populate: ['user'] })
+    bm.find(Member, { id: memberIds })
   ]);
 
   const variables: InviteMembersVars[] = members.map((member: Member) => {
@@ -59,7 +59,7 @@ const getInviteMembersVars = async (
       community: { name: community.name },
       coordinator: { fullName: coordinator.fullName },
       invitationUrl,
-      member: { email: member.user.email, firstName: member.user.firstName }
+      member: { email: member.email, firstName: member.firstName }
     };
   });
 

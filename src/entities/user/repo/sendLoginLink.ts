@@ -1,8 +1,8 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { APP } from '@util/constants';
 import { LoginLinkEmailPayload } from '@system/emails/util/getLoginLinkVars';
 import { emitEmailEvent } from '@system/eventBus';
+import { APP } from '@util/constants';
 import { EmailEvent } from '@util/events';
 import URLBuilder from '@util/URLBuilder';
 import getLoginError, { LoginError } from './getLoginError';

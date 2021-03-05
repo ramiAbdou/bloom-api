@@ -3,8 +3,8 @@ import day from 'dayjs';
 import { internet } from 'faker';
 
 import BloomManager from '@core/db/BloomManager';
+import MemberPlan from '@entities/member-plan/MemberPlan';
 import MemberSocials from '@entities/member-socials/MemberSocials';
-import MemberType from '@entities/member-type/MemberType';
 import MemberValue from '@entities/member-value/MemberValue';
 import Member, { MemberRole, MemberStatus } from '@entities/member/Member';
 import Question, { QuestionCategory } from '@entities/question/Question';
@@ -21,7 +21,7 @@ interface ProcessRowArgs {
   ownerEmail: string;
   questions: Question[];
   row: CsvRowData;
-  types: MemberType[];
+  types: MemberPlan[];
   uniqueEmails: Set<string>;
 }
 
@@ -90,7 +90,7 @@ const processRow = async ({
       if (!value) return;
 
       if (key === QuestionCategory.MEMBERSHIP_TYPE) {
-        member.type = types.find(({ name }) => value === name);
+        member.plan = types.find(({ name }) => value === name);
         return;
       }
 

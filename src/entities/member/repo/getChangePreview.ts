@@ -4,7 +4,7 @@ import { Field, ObjectType } from 'type-graphql';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import { CreateSubsciptionArgs } from '@entities/member-payment/repo/createSubscription';
-import MemberType from '@entities/member-type/MemberType';
+import MemberPlan from '@entities/member-plan/MemberPlan';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
 import Member from '../Member';
@@ -22,23 +22,22 @@ export class GetChangePreviewResult {
  * Returns the payment change amount based on the current proration date.
  */
 const getChangePreview = async (
-  { memberTypeId }: Pick<CreateSubsciptionArgs, 'memberTypeId'>,
+  { memberPlanId }: Pick<CreateSubsciptionArgs, 'memberPlanId'>,
   { communityId, memberId }: GQLContext
 ): Promise<GetChangePreviewResult> => {
   const bm = new BloomManager();
 
-  const [community, member, type]: [
+  const [community, member, plan]: [
     Community,
     Member,
-    MemberType
+    MemberPlan
   ] = await Promise.all([
     bm.findOne(Community, { id: communityId }, { populate: ['integrations'] }),
     bm.findOne(Member, { id: memberId }),
-    bm.findOne(MemberType, { id: memberTypeId })
+    bm.findOne(MemberPlan, { id: memberPlanId })
   ]);
 
   const { stripeCustomerId, stripeSubscriptionId } = member;
-  const { stripePriceId } = type;
 
   if (!member.stripeSubscriptionId) return null;
 
@@ -54,7 +53,7 @@ const getChangePreview = async (
       customer: stripeCustomerId,
       subscription: stripeSubscriptionId,
       subscription_items: [
-        { id: subscription.items.data[0].id, price: stripePriceId }
+        { id: subscription.items.data[0].id, price: plan.stripePriceId }
       ],
       subscription_proration_behavior: 'always_invoice',
       subscription_proration_date: prorationDate

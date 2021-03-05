@@ -21,13 +21,13 @@ const createStripeCustomer = async ({
   // customer.
   if (member.stripeCustomerId) return member;
 
-  await bm.em.populate(member, ['community.integrations', 'user']);
+  await bm.em.populate(member, ['community.integrations']);
 
   const { stripeAccountId } = member.community.integrations;
 
   const existingStripeCustomers: Stripe.Customer[] = (
     await stripe.customers.list(
-      { email: member.user.email, limit: 1 },
+      { email: member.email, limit: 1 },
       { stripeAccount: stripeAccountId }
     )
   )?.data;
@@ -39,7 +39,7 @@ const createStripeCustomer = async ({
     ? existingStripeCustomers[0].id
     : (
         await stripe.customers.create(
-          { email: member.user.email, name: member.user.fullName },
+          { email: member.email, name: member.fullName },
           { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
         )
       ).id;

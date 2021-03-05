@@ -6,7 +6,7 @@ import BaseEntity from '@core/db/BaseEntity';
 import cache from '@core/db/cache';
 import Community from '@entities/community/Community';
 import { QueryEvent } from '@util/events';
-import MemberType from '../member-type/MemberType';
+import MemberPlan from '../member-plan/MemberPlan';
 import Member from '../member/Member';
 
 @ObjectType()
@@ -47,7 +47,7 @@ export default class MemberPayment extends BaseEntity {
   @ManyToOne(() => Member)
   member: Member;
 
-  @Field(() => MemberType)
-  @ManyToOne(() => MemberType)
-  type: MemberType;
+  @Field(() => MemberPlan)
+  @ManyToOne(() => MemberPlan)
+  plan: MemberPlan;
 }

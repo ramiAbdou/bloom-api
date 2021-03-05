@@ -91,9 +91,9 @@ const inviteMembers = async (
 
       return bm.create(Member, {
         community,
+        plan: community.defaultType.id,
         role: isAdmin ? MemberRole.ADMIN : null,
         status: MemberStatus.INVITED,
-        type: community.defaultType.id,
         user
       });
     })

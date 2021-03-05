@@ -2,14 +2,14 @@ import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
-import MemberType from '@entities/member-type/MemberType';
+import MemberPlan from '@entities/member-plan/MemberPlan';
 import Member from '@entities/member/Member';
 import createStripeCustomer from '@entities/member/repo/createStripeCustomer';
 import createAndPayStripeInvoice from '@integrations/stripe/repo/createAndPayStripeInvoice';
 import { stripe } from '@integrations/stripe/Stripe.util';
+import { GQLContext } from '@util/constants';
 import { FlushEvent } from '@util/events';
 import MemberPayment from '../MemberPayment';
 import createMemberPayment from './createMemberPayment';
@@ -17,11 +17,11 @@ import createMemberPayment from './createMemberPayment';
 @ArgsType()
 export class CreateLifetimePaymentArgs {
   @Field({ nullable: true })
-  memberTypeId: string;
+  memberPlanId: string;
 }
 
 const createLifetimePayment = async (
-  { memberTypeId }: CreateLifetimePaymentArgs,
+  { memberPlanId }: CreateLifetimePaymentArgs,
   { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<MemberPayment> => {
   await createStripeCustomer({ memberId });
@@ -31,11 +31,11 @@ const createLifetimePayment = async (
   const [integrations, member, type]: [
     CommunityIntegrations,
     Member,
-    MemberType
+    MemberPlan
   ] = await Promise.all([
     bm.findOne(CommunityIntegrations, { community: { id: communityId } }),
     bm.findOne(Member, { id: memberId }),
-    bm.findOne(MemberType, { id: memberTypeId })
+    bm.findOne(MemberPlan, { id: memberPlanId })
   ]);
 
   if (member.stripeSubscriptionId) {
@@ -55,7 +55,7 @@ const createLifetimePayment = async (
   });
 
   const payment: MemberPayment = await createMemberPayment(
-    { invoice, typeId: memberTypeId },
+    { invoice, planId: memberPlanId },
     { communityId, memberId }
   );
 

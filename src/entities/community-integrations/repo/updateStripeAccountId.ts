@@ -1,8 +1,8 @@
-import { AuthQueryArgs, IntegrationsBrand } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
-import createStripeProducts from '@entities/member-type/repo/createStripeProducts';
+import createStripeProducts from '@entities/member-plan/repo/createStripeProducts';
 import getStripeAccountId from '@integrations/stripe/repo/getStripeAccountId';
 import { emitEmailEvent } from '@system/eventBus';
+import { AuthQueryArgs, IntegrationsBrand } from '@util/constants';
 import { EmailEvent, FlushEvent } from '@util/events';
 import CommunityIntegrations from '../CommunityIntegrations';
 

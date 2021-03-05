@@ -45,7 +45,7 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
 
     // ## SYNC MEMBER VALUES
 
-    const { bio, firstName, joinedAt, lastName, type } =
+    const { bio, firstName, joinedAt, lastName, plan } =
       changeSet.payload ?? {};
 
     const bm = new BloomManager();
@@ -106,7 +106,7 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
       );
     }
 
-    if (type) {
+    if (plan) {
       const question: Question = await bm.findOne(Question, {
         category: QuestionCategory.MEMBERSHIP_TYPE,
         community: member.community.id
@@ -115,7 +115,7 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
       await bm.findOneOrCreate(
         MemberValue,
         { member: member.id, question: question.id },
-        { member: member.id, question: question.id, value: type.name },
+        { member: member.id, question: question.id, value: plan.name },
         { update: true }
       );
     }

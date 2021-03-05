@@ -3,7 +3,7 @@ import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
-import MemberType from '@entities/member-type/MemberType';
+import MemberPlan from '@entities/member-plan/MemberPlan';
 import Member from '@entities/member/Member';
 import createStripeCustomer from '@entities/member/repo/createStripeCustomer';
 import createStripeSubscription, {
@@ -20,7 +20,7 @@ import createMemberPayment from './createMemberPayment';
 @ArgsType()
 export class CreateSubsciptionArgs {
   @Field()
-  memberTypeId: string;
+  memberPlanId: string;
 
   @Field(() => Number, { nullable: true })
   prorationDate?: number;
@@ -30,7 +30,7 @@ const createSubscription = async (
   args: CreateSubsciptionArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<MemberPayment> => {
-  const { memberTypeId, prorationDate } = args;
+  const { memberPlanId, prorationDate } = args;
   const { communityId, memberId } = ctx;
 
   await createStripeCustomer({ memberId });
@@ -40,11 +40,11 @@ const createSubscription = async (
   const [community, member, type]: [
     Community,
     Member,
-    MemberType
+    MemberPlan
   ] = await Promise.all([
     bm.findOne(Community, { id: communityId }, { populate: ['integrations'] }),
     bm.findOne(Member, { id: memberId }),
-    bm.findOne(MemberType, { id: memberTypeId })
+    bm.findOne(MemberPlan, { id: memberPlanId })
   ]);
 
   const createSubscriptionArgs: CreateStripeSubscriptionArgs = {
@@ -73,7 +73,7 @@ const createSubscription = async (
   const invoice = subscription.latest_invoice as Stripe.Invoice;
 
   const payment: MemberPayment = await createMemberPayment(
-    { invoice, typeId: memberTypeId },
+    { invoice, planId: memberPlanId },
     ctx
   );
 

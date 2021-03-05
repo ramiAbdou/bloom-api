@@ -24,7 +24,11 @@ const processGoogleEvent = async ({
 
   const [event, guest]: [Event, EventGuest] = await Promise.all([
     bm.findOne(Event, { id: eventId }, { filters: false }),
-    bm.findOne(EventGuest, { id: guestId }, { filters: false })
+    bm.findOne(
+      EventGuest,
+      { id: guestId },
+      { filters: false, populate: ['member', 'supporter'] }
+    )
   ]);
 
   if (
@@ -33,8 +37,8 @@ const processGoogleEvent = async ({
     guest
   ) {
     await addGoogleCalendarEventAttendee(event.googleCalendarEventId, {
-      displayName: `${guest.firstName} ${guest.lastName}`,
-      email: guest.email,
+      displayName: guest?.member?.fullName ?? guest?.supporter?.fullName,
+      email: guest?.member?.email ?? guest?.supporter?.email,
       responseStatus: 'accepted'
     });
 
