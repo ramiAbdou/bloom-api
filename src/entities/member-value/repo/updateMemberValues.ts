@@ -27,16 +27,16 @@ const updateMemberValues = async (
 ): Promise<MemberValue[]> => {
   const bm = new BloomManager();
 
-  const data: MemberValue[] = await bm.find(MemberValue, {
-    member: { id: memberId },
-    question: { id: items.map(({ questionId }) => questionId) }
+  const values: MemberValue[] = await bm.find(MemberValue, {
+    member: memberId,
+    question: items.map(({ questionId }) => questionId)
   });
 
-  const updatedData: MemberValue[] = items.reduce(
+  const updatedValues: MemberValue[] = items.reduce(
     (acc: MemberValue[], { questionId, value }: MemberValueArgs) => {
       const stringifiedValue = value?.toString();
 
-      const existingEntity: MemberValue = data.find(
+      const existingEntity: MemberValue = values.find(
         (element: MemberValue) => element.question.id === questionId
       );
 
@@ -52,7 +52,7 @@ const updateMemberValues = async (
       entity.value = stringifiedValue;
       return [...acc, entity];
     },
-    data
+    values
   );
 
   await bm.flush();
@@ -62,7 +62,7 @@ const updateMemberValues = async (
     `${QueryEvent.GET_DIRECTORY}-${communityId}`
   ]);
 
-  return updatedData;
+  return updatedValues;
 };
 
 export default updateMemberValues;

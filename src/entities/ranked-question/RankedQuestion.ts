@@ -7,16 +7,16 @@ import Question from '@entities/question/Question';
 
 @ObjectType()
 @Entity()
-export default class ApplicationQuestion extends BaseEntity {
+export default class RankedQuestion extends BaseEntity {
   @Field({ nullable: true })
   @Property({ nullable: true })
   rank: number = 0;
 
   // ## RELATIONSHIPS
 
-  @Field(() => Application)
-  @ManyToOne()
-  application: Application;
+  @Field(() => Application, { nullable: true })
+  @ManyToOne(() => Application, { nullable: true })
+  application?: Application;
 
   @Field(() => Question)
   @OneToOne()

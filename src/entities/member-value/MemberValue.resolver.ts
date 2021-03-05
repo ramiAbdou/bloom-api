@@ -5,7 +5,7 @@ import MemberValue from './MemberValue';
 import getMemberValues, { GetMemberValueArgs } from './repo/getMemberValues';
 import updateMemberValues, {
   UpdateMemberValuesArgs
-} from './repo/updateMemberValue';
+} from './repo/updateMemberValues';
 
 @Resolver()
 export default class MemberValueResolver {

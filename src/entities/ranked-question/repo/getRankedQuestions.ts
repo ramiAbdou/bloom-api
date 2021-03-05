@@ -4,22 +4,22 @@ import { QueryOrder } from '@mikro-orm/core';
 import BloomManager from '@core/db/BloomManager';
 import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
-import ApplicationQuestion from '../ApplicationQuestion';
+import RankedQuestion from '../RankedQuestion';
 
 @ArgsType()
-export class GetApplicationQuestionsArgs {
+export class GetRankedQuestionsArgs {
   @Field({ nullable: true })
   urlName?: string;
 }
 
-const getApplicationQuestions = async (
-  args: GetApplicationQuestionsArgs,
+const getRankedQuestions = async (
+  args: GetRankedQuestionsArgs,
   ctx: Pick<GQLContext, 'communityId'>
-): Promise<ApplicationQuestion[]> => {
+): Promise<RankedQuestion[]> => {
   const key = args.urlName ?? ctx.communityId;
 
-  const applicationQuestions: ApplicationQuestion[] = await new BloomManager().find(
-    ApplicationQuestion,
+  const rankedQuestions: RankedQuestion[] = await new BloomManager().find(
+    RankedQuestion,
     {
       application: {
         community: args.urlName ? { urlName: args.urlName } : ctx.communityId
@@ -32,7 +32,7 @@ const getApplicationQuestions = async (
     }
   );
 
-  return applicationQuestions;
+  return rankedQuestions;
 };
 
-export default getApplicationQuestions;
+export default getRankedQuestions;

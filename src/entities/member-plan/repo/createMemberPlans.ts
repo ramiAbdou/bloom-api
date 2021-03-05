@@ -38,14 +38,14 @@ const createMemberPlans = async (
   let defaultType: MemberPlan;
 
   const plans: MemberPlan[] = initialPlans.map(
-    (type: EntityData<MemberPlan>) => {
-      const persistedType: MemberPlan = bm.create(MemberPlan, {
-        ...type,
+    (plan: EntityData<MemberPlan>) => {
+      const persistedPlan: MemberPlan = bm.create(MemberPlan, {
+        ...plan,
         community: communityId
       });
 
-      if (persistedType.name === defaultPlanName) defaultType = persistedType;
-      return persistedType;
+      if (persistedPlan.name === defaultPlanName) defaultType = persistedPlan;
+      return persistedPlan;
     }
   );
 

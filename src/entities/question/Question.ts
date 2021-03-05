@@ -60,6 +60,10 @@ export default class Question extends BaseEntity {
   @Property({ nullable: true, type: ArrayType })
   options?: string[];
 
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  rank?: number;
+
   @Field()
   @Property()
   required: boolean = true;

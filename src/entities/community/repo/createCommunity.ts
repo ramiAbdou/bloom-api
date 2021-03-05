@@ -4,10 +4,6 @@ import BloomManager from '@core/db/BloomManager';
 import Application from '@entities/application/Application';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
-import Question, {
-  QuestionCategory,
-  QuestionType
-} from '@entities/question/Question';
 import { FlushEvent } from '@util/events';
 
 /**
@@ -21,38 +17,10 @@ const createCommunity = async ({
 }: EntityData<Community>): Promise<Community> => {
   const bm = new BloomManager();
 
-  // Add the first name, last name and joined at dates to array of questions.
-  const allQuestions: EntityData<Question>[] = [
-    {
-      category: QuestionCategory.FIRST_NAME,
-      locked: true,
-      title: 'First Name'
-    },
-    { category: QuestionCategory.LAST_NAME, locked: true, title: 'Last Name' },
-    {
-      category: QuestionCategory.BIO,
-      locked: true,
-      title: 'Bio',
-      type: QuestionType.LONG_TEXT
-    },
-    { category: QuestionCategory.DUES_STATUS, locked: true, title: 'Status' },
-    {
-      category: QuestionCategory.MEMBER_PLAN,
-      locked: true,
-      title: 'Membership Type'
-    },
-    { category: QuestionCategory.JOINED_AT, locked: true, title: 'Joined At' }
-  ];
-
-  const persistedQuestions: Question[] = allQuestions.map(
-    (question: EntityData<Question>) => bm.create(Question, question)
-  );
-
   const community: Community = bm.create(Community, {
     ...data,
-    application: application ? bm.create(Application, application) : null,
-    integrations: bm.create(CommunityIntegrations, {}),
-    questions: persistedQuestions
+    application: bm.create(Application, application ?? {}),
+    integrations: bm.create(CommunityIntegrations, {})
   });
 
   await bm.flush({ flushEvent: FlushEvent.CREATE_COMMUNITY });

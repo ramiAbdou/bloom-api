@@ -9,7 +9,7 @@ import {
 
 import BaseEntity from '@core/db/BaseEntity';
 import Community from '@entities/community/Community';
-import ApplicationQuestion from '../application-question/ApplicationQuestion';
+import RankedQuestion from '../ranked-question/RankedQuestion';
 
 @ObjectType()
 @Entity()
@@ -29,7 +29,7 @@ export default class Application extends BaseEntity {
   community: Community;
 
   // Should get the questions by the order that they are stored in the DB.
-  @Field(() => [ApplicationQuestion])
-  @OneToMany(() => ApplicationQuestion, ({ application }) => application)
-  questions = new Collection<ApplicationQuestion>(this);
+  @Field(() => [RankedQuestion])
+  @OneToMany(() => RankedQuestion, ({ application }) => application)
+  questions = new Collection<RankedQuestion>(this);
 }
