@@ -108,7 +108,7 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
 
     if (plan) {
       const question: Question = await bm.findOne(Question, {
-        category: QuestionCategory.MEMBERSHIP_TYPE,
+        category: QuestionCategory.MEMBER_PLAN,
         community: member.community.id
       });
 

@@ -148,7 +148,7 @@ const applyToCommunity = async (
       member.lastName = value;
     } else if (category === QuestionCategory.LINKED_IN_URL) {
       socials.linkedInUrl = value;
-    } else if (category === QuestionCategory.MEMBERSHIP_TYPE) {
+    } else if (category === QuestionCategory.MEMBER_PLAN) {
       member.plan = plan;
     } else bm.create(MemberValue, { member, question, value });
   });

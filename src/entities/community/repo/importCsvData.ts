@@ -89,7 +89,7 @@ const processRow = async ({
       // was already processed.
       if (!value) return;
 
-      if (key === QuestionCategory.MEMBERSHIP_TYPE) {
+      if (key === QuestionCategory.MEMBER_PLAN) {
         member.plan = plans.find(({ name }) => value === name);
         return;
       }

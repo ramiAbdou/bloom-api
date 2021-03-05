@@ -23,7 +23,8 @@ export enum QuestionCategory {
   JOINED_AT = 'JOINED_AT',
   LAST_NAME = 'LAST_NAME',
   LINKED_IN_URL = 'LINKED_IN_URL',
-  MEMBERSHIP_TYPE = 'MEMBERSHIP_TYPE'
+  MEMBER_PLAN = 'MEMBER_PLAN',
+  TWITTER_URL = 'TWITTER_URL'
 }
 
 export enum QuestionType {
@@ -86,7 +87,7 @@ export default class Question extends BaseEntity {
       [
         QuestionCategory.DUES_STATUS,
         QuestionCategory.JOINED_AT,
-        QuestionCategory.MEMBERSHIP_TYPE
+        QuestionCategory.MEMBER_PLAN
       ].includes(this.category)
     ) {
       this.locked = true;
@@ -96,7 +97,7 @@ export default class Question extends BaseEntity {
       [
         QuestionCategory.DUES_STATUS,
         QuestionCategory.GENDER,
-        QuestionCategory.MEMBERSHIP_TYPE
+        QuestionCategory.MEMBER_PLAN
       ].includes(this.category)
     ) {
       this.type = QuestionType.MULTIPLE_CHOICE;
@@ -107,10 +108,10 @@ export default class Question extends BaseEntity {
     }
 
     if (this.category === QuestionCategory.DUES_STATUS) {
-      this.options = ['Active', 'Inactive'];
+      this.options = ['Paid', 'Not Paid'];
     }
 
-    if (this.category === QuestionCategory.MEMBERSHIP_TYPE) {
+    if (this.category === QuestionCategory.MEMBER_PLAN) {
       this.options = this.community.plans.getItems().map(({ name }) => name);
     }
   }

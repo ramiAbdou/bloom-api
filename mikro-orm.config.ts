@@ -15,6 +15,7 @@ import MemberPayment from '@entities/member-payment/MemberPayment';
 import MemberPlan from '@entities/member-plan/MemberPlan';
 import MemberRefresh from '@entities/member-refresh/MemberRefresh';
 import MemberSocials from '@entities/member-socials/MemberSocials';
+import MemberSocialsSubscriber from '@entities/member-socials/MemberSocials.subscriber';
 import MemberValue from '@entities/member-value/MemberValue';
 import Member from '@entities/member/Member';
 import MemberSubscriber from '@entities/member/Member.subscriber';
@@ -57,7 +58,11 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
   ],
   filters: { notDeleted: { args: false, cond: { deletedAt: null } } },
   namingStrategy: NamingStrategy,
-  subscribers: [new BloomManagerSubscriber(), new MemberSubscriber()],
+  subscribers: [
+    new BloomManagerSubscriber(),
+    new MemberSubscriber(),
+    new MemberSocialsSubscriber()
+  ],
   type: 'postgresql'
 };
 

@@ -4,7 +4,10 @@ import BloomManager from '@core/db/BloomManager';
 import CommunityApplication from '@entities/community-application/CommunityApplication';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
-import Question, { QuestionCategory } from '@entities/question/Question';
+import Question, {
+  QuestionCategory,
+  QuestionType
+} from '@entities/question/Question';
 import { FlushEvent } from '@util/events';
 
 /**
@@ -26,10 +29,15 @@ const createCommunity = async ({
       title: 'First Name'
     },
     { category: QuestionCategory.LAST_NAME, locked: true, title: 'Last Name' },
-    { category: QuestionCategory.BIO, locked: true, title: 'Bio' },
+    {
+      category: QuestionCategory.BIO,
+      locked: true,
+      title: 'Bio',
+      type: QuestionType.LONG_TEXT
+    },
     { category: QuestionCategory.DUES_STATUS, locked: true, title: 'Status' },
     {
-      category: QuestionCategory.MEMBERSHIP_TYPE,
+      category: QuestionCategory.MEMBER_PLAN,
       locked: true,
       title: 'Membership Type'
     },

@@ -7,7 +7,7 @@ import getMemberPlans, { GetMemberPlansArgs } from './repo/getMemberPlans';
 @Resolver()
 export default class MemberPlanResolver {
   @Query(() => [MemberPlan])
-  async getTypes(
+  async getMemberPlans(
     @Args() args: GetMemberPlansArgs,
     @Ctx() ctx: GQLContext
   ): Promise<MemberPlan[]> {
