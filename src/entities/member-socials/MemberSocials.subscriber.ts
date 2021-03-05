@@ -15,15 +15,60 @@ export default class MemberSocialsSubscriber
   }
 
   async afterUpdate({ changeSet, entity: socials }: EventArgs<MemberSocials>) {
-    cache.invalidateKeys([`${QueryEvent.GET_MEMBER_SOCIALS}-${socials.id}`]);
+    cache.invalidateKeys([
+      `${QueryEvent.GET_MEMBER_SOCIALS}-${socials.member.id}`
+    ]);
 
     const bm = new BloomManager();
 
-    const member = await bm.findOne(Member, { socials });
+    const member = await bm.findOne(Member, socials.member.id);
 
     // ## SYNC MEMBER VALUES
 
-    const { linkedInUrl, twitterUrl } = changeSet.payload ?? {};
+    const { clubhouseUrl, facebookUrl, instagramUrl, linkedInUrl, twitterUrl } =
+      changeSet.payload ?? {};
+
+    if (clubhouseUrl) {
+      const question: Question = await bm.findOne(Question, {
+        category: QuestionCategory.CLUBHOUSE_URL,
+        community: member.community.id
+      });
+
+      await bm.findOneOrCreate(
+        MemberValue,
+        { member: member.id, question: question.id },
+        { member: member.id, question: question.id, value: clubhouseUrl },
+        { update: true }
+      );
+    }
+
+    if (instagramUrl) {
+      const question: Question = await bm.findOne(Question, {
+        category: QuestionCategory.INSTAGRAM_URL,
+        community: member.community.id
+      });
+
+      await bm.findOneOrCreate(
+        MemberValue,
+        { member: member.id, question: question.id },
+        { member: member.id, question: question.id, value: instagramUrl },
+        { update: true }
+      );
+    }
+
+    if (facebookUrl) {
+      const question: Question = await bm.findOne(Question, {
+        category: QuestionCategory.FACEBOOK_URL,
+        community: member.community.id
+      });
+
+      await bm.findOneOrCreate(
+        MemberValue,
+        { member: member.id, question: question.id },
+        { member: member.id, question: question.id, value: facebookUrl },
+        { update: true }
+      );
+    }
 
     if (linkedInUrl) {
       const question: Question = await bm.findOne(Question, {

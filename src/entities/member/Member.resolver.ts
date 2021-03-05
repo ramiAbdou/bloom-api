@@ -5,7 +5,7 @@ import BloomManager from '@core/db/BloomManager';
 import Member, { MemberRole, MemberStatus } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
-import { CreateSubsciptionArgs } from '../member-payment/repo/createSubscription';
+import { CreateSubsciptionArgs } from '../payment/repo/createSubscription';
 import applyToCommunity, {
   ApplyToCommunityArgs
 } from './repo/applyToCommunity';

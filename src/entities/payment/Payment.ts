@@ -11,7 +11,7 @@ import Member from '../member/Member';
 
 @ObjectType()
 @Entity()
-export default class MemberPayment extends BaseEntity {
+export default class Payment extends BaseEntity {
   @Field(() => Float)
   @Property({ columnType: 'decimal', serializer: (value) => Number(value) })
   amount: number;

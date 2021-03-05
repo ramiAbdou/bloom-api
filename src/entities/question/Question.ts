@@ -16,10 +16,13 @@ import { QueryEvent } from '@util/events';
 
 export enum QuestionCategory {
   BIO = 'BIO',
+  CLUBHOUSE_URL = 'CLUBHOUSE_URL',
   DUES_STATUS = 'DUES_STATUS',
   EMAIL = 'EMAIL',
+  FACEBOOK_URL = 'FACEBOOK_URL',
   FIRST_NAME = 'FIRST_NAME',
   GENDER = 'GENDER',
+  INSTAGRAM_URL = 'INSTAGRAM_URL',
   JOINED_AT = 'JOINED_AT',
   LAST_NAME = 'LAST_NAME',
   LINKED_IN_URL = 'LINKED_IN_URL',

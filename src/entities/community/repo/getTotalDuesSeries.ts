@@ -2,7 +2,7 @@ import day from 'dayjs';
 
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
-import MemberPayment from '@entities/member-payment/MemberPayment';
+import Payment from '@entities/payment/Payment';
 import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
 import { TimeSeriesData } from '@util/gql';
@@ -26,7 +26,7 @@ const getTotalDuesSeries = async ({
 
   const startOfLastMonth = day.utc().subtract(1, 'month').startOf('d');
 
-  const payments = await new BloomManager().find(MemberPayment, {
+  const payments = await new BloomManager().find(Payment, {
     community: { id: communityId },
     createdAt: { $gte: startOfLastMonth.format() }
   });

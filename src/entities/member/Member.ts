@@ -21,11 +21,11 @@ import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
 import EventInvitee from '../event-invitee/EventInvitee';
 import EventWatch from '../event-watch/EventWatch';
-import MemberPayment from '../member-payment/MemberPayment';
 import MemberPlan from '../member-plan/MemberPlan';
 import MemberRefresh from '../member-refresh/MemberRefresh';
 import MemberSocials from '../member-socials/MemberSocials';
 import MemberValue from '../member-value/MemberValue';
+import Payment from '../payment/Payment';
 import User from '../user/User';
 import getNextPaymentDate from './repo/getNextPaymentDate';
 import getPaymentMethod, {
@@ -171,9 +171,9 @@ export default class Member extends BaseEntity {
   @OneToMany(() => EventInvitee, ({ member }) => member)
   invitees = new Collection<EventInvitee>(this);
 
-  @Field(() => [MemberPayment])
-  @OneToMany(() => MemberPayment, ({ member }) => member)
-  payments: Collection<MemberPayment> = new Collection<MemberPayment>(this);
+  @Field(() => [Payment])
+  @OneToMany(() => Payment, ({ member }) => member)
+  payments: Collection<Payment> = new Collection<Payment>(this);
 
   // 99% of the time, type MUST exist. However, in some communities, the OWNER
   // or ADMINs are not actually general members of the community. For example,

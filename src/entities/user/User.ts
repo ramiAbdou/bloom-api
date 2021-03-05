@@ -10,6 +10,7 @@ import {
 
 import BaseEntity from '@core/db/BaseEntity';
 import Supporter from '@entities/supporter/Supporter';
+import Donor from '../donor/Donor';
 import Member from '../member/Member';
 
 @ObjectType()
@@ -35,6 +36,10 @@ export default class User extends BaseEntity {
   }
 
   // ## RELATIONSHIPS
+
+  @Field(() => [Donor])
+  @OneToMany(() => Donor, ({ user }) => user)
+  donors: Collection<Donor> = new Collection<Donor>(this);
 
   @Field(() => [Member])
   @OneToMany(() => Member, ({ user }) => user)

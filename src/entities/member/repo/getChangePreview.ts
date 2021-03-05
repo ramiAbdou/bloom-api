@@ -3,8 +3,8 @@ import { Field, ObjectType } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
-import { CreateSubsciptionArgs } from '@entities/member-payment/repo/createSubscription';
 import MemberPlan from '@entities/member-plan/MemberPlan';
+import { CreateSubsciptionArgs } from '@entities/payment/repo/createSubscription';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
 import Member from '../Member';

@@ -13,11 +13,11 @@ import EventAttendeeResolver from '../entities/event-attendee/EventAttendee.reso
 import EventGuestResolver from '../entities/event-guest/EventGuest.resolver';
 import EventWatchResolver from '../entities/event-watch/EventWatch.resolver';
 import EventResolver from '../entities/event/Event.resolver';
-import MemberPaymentResolver from '../entities/member-payment/MemberPayment.resolver';
 import MemberPlanResolver from '../entities/member-plan/MemberPlan.resolver';
 import MemberValueResolver from '../entities/member-value/MemberValue.resolver';
 import Member, { MemberRole } from '../entities/member/Member';
 import MemberResolver from '../entities/member/Member.resolver';
+import PaymentResolver from '../entities/payment/Payment.resolver';
 import QuestionResolver from '../entities/question/Question.resolver';
 import UserResolver from '../entities/user/User.resolver';
 
@@ -58,8 +58,8 @@ export const createSchema = async (): Promise<GraphQLSchema> =>
       MemberResolver,
       MemberSocialsResolver,
       MemberValueResolver,
-      MemberPaymentResolver,
       MemberPlanResolver,
+      PaymentResolver,
       QuestionResolver,
       UserResolver
     ]

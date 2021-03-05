@@ -15,10 +15,11 @@ import Supporter from '@entities/supporter/Supporter';
 import { isProduction } from '@util/constants';
 import CommunityApplication from '../community-application/CommunityApplication';
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
+import Donor from '../donor/Donor';
 import Event from '../event/Event';
-import MemberPayment from '../member-payment/MemberPayment';
 import MemberPlan from '../member-plan/MemberPlan';
 import Member from '../member/Member';
+import Payment from '../payment/Payment';
 import Question from '../question/Question';
 
 @ObjectType()
@@ -90,6 +91,10 @@ export default class Community extends BaseEntity {
   @OneToOne({ nullable: true })
   defaultType: MemberPlan;
 
+  @Field(() => [Donor])
+  @OneToMany(() => Donor, ({ community }) => community)
+  donors = new Collection<Donor>(this);
+
   @Field(() => [Event])
   @OneToMany(() => Event, ({ community }) => community)
   events = new Collection<Event>(this);
@@ -108,9 +113,9 @@ export default class Community extends BaseEntity {
   @OneToMany(() => Member, ({ community }) => community)
   members = new Collection<Member>(this);
 
-  @Field(() => [MemberPayment])
-  @OneToMany(() => MemberPayment, ({ community }) => community)
-  payments = new Collection<MemberPayment>(this);
+  @Field(() => [Payment])
+  @OneToMany(() => Payment, ({ community }) => community)
+  payments = new Collection<Payment>(this);
 
   // Should get the questions by the order that they are stored in the DB.
   @Field(() => [MemberPlan])

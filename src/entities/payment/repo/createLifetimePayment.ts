@@ -11,8 +11,8 @@ import createAndPayStripeInvoice from '@integrations/stripe/repo/createAndPayStr
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
 import { FlushEvent } from '@util/events';
-import MemberPayment from '../MemberPayment';
-import createMemberPayment from './createMemberPayment';
+import Payment from '../Payment';
+import createPayment from './createPayment';
 
 @ArgsType()
 export class CreateLifetimePaymentArgs {
@@ -23,7 +23,7 @@ export class CreateLifetimePaymentArgs {
 const createLifetimePayment = async (
   { memberPlanId }: CreateLifetimePaymentArgs,
   { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
-): Promise<MemberPayment> => {
+): Promise<Payment> => {
   await createStripeCustomer({ memberId });
 
   const bm = new BloomManager();
@@ -54,7 +54,7 @@ const createLifetimePayment = async (
     priceId: type.stripePriceId
   });
 
-  const payment: MemberPayment = await createMemberPayment(
+  const payment: Payment = await createPayment(
     { invoice, planId: memberPlanId },
     { communityId, memberId }
   );

@@ -6,12 +6,12 @@ import NamingStrategy from '@core/db/NamingStrategy';
 import CommunityApplication from '@entities/community-application/CommunityApplication';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
+import Donor from '@entities/donor/Donor';
 import EventAttendee from '@entities/event-attendee/EventAttendee';
 import EventGuest from '@entities/event-guest/EventGuest';
 import EventInvitee from '@entities/event-invitee/EventInvitee';
 import EventWatch from '@entities/event-watch/EventWatch';
 import Event from '@entities/event/Event';
-import MemberPayment from '@entities/member-payment/MemberPayment';
 import MemberPlan from '@entities/member-plan/MemberPlan';
 import MemberRefresh from '@entities/member-refresh/MemberRefresh';
 import MemberSocials from '@entities/member-socials/MemberSocials';
@@ -19,6 +19,7 @@ import MemberSocialsSubscriber from '@entities/member-socials/MemberSocials.subs
 import MemberValue from '@entities/member-value/MemberValue';
 import Member from '@entities/member/Member';
 import MemberSubscriber from '@entities/member/Member.subscriber';
+import Payment from '@entities/payment/Payment';
 import Question from '@entities/question/Question';
 import Supporter from '@entities/supporter/Supporter';
 import Task from '@entities/task/Task';
@@ -40,12 +41,13 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
     CommunityApplication,
     CommunityIntegrations,
     Community,
+    Donor,
     Event,
     EventAttendee,
     EventGuest,
     EventInvitee,
     EventWatch,
-    MemberPayment,
+    Payment,
     MemberRefresh,
     MemberSocials,
     MemberPlan,

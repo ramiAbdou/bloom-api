@@ -2,8 +2,8 @@ import Stripe from 'stripe';
 
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
-import MemberPayment from '@entities/member-payment/MemberPayment';
 import Member from '@entities/member/Member';
+import Payment from '@entities/payment/Payment';
 import { EmailPayload } from '../emails.types';
 
 export interface PaymentReceiptPayload {
@@ -15,7 +15,7 @@ export interface PaymentReceiptPayload {
 export interface PaymentReceiptVars {
   card: Stripe.PaymentMethod.Card;
   community: Community;
-  payment: MemberPayment;
+  payment: Payment;
   member: Pick<Member, 'email' | 'firstName'>;
 }
 
@@ -26,9 +26,9 @@ const getPaymentReceiptVars = async (
 
   const bm = new BloomManager();
 
-  const [community, payment]: [Community, MemberPayment] = await Promise.all([
+  const [community, payment]: [Community, Payment] = await Promise.all([
     bm.findOne(Community, { integrations: { stripeAccountId } }),
-    bm.findOne(MemberPayment, { id: paymentId })
+    bm.findOne(Payment, { id: paymentId })
   ]);
 
   const member: Member = await bm.findOne(Member, payment.member.id);
