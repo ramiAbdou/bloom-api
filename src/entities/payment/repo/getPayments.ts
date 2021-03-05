@@ -9,9 +9,6 @@ import Payment from '../Payment';
 @ArgsType()
 export class GetPaymentsArgs {
   @Field({ nullable: true })
-  communityId?: string;
-
-  @Field({ nullable: true })
   memberId?: string;
 }
 
@@ -19,13 +16,12 @@ const getPayments = async (
   args: GetPaymentsArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ) => {
-  const communityId = args?.communityId ?? ctx?.communityId;
   const memberId = args?.memberId ?? ctx.memberId;
-  const key = args?.memberId ?? args?.communityId ?? ctx.communityId;
+  const key = args?.memberId ?? ctx.communityId;
 
   const payments: Payment[] = await new BloomManager().find(
     Payment,
-    { community: communityId, member: memberId },
+    { community: ctx.communityId, member: memberId },
     {
       cacheKey: `${QueryEvent.GET_PAYMENTS}-${key}`,
       orderBy: { createdAt: QueryOrder.DESC },

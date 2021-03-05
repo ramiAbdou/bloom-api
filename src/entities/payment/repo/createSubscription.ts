@@ -15,7 +15,7 @@ import updateStripeSubscription, {
 import { GQLContext } from '@util/constants';
 import { FlushEvent } from '@util/events';
 import Payment from '../Payment';
-import createPayment from './createPayment';
+import createDuesPayment from './createDuesPayment';
 
 @ArgsType()
 export class CreateSubsciptionArgs {
@@ -42,9 +42,9 @@ const createSubscription = async (
     Member,
     MemberPlan
   ] = await Promise.all([
-    bm.findOne(Community, { id: communityId }, { populate: ['integrations'] }),
-    bm.findOne(Member, { id: memberId }),
-    bm.findOne(MemberPlan, { id: memberPlanId })
+    bm.findOne(Community, communityId, { populate: ['integrations'] }),
+    bm.findOne(Member, memberId),
+    bm.findOne(MemberPlan, memberPlanId)
   ]);
 
   const createSubscriptionArgs: CreateStripeSubscriptionArgs = {
@@ -72,7 +72,7 @@ const createSubscription = async (
 
   const invoice = subscription.latest_invoice as Stripe.Invoice;
 
-  const payment: Payment = await createPayment(
+  const payment: Payment = await createDuesPayment(
     { invoice, planId: memberPlanId },
     ctx
   );

@@ -3,9 +3,9 @@ import Stripe from 'stripe';
 import BloomManager from '@core/db/BloomManager';
 import Member from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
-import Payment from '../Payment';
+import Payment, { PaymentType } from '../Payment';
 
-interface CreatePaymentArgs {
+interface CreateDuesPaymentArgs {
   invoice: Stripe.Invoice;
   planId: string;
 }
@@ -15,16 +15,15 @@ interface CreatePaymentArgs {
  * active. All other invoices should be handled via webhooks, except for this
  * initial time, since we want to update our UI immediately.
  */
-const createPayment = async (
-  { invoice, planId }: CreatePaymentArgs,
+const createDuesPayment = async (
+  { invoice, planId }: CreateDuesPaymentArgs,
   { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<Payment> => {
   const bm = new BloomManager();
-  const member: Member = await bm.findOne(Member, { id: memberId });
+  const member: Member = await bm.findOne(Member, memberId);
 
   // Only if the subscription worked should the Payment be created.
 
-  member.isDuesActive = true;
   member.plan.id = planId;
 
   let payment: Payment = null;
@@ -36,7 +35,8 @@ const createPayment = async (
       member: memberId,
       plan: planId,
       stripeInvoiceId: invoice.id,
-      stripeInvoiceUrl: invoice.hosted_invoice_url
+      stripeInvoiceUrl: invoice.hosted_invoice_url,
+      type: PaymentType.DUES
     });
   }
 
@@ -45,4 +45,4 @@ const createPayment = async (
   return payment;
 };
 
-export default createPayment;
+export default createDuesPayment;

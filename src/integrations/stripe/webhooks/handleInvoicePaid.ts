@@ -5,7 +5,7 @@ import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import Member from '@entities/member/Member';
 import Payment from '@entities/payment/Payment';
-import createPayment from '@entities/payment/repo/createPayment';
+import createDuesPayment from '@entities/payment/repo/createDuesPayment';
 import { emitEmailEvent } from '@system/eventBus';
 import { EmailEvent } from '@util/events';
 import { stripe } from '../Stripe.util';
@@ -35,7 +35,7 @@ const handleInvoicePaid = async (event: Stripe.Event) => {
   // If there is no record of a payment in our DB (likely b/c they paid
   // somewhere else other than our website, like Stripe hosted website).
   if (!payment) {
-    updatedPayment = await createPayment(
+    updatedPayment = await createDuesPayment(
       { invoice, planId: member.plan.id },
       { communityId: community.id, memberId: member.id }
     );

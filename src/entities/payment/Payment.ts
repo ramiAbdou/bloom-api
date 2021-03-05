@@ -9,12 +9,21 @@ import { QueryEvent } from '@util/events';
 import MemberPlan from '../member-plan/MemberPlan';
 import Member from '../member/Member';
 
+export enum PaymentType {
+  DONATION = 'DONATION',
+  DUES = 'DUES'
+}
+
 @ObjectType()
 @Entity()
 export default class Payment extends BaseEntity {
   @Field(() => Float)
   @Property({ columnType: 'decimal', serializer: (value) => Number(value) })
   amount: number;
+
+  @Field(() => String)
+  @Property()
+  type: PaymentType;
 
   @Property({ unique: true })
   stripeInvoiceId: string;

@@ -12,7 +12,7 @@ import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
 import { FlushEvent } from '@util/events';
 import Payment from '../Payment';
-import createPayment from './createPayment';
+import createDuesPayment from './createDuesPayment';
 
 @ArgsType()
 export class CreateLifetimePaymentArgs {
@@ -54,7 +54,7 @@ const createLifetimePayment = async (
     priceId: type.stripePriceId
   });
 
-  const payment: Payment = await createPayment(
+  const payment: Payment = await createDuesPayment(
     { invoice, planId: memberPlanId },
     { communityId, memberId }
   );

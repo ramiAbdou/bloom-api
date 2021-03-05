@@ -11,6 +11,7 @@ import {
   OneToMany,
   OneToOne,
   Property,
+  QueryOrder,
   Unique
 } from '@mikro-orm/core';
 
@@ -31,6 +32,7 @@ import getNextPaymentDate from './repo/getNextPaymentDate';
 import getPaymentMethod, {
   GetPaymentMethodResult
 } from './repo/getPaymentMethod';
+import isDuesActive from './repo/isDuesActive';
 
 export enum MemberRole {
   ADMIN = 'Admin',
@@ -69,10 +71,6 @@ export default class Member extends BaseEntity {
   @Field()
   @Property()
   lastName: string;
-
-  @Field({ defaultValue: false })
-  @Property()
-  isDuesActive: boolean = false;
 
   // Refers to the date that the member was ACCEPTED.
   @Field({ nullable: true })
@@ -113,6 +111,11 @@ export default class Member extends BaseEntity {
 
   // ## STRIPE RELATED MEMBER FUNCTIONS
 
+  @Field(() => Boolean)
+  async isDuesActive(): Promise<boolean> {
+    return isDuesActive({ memberId: this.id });
+  }
+
   @Authorized()
   @Field(() => GetPaymentMethodResult, { nullable: true })
   async paymentMethod() {
@@ -140,7 +143,6 @@ export default class Member extends BaseEntity {
     // If no member type is provided, assign them the default member.
     // Every community should've assigned one default member.
     if (!this.plan) this.plan = this.community.defaultType;
-    if (this.plan.isFree) this.isDuesActive = true;
 
     this.firstName = this.firstName.trim();
     this.lastName = this.lastName.trim();
@@ -172,7 +174,9 @@ export default class Member extends BaseEntity {
   invitees = new Collection<EventInvitee>(this);
 
   @Field(() => [Payment])
-  @OneToMany(() => Payment, ({ member }) => member)
+  @OneToMany(() => Payment, ({ member }) => member, {
+    orderBy: { createdAt: QueryOrder.DESC }
+  })
   payments: Collection<Payment> = new Collection<Payment>(this);
 
   // 99% of the time, type MUST exist. However, in some communities, the OWNER
