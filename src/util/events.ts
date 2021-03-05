@@ -86,6 +86,7 @@ export enum LoggerEvent {
 // Used for caching purposes (building the keys).
 export enum QueryEvent {
   GET_APPLICATION = 'GET_APPLICATION',
+  GET_APPLICATION_QUESTIONS = 'GET_APPLICATION_QUESTIONS',
   GET_COMMUNITY = 'GET_COMMUNITY',
   GET_EVENT = 'GET_EVENT',
   GET_INTEGRATIONS = 'GET_INTEGRATIONS',

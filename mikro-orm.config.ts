@@ -3,6 +3,7 @@ import { Connection, IDatabaseDriver, Options } from '@mikro-orm/core';
 import BaseEntity from '@core/db/BaseEntity';
 import BloomManagerSubscriber from '@core/db/BloomManager.subscriber';
 import NamingStrategy from '@core/db/NamingStrategy';
+import ApplicationQuestion from '@entities/application-question/ApplicationQuestion';
 import Application from '@entities/application/Application';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
@@ -38,6 +39,7 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
   entities: [
     BaseEntity,
     Application,
+    ApplicationQuestion,
     CommunityIntegrations,
     Community,
     Event,
