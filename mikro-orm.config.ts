@@ -6,7 +6,6 @@ import NamingStrategy from '@core/db/NamingStrategy';
 import CommunityApplication from '@entities/community-application/CommunityApplication';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
-import Donor from '@entities/donor/Donor';
 import EventAttendee from '@entities/event-attendee/EventAttendee';
 import EventGuest from '@entities/event-guest/EventGuest';
 import EventInvitee from '@entities/event-invitee/EventInvitee';
@@ -41,7 +40,6 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
     CommunityApplication,
     CommunityIntegrations,
     Community,
-    Donor,
     Event,
     EventAttendee,
     EventGuest,

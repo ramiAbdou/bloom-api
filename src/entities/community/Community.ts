@@ -15,7 +15,6 @@ import Supporter from '@entities/supporter/Supporter';
 import { isProduction } from '@util/constants';
 import CommunityApplication from '../community-application/CommunityApplication';
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
-import Donor from '../donor/Donor';
 import Event from '../event/Event';
 import MemberPlan from '../member-plan/MemberPlan';
 import Member from '../member/Member';
@@ -90,10 +89,6 @@ export default class Community extends BaseEntity {
   // way for someone to join is if the admin adds them manually.
   @OneToOne({ nullable: true })
   defaultType: MemberPlan;
-
-  @Field(() => [Donor])
-  @OneToMany(() => Donor, ({ community }) => community)
-  donors = new Collection<Donor>(this);
 
   @Field(() => [Event])
   @OneToMany(() => Event, ({ community }) => community)
