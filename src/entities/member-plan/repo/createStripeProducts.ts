@@ -6,7 +6,7 @@ import Integrations from '@entities/integrations/Integrations';
 import MemberPlan, { RecurrenceType } from '@entities/member-plan/MemberPlan';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
-import { FlushEvent } from '@util/events';
+import { MutationEvent } from '@util/events';
 
 interface CreateStripeProductArgs {
   stripeAccountId: string;
@@ -83,7 +83,7 @@ const createStripeProducts = async ({
     })
   );
 
-  await bm.flush({ flushEvent: FlushEvent.CREATE_STRIPE_PRODUCTS });
+  await bm.flush({ flushEvent: MutationEvent.CREATE_STRIPE_PRODUCTS });
   return updatedTypes;
 };
 

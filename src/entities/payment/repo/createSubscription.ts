@@ -13,7 +13,7 @@ import updateStripeSubscription, {
   UpdateStripeSubscriptionArgs
 } from '@integrations/stripe/repo/updateStripeSubscription';
 import { GQLContext } from '@util/constants';
-import { FlushEvent } from '@util/events';
+import { MutationEvent } from '@util/events';
 import Payment from '../Payment';
 import createDuesPayment from './createDuesPayment';
 
@@ -68,7 +68,7 @@ const createSubscription = async (
   // user.
   member.stripeSubscriptionId = subscription.id;
 
-  await bm.flush({ flushEvent: FlushEvent.CREATE_SUBSCRIPTION });
+  await bm.flush({ flushEvent: MutationEvent.CREATE_SUBSCRIPTION });
 
   const invoice = subscription.latest_invoice as Stripe.Invoice;
 

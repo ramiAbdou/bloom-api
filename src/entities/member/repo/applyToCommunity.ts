@@ -17,7 +17,7 @@ import Question, {
 import User from '@entities/user/User';
 import { emitEmailEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent, QueryEvent } from '@util/events';
+import { EmailEvent, MutationEvent, QueryEvent } from '@util/events';
 import Member, { MemberStatus } from '../Member';
 import updatePaymentMethod from './updatePaymentMethod';
 
@@ -156,7 +156,7 @@ const applyToCommunity = async (
     } else bm.create(MemberValue, { member, question, value });
   });
 
-  await bm.flush({ flushEvent: FlushEvent.APPLY_TO_COMMUNITY });
+  await bm.flush({ flushEvent: MutationEvent.APPLY_TO_COMMUNITY });
 
   emitEmailEvent(EmailEvent.APPLY_TO_COMMUNITY, {
     communityId: community.id,

@@ -6,7 +6,7 @@ import Community from '@entities/community/Community';
 import User from '@entities/user/User';
 import { emitEmailEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent } from '@util/events';
+import { EmailEvent, MutationEvent } from '@util/events';
 import Member, { MemberRole, MemberStatus } from '../Member';
 
 @InputType()
@@ -99,7 +99,7 @@ const inviteMembers = async (
     })
   );
 
-  await bm.flush({ flushEvent: FlushEvent.ADD_MEMBERS });
+  await bm.flush({ flushEvent: MutationEvent.ADD_MEMBERS });
 
   emitEmailEvent(EmailEvent.INVITE_MEMBERS, {
     communityId,

@@ -1,7 +1,7 @@
 import BloomManager from '@core/db/BloomManager';
 import getMailchimpAccessToken from '@integrations/mailchimp/repo/getMailchimpAccessToken';
 import { AuthQueryArgs } from '@util/constants';
-import { FlushEvent } from '@util/events';
+import { MutationEvent } from '@util/events';
 import Integrations from '../Integrations';
 
 /**
@@ -20,7 +20,7 @@ const updateMailchimpAccessToken = async ({
     Integrations,
     { community: { urlName } },
     { mailchimpAccessToken },
-    { flushEvent: FlushEvent.UPDATE_MAILCHIMP_ACCESS_TOKEN }
+    { flushEvent: MutationEvent.UPDATE_MAILCHIMP_ACCESS_TOKEN }
   );
 
   return integrations;

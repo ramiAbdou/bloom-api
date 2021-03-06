@@ -1,7 +1,7 @@
 import { EntityData } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
-import { FlushEvent } from '@util/events';
+import { MutationEvent } from '@util/events';
 import Task from '../Task';
 import calculateExecuteAt from './calculateExecuteAt';
 
@@ -15,7 +15,7 @@ const createTask = async (args: EntityData<Task>): Promise<Task> => {
   const task: Task = await new BloomManager().createAndFlush(
     Task,
     { ...args, executeAt: args.executeAt ?? (await calculateExecuteAt(args)) },
-    { flushEvent: FlushEvent.CREATE_TASK }
+    { flushEvent: MutationEvent.CREATE_TASK }
   );
 
   return task;

@@ -4,7 +4,7 @@ import Stripe from 'stripe';
 import BloomManager from '@core/db/BloomManager';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
-import { FlushEvent } from '@util/events';
+import { MutationEvent } from '@util/events';
 import Member from '../Member';
 
 /**
@@ -45,7 +45,7 @@ const createStripeCustomer = async ({
       ).id;
 
   member.stripeCustomerId = stripeCustomerId;
-  await bm.flush({ flushEvent: FlushEvent.CREATE_STRIPE_CUSTOMER });
+  await bm.flush({ flushEvent: MutationEvent.CREATE_STRIPE_CUSTOMER });
 
   return member;
 };

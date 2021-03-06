@@ -6,7 +6,7 @@ import Member from '@entities/member/Member';
 import Supporter from '@entities/supporter/Supporter';
 import { emitEmailEvent, emitGoogleEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent, GoogleEvent } from '@util/events';
+import { EmailEvent, GoogleEvent, MutationEvent } from '@util/events';
 import EventGuest from '../EventGuest';
 
 @ArgsType()
@@ -70,7 +70,7 @@ const createEventGuest = async (
     EventGuest,
     { event: eventId, ...guestArgs },
     {
-      flushEvent: FlushEvent.CREATE_EVENT_GUEST,
+      flushEvent: MutationEvent.CREATE_EVENT_GUEST,
       populate: ['member', 'supporter']
     }
   );

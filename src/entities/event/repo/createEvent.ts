@@ -7,7 +7,12 @@ import {
   scheduleTask
 } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent, GoogleEvent, TaskEvent } from '@util/events';
+import {
+  EmailEvent,
+  GoogleEvent,
+  MutationEvent,
+  TaskEvent
+} from '@util/events';
 import createEventInvitees from '../../event-invitee/repo/createEventInvitees';
 import Event, { EventPrivacy } from '../Event';
 
@@ -58,7 +63,7 @@ const createEvent = async (
   const event: Event = await new BloomManager().createAndFlush(
     Event,
     { ...eventData, community: communityId },
-    { flushEvent: FlushEvent.CREATE_EVENT }
+    { flushEvent: MutationEvent.CREATE_EVENT }
   );
 
   const eventId: string = event.id;

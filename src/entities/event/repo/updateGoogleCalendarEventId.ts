@@ -1,5 +1,5 @@
 import BloomManager from '@core/db/BloomManager';
-import { FlushEvent } from '@util/events';
+import { MutationEvent } from '@util/events';
 import Event from '../Event';
 
 export interface UpdateGoogleCalendarEventIdArgs {
@@ -22,7 +22,7 @@ const updateGoogleCalendarEventId = async (
     Event,
     eventId,
     { googleCalendarEventId },
-    { flushEvent: FlushEvent.UPDATE_GOOGLE_CALENDAR_EVENT_ID }
+    { flushEvent: MutationEvent.UPDATE_GOOGLE_CALENDAR_EVENT_ID }
   );
 
   return event;

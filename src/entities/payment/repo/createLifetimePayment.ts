@@ -10,7 +10,7 @@ import createStripeCustomer from '@entities/member/repo/createStripeCustomer';
 import createAndPayStripeInvoice from '@integrations/stripe/repo/createAndPayStripeInvoice';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
-import { FlushEvent } from '@util/events';
+import { MutationEvent } from '@util/events';
 import Payment from '../Payment';
 import createDuesPayment from './createDuesPayment';
 
@@ -45,7 +45,7 @@ const createLifetimePayment = async (
     });
 
     member.stripeSubscriptionId = null;
-    await bm.flush({ flushEvent: FlushEvent.DELETE_SUBSCRIPTION });
+    await bm.flush({ flushEvent: MutationEvent.DELETE_SUBSCRIPTION });
   }
 
   const invoice: Stripe.Invoice = await createAndPayStripeInvoice({

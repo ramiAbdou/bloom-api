@@ -24,7 +24,7 @@ export enum EmailEvent {
   PROMOTE_MEMBERS = 'PROMOTE_MEMBERS'
 }
 
-export enum FlushEvent {
+export enum MutationEvent {
   ACCEPT_APPLICANTS = 'ACCEPT_APPLICANTS',
   ACCEPT_INVITATIONS = 'ACCEPT_INVITATIONS',
   ADD_MEMBERS = 'ADD_MEMBERS',

@@ -4,7 +4,7 @@ import BloomManager from '@core/db/BloomManager';
 import Application from '@entities/application/Application';
 import Community from '@entities/community/Community';
 import Integrations from '@entities/integrations/Integrations';
-import { FlushEvent } from '@util/events';
+import { MutationEvent } from '@util/events';
 
 /**
  * Creates a new community when Bloom has a new customer. Omits the addition
@@ -25,7 +25,7 @@ const createCommunity = async (
       application: bm.create(Application, application ?? {}),
       integrations: bm.create(Integrations, {})
     },
-    { flushEvent: FlushEvent.CREATE_COMMUNITY }
+    { flushEvent: MutationEvent.CREATE_COMMUNITY }
   );
 
   return community;

@@ -5,7 +5,7 @@ import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
-import { FlushEvent } from '@util/events';
+import { MutationEvent } from '@util/events';
 import Member from '../Member';
 import createStripeCustomer from './createStripeCustomer';
 
@@ -57,7 +57,7 @@ const updatePaymentMethod = async (
   );
 
   member.stripePaymentMethodId = paymentMethodId;
-  await bm.flush({ flushEvent: FlushEvent.UPDATE_PAYMENT_METHOD });
+  await bm.flush({ flushEvent: MutationEvent.UPDATE_PAYMENT_METHOD });
 
   return member;
 };

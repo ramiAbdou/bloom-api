@@ -4,7 +4,7 @@ import { EntityData } from '@mikro-orm/core';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import { GQLContext } from '@util/constants';
-import { FlushEvent } from '@util/events';
+import { MutationEvent } from '@util/events';
 import MemberPlan, { RecurrenceType } from '../MemberPlan';
 
 @InputType()
@@ -51,7 +51,7 @@ const createMemberPlans = async (
 
   if (defaultType) community.defaultType = defaultType;
 
-  await bm.flush({ flushEvent: FlushEvent.CREATE_MEMBER_TYPES });
+  await bm.flush({ flushEvent: MutationEvent.CREATE_MEMBER_TYPES });
 
   return plans;
 };

@@ -4,7 +4,7 @@ import { ArgsType, Field } from 'type-graphql';
 import BloomManager from '@core/db/BloomManager';
 import { emitEmailEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent } from '@util/events';
+import { EmailEvent, MutationEvent } from '@util/events';
 import Member from '../Member';
 
 @ArgsType()
@@ -30,7 +30,7 @@ const demoteMembers = async (
     Member,
     { id: memberIds },
     { role: null },
-    { flushEvent: FlushEvent.DEMOTE_MEMBERS }
+    { flushEvent: MutationEvent.DEMOTE_MEMBERS }
   );
 
   emitEmailEvent(EmailEvent.DEMOTE_MEMBERS, {

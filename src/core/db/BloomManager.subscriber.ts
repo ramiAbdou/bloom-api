@@ -2,7 +2,7 @@ import {
   AnyEntity,
   ChangeSet,
   EventSubscriber,
-  FlushEventArgs
+  MutationEventArgs
 } from '@mikro-orm/core';
 
 import logger, {
@@ -11,7 +11,7 @@ import logger, {
 } from '@system/logger/logger';
 
 export default class BloomManagerSubscriber implements EventSubscriber {
-  async onFlush<T>({ uow }: FlushEventArgs): Promise<void> {
+  async onFlush<T>({ uow }: MutationEventArgs): Promise<void> {
     const changes: LoggerChangeSet[] = uow
       .getChangeSets()
       .map((changeSet: ChangeSet<AnyEntity<any>>) => {

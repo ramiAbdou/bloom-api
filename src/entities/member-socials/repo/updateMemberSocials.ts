@@ -3,7 +3,7 @@ import { ArgsType, Field } from 'type-graphql';
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
 import { GQLContext } from '@util/constants';
-import { FlushEvent, QueryEvent } from '@util/events';
+import { MutationEvent, QueryEvent } from '@util/events';
 import MemberSocials from '../MemberSocials';
 
 @ArgsType()
@@ -32,7 +32,7 @@ const updateMemberSocials = async (
     MemberSocials,
     { member: memberId },
     args,
-    { flushEvent: FlushEvent.UPDATE_MEMBER_SOCIALS }
+    { flushEvent: MutationEvent.UPDATE_MEMBER_SOCIALS }
   );
 
   cache.invalidateKeys([
