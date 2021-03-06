@@ -26,7 +26,10 @@ const verifyToken = async (
   args: TokenArgs,
   ctx: Pick<GQLContext, 'res'>
 ): Promise<VerifiedToken> => {
-  const verifiedToken: VerifiedToken = decodeToken(args.token) ?? {};
+  const { token } = args;
+  const { res } = ctx;
+
+  const verifiedToken: VerifiedToken = decodeToken(token) ?? {};
   const { event, guestId, memberId, userId } = verifiedToken;
 
   let tokens: AuthTokens;
@@ -36,11 +39,11 @@ const verifyToken = async (
   }
 
   if ([VerifyEvent.LOG_IN].includes(event)) {
-    tokens = await refreshToken({ memberId, res: ctx.res, userId });
+    tokens = await refreshToken({ memberId, res, userId });
   }
 
   if (event === VerifyEvent.LOG_IN && !tokens) {
-    ctx.res.cookie('LOGIN_LINK_ERROR', 'TOKEN_EXPIRED');
+    res.cookie('LOGIN_LINK_ERROR', 'TOKEN_EXPIRED');
     return null;
   }
 

@@ -18,8 +18,11 @@ export default class UserResolver {
     return getTokens(args, ctx);
   }
 
-  @Query(() => User, { nullable: true })
-  async getUser(@Args() args: GetUserArgs, @Ctx() ctx: GQLContext) {
+  @Query(() => User)
+  async getUser(
+    @Args() args: GetUserArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<User> {
     return getUser(args, ctx);
   }
 
@@ -38,7 +41,7 @@ export default class UserResolver {
     return sendLoginLink(args);
   }
 
-  @Query(() => VerifiedToken)
+  @Mutation(() => VerifiedToken)
   async verifyToken(@Args() args: TokenArgs, @Ctx() ctx: GQLContext) {
     return verifyToken(args, ctx);
   }

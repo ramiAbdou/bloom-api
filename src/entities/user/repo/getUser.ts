@@ -11,17 +11,21 @@ export class GetUserArgs {
   userId?: string;
 }
 
+/**
+ * Returns the User.
+ *
+ * @param args.userId - ID of the User.
+ * @param ctx.userId - ID of the User (authenticated).
+ */
 const getUser = async (
   args: GetUserArgs,
   ctx: Pick<GQLContext, 'userId'>
 ): Promise<User> => {
-  const userId = args?.userId ?? ctx.userId;
+  const userId = args.userId ?? ctx.userId;
 
-  const user: User = await new BloomManager().findOneOrFail(
-    User,
-    { id: userId },
-    { cacheKey: `${QueryEvent.GET_USER}-${userId}` }
-  );
+  const user: User = await new BloomManager().findOneOrFail(User, userId, {
+    cacheKey: `${QueryEvent.GET_USER}-${userId}`
+  });
 
   return user;
 };

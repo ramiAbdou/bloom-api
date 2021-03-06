@@ -110,6 +110,7 @@ export enum QueryEvent {
   GET_PAYMENTS = 'getPayments',
   GET_RANKED_QUESTIONS = 'getRankedQuestions',
   GET_QUESTIONS = 'getQuestions',
+  GET_TOKENS = 'getTokens',
   GET_TOTAL_DUES_SERIES = 'getTotalDuesSeries',
   GET_TOTAL_MEMBERS_GROWTH = 'getTotalMembersGrowth',
   GET_TOTAL_MEMBERS_SERIES = 'getTotalMembersSeries',
