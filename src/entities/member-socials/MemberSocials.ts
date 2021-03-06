@@ -19,7 +19,7 @@ export default class MemberSocials extends BaseEntity {
   facebookUrl: string;
 
   @Field({ nullable: true })
-  @Property({ nullable: true, unique: true })
+  @Property({ nullable: true })
   @IsUrl()
   instagramUrl: string;
 

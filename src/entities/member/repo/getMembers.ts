@@ -6,11 +6,13 @@ import Member from '../Member';
 const getMembers = async ({
   userId
 }: Pick<GQLContext, 'userId'>): Promise<Member[]> => {
-  return new BloomManager().find(
+  const members: Member[] = await new BloomManager().find(
     Member,
     { user: { id: userId } },
     { cacheKey: `${QueryEvent.GET_MEMBERS}-${userId}`, populate: ['community'] }
   );
+
+  return members;
 };
 
 export default getMembers;

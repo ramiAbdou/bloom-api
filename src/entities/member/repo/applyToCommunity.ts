@@ -168,7 +168,10 @@ const applyToCommunity = async (
   cache.invalidateKeys(
     member.status === MemberStatus.PENDING
       ? [`${QueryEvent.GET_APPLICANTS}-${community.id}`]
-      : [`${QueryEvent.GET_DATABASE}-${community.id}`]
+      : [
+          `${QueryEvent.GET_DATABASE}-${community.id}`,
+          `${QueryEvent.GET_DIRECTORY}-${community.id}`
+        ]
   );
 
   await createApplicationPayment(

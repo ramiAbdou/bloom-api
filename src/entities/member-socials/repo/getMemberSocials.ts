@@ -8,6 +8,9 @@ import { QueryEvent } from '@util/events';
 @ArgsType()
 export class GetMemberSocialsArgs {
   @Field({ nullable: true })
+  communityId?: string;
+
+  @Field({ nullable: true })
   memberId?: string;
 }
 

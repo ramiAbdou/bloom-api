@@ -32,7 +32,7 @@ const createDuesPayment = async (
     payment = bm.create(Payment, {
       amount: invoice.amount_paid / 100,
       community: communityId,
-      member: memberId,
+      member,
       plan: planId,
       stripeInvoiceId: invoice.id,
       stripeInvoiceUrl: invoice.hosted_invoice_url,

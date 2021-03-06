@@ -17,6 +17,7 @@ import getChangePreview, {
 import getCommunityMembers from './repo/getCommunityMembers';
 import getMember, { GetMemberArgs } from './repo/getMember';
 import getMembers from './repo/getMembers';
+import getOwner, { GetOwnerArgs } from './repo/getOwner';
 import getUpcomingPayment, {
   GetUpcomingPaymentResult
 } from './repo/getUpcomingPayment';
@@ -102,7 +103,7 @@ export default class MemberResolver {
       {
         cacheKey: `${QueryEvent.GET_DATABASE}-${communityId}`,
         orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC },
-        populate: ['values', 'user']
+        populate: ['socials', 'values']
       }
     );
   }
@@ -116,7 +117,7 @@ export default class MemberResolver {
       {
         cacheKey: `${QueryEvent.GET_DIRECTORY}-${communityId}`,
         orderBy: { createdAt: QueryOrder.DESC },
-        populate: ['values', 'user']
+        populate: ['values']
       }
     );
   }
@@ -134,6 +135,11 @@ export default class MemberResolver {
   @Query(() => [Member])
   async getMembers(@Ctx() ctx: GQLContext): Promise<Member[]> {
     return getMembers(ctx);
+  }
+
+  @Query(() => Member)
+  async getOwner(@Args() args: GetOwnerArgs): Promise<Member> {
+    return getOwner(args);
   }
 
   @Authorized()

@@ -2,6 +2,7 @@ import { Args, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@util/constants';
 import MemberSocials from './MemberSocials';
+import getAllMemberSocials from './repo/getAllMemberSocials';
 import getMemberSocials, {
   GetMemberSocialsArgs
 } from './repo/getMemberSocials';
@@ -17,6 +18,11 @@ export default class MemberSocialsResolver {
     @Ctx() ctx: GQLContext
   ): Promise<MemberSocials> {
     return getMemberSocials(args, ctx);
+  }
+
+  @Query(() => [MemberSocials])
+  async getAllMemberSocials(@Ctx() ctx: GQLContext): Promise<MemberSocials[]> {
+    return getAllMemberSocials(ctx);
   }
 
   @Mutation(() => MemberSocials)

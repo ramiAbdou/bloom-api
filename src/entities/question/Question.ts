@@ -19,6 +19,7 @@ export enum QuestionCategory {
   CLUBHOUSE_URL = 'CLUBHOUSE_URL',
   DUES_STATUS = 'DUES_STATUS',
   EMAIL = 'EMAIL',
+  EVENTS_ATTENDED = 'EVENTS_ATTENDED',
   FACEBOOK_URL = 'FACEBOOK_URL',
   FIRST_NAME = 'FIRST_NAME',
   GENDER = 'GENDER',
@@ -99,6 +100,11 @@ export default class Question extends BaseEntity {
 
     if (this.category === QuestionCategory.EMAIL) {
       if (!this.title) this.title = 'Email';
+      this.type = QuestionType.SHORT_TEXT;
+    }
+
+    if (this.category === QuestionCategory.EVENTS_ATTENDED) {
+      if (!this.title) this.title = '# of Events Attended';
       this.type = QuestionType.SHORT_TEXT;
     }
 

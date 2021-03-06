@@ -8,6 +8,7 @@ import createLifetimePayment, {
 import createSubscription, {
   CreateSubsciptionArgs
 } from './repo/createSubscription';
+import getAllPayments from './repo/getAllPayments';
 import getPayments, { GetPaymentsArgs } from './repo/getPayments';
 
 @Resolver()
@@ -28,6 +29,12 @@ export default class PaymentResolver {
     @Ctx() ctx: GQLContext
   ): Promise<Payment> {
     return createSubscription(args, ctx);
+  }
+
+  @Authorized()
+  @Query(() => [Payment])
+  async getAllPayments(@Ctx() ctx: GQLContext) {
+    return getAllPayments(ctx);
   }
 
   @Authorized()
