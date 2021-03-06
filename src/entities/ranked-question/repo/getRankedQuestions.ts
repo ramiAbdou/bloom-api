@@ -12,6 +12,12 @@ export class GetRankedQuestionsArgs {
   communityId?: string;
 }
 
+/**
+ * Returns the RankedQuestion(s).
+ *
+ * @param args.communityId - ID of the Community.
+ * @param ctx.communityId - ID of the Community (authenticated).
+ */
 const getRankedQuestions = async (
   args: GetRankedQuestionsArgs,
   ctx: Pick<GQLContext, 'communityId'>
@@ -22,7 +28,7 @@ const getRankedQuestions = async (
     RankedQuestion,
     { application: { community: communityId } },
     {
-      cacheKey: `${QueryEvent.GET_APPLICATION_QUESTIONS}-${communityId}`,
+      cacheKey: `${QueryEvent.GET_RANKED_QUESTIONS}-${communityId}`,
       orderBy: { createdAt: QueryOrder.ASC },
       populate: ['question']
     }

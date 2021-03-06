@@ -1,19 +1,16 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { GQLContext } from '@util/constants';
 import { MemberRole } from '@entities/member/Member';
+import { GQLContext } from '@util/constants';
 import Question from './Question';
-import getQuestions, { GetQuestionsArgs } from './repo/getQuestions';
+import getQuestions from './repo/getQuestions';
 import updateQuestion, { UpdateQuestionArgs } from './repo/updateQuestion';
 
 @Resolver()
 export default class QuestionResolver {
   @Query(() => [Question])
-  async getQuestions(
-    @Args() args: GetQuestionsArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<Question[]> {
-    return getQuestions(args, ctx);
+  async getQuestions(@Ctx() ctx: GQLContext): Promise<Question[]> {
+    return getQuestions(ctx);
   }
 
   @Authorized(MemberRole.ADMIN)
