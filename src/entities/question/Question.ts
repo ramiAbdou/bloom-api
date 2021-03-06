@@ -42,7 +42,7 @@ export enum QuestionType {
 @Entity()
 export default class Question extends BaseEntity {
   // If the question is a special question, we have to store it in a different
-  // fashion. For example, 'EMAIL' would be stored on the user, NOT the
+  // fashion. For example, EMAIL would be stored on the user, NOT the
   // member.
   @Field(() => String, { nullable: true })
   @Enum({ items: () => QuestionCategory, nullable: true, type: String })

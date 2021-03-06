@@ -10,7 +10,10 @@ import MemberSocials from '@entities/member-socials/MemberSocials';
 import MemberValue from '@entities/member-value/MemberValue';
 import createLifetimePayment from '@entities/payment/repo/createLifetimePayment';
 import createSubscription from '@entities/payment/repo/createSubscription';
-import Question, { QuestionCategory } from '@entities/question/Question';
+import Question, {
+  QuestionCategory,
+  QuestionType
+} from '@entities/question/Question';
 import User from '@entities/user/User';
 import { emitEmailEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
@@ -136,7 +139,7 @@ const applyToCommunity = async (
 
     category = category ?? question.category;
 
-    const value = (question?.type === 'MULTIPLE_SELECT'
+    const value = (question?.type === QuestionType.MULTIPLE_SELECT
       ? values
       : values[0]
     )?.toString();
