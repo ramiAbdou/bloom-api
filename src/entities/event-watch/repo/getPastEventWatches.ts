@@ -4,17 +4,27 @@ import { QueryEvent } from '@util/events';
 import { now } from '@util/util';
 import EventWatch from '../EventWatch';
 
-const getPastEventWatches = async ({
-  communityId
-}: Pick<GQLContext, 'communityId'>) => {
-  return new BloomManager().find(
+/**
+ * Returns the past EventWatch(s) of a Community.
+ *
+ * @param args.eventId - ID of the Event.
+ * @param args.memberId - ID of the Member.
+ */
+const getPastEventWatches = async (
+  ctx: Pick<GQLContext, 'communityId'>
+): Promise<EventWatch[]> => {
+  const { communityId } = ctx;
+
+  const watches: EventWatch[] = await new BloomManager().find(
     EventWatch,
-    { event: { community: { id: communityId }, endTime: { $lt: now() } } },
+    { event: { community: communityId, endTime: { $lt: now() } } },
     {
       cacheKey: `${QueryEvent.GET_PAST_EVENT_WATCHES}-${communityId}`,
-      populate: ['member.user']
+      populate: ['event', 'member']
     }
   );
+
+  return watches;
 };
 
 export default getPastEventWatches;

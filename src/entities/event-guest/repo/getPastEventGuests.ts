@@ -1,5 +1,6 @@
 import BloomManager from '@core/db/BloomManager';
 import { GQLContext } from '@util/constants';
+import { QueryEvent } from '@util/events';
 import { now } from '@util/util';
 import EventGuest from '../EventGuest';
 
@@ -17,7 +18,11 @@ const getPastEventGuests = async (
   const guests: EventGuest[] = await new BloomManager().find(
     EventGuest,
     { event: { community: communityId, endTime: { $lt: now() } } },
-    { filters: false, populate: ['member', 'supporter'] }
+    {
+      cacheKey: `${QueryEvent.GET_PAST_EVENT_GUESTS}-${communityId}`,
+      filters: false,
+      populate: ['member', 'supporter']
+    }
   );
 
   return guests;

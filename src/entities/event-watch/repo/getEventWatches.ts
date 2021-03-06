@@ -14,23 +14,33 @@ export class GetEventWatchesArgs {
   memberId?: string;
 }
 
-const getEventWatches = async ({
-  eventId,
-  memberId
-}: GetEventWatchesArgs): Promise<EventWatch[]> => {
-  const args: FilterQuery<EventWatch> = eventId
-    ? { event: { id: eventId } }
-    : { member: { id: memberId } };
+/**
+ * Returns the EventWatch(s) of either the Event or Member.
+ *
+ * @param args.eventId - ID of the Event.
+ * @param args.memberId - ID of the Member.
+ */
+const getEventWatches = async (
+  args: GetEventWatchesArgs
+): Promise<EventWatch[]> => {
+  const { eventId, memberId } = args;
 
-  const cacheKey = eventId
-    ? `${QueryEvent.GET_EVENT_WATCHES}-${eventId}`
-    : `${QueryEvent.GET_EVENT_WATCHES}-${memberId}`;
+  const queryArgs: FilterQuery<EventWatch> = eventId
+    ? { event: eventId }
+    : { member: memberId };
 
-  // @ts-ignore b/c we want to query by just the member ID.
-  return new BloomManager().find(EventWatch, args, {
-    cacheKey,
-    populate: ['event', 'member.user']
-  });
+  const watches: EventWatch[] = await new BloomManager().find(
+    EventWatch,
+    { ...queryArgs },
+    {
+      cacheKey: eventId
+        ? `${QueryEvent.GET_EVENT_WATCHES}-${eventId}`
+        : `${QueryEvent.GET_EVENT_WATCHES}-${memberId}`,
+      populate: ['event', 'member']
+    }
+  );
+
+  return watches;
 };
 
 export default getEventWatches;
