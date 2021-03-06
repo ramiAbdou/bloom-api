@@ -1,13 +1,8 @@
 import BloomManager from '@core/db/BloomManager';
 import Member, { MemberStatus } from '@entities/member/Member';
 import acceptInvitations from '@entities/member/repo/acceptInvitations';
+import { ErrorType } from '@util/errors';
 import User from '../User';
-
-export type LoginError =
-  | 'APPLICATION_PENDING'
-  | 'APPLICATION_REJECTED'
-  | 'NOT_MEMBER'
-  | 'USER_NOT_FOUND';
 
 interface GetLoginErrorArgs {
   communityId?: string;
@@ -24,7 +19,7 @@ interface GetLoginErrorArgs {
 const getLoginError = async ({
   communityId,
   email
-}: GetLoginErrorArgs): Promise<LoginError> => {
+}: GetLoginErrorArgs): Promise<ErrorType> => {
   if (communityId) {
     // Check if the email is a member of this community.
     const member: Member = await new BloomManager().findOne(Member, {
@@ -32,7 +27,7 @@ const getLoginError = async ({
       user: { email }
     });
 
-    if (!member) return 'NOT_MEMBER';
+    if (!member) return ErrorType.NOT_MEMBER;
   }
 
   const user: User = await new BloomManager().findOne(
@@ -41,7 +36,7 @@ const getLoginError = async ({
     { populate: ['members'] }
   );
 
-  if (!user) return 'USER_NOT_FOUND';
+  if (!user) return ErrorType.USER_NOT_FOUND;
 
   const members: Member[] = user.members.getItems();
 
@@ -52,7 +47,7 @@ const getLoginError = async ({
     await acceptInvitations({ email });
   }
 
-  return members.reduce((acc: LoginError, { status }: Member) => {
+  return members.reduce((acc: ErrorType, { status }: Member) => {
     // SUCCESS CASE: If the user has been approved in some community,
     // update the refresh token in the DB.
     if ([MemberStatus.ACCEPTED, MemberStatus.INVITED].includes(status)) {
@@ -62,9 +57,12 @@ const getLoginError = async ({
     // If acc is null and application is PENDING, don't do anything, cause
     // the user is already approved. If acc isn't null, then set error to
     // APPLICATION_PENDING.
-    if (acc && status === MemberStatus.PENDING) return 'APPLICATION_PENDING';
+    if (acc && status === MemberStatus.PENDING) {
+      return ErrorType.APPLICATION_PENDING;
+    }
+
     return acc;
-  }, 'APPLICATION_REJECTED');
+  }, ErrorType.APPLICATION_REJECTED);
 };
 
 export default getLoginError;

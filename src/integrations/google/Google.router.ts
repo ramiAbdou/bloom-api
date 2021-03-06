@@ -1,8 +1,9 @@
 import { Request, Response, Router } from 'express';
 
-import { APP } from '@util/constants';
-import getLoginError, { LoginError } from '@entities/user/repo/getLoginError';
+import getLoginError from '@entities/user/repo/getLoginError';
 import refreshToken from '@entities/user/repo/refreshToken';
+import { APP } from '@util/constants';
+import { ErrorType } from '@util/errors';
 import getGoogleToken from './repo/getGoogleToken';
 
 const router = Router();
@@ -20,7 +21,7 @@ router.get('/auth', async ({ query }: Request, res: Response) => {
     JSON.parse((query?.state ?? null) as string) ?? {};
 
   const { email } = await getGoogleToken(query.code as string);
-  const loginError: LoginError = await getLoginError({ communityId, email });
+  const loginError: ErrorType = await getLoginError({ communityId, email });
 
   if (loginError) res.cookie('LOGIN_ERROR', loginError);
   else await refreshToken({ email, res });
