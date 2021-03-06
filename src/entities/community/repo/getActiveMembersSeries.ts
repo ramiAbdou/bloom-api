@@ -8,7 +8,7 @@ import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
 import { TimeSeriesData } from '@util/gql';
 
-const getActiveGrowthSeries = async ({
+const getActiveMembersSeries = async ({
   communityId
 }: Pick<GQLContext, 'communityId'>): Promise<TimeSeriesData[]> => {
   const cacheKey = `${QueryEvent.GET_ACTIVE_MEMBERS_SERIES}-${communityId}`;
@@ -48,4 +48,4 @@ const getActiveGrowthSeries = async ({
   return result;
 };
 
-export default getActiveGrowthSeries;
+export default getActiveMembersSeries;

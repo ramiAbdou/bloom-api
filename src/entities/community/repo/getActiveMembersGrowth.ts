@@ -6,7 +6,7 @@ import Member from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
 
-const getActiveGrowth = async ({
+const getActiveMembersGrowth = async ({
   communityId
 }: GQLContext): Promise<number[]> => {
   const cacheKey = `${QueryEvent.GET_ACTIVE_MEMBERS_GROWTH}-${communityId}`;
@@ -39,4 +39,4 @@ const getActiveGrowth = async ({
   return result;
 };
 
-export default getActiveGrowth;
+export default getActiveMembersGrowth;
