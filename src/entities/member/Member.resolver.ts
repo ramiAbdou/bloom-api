@@ -1,20 +1,20 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
-import { QueryOrder } from '@mikro-orm/core';
 
-import BloomManager from '@core/db/BloomManager';
-import Member, { MemberRole, MemberStatus } from '@entities/member/Member';
+import Member, { MemberRole } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
-import { QueryEvent } from '@util/events';
 import { CreateSubsciptionArgs } from '../payment/repo/createSubscription';
 import applyToCommunity, {
   ApplyToCommunityArgs
 } from './repo/applyToCommunity';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import demoteMembers, { DemoteMembersArgs } from './repo/demoteMembers';
+import getAllMembers from './repo/getAllMembers';
+import getApplicants from './repo/getApplicants';
 import getChangePreview, {
   GetChangePreviewResult
 } from './repo/getChangePreview';
-import getCommunityMembers from './repo/getCommunityMembers';
+import getDatabase from './repo/getDatabase';
+import getDirectory from './repo/getDirectory';
 import getMember, { GetMemberArgs } from './repo/getMember';
 import getMembers from './repo/getMembers';
 import getOwner, { GetOwnerArgs } from './repo/getOwner';
@@ -67,16 +67,14 @@ export default class MemberResolver {
 
   @Authorized(MemberRole.ADMIN)
   @Query(() => [Member])
-  async getApplicants(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
-    return new BloomManager().find(
-      Member,
-      { community: { id: communityId }, status: MemberStatus.PENDING },
-      {
-        cacheKey: `${QueryEvent.GET_APPLICANTS}-${communityId}`,
-        orderBy: { createdAt: QueryOrder.DESC },
-        populate: ['values', 'user']
-      }
-    );
+  async getApplicants(@Ctx() ctx: GQLContext): Promise<Member[]> {
+    return getApplicants(ctx);
+  }
+
+  @Authorized()
+  @Query(() => [Member])
+  async getAllMembers(@Ctx() ctx: GQLContext): Promise<Member[]> {
+    return getAllMembers(ctx);
   }
 
   @Authorized()
@@ -88,38 +86,16 @@ export default class MemberResolver {
     return getChangePreview(args, ctx);
   }
 
-  @Authorized()
-  @Query(() => [Member])
-  async getCommunityMembers(@Ctx() ctx: GQLContext): Promise<Member[]> {
-    return getCommunityMembers(ctx);
-  }
-
   @Authorized(MemberRole.ADMIN)
   @Query(() => [Member])
-  async getDatabase(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
-    return new BloomManager().find(
-      Member,
-      { community: { id: communityId }, status: MemberStatus.ACCEPTED },
-      {
-        cacheKey: `${QueryEvent.GET_DATABASE}-${communityId}`,
-        orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC },
-        populate: ['socials', 'values']
-      }
-    );
+  async getDatabase(@Ctx() ctx: GQLContext): Promise<Member[]> {
+    return getDatabase(ctx);
   }
 
   @Authorized()
   @Query(() => [Member])
-  async getDirectory(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
-    return new BloomManager().find(
-      Member,
-      { community: { id: communityId }, status: MemberStatus.ACCEPTED },
-      {
-        cacheKey: `${QueryEvent.GET_DIRECTORY}-${communityId}`,
-        orderBy: { createdAt: QueryOrder.DESC },
-        populate: ['values']
-      }
-    );
+  async getDirectory(@Ctx() ctx: GQLContext): Promise<Member[]> {
+    return getDirectory(ctx);
   }
 
   @Authorized()

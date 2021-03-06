@@ -12,16 +12,24 @@ export class IsEmailTakenArgs {
   email: string;
 }
 
-const isEmailTaken = async ({ communityId, email }: IsEmailTakenArgs) => {
+/**
+ * Returns true if there is no Member in the Community with the given email.
+ *
+ * @param args.communityId - ID of the Community.
+ * @param args.email - Email to verify.
+ */
+const isEmailTaken = async (args: IsEmailTakenArgs): Promise<boolean> => {
+  const { communityId, email } = args;
+
   const member: Member = await new BloomManager().findOne(
     Member,
-    { community: { id: communityId }, user: { email } },
+    { community: communityId, email },
     { populate: ['community'] }
   );
 
   if (member) {
     throw new Error(
-      `This email is already registered in ${member?.community?.name}.`
+      `This email is already registered in ${member.community.name}.`
     );
   }
 

@@ -86,9 +86,11 @@ export enum QueryEvent {
   GET_ACTIVE_MEMBERS_GROWTH = 'getActiveMembersGrowth',
   GET_ACTIVE_MEMBERS_SERIES = 'getActiveMembersSeries',
   GET_ALL_MEMBER_SOCIALS = 'getAllMemberSocials',
+  GET_ALL_MEMBERS = 'getAllMembers',
   GET_ALL_PAYMENTS = 'getAllPayments',
   GET_APPLICANTS = 'getApplicants',
   GET_APPLICATION = 'getApplication',
+  GET_CHANGE_PREVIEW = 'getChangePreview',
   GET_COMMUNITY = 'getCommunity',
   GET_DATABASE = 'getDatabase',
   GET_DIRECTORY = 'getDirectory',
@@ -103,6 +105,7 @@ export enum QueryEvent {
   GET_MEMBER_SOCIALS = 'getMemberSocials',
   GET_MEMBER_VALUES = 'getMemberValues',
   GET_MEMBERS = 'getMembers',
+  GET_OWNER = 'getOwner',
   GET_PAST_EVENTS = 'getPastEvents',
   GET_PAST_EVENT_ATTENDEES = 'getPastEventAttendees',
   GET_PAST_EVENT_GUESTS = 'getPastEventGuests',
@@ -116,7 +119,9 @@ export enum QueryEvent {
   GET_TOTAL_MEMBERS_SERIES = 'getTotalMembersSeries',
   GET_UPCOMING_EVENTS = 'getUpcomingEvents',
   GET_UPCOMING_EVENT_GUESTS = 'getUpcomingEventGuests',
-  GET_USER = 'getUser'
+  GET_UPCOMING_PAYMENT = 'getUpcomingPayment',
+  GET_USER = 'getUser',
+  IS_EMAIL_TAKEN = 'isEmailTaken'
 }
 
 export enum TaskEvent {

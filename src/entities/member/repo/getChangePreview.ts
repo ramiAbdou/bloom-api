@@ -19,12 +19,20 @@ export class GetChangePreviewResult {
 }
 
 /**
- * Returns the payment change amount based on the current proration date.
+ * Returns a preview of the amount Stripe would charge if the Member were
+ * to switch their MemberPlan.
+ *
+ * @param args.memberPlanId - ID of the MemberPlan.
+ * @param ctx.communityId - ID of the Community (authenticated).
+ * @param ctx.memberId - ID of the Member (authenticated).
  */
 const getChangePreview = async (
-  { memberPlanId }: Pick<CreateSubsciptionArgs, 'memberPlanId'>,
-  { communityId, memberId }: GQLContext
+  args: Pick<CreateSubsciptionArgs, 'memberPlanId'>,
+  ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<GetChangePreviewResult> => {
+  const { memberPlanId } = args;
+  const { communityId, memberId } = ctx;
+
   const bm = new BloomManager();
 
   const [community, member, plan]: [
@@ -32,9 +40,9 @@ const getChangePreview = async (
     Member,
     MemberPlan
   ] = await Promise.all([
-    bm.findOne(Community, { id: communityId }, { populate: ['integrations'] }),
-    bm.findOne(Member, { id: memberId }),
-    bm.findOne(MemberPlan, { id: memberPlanId })
+    bm.findOne(Community, communityId, { populate: ['integrations'] }),
+    bm.findOne(Member, memberId),
+    bm.findOne(MemberPlan, memberPlanId)
   ]);
 
   const { stripeCustomerId, stripeSubscriptionId } = member;

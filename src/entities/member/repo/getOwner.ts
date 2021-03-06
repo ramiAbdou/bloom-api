@@ -2,6 +2,7 @@ import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import Member, { MemberRole } from '@entities/member/Member';
+import { QueryEvent } from '@util/events';
 
 @ArgsType()
 export class GetOwnerArgs {
@@ -10,15 +11,18 @@ export class GetOwnerArgs {
 }
 
 /**
- * Returns the owner of the Community.
+ * Returns the Member with OWNER role in the Community.
  *
- * @param args.communityId - Identifier of the Community.
+ * @param args.communityId - ID of the Community.
  */
 const getOwner = async (args: GetOwnerArgs): Promise<Member> => {
-  const owner: Member = await new BloomManager().findOne(Member, {
-    community: args.communityId,
-    role: MemberRole.OWNER
-  });
+  const { communityId } = args;
+
+  const owner: Member = await new BloomManager().findOne(
+    Member,
+    { community: communityId, role: MemberRole.OWNER },
+    { cacheKey: `${QueryEvent.GET_OWNER}-${communityId}` }
+  );
 
   return owner;
 };

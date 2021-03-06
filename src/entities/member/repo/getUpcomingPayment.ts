@@ -17,15 +17,22 @@ export class GetUpcomingPaymentResult {
   nextPaymentDate: string;
 }
 
-const getUpcomingPayment = async ({
-  communityId,
-  memberId
-}: GQLContext): Promise<GetUpcomingPaymentResult> => {
+/**
+ * Returns the upcoming payment details of a Member.
+ *
+ * @param ctx.communityId - ID of the Community (authenticated).
+ * @param ctx.memberId - ID of the Member (authenticated).
+ */
+const getUpcomingPayment = async (
+  ctx: Pick<GQLContext, 'communityId' | 'memberId'>
+): Promise<GetUpcomingPaymentResult> => {
+  const { communityId, memberId } = ctx;
+
   const bm = new BloomManager();
 
   const [integrations, member]: [Integrations, Member] = await Promise.all([
-    bm.findOne(Integrations, { community: { id: communityId } }),
-    bm.findOne(Member, { id: memberId })
+    bm.findOne(Integrations, { community: communityId }),
+    bm.findOne(Member, memberId)
   ]);
 
   const invoice: Stripe.Invoice = await stripe.invoices.retrieveUpcoming(
