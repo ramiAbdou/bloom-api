@@ -9,7 +9,7 @@ interface GetEventUrlArgs {
 const getEventUrl = async ({ eventId }: GetEventUrlArgs) => {
   const community: Community = await new BloomManager().findOne(
     Community,
-    { events: { id: eventId } },
+    { events: eventId },
     { fields: ['urlName'] }
   );
 

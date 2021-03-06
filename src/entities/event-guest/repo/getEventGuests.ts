@@ -14,22 +14,34 @@ export class GetEventGuestsArgs {
   memberId?: string;
 }
 
-const getEventGuests = async ({ eventId, memberId }: GetEventGuestsArgs) => {
-  const args: FilterQuery<EventGuest> = eventId
-    ? { event: { id: eventId } }
-    : { member: { id: memberId } };
+/**
+ * Returns the EventGuest(s) of either the Event or Member.
+ *
+ * @param args.eventId - ID of the Event.
+ * @param args.memberId - ID of the Member.
+ */
+const getEventGuests = async (
+  args: GetEventGuestsArgs
+): Promise<EventGuest[]> => {
+  const { eventId, memberId } = args;
 
-  return new BloomManager().find(
+  const queryArgs: FilterQuery<EventGuest> = eventId
+    ? { event: eventId }
+    : { member: memberId };
+
+  const guests: EventGuest[] = await new BloomManager().find(
     EventGuest,
-    { ...args },
+    { ...queryArgs },
     {
       cacheKey: eventId
         ? `${QueryEvent.GET_EVENT_GUESTS}-${eventId}`
         : `${QueryEvent.GET_EVENT_GUESTS}-${memberId}`,
       filters: false,
-      populate: ['event', 'member.user']
+      populate: ['event', 'member', 'supporter']
     }
   );
+
+  return guests;
 };
 
 export default getEventGuests;

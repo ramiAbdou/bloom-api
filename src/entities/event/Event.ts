@@ -32,6 +32,8 @@ export enum EventPrivacy {
 @ObjectType()
 @Entity()
 export default class Event extends BaseEntity {
+  // ## FIELDS
+
   @Field()
   @Property({ type: 'text' })
   description: string;
@@ -81,7 +83,7 @@ export default class Event extends BaseEntity {
   @IsUrl()
   videoUrl: string;
 
-  // ## MEMBER FUNCTIONS
+  // ## MEMBERS
 
   @Field(() => String, { nullable: true })
   async googleCalendarEventUrl(): Promise<string> {
