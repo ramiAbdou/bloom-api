@@ -3,7 +3,7 @@ import { Request, Response, Router } from 'express';
 import getLoginError from '@entities/user/repo/getLoginError';
 import refreshToken from '@entities/user/repo/refreshToken';
 import { APP } from '@util/constants';
-import { ErrorType } from '@util/errors';
+import { ErrorContext, ErrorType } from '@util/errors';
 import getGoogleToken from './repo/getGoogleToken';
 
 const router = Router();
@@ -23,7 +23,7 @@ router.get('/auth', async ({ query }: Request, res: Response) => {
   const { email } = await getGoogleToken(query.code as string);
   const loginError: ErrorType = await getLoginError({ communityId, email });
 
-  if (loginError) res.cookie('LOGIN_ERROR', loginError);
+  if (loginError) res.cookie(ErrorContext.LOGIN_ERROR, loginError);
   else await refreshToken({ email, res });
 
   res.redirect(APP.CLIENT_URL + (pathname ?? ''));

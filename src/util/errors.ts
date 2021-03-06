@@ -1,4 +1,6 @@
-/* eslint-disable import/prefer-default-export */
+export enum ErrorContext {
+  LOGIN_ERROR = 'LOGIN_ERROR'
+}
 
 export enum ErrorType {
   APPLICATION_PENDING = 'APPLICATION_PENDING',
