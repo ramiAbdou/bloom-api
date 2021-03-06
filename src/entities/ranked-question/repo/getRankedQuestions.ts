@@ -9,24 +9,20 @@ import RankedQuestion from '../RankedQuestion';
 @ArgsType()
 export class GetRankedQuestionsArgs {
   @Field({ nullable: true })
-  urlName?: string;
+  communityId?: string;
 }
 
 const getRankedQuestions = async (
   args: GetRankedQuestionsArgs,
   ctx: Pick<GQLContext, 'communityId'>
 ): Promise<RankedQuestion[]> => {
-  const key = args.urlName ?? ctx.communityId;
+  const communityId: string = args.communityId ?? ctx.communityId;
 
   const rankedQuestions: RankedQuestion[] = await new BloomManager().find(
     RankedQuestion,
+    { application: { community: communityId } },
     {
-      application: {
-        community: args.urlName ? { urlName: args.urlName } : ctx.communityId
-      }
-    },
-    {
-      cacheKey: `${QueryEvent.GET_APPLICATION_QUESTIONS}-${key}`,
+      cacheKey: `${QueryEvent.GET_APPLICATION_QUESTIONS}-${communityId}`,
       orderBy: { createdAt: QueryOrder.ASC },
       populate: ['question']
     }

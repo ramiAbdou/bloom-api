@@ -7,17 +7,21 @@ import Application from '../Application';
 @ArgsType()
 export class GetApplicationArgs {
   @Field()
-  urlName: string;
+  communityId: string;
 }
 
+/**
+ * Returns the Application.
+ *
+ * @param args.communityId - ID of the Community.
+ */
 const getApplication = async (args: GetApplicationArgs) => {
+  const { communityId } = args;
+
   const application: Application = await new BloomManager().findOneOrFail(
     Application,
-    { community: { urlName: args.urlName } },
-    {
-      cacheKey: `${QueryEvent.GET_APPLICATION}-${args.urlName}`,
-      populate: ['community.integrations']
-    }
+    { community: communityId },
+    { cacheKey: `${QueryEvent.GET_APPLICATION}-${communityId}` }
   );
 
   return application;

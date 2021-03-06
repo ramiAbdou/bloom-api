@@ -3,7 +3,7 @@ import Stripe from 'stripe';
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
-import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
+import Integrations from '@entities/integrations/Integrations';
 import MemberPlan from '@entities/member-plan/MemberPlan';
 import Member from '@entities/member/Member';
 import createStripeCustomer from '@entities/member/repo/createStripeCustomer';
@@ -29,11 +29,11 @@ const createLifetimePayment = async (
   const bm = new BloomManager();
 
   const [integrations, member, type]: [
-    CommunityIntegrations,
+    Integrations,
     Member,
     MemberPlan
   ] = await Promise.all([
-    bm.findOne(CommunityIntegrations, { community: { id: communityId } }),
+    bm.findOne(Integrations, { community: { id: communityId } }),
     bm.findOne(Member, { id: memberId }),
     bm.findOne(MemberPlan, { id: memberPlanId })
   ]);

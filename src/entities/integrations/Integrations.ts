@@ -7,11 +7,13 @@ import getMailchimpAudienceName from '@integrations/mailchimp/repo/getMailchimpA
 import getMailchimpAudiences from '@integrations/mailchimp/repo/getMailchimpAudiences';
 import { QueryEvent } from '@util/events';
 import Community from '../community/Community';
-import { MailchimpList } from './CommunityIntegrations.types';
+import { MailchimpList } from './Integrations.types';
 
 @ObjectType()
 @Entity()
-export default class CommunityIntegrations extends BaseEntity {
+export default class Integrations extends BaseEntity {
+  // ## FIELDS
+
   @Property({ nullable: true })
   mailchimpAccessToken?: string;
 
@@ -25,6 +27,8 @@ export default class CommunityIntegrations extends BaseEntity {
 
   @Property({ nullable: true })
   zapierApiKey: string;
+
+  // ## METHODS
 
   @Field()
   isMailchimpAuthenticated(): boolean {

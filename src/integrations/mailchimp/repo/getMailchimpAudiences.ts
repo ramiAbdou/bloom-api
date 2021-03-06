@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
-import { MailchimpList } from '@entities/community-integrations/CommunityIntegrations.types';
+import { MailchimpList } from '@entities/integrations/Integrations.types';
 
 interface GetMailchimpAudiences {
   mailchimpAccessToken?: string;

@@ -2,8 +2,8 @@ import { EntityData } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
 import Application from '@entities/application/Application';
-import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
+import Integrations from '@entities/integrations/Integrations';
 import { FlushEvent } from '@util/events';
 
 /**
@@ -20,7 +20,7 @@ const createCommunity = async ({
   const community: Community = bm.create(Community, {
     ...data,
     application: bm.create(Application, application ?? {}),
-    integrations: bm.create(CommunityIntegrations, {})
+    integrations: bm.create(Integrations, {})
   });
 
   await bm.flush({ flushEvent: FlushEvent.CREATE_COMMUNITY });

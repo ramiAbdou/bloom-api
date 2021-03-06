@@ -4,7 +4,7 @@ import BloomManager from '@core/db/BloomManager';
 import { emitEmailEvent } from '@system/eventBus';
 import { GQLContext, IntegrationsBrand } from '@util/constants';
 import { EmailEvent, FlushEvent } from '@util/events';
-import CommunityIntegrations from '../CommunityIntegrations';
+import Integrations from '../Integrations';
 
 @ArgsType()
 export class UpdateMailchimpListIdArgs {
@@ -17,7 +17,7 @@ const updateMailchimpListId = async (
   { communityId }: Pick<GQLContext, 'communityId'>
 ) => {
   const integrations = await new BloomManager().findOneAndUpdate(
-    CommunityIntegrations,
+    Integrations,
     { community: { id: communityId } },
     { ...args },
     { flushEvent: FlushEvent.UPDATE_MAILCHIMP_LIST_ID }

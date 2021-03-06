@@ -1,5 +1,5 @@
 import BloomManager from '@core/db/BloomManager';
-import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
+import Integrations from '@entities/integrations/Integrations';
 import Member from '@entities/member/Member';
 import { MailchimpEvent } from '@util/events';
 import addToMailchimpAudience from './repo/addToMailchimpAudience';
@@ -17,11 +17,8 @@ const processMailchimpEvent = async ({
 }: MailchimpEventArgs): Promise<void> => {
   const bm = new BloomManager();
 
-  const [integrations, member]: [
-    CommunityIntegrations,
-    Member
-  ] = await Promise.all([
-    bm.findOne(CommunityIntegrations, { community: { id: communityId } }),
+  const [integrations, member]: [Integrations, Member] = await Promise.all([
+    bm.findOne(Integrations, { community: { id: communityId } }),
     bm.findOne(Member, { id: memberId })
   ]);
 

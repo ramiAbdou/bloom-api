@@ -3,7 +3,7 @@ import Stripe from 'stripe';
 import { Field, ObjectType } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
-import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
+import Integrations from '@entities/integrations/Integrations';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
 import Member from '../Member';
@@ -23,11 +23,8 @@ const getUpcomingPayment = async ({
 }: GQLContext): Promise<GetUpcomingPaymentResult> => {
   const bm = new BloomManager();
 
-  const [integrations, member]: [
-    CommunityIntegrations,
-    Member
-  ] = await Promise.all([
-    bm.findOne(CommunityIntegrations, { community: { id: communityId } }),
+  const [integrations, member]: [Integrations, Member] = await Promise.all([
+    bm.findOne(Integrations, { community: { id: communityId } }),
     bm.findOne(Member, { id: memberId })
   ]);
 

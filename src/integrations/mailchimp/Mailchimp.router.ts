@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 
+import updateMailchimpAccessToken from '@entities/integrations/repo/updateMailchimpAccessToken';
 import { APP, AuthQueryArgs } from '@util/constants';
-import updateMailchimpAccessToken from '@entities/community-integrations/repo/updateMailchimpAccessToken';
 
 const router = Router();
 

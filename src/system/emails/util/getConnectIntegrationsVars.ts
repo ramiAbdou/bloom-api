@@ -1,8 +1,8 @@
 import { FilterQuery } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
-import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
+import Integrations from '@entities/integrations/Integrations';
 import Member from '@entities/member/Member';
 import { APP, IntegrationsBrand, KeyValue } from '@util/constants';
 import { EmailPayload } from '../emails.types';
@@ -34,7 +34,7 @@ const getConnectIntegrationsVars = async (
 
   const [community, integrations, members]: [
     Community,
-    CommunityIntegrations,
+    Integrations,
     Member[]
   ] = await Promise.all([
     bm.findOne(
@@ -42,7 +42,7 @@ const getConnectIntegrationsVars = async (
       { ...communityArgs },
       { fields: ['name', 'urlName'] }
     ),
-    bm.findOne(CommunityIntegrations, { community: { ...communityArgs } }),
+    bm.findOne(Integrations, { community: { ...communityArgs } }),
     bm.find(
       Member,
       { community: { ...communityArgs }, role: { $ne: null } },

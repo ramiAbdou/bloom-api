@@ -2,7 +2,7 @@ import BloomManager from '@core/db/BloomManager';
 import getMailchimpAccessToken from '@integrations/mailchimp/repo/getMailchimpAccessToken';
 import { AuthQueryArgs } from '@util/constants';
 import { FlushEvent } from '@util/events';
-import CommunityIntegrations from '../CommunityIntegrations';
+import Integrations from '../Integrations';
 
 /**
  * Returns the updated community after updating it's Mailchimp token. If
@@ -13,11 +13,11 @@ import CommunityIntegrations from '../CommunityIntegrations';
 const updateMailchimpAccessToken = async ({
   code,
   state: urlName
-}: AuthQueryArgs): Promise<CommunityIntegrations> => {
+}: AuthQueryArgs): Promise<Integrations> => {
   const mailchimpAccessToken = await getMailchimpAccessToken({ code });
 
   const integrations = await new BloomManager().findOneAndUpdate(
-    CommunityIntegrations,
+    Integrations,
     { community: { urlName } },
     { mailchimpAccessToken },
     { flushEvent: FlushEvent.UPDATE_MAILCHIMP_ACCESS_TOKEN }
