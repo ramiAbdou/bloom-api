@@ -3,16 +3,23 @@ import MemberSocials from '@entities/member-socials/MemberSocials';
 import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
 
-const getAllMemberSocials = async ({
-  communityId
-}: Pick<GQLContext, 'communityId'>): Promise<MemberSocials[]> => {
-  const allSocials: MemberSocials[] = await new BloomManager().find(
+/**
+ * Returns the MemberSocials of a Community.
+ *
+ * @param ctx.communityId - ID of the Community (authenticated).
+ */
+const getAllMemberSocials = async (
+  ctx: Pick<GQLContext, 'communityId'>
+): Promise<MemberSocials[]> => {
+  const { communityId } = ctx;
+
+  const socials: MemberSocials[] = await new BloomManager().find(
     MemberSocials,
     { member: { community: communityId } },
-    { cacheKey: `${QueryEvent.GET_MEMBER_SOCIALS}-${communityId}` }
+    { cacheKey: `${QueryEvent.GET_ALL_MEMBER_SOCIALS}-${communityId}` }
   );
 
-  return allSocials;
+  return socials;
 };
 
 export default getAllMemberSocials;

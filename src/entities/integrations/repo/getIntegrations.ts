@@ -20,7 +20,7 @@ export class GetIntegrationsArgs {
 const getIntegrations = async (
   args: GetIntegrationsArgs,
   ctx: Pick<GQLContext, 'communityId'>
-) => {
+): Promise<Integrations> => {
   const communityId: string = args.communityId ?? ctx.communityId;
 
   const integrations: Integrations = await new BloomManager().findOne(

@@ -8,12 +8,15 @@ import { QueryEvent } from '@util/events';
 @ArgsType()
 export class GetMemberSocialsArgs {
   @Field({ nullable: true })
-  communityId?: string;
-
-  @Field({ nullable: true })
   memberId?: string;
 }
 
+/**
+ * Returns the MemberSocials.
+ *
+ * @param args.memberId - ID of the Member.
+ * @param ctx.memberId - ID of the Member (authenticated).
+ */
 const getMemberSocials = async (
   args: GetMemberSocialsArgs,
   ctx: Pick<GQLContext, 'memberId'>

@@ -85,6 +85,7 @@ export enum LoggerEvent {
 export enum QueryEvent {
   GET_ACTIVE_MEMBERS_GROWTH = 'getActiveMembersGrowth',
   GET_ACTIVE_MEMBERS_SERIES = 'getActiveMembersSeries',
+  GET_ALL_MEMBER_SOCIALS = 'getAllMemberSocials',
   GET_APPLICANTS = 'getApplicants',
   GET_APPLICATION = 'getApplication',
   GET_APPLICATION_QUESTIONS = 'getApplicationQuestions',
@@ -98,9 +99,10 @@ export enum QueryEvent {
   GET_EVENT_WATCHES = 'getEventWatches',
   GET_INTEGRATIONS = 'getIntegrations',
   GET_MEMBER = 'getMember',
-  GET_MEMBERS = 'getMembers',
+  GET_MEMBER_PLANS = 'getMemberPlans',
   GET_MEMBER_SOCIALS = 'getMemberSocials',
   GET_MEMBER_VALUES = 'getMemberValues',
+  GET_MEMBERS = 'getMembers',
   GET_PAST_EVENTS = 'getPastEvents',
   GET_PAST_EVENT_ATTENDEES = 'getPastEventAttendees',
   GET_PAST_EVENT_GUESTS = 'getPastEventGuests',
@@ -110,7 +112,6 @@ export enum QueryEvent {
   GET_TOTAL_DUES_SERIES = 'getTotalDuesSeries',
   GET_TOTAL_MEMBERS_GROWTH = 'getTotalMembersGrowth',
   GET_TOTAL_MEMBERS_SERIES = 'getTotalMembersSeries',
-  GET_TYPES = 'getTypes',
   GET_UPCOMING_EVENTS = 'getUpcomingEvents',
   GET_UPCOMING_EVENT_GUESTS = 'getUpcomingEventGuests',
   GET_USER = 'getUser'

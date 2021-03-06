@@ -13,10 +13,10 @@ export class GetMemberPlansArgs {
 }
 
 /**
- * Returns the MemberPlans for a community.
+ * Returns the MemberPlan(s) in a Community.
  *
- * @param {GetMemberPlansArgs} args
- * @param {string} [args.urlName]
+ * @param args.communityId - ID of the Community.
+ * @param ctx.communityId - ID of the Community (authenticated).
  */
 const getMemberPlans = async (
   args: GetMemberPlansArgs,
@@ -28,7 +28,7 @@ const getMemberPlans = async (
     MemberPlan,
     { community: communityId },
     {
-      cacheKey: `${QueryEvent.GET_TYPES}-${communityId}`,
+      cacheKey: `${QueryEvent.GET_MEMBER_PLANS}-${communityId}`,
       orderBy: { amount: QueryOrder.ASC }
     }
   );

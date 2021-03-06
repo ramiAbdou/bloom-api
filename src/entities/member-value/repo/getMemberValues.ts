@@ -11,17 +11,25 @@ export class GetMemberValueArgs {
   memberId?: string;
 }
 
+/**
+ * Returns the MemberValue(s).
+ *
+ * @param args.memberId - ID of the Member.
+ * @param ctx.memberId - ID of the Member (authenticated).
+ */
 const getMemberValues = async (
   args: GetMemberValueArgs,
   ctx: Pick<GQLContext, 'memberId'>
 ): Promise<MemberValue[]> => {
-  const memberId: string = args?.memberId ?? ctx.memberId;
+  const memberId: string = args.memberId ?? ctx.memberId;
 
-  return new BloomManager().find(
+  const values: MemberValue[] = await new BloomManager().find(
     MemberValue,
-    { member: { id: memberId } },
+    { member: memberId },
     { cacheKey: `${QueryEvent.GET_MEMBER_VALUES}-${memberId}` }
   );
+
+  return values;
 };
 
 export default getMemberValues;
