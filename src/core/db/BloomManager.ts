@@ -41,13 +41,14 @@ class BloomManager {
   fork = () => new BloomManager();
 
   async flush?(args?: FlushArgs) {
-    const { flushEvent } = args ?? {};
+    const { invalidateKeys, flushEvent } = args ?? {};
 
     const contextId = nanoid();
 
     try {
       logger.log({ contextId, event: flushEvent, level: 'BEFORE_FLUSH' });
       await this.em.flush();
+      cache.invalidateKeys(invalidateKeys);
       logger.log({ contextId, event: flushEvent, level: 'AFTER_FLUSH' });
     } catch (e) {
       logger.log({

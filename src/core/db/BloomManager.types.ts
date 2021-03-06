@@ -13,6 +13,7 @@ export interface BloomFindOptions<T, P> extends FindOptions<T, P> {
 
 export interface FlushArgs {
   flushEvent?: FlushEvent;
+  invalidateKeys?: string[];
 }
 
 export interface BloomCreateAndFlushArgs<P> extends FlushArgs {

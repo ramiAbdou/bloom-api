@@ -18,9 +18,10 @@ import { TimeSeriesData } from '@util/gql';
  *  { name: '2021-01-18T00:00:00Z', value: 200 },
  * ]
  */
-const getTotalDuesSeries = async ({
-  communityId
-}: Pick<GQLContext, 'communityId'>): Promise<TimeSeriesData[]> => {
+const getTotalDuesSeries = async (
+  ctx: Pick<GQLContext, 'communityId'>
+): Promise<TimeSeriesData[]> => {
+  const { communityId } = ctx;
   const cacheKey = `${QueryEvent.GET_TOTAL_DUES_SERIES}-${communityId}`;
   if (cache.has(cacheKey)) return cache.get(cacheKey);
 

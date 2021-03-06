@@ -13,13 +13,20 @@ export class UpdateRecordingUrlArgs {
   recordingUrl?: string;
 }
 
-const updateRecordingUrl = async ({
-  eventId,
-  recordingUrl
-}: UpdateRecordingUrlArgs): Promise<Event> => {
+/**
+ * Returns the updated Event.
+ *
+ * @param args.eventId - ID of the Event.
+ * @param args.recordingUrl - Recording URL of the Event.
+ */
+const updateRecordingUrl = async (
+  args: UpdateRecordingUrlArgs
+): Promise<Event> => {
+  const { eventId, recordingUrl } = args;
+
   const event: Event = await new BloomManager().findOneAndUpdate(
     Event,
-    { id: eventId },
+    eventId,
     { recordingUrl },
     { flushEvent: FlushEvent.UPDATE_EVENT_RECORDING_URL }
   );

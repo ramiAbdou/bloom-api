@@ -14,9 +14,10 @@ import { QueryEvent } from '@util/events';
  * @example getTotalGrowth() => [528, 173.1]
  * @example getTotalGrowth() => [1, 100]
  */
-const getTotalMembersGrowth = async ({
-  communityId
-}: Pick<GQLContext, 'communityId'>): Promise<number[]> => {
+const getTotalMembersGrowth = async (
+  ctx: Pick<GQLContext, 'communityId'>
+): Promise<number[]> => {
+  const { communityId } = ctx;
   const cacheKey = `${QueryEvent.GET_TOTAL_MEMBERS_GROWTH}-${communityId}`;
   if (cache.has(cacheKey)) return cache.get(cacheKey);
 

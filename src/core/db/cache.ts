@@ -1,6 +1,7 @@
 import LRUCache from 'lru-cache';
 
 import { APP } from '@util/constants';
+import { QueryEvent } from '@util/events';
 
 class Cache extends LRUCache<string, any> {
   constructor() {
@@ -15,7 +16,10 @@ class Cache extends LRUCache<string, any> {
    */
   invalidateKeys = (cacheKeys: string[]) => {
     if (cacheKeys?.length) {
-      cacheKeys.forEach((key: string) => this.del(key));
+      cacheKeys.forEach((key: string) => {
+        this.del(key);
+        this.invalidateRelatedKeys(key);
+      });
     }
   };
 
@@ -25,6 +29,20 @@ class Cache extends LRUCache<string, any> {
     if (key === undefined) return false;
     super.set(key, value);
     return true;
+  };
+
+  private invalidateRelatedKeys = (key: string): void => {
+    const cacheKey = key?.substring(0, key?.indexOf('-')) as QueryEvent;
+    if (!cacheKey) return;
+
+    switch (cacheKey) {
+      case QueryEvent.GET_EVENT:
+        this.invalidateKeys([]);
+        break;
+
+      default:
+        break;
+    }
   };
 }
 

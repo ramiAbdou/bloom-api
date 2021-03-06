@@ -8,9 +8,11 @@ import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
 import { TimeSeriesData } from '@util/gql';
 
-const getActiveMembersSeries = async ({
-  communityId
-}: Pick<GQLContext, 'communityId'>): Promise<TimeSeriesData[]> => {
+const getActiveMembersSeries = async (
+  ctx: Pick<GQLContext, 'communityId'>
+): Promise<TimeSeriesData[]> => {
+  const { communityId } = ctx;
+
   const cacheKey = `${QueryEvent.GET_ACTIVE_MEMBERS_SERIES}-${communityId}`;
   if (cache.has(cacheKey)) return cache.get(cacheKey);
 

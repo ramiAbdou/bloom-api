@@ -6,9 +6,11 @@ import Member from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
 
-const getActiveMembersGrowth = async ({
-  communityId
-}: GQLContext): Promise<number[]> => {
+const getActiveMembersGrowth = async (
+  ctx: Pick<GQLContext, 'communityId'>
+): Promise<number[]> => {
+  const { communityId } = ctx;
+
   const cacheKey = `${QueryEvent.GET_ACTIVE_MEMBERS_GROWTH}-${communityId}`;
   if (cache.has(cacheKey)) return cache.get(cacheKey);
 
