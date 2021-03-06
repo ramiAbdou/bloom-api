@@ -23,7 +23,10 @@ const getTotalDuesSeries = async (
 ): Promise<TimeSeriesData[]> => {
   const { communityId } = ctx;
   const cacheKey = `${QueryEvent.GET_TOTAL_DUES_SERIES}-${communityId}`;
-  if (cache.has(cacheKey)) return cache.get(cacheKey);
+
+  if (cache.has(cacheKey)) {
+    return cache.get(cacheKey);
+  }
 
   const startOfLastMonth = day.utc().subtract(1, 'month').startOf('d');
 

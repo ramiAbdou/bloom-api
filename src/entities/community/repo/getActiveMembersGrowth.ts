@@ -12,7 +12,10 @@ const getActiveMembersGrowth = async (
   const { communityId } = ctx;
 
   const cacheKey = `${QueryEvent.GET_ACTIVE_MEMBERS_GROWTH}-${communityId}`;
-  if (cache.has(cacheKey)) return cache.get(cacheKey);
+
+  if (cache.has(cacheKey)) {
+    return cache.get(cacheKey);
+  }
 
   const bm = new BloomManager();
   const startOf30DaysAgo = day.utc().subtract(30, 'day').startOf('d');

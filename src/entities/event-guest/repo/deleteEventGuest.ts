@@ -13,20 +13,23 @@ export class DeleteEventGuestArgs {
 }
 
 /**
- * Hard deletes the EventGuest. Returns true if successful, throws error
+ * Returns the deleted EventGuest. Returns true if successful, throws error
  * otherwise.
  *
- * @param args.eventId - ID of the event.
- * @param ctx.memberId - ID of the member.
- * @param ctx.userId - ID of the user.
+ * @param args.eventId - ID of the Event.
+ * @param ctx.memberId - ID of the Member (authenticated).
+ * @param ctx.userId - ID of the User (authenticated).
  */
 const deleteEventGuest = async (
-  { eventId }: DeleteEventGuestArgs,
-  { memberId }: Pick<GQLContext, 'memberId' | 'userId'>
+  args: DeleteEventGuestArgs,
+  ctx: Pick<GQLContext, 'memberId' | 'userId'>
 ): Promise<EventGuest> => {
+  const { eventId } = args;
+  const { memberId } = ctx;
+
   const guest: EventGuest = await new BloomManager().findOneAndDelete(
     EventGuest,
-    { event: { id: eventId }, member: { id: memberId } },
+    { event: eventId, member: memberId },
     { flushEvent: FlushEvent.DELETE_EVENT_GUEST }
   );
 

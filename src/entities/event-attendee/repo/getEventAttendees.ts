@@ -21,6 +21,7 @@ export class GetEventAttendeesArgs {
  *
  * @param args.eventId - ID of the Event.
  * @param args.memberId - ID of the Member.
+ * @param ctx.communityId - ID of the Community (authenticated).
  */
 const getEventAttendees = async (
   args: GetEventAttendeesArgs,

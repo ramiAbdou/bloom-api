@@ -24,15 +24,27 @@ export class CreateEventGuestArgs {
   lastName?: string;
 }
 
+/**
+ * Returns a new Eventguest.
+ *
+ * @param args.email - Email of the Supporter.
+ * @param args.firstName - First name of the Supporter.
+ * @param args.lastName - Last name of the Supporter.
+ * @param args.eventId - ID of the Event.
+ * @param ctx.memberId - ID of the Member (authenticated).
+ */
 const createEventGuest = async (
   args: CreateEventGuestArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ) => {
+  const { email, eventId, firstName, lastName } = args;
+  const { communityId, memberId } = ctx;
+
   const bm = new BloomManager();
 
   const [member, supporter]: [Member, Supporter] = await Promise.all([
-    bm.findOne(Member, ctx.memberId),
-    bm.findOne(Supporter, { community: ctx.communityId, email: args.email })
+    bm.findOne(Member, memberId),
+    bm.findOne(Supporter, { community: communityId, email })
   ]);
 
   const existingGuest = await bm.findOne(
@@ -51,17 +63,12 @@ const createEventGuest = async (
     ? { member }
     : {
         supporter:
-          supporter ??
-          bm.create(Supporter, {
-            email: args.email,
-            firstName: args.firstName,
-            lastName: args.lastName
-          })
+          supporter ?? bm.create(Supporter, { email, firstName, lastName })
       };
 
   const guest: EventGuest = await bm.createAndFlush(
     EventGuest,
-    { event: args.eventId, ...guestArgs },
+    { event: eventId, ...guestArgs },
     {
       flushEvent: FlushEvent.CREATE_EVENT_GUEST,
       populate: ['member', 'supporter']
@@ -70,12 +77,12 @@ const createEventGuest = async (
 
   emitEmailEvent(
     EmailEvent.EVENT_RSVP,
-    { communityId: ctx.communityId, eventId: args.eventId, guestId: guest.id },
+    { communityId, eventId, guestId: guest.id },
     { delay: 5000 }
   );
 
   emitGoogleEvent(GoogleEvent.ADD_CALENDAR_EVENT_ATTENDEE, {
-    eventId: args.eventId,
+    eventId,
     guestId: guest.id
   });
 

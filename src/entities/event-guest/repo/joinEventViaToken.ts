@@ -23,7 +23,7 @@ const joinEventViaToken = async (args: JoinEventArgs): Promise<boolean> => {
 
   const guest: EventGuest = await new BloomManager().findOne(
     EventGuest,
-    { id: guestId },
+    guestId,
     { populate: ['event', 'member'] }
   );
 

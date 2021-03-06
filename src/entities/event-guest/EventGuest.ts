@@ -4,7 +4,8 @@ import {
   AfterDelete,
   Entity,
   ManyToOne,
-  Unique
+  Unique,
+  wrap
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
@@ -21,13 +22,25 @@ export default class EventGuest extends BaseEntity {
   // ## LIFECYCLE
 
   @AfterCreate()
-  afterCreate() {
-    cache.invalidateKeys([`${QueryEvent.GET_EVENT_GUESTS}-${this.event.id}`]);
+  async afterCreate() {
+    await wrap(this.event).init();
+
+    cache.invalidateKeys([
+      `${QueryEvent.GET_EVENT_GUESTS}-${this.event.id}`,
+      `${QueryEvent.GET_EVENT_GUESTS}-${this.member?.id}`,
+      `${QueryEvent.GET_EVENT_GUESTS}-${this.supporter?.id}`,
+      `${QueryEvent.GET_EVENT_GUESTS}-${this.event.community.id}`,
+      `${QueryEvent.GET_UPCOMING_EVENT_GUESTS}-${this.event.community.id}`
+    ]);
   }
 
   @AfterDelete()
   afterDelete() {
-    cache.invalidateKeys([`${QueryEvent.GET_EVENT_GUESTS}-${this.event.id}`]);
+    cache.invalidateKeys([
+      `${QueryEvent.GET_EVENT_GUESTS}-${this.event.id}`,
+      `${QueryEvent.GET_EVENT_GUESTS}-${this.member?.id}`,
+      `${QueryEvent.GET_EVENT_GUESTS}-${this.supporter?.id}`
+    ]);
   }
 
   // ## RELATIONSHIPS

@@ -23,7 +23,10 @@ const getTotalMembersSeries = async (
 ): Promise<TimeSeriesData[]> => {
   const { communityId } = ctx;
   const cacheKey = `${QueryEvent.GET_TOTAL_MEMBERS_SERIES}-${communityId}`;
-  if (cache.has(cacheKey)) return cache.get(cacheKey);
+
+  if (cache.has(cacheKey)) {
+    return cache.get(cacheKey);
+  }
 
   const members = await new BloomManager().find(Member, {
     community: { id: communityId },

@@ -30,7 +30,7 @@ export class CreateEventAttendeeArgs {
  * @param args.firstName - First name of the Supporter.
  * @param args.lastName - Last name of the Supporter.
  * @param args.eventId - ID of the Event.
- * @param ctx.memberId - ID of the Member.
+ * @param ctx.memberId - ID of the Member (authenticated).
  */
 const createEventAttendee = async (
   args: CreateEventAttendeeArgs,

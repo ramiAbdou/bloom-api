@@ -20,8 +20,12 @@ const getEventAttendeesSeries = async (
   ctx: Pick<GQLContext, 'communityId'>
 ): Promise<TimeSeriesData[]> => {
   const { communityId } = ctx;
+
   const cacheKey = `${QueryEvent.GET_EVENT_ATTENDEES_SERIES}-${communityId}`;
-  if (cache.has(cacheKey)) return cache.get(cacheKey);
+
+  if (cache.has(cacheKey)) {
+    return cache.get(cacheKey);
+  }
 
   const attendees: EventAttendee[] = await new BloomManager().find(
     EventAttendee,

@@ -18,8 +18,12 @@ const getTotalMembersGrowth = async (
   ctx: Pick<GQLContext, 'communityId'>
 ): Promise<number[]> => {
   const { communityId } = ctx;
+
   const cacheKey = `${QueryEvent.GET_TOTAL_MEMBERS_GROWTH}-${communityId}`;
-  if (cache.has(cacheKey)) return cache.get(cacheKey);
+
+  if (cache.has(cacheKey)) {
+    return cache.get(cacheKey);
+  }
 
   const endOf30DaysAgo: Dayjs = day.utc().subtract(30, 'day').endOf('day');
   const endOfToday: Dayjs = day.utc().endOf('day');
