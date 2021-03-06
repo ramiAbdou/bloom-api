@@ -14,7 +14,11 @@ import Member from '../Member';
  * and they paid dues less than a month ago, then they are active. Otherwise,
  * they are not.
  */
-const isDuesActive = async ({ memberId }: Pick<GQLContext, 'memberId'>) => {
+const isDuesActive = async (
+  ctx: Pick<GQLContext, 'memberId'>
+): Promise<boolean> => {
+  const { memberId } = ctx;
+
   const bm = new BloomManager();
 
   const member: Member = await bm.findOne(Member, memberId, {

@@ -16,9 +16,12 @@ export class UpdatePaymentMethodArgs {
 }
 
 const updatePaymentMethod = async (
-  { paymentMethodId }: UpdatePaymentMethodArgs,
-  { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
+  args: UpdatePaymentMethodArgs,
+  ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ) => {
+  const { paymentMethodId } = args;
+  const { communityId, memberId } = ctx;
+
   const bm = new BloomManager();
 
   const [community, member]: [Community, Member] = await Promise.all([

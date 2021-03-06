@@ -69,9 +69,11 @@ interface CreateApplicationPaymentArgs {
  * @param ctx.memberId ID of the member.
  */
 const createApplicationPayment = async (
-  { memberPlanId, paymentMethodId, recurrence }: CreateApplicationPaymentArgs,
+  args: CreateApplicationPaymentArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
-) => {
+): Promise<Member> => {
+  const { memberPlanId, paymentMethodId, recurrence } = args;
+
   if (!paymentMethodId) return;
 
   try {
@@ -94,9 +96,11 @@ const createApplicationPayment = async (
  * A user is either created OR fetched based on the email.
  */
 const applyToCommunity = async (
-  { data, email, memberPlanId, paymentMethodId, urlName }: ApplyToCommunityArgs,
+  args: ApplyToCommunityArgs,
   ctx: Pick<GQLContext, 'res'>
 ): Promise<Member> => {
+  const { data, email, memberPlanId, paymentMethodId, urlName } = args;
+
   const bm = new BloomManager();
 
   // Populate the questions and types so that we can capture the member

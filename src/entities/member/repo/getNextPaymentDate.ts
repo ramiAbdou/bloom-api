@@ -5,7 +5,7 @@ import BloomManager from '@core/db/BloomManager';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import Member from '../Member';
 
-const getNextPaymentDate = async (memberId: string) => {
+const getNextPaymentDate = async (memberId: string): Promise<string> => {
   const { community, stripeSubscriptionId } = await new BloomManager().findOne(
     Member,
     { id: memberId },
@@ -19,7 +19,7 @@ const getNextPaymentDate = async (memberId: string) => {
     { stripeAccount: community.integrations.stripeAccountId }
   );
 
-  return day.utc(subscription?.current_period_end);
+  return day.utc(subscription?.current_period_end).format();
 };
 
 export default getNextPaymentDate;

@@ -4,7 +4,7 @@ import { ArgsType, Field } from 'type-graphql';
 import BloomManager from '@core/db/BloomManager';
 import { emitEmailEvent, emitMailchimpEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, MutationEvent, MailchimpEvent } from '@util/events';
+import { EmailEvent, MailchimpEvent, MutationEvent } from '@util/events';
 import { now } from '@util/util';
 import Member, { MemberStatus } from '../Member';
 
@@ -21,8 +21,8 @@ export class RespondToApplicantsArgs {
  * An admin has the option to either accept or reject a Member when they
  * apply to the organization.
  *
- * @param {string[]} args.memberIds - IDs of members to either ACCEPT/REJECT.
- * @param {MemberStatus} args.response
+ * @param args.memberIds - IDs of Member(s) to either ACCEPT/REJECT.
+ * @param args.response - ACCEPTED or REJECTED
  */
 const respondToApplicants = async (
   args: RespondToApplicantsArgs,

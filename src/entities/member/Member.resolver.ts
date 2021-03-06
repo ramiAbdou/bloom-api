@@ -128,7 +128,10 @@ export default class MemberResolver {
 
   @Authorized(MemberRole.ADMIN)
   @Mutation(() => [Member])
-  async inviteMembers(@Args() args: InviteMembersArgs, @Ctx() ctx: GQLContext) {
+  async inviteMembers(
+    @Args() args: InviteMembersArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<Member[]> {
     return inviteMembers(args, ctx);
   }
 
@@ -142,7 +145,7 @@ export default class MemberResolver {
   async promoteMembers(
     @Args() args: PromoteMembersArgs,
     @Ctx() ctx: GQLContext
-  ) {
+  ): Promise<Member[]> {
     return promoteMembers(args, ctx);
   }
 
@@ -151,7 +154,7 @@ export default class MemberResolver {
   async respondToApplicants(
     @Args() args: RespondToApplicantsArgs,
     @Ctx() ctx: GQLContext
-  ) {
+  ): Promise<Member[]> {
     return respondToApplicants(args, ctx);
   }
 
@@ -175,7 +178,7 @@ export default class MemberResolver {
   async updatePaymentMethod(
     @Args() args: UpdatePaymentMethodArgs,
     @Ctx() ctx: GQLContext
-  ) {
+  ): Promise<Member> {
     return updatePaymentMethod(args, ctx);
   }
 }

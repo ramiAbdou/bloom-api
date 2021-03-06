@@ -11,9 +11,11 @@ import Member from '../Member';
  * If the user does not have an associated Stripe customer object, create
  * that object and store it on the user entity.
  */
-const createStripeCustomer = async ({
-  memberId
-}: Pick<GQLContext, 'memberId'>): Promise<Member> => {
+const createStripeCustomer = async (
+  ctx: Pick<GQLContext, 'memberId'>
+): Promise<Member> => {
+  const { memberId } = ctx;
+
   const bm = new BloomManager();
   const member: Member = await bm.findOne(Member, { id: memberId });
 

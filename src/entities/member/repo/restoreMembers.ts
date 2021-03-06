@@ -10,14 +10,16 @@ export class RestoreMembersArgs {
   memberIds: string[];
 }
 
-const restoreMembers = async ({
-  memberIds
-}: RestoreMembersArgs): Promise<Member[]> => {
-  return new BloomManager().findAndRestore(
+const restoreMembers = async (args: RestoreMembersArgs): Promise<Member[]> => {
+  const { memberIds } = args;
+
+  const members: Member[] = await new BloomManager().findAndRestore(
     Member,
-    { id: memberIds },
+    memberIds,
     { flushEvent: MutationEvent.RESTORE_MEMBERS }
   );
+
+  return members;
 };
 
 export default restoreMembers;

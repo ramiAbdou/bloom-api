@@ -28,8 +28,10 @@ export class UpdateMemberArgs {
  */
 const updateMember = async (
   args: UpdateMemberArgs,
-  { memberId }: Pick<GQLContext, 'memberId'>
+  ctx: Pick<GQLContext, 'memberId'>
 ): Promise<Member> => {
+  const { memberId } = ctx;
+
   const updatedMember: Member = await new BloomManager().findOneAndUpdate(
     Member,
     memberId,

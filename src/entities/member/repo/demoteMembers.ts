@@ -14,10 +14,10 @@ export class DemoteMembersArgs {
 }
 
 /**
- * Returns the updated Members.
+ * Returns the demoted Member(s).
  *
- * @param {string[]} args.memberIds - IDs of the Members to delete.
- * @param {string} ctx.communityId - ID of the Community.
+ * @param args.memberIds - IDs of the Member(s) to delete.
+ * @param ctx.communityId - ID of the Community (authenticated).
  */
 const demoteMembers = async (
   args: DemoteMembersArgs,
