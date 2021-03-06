@@ -99,7 +99,7 @@ const inviteMembers = async (
     })
   );
 
-  await bm.flush({ flushEvent: MutationEvent.ADD_MEMBERS });
+  await bm.flush({ flushEvent: MutationEvent.INVITE_MEMBERS });
 
   emitEmailEvent(EmailEvent.INVITE_MEMBERS, {
     communityId,

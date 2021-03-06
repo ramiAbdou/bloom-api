@@ -28,7 +28,7 @@ const updateRecordingUrl = async (
     Event,
     eventId,
     { recordingUrl },
-    { flushEvent: MutationEvent.UPDATE_EVENT_RECORDING_URL }
+    { flushEvent: MutationEvent.UPDATE_RECORDING_URL }
   );
 
   return event;
