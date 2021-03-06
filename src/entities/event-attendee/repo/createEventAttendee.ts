@@ -26,21 +26,24 @@ export class CreateEventAttendeeArgs {
 /**
  * Returns a new EventAttendee.
  *
- * @param args.email - Email of the NON-MEMBER attendee.
- * @param args.firstName - First name of the NON-MEMBER attendee.
- * @param args.lastName - Last name of the NON-MEMBER attendee.
- * @param args.eventId - ID of the event.
- * @param ctx.memberId - ID of the member.
+ * @param args.email - Email of the Supporter.
+ * @param args.firstName - First name of the Supporter.
+ * @param args.lastName - Last name of the Supporter.
+ * @param args.eventId - ID of the Event.
+ * @param ctx.memberId - ID of the Member.
  */
 const createEventAttendee = async (
   args: CreateEventAttendeeArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ) => {
+  const { email, eventId, firstName, lastName } = args;
+  const { communityId, memberId } = ctx;
+
   const bm = new BloomManager();
 
   const [member, supporter]: [Member, Supporter] = await Promise.all([
-    bm.findOne(Member, ctx.memberId),
-    bm.findOne(Supporter, { community: ctx.communityId, email: args.email })
+    bm.findOne(Member, memberId),
+    bm.findOne(Supporter, { community: communityId, email })
   ]);
 
   const existingAttendee = await bm.findOne(
@@ -55,17 +58,12 @@ const createEventAttendee = async (
     ? { member }
     : {
         supporter:
-          supporter ??
-          bm.create(Supporter, {
-            email: args.email,
-            firstName: args.firstName,
-            lastName: args.lastName
-          })
+          supporter ?? bm.create(Supporter, { email, firstName, lastName })
       };
 
   const attendee = await bm.createAndFlush(
     EventAttendee,
-    { event: args.eventId, ...attendeeArgs },
+    { ...attendeeArgs, event: eventId },
     {
       flushEvent: FlushEvent.CREATE_EVENT_ATTENDEE,
       populate: ['member', 'supporter']

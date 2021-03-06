@@ -11,19 +11,22 @@ import { FlushEvent } from '@util/events';
  * of a logo. For now, the community should send Bloom a square logo that
  * we will manually add to the Digital Ocean space.
  */
-const createCommunity = async ({
-  application,
-  ...data
-}: EntityData<Community>): Promise<Community> => {
+const createCommunity = async (
+  args: EntityData<Community>
+): Promise<Community> => {
+  const { application, ...data } = args;
+
   const bm = new BloomManager();
 
-  const community: Community = bm.create(Community, {
-    ...data,
-    application: bm.create(Application, application ?? {}),
-    integrations: bm.create(Integrations, {})
-  });
-
-  await bm.flush({ flushEvent: FlushEvent.CREATE_COMMUNITY });
+  const community: Community = await bm.createAndFlush(
+    Community,
+    {
+      ...data,
+      application: bm.create(Application, application ?? {}),
+      integrations: bm.create(Integrations, {})
+    },
+    { flushEvent: FlushEvent.CREATE_COMMUNITY }
+  );
 
   return community;
 };

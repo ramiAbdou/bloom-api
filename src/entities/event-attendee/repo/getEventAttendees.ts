@@ -2,7 +2,9 @@ import { ArgsType, Field } from 'type-graphql';
 import { FilterQuery } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
+import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
+import { take } from '@util/util';
 import EventAttendee from '../EventAttendee';
 
 @ArgsType()
@@ -15,27 +17,33 @@ export class GetEventAttendeesArgs {
 }
 
 /**
- * Returns the EventAttendee(s) of either an Event or Member.
+ * Returns the EventAttendee(s) of either a Community, Event, or Member.
  *
  * @param args.eventId - ID of the Event.
  * @param args.memberId - ID of the Member.
  */
 const getEventAttendees = async (
-  args: GetEventAttendeesArgs
+  args: GetEventAttendeesArgs,
+  ctx: Pick<GQLContext, 'communityId'>
 ): Promise<EventAttendee[]> => {
   const { eventId, memberId } = args;
+  const { communityId } = ctx;
 
-  const queryArgs: FilterQuery<EventAttendee> = eventId
-    ? { event: eventId }
-    : { member: memberId };
+  const queryArgs: FilterQuery<EventAttendee> = take([
+    [eventId, { event: eventId }],
+    [memberId, { member: memberId }],
+    [communityId, { event: { community: communityId } }]
+  ]);
 
   const attendees: EventAttendee[] = await new BloomManager().find(
     EventAttendee,
-    { ...queryArgs },
+    queryArgs,
     {
-      cacheKey: eventId
-        ? `${QueryEvent.GET_EVENT_ATTENDEES}-${eventId}`
-        : `${QueryEvent.GET_EVENT_ATTENDEES}-${memberId}`,
+      cacheKey: take([
+        [eventId, `${QueryEvent.GET_EVENT_ATTENDEES}-${eventId}`],
+        [memberId, `${QueryEvent.GET_EVENT_ATTENDEES}-${memberId}`],
+        [communityId, `${QueryEvent.GET_EVENT_ATTENDEES}-${communityId}`]
+      ]),
       filters: false,
       populate: ['event', 'member', 'supporter']
     }

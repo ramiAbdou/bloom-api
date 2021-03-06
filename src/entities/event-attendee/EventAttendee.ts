@@ -1,5 +1,5 @@
 import { Field, ObjectType } from 'type-graphql';
-import { AfterCreate, Entity, ManyToOne, Unique } from '@mikro-orm/core';
+import { AfterCreate, Entity, ManyToOne, Unique, wrap } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
 import cache from '@core/db/cache';
@@ -16,8 +16,13 @@ export default class EventAttendee extends BaseEntity {
 
   @AfterCreate()
   afterCreate() {
+    wrap(this).init(false, ['event']);
+
     cache.invalidateKeys([
-      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.event.id}`
+      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.event.id}`,
+      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.event.community.id}`,
+      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.member.id}`,
+      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.supporter.id}`
     ]);
   }
 
