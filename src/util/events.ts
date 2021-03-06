@@ -86,6 +86,7 @@ export enum QueryEvent {
   GET_ACTIVE_MEMBERS_GROWTH = 'getActiveMembersGrowth',
   GET_ACTIVE_MEMBERS_SERIES = 'getActiveMembersSeries',
   GET_ALL_MEMBER_SOCIALS = 'getAllMemberSocials',
+  GET_ALL_PAYMENTS = 'getAllPayments',
   GET_APPLICANTS = 'getApplicants',
   GET_APPLICATION = 'getApplication',
   GET_APPLICATION_QUESTIONS = 'getApplicationQuestions',

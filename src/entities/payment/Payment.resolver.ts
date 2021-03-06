@@ -1,5 +1,6 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
+import { MemberRole } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import Payment from './Payment';
 import createLifetimePayment, {
@@ -31,15 +32,18 @@ export default class PaymentResolver {
     return createSubscription(args, ctx);
   }
 
-  @Authorized()
+  @Authorized(MemberRole.ADMIN)
   @Query(() => [Payment])
-  async getAllPayments(@Ctx() ctx: GQLContext) {
+  async getAllPayments(@Ctx() ctx: GQLContext): Promise<Payment[]> {
     return getAllPayments(ctx);
   }
 
   @Authorized()
   @Query(() => [Payment])
-  async getPayments(@Args() args: GetPaymentsArgs, @Ctx() ctx: GQLContext) {
+  async getPayments(
+    @Args() args: GetPaymentsArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<Payment[]> {
     return getPayments(args, ctx);
   }
 }

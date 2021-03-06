@@ -12,17 +12,24 @@ export class GetPaymentsArgs {
   memberId?: string;
 }
 
+/**
+ * Returns the Payment(s) of a Member.
+ *
+ * @param args.memberId - ID of the Member.
+ * @param ctx.memberId - ID of the Member (authenticated).
+ */
 const getPayments = async (
   args: GetPaymentsArgs,
   ctx: Pick<GQLContext, 'memberId'>
-) => {
+): Promise<Payment[]> => {
+  const memberId: string = args.memberId ?? ctx.memberId;
+
   const payments: Payment[] = await new BloomManager().find(
     Payment,
-    { member: args?.memberId ?? ctx?.memberId },
+    { member: memberId },
     {
-      cacheKey: `${QueryEvent.GET_PAYMENTS}-${args?.memberId ?? ctx?.memberId}`,
-      orderBy: { createdAt: QueryOrder.DESC },
-      populate: ['member']
+      cacheKey: `${QueryEvent.GET_PAYMENTS}-${memberId}`,
+      orderBy: { createdAt: QueryOrder.DESC }
     }
   );
 
