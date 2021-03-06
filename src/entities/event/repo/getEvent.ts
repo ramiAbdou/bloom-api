@@ -15,7 +15,7 @@ export class GetEventArgs {
  *
  * @param args.eventId - ID of the Event.
  */
-const getEvent = async (args: GetEventArgs) => {
+const getEvent = async (args: GetEventArgs): Promise<Event> => {
   const { eventId } = args;
 
   const event: Event = await new BloomManager().findOne(Event, eventId, {

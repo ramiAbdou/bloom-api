@@ -10,9 +10,12 @@ export interface CreateEventInviteesArgs {
 }
 
 const createEventInvitees = async (
-  { eventId, memberIds }: CreateEventInviteesArgs,
-  { communityId }: Pick<GQLContext, 'communityId'>
-) => {
+  args: CreateEventInviteesArgs,
+  ctx: Pick<GQLContext, 'communityId'>
+): Promise<EventInvitee[]> => {
+  const { eventId, memberIds } = args;
+  const { communityId } = ctx;
+
   if (!memberIds.length) return [];
 
   const bm = new BloomManager();

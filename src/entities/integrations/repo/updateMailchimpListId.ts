@@ -14,8 +14,10 @@ export class UpdateMailchimpListIdArgs {
 
 const updateMailchimpListId = async (
   args: UpdateMailchimpListIdArgs,
-  { communityId }: Pick<GQLContext, 'communityId'>
-) => {
+  ctx: Pick<GQLContext, 'communityId'>
+): Promise<Integrations> => {
+  const { communityId } = ctx;
+
   const integrations = await new BloomManager().findOneAndUpdate(
     Integrations,
     { community: { id: communityId } },

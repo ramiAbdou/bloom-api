@@ -8,8 +8,8 @@ import calculateExecuteAt from './calculateExecuteAt';
 /**
  * Creates a scheduled Task.
  *
- * @param {TaskEvent} args.event - Ex: TaskEvent.EVENT_REMINDER_1_DAY.
- * @param {TaskPayload} args.payload - Ex: { eventId: "1", userId: "2" }
+ * @param args.event - Ex: TaskEvent.EVENT_REMINDER_1_DAY.
+ * @param args.payload - Ex: { eventId: "1", userId: "2" }
  */
 const createTask = async (args: EntityData<Task>): Promise<Task> => {
   const task: Task = await new BloomManager().createAndFlush(

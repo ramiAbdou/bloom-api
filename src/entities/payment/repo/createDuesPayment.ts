@@ -16,9 +16,12 @@ interface CreateDuesPaymentArgs {
  * initial time, since we want to update our UI immediately.
  */
 const createDuesPayment = async (
-  { invoice, planId }: CreateDuesPaymentArgs,
-  { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
+  args: CreateDuesPaymentArgs,
+  ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<Payment> => {
+  const { invoice, planId } = args;
+  const { communityId, memberId } = ctx;
+
   const bm = new BloomManager();
   const member: Member = await bm.findOne(Member, memberId);
 

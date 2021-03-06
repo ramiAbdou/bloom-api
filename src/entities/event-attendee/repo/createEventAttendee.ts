@@ -35,7 +35,7 @@ export class CreateEventAttendeeArgs {
 const createEventAttendee = async (
   args: CreateEventAttendeeArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
-) => {
+): Promise<EventAttendee> => {
   const { email, eventId, firstName, lastName } = args;
   const { communityId, memberId } = ctx;
 

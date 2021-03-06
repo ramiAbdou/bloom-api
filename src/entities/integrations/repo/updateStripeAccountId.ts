@@ -13,10 +13,10 @@ import Integrations from '../Integrations';
  * @param code Stripe's API produced authorization code that we exchange for
  * tokens.
  */
-const updateStripeAccountId = async ({
-  code,
-  state: urlName
-}: AuthQueryArgs): Promise<Integrations> => {
+const updateStripeAccountId = async (
+  args: AuthQueryArgs
+): Promise<Integrations> => {
+  const { code, state: urlName } = args;
   const stripeAccountId: string = await getStripeAccountId({ code });
 
   const integrations = await new BloomManager().findOneAndUpdate(

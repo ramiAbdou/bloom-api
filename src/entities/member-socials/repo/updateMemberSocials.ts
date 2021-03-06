@@ -26,8 +26,10 @@ export class UpdateMemberSocialsArgs {
 
 const updateMemberSocials = async (
   args: UpdateMemberSocialsArgs,
-  { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
+  ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<MemberSocials> => {
+  const { communityId, memberId } = ctx;
+
   const socials: MemberSocials = await new BloomManager().findOneAndUpdate(
     MemberSocials,
     { member: memberId },

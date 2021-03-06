@@ -10,10 +10,10 @@ import Integrations from '../Integrations';
  *
  * Precondition: The community ID must represent a community.
  */
-const updateMailchimpAccessToken = async ({
-  code,
-  state: urlName
-}: AuthQueryArgs): Promise<Integrations> => {
+const updateMailchimpAccessToken = async (
+  args: AuthQueryArgs
+): Promise<Integrations> => {
+  const { code, state: urlName } = args;
   const mailchimpAccessToken = await getMailchimpAccessToken({ code });
 
   const integrations = await new BloomManager().findOneAndUpdate(

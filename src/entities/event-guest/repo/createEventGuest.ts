@@ -36,7 +36,7 @@ export class CreateEventGuestArgs {
 const createEventGuest = async (
   args: CreateEventGuestArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
-) => {
+): Promise<EventGuest> => {
   const { email, eventId, firstName, lastName } = args;
   const { communityId, memberId } = ctx;
 

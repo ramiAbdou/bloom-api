@@ -16,10 +16,9 @@ interface GetLoginErrorArgs {
  *
  * Precondition: Members MUST already be populated.
  */
-const getLoginError = async ({
-  communityId,
-  email
-}: GetLoginErrorArgs): Promise<ErrorType> => {
+const getLoginError = async (args: GetLoginErrorArgs): Promise<ErrorType> => {
+  const { communityId, email } = args;
+
   if (communityId) {
     // Check if the email is a member of this community.
     const member: Member = await new BloomManager().findOne(Member, {

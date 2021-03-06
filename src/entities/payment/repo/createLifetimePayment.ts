@@ -21,9 +21,12 @@ export class CreateLifetimePaymentArgs {
 }
 
 const createLifetimePayment = async (
-  { memberPlanId }: CreateLifetimePaymentArgs,
-  { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
+  args: CreateLifetimePaymentArgs,
+  ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<Payment> => {
+  const { memberPlanId } = args;
+  const { communityId, memberId } = ctx;
+
   await createStripeCustomer({ memberId });
 
   const bm = new BloomManager();

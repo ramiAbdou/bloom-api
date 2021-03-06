@@ -6,7 +6,14 @@ interface GetEventUrlArgs {
   eventId: string;
 }
 
-const getEventUrl = async ({ eventId }: GetEventUrlArgs) => {
+/**
+ * Returns the Event.
+ *
+ * @param args.eventId - ID of the event.
+ */
+const getEventUrl = async (args: GetEventUrlArgs): Promise<string> => {
+  const { eventId } = args;
+
   const community: Community = await new BloomManager().findOne(
     Community,
     { events: eventId },

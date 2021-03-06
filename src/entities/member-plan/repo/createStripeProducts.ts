@@ -18,10 +18,10 @@ interface CreateStripeProductArgs {
  * that are not free. Calls the Stripe SDK product and price creation methods
  * for the community.
  */
-const attachStripeProduct = async ({
-  stripeAccountId,
-  plan
-}: CreateStripeProductArgs): Promise<MemberPlan> => {
+const attachStripeProduct = async (
+  args: CreateStripeProductArgs
+): Promise<MemberPlan> => {
+  const { stripeAccountId, plan } = args;
   const { amount, id, name, recurrence } = plan;
 
   // Create the subscription even if the product is LIFETIME fulfilled

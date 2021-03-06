@@ -34,7 +34,7 @@ export default class EventResolver {
   }
 
   @Query(() => Event)
-  async getEvent(@Args() args: GetEventArgs) {
+  async getEvent(@Args() args: GetEventArgs): Promise<Event> {
     return getEvent(args);
   }
 

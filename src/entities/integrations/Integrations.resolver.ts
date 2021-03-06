@@ -23,7 +23,7 @@ export default class IntegrationsResolver {
   async updateMailchimpListId(
     @Args() args: UpdateMailchimpListIdArgs,
     @Ctx() ctx: GQLContext
-  ) {
+  ): Promise<Integrations> {
     return updateMailchimpListId(args, ctx);
   }
 }

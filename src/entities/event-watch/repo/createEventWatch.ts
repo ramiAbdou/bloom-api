@@ -18,9 +18,12 @@ export class CreateEventWatchArgs {
  * @param ctx.memberId - ID of the member.
  */
 const createEventWatch = async (
-  { eventId }: CreateEventWatchArgs,
-  { memberId }: Pick<GQLContext, 'memberId'>
-) => {
+  args: CreateEventWatchArgs,
+  ctx: Pick<GQLContext, 'memberId'>
+): Promise<EventWatch> => {
+  const { eventId } = args;
+  const { memberId } = ctx;
+
   const bm = new BloomManager();
 
   const [watch, wasFound]: [EventWatch, boolean] = await bm.findOneOrCreate(

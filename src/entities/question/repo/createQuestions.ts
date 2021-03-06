@@ -17,12 +17,12 @@ export class CreateQuestionsArgs {
 }
 
 const createQuestions = async (
-  {
-    highlightedQuestionTitle,
-    questions: initialQuestions
-  }: CreateQuestionsArgs,
-  { communityId }: Pick<GQLContext, 'communityId'>
+  args: CreateQuestionsArgs,
+  ctx: Pick<GQLContext, 'communityId'>
 ): Promise<Question[]> => {
+  const { highlightedQuestionTitle, questions: initialQuestions } = args;
+  const { communityId } = ctx;
+
   const bm = new BloomManager();
   const community: Community = await bm.findOne(Community, { id: communityId });
 

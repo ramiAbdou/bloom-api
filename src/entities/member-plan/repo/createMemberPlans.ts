@@ -29,11 +29,14 @@ export class CreateMemberPlansArgs {
 }
 
 const createMemberPlans = async (
-  { defaultPlanName, plans: initialPlans }: CreateMemberPlansArgs,
-  { communityId }: Pick<GQLContext, 'communityId'>
-) => {
+  args: CreateMemberPlansArgs,
+  ctx: Pick<GQLContext, 'communityId'>
+): Promise<MemberPlan[]> => {
+  const { defaultPlanName, plans: initialPlans } = args;
+  const { communityId } = ctx;
+
   const bm = new BloomManager();
-  const community: Community = await bm.findOne(Community, { id: communityId });
+  const community: Community = await bm.findOne(Community, communityId);
 
   let defaultType: MemberPlan;
 

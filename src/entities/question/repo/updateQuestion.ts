@@ -13,13 +13,17 @@ export class UpdateQuestionArgs {
   title: string;
 }
 
-const updateQuestion = async ({ questionId, ...args }: UpdateQuestionArgs) => {
-  return new BloomManager().findOneAndUpdate(
+const updateQuestion = async (args: UpdateQuestionArgs): Promise<Question> => {
+  const { questionId, ...questionData } = args;
+
+  const question: Question = await new BloomManager().findOneAndUpdate(
     Question,
-    { id: questionId },
-    { ...args },
+    questionId,
+    { ...questionData },
     { flushEvent: MutationEvent.UPDATE_QUESTION }
   );
+
+  return question;
 };
 
 export default updateQuestion;

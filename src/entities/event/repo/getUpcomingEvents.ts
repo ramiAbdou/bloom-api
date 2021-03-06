@@ -11,7 +11,9 @@ import Event from '../Event';
  *
  * @param ctx.communityId - ID of the Community.
  */
-const getUpcomingEvents = async (ctx: Pick<GQLContext, 'communityId'>) => {
+const getUpcomingEvents = async (
+  ctx: Pick<GQLContext, 'communityId'>
+): Promise<Event[]> => {
   const { communityId } = ctx;
 
   const events: Event[] = await new BloomManager().find(

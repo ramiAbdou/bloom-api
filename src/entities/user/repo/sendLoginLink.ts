@@ -25,11 +25,9 @@ export class SendLoginLinkArgs {
  * Generates a temporary login URL with token for the User with the given email.
  * Runs the refresh flow for the user.
  */
-const sendLoginLink = async ({
-  communityId,
-  email,
-  pathname
-}: SendLoginLinkArgs) => {
+const sendLoginLink = async (args: SendLoginLinkArgs): Promise<void> => {
+  const { communityId, email, pathname } = args;
+
   // If the User hasn't been accepted into any community, throw an error.
   const loginError: ErrorType = await getLoginError({ communityId, email });
   if (loginError) throw new Error(loginError);

@@ -22,9 +22,12 @@ export class UpdateMemberValuesArgs {
 }
 
 const updateMemberValues = async (
-  { items }: UpdateMemberValuesArgs,
-  { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
+  args: UpdateMemberValuesArgs,
+  ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<MemberValue[]> => {
+  const { items } = args;
+  const { communityId, memberId } = ctx;
+
   const bm = new BloomManager();
 
   const values: MemberValue[] = await bm.find(MemberValue, {
