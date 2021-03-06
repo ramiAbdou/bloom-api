@@ -41,7 +41,6 @@ export default class Payment extends BaseEntity {
       `${QueryEvent.GET_DATABASE}-${this.community.id}`,
       `${QueryEvent.GET_PAYMENTS}-${this.community.id}`,
       `${QueryEvent.GET_PAYMENTS}-${this.member.id}`,
-      `${QueryEvent.GET_TOTAL_DUES_COLLECTED}-${this.community.id}`,
       `${QueryEvent.GET_TOTAL_DUES_SERIES}-${this.community.id}`
     ]);
   }
