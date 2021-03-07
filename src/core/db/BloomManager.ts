@@ -11,7 +11,7 @@ import {
   wrap
 } from '@mikro-orm/core';
 
-import Cache from '@core/cache/cache';
+import Cache from '@core/cache/Cache';
 import logger from '@system/logger/logger';
 import { now } from '@util/util';
 import { getAllEntityCaches, getEntityCache } from '../cache/cache.util';

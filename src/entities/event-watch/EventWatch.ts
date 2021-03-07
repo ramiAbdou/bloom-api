@@ -1,7 +1,7 @@
 import { Field, ObjectType } from 'type-graphql';
 import { AfterCreate, Entity, ManyToOne, Unique, wrap } from '@mikro-orm/core';
 
-import Cache from '@core/cache/cache';
+import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import { QueryEvent } from '@util/events';
 import Event from '../event/Event';

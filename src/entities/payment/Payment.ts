@@ -2,7 +2,7 @@ import { IsUrl } from 'class-validator';
 import { Field, Float, ObjectType } from 'type-graphql';
 import { AfterCreate, Entity, ManyToOne, Property } from '@mikro-orm/core';
 
-import Cache from '@core/cache/cache';
+import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Community from '@entities/community/Community';
 import { QueryEvent } from '@util/events';

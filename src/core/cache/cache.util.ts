@@ -20,7 +20,7 @@ import RankedQuestion from '@entities/ranked-question/RankedQuestion';
 import Supporter from '@entities/supporter/Supporter';
 import Task from '@entities/task/Task';
 import User from '@entities/user/User';
-import { Cache } from './cache';
+import Cache from './Cache';
 
 /**
  * Returns the Cache that corresponds with the appropriate entity.

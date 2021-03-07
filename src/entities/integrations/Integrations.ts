@@ -1,7 +1,7 @@
 import { Field, ObjectType } from 'type-graphql';
 import { AfterUpdate, Entity, OneToOne, Property } from '@mikro-orm/core';
 
-import Cache from '@core/cache/cache';
+import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import getMailchimpAudienceName from '@integrations/mailchimp/repo/getMailchimpAudienceName';
 import getMailchimpAudiences from '@integrations/mailchimp/repo/getMailchimpAudiences';
