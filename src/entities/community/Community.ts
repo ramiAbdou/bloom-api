@@ -11,8 +11,8 @@ import {
   QueryOrder
 } from '@mikro-orm/core';
 
+import Cache from '@core/cache/cache';
 import BaseEntity from '@core/db/BaseEntity';
-import cache from '@core/db/cache';
 import Supporter from '@entities/supporter/Supporter';
 import { isProduction } from '@util/constants';
 import { QueryEvent } from '@util/events';
@@ -27,6 +27,8 @@ import Question from '../question/Question';
 @ObjectType()
 @Entity()
 export default class Community extends BaseEntity {
+  static cache = new Cache();
+
   // ## FIELDS
 
   // True if the member should be accepted automatically.
@@ -65,6 +67,18 @@ export default class Community extends BaseEntity {
   @Property({ unique: true })
   urlName: string;
 
+  // ## METHODS
+
+  async getCacheIdenitifers(): Promise<string[]> {
+    const members: Member[] = await this.members.loadItems();
+
+    return [
+      this.id,
+      this.urlName,
+      ...members.map((member: Member) => member.user.id)
+    ];
+  }
+
   // ## LIFECYCLE HOOKS
 
   @BeforeCreate()
@@ -80,17 +94,13 @@ export default class Community extends BaseEntity {
 
   @AfterUpdate()
   async afterUpdate() {
-    await this.members.init();
+    const cacheIds: string[] = await this.getCacheIdenitifers();
 
-    const members: Member[] = this.members.getItems();
+    const cacheKeys = cacheIds.map((cacheId: string) => {
+      return `${QueryEvent.GET_COMMUNITIES}-${cacheId}`;
+    });
 
-    cache.invalidateKeys([
-      `${QueryEvent.GET_COMMUNITIES}-${this.id}`,
-      `${QueryEvent.GET_COMMUNITIES}-${this.urlName}`,
-      ...members.map((member: Member) => {
-        return `${QueryEvent.GET_COMMUNITIES}-${member.user.id}`;
-      })
-    ]);
+    Community.cache.invalidateKeys(cacheKeys);
   }
 
   // ## RELATIONSHIPS

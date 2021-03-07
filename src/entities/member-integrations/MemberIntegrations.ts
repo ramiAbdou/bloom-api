@@ -1,8 +1,8 @@
 import { Authorized, Field, ObjectType } from 'type-graphql';
 import { AfterUpdate, Entity, OneToOne, Property } from '@mikro-orm/core';
 
+import Cache from '@core/cache/cache';
 import BaseEntity from '@core/db/BaseEntity';
-import cache from '@core/db/cache';
 import { QueryEvent } from '@util/events';
 import Member from '../member/Member';
 import getNextPaymentDate from './repo/getNextPaymentDate';
@@ -13,6 +13,8 @@ import getPaymentMethod, {
 @ObjectType()
 @Entity()
 export default class MemberIntegrations extends BaseEntity {
+  static cache = new Cache();
+
   // ## FIELDS
 
   // We don't store any of the customer's financial data in our server. Stripe
@@ -46,7 +48,7 @@ export default class MemberIntegrations extends BaseEntity {
 
   @AfterUpdate()
   afterUpdate() {
-    cache.invalidateKeys([
+    MemberIntegrations.cache.invalidateKeys([
       `${QueryEvent.GET_MEMBER_INTEGRATIONS}-${this.member.id}`
     ]);
   }

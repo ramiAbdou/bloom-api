@@ -17,8 +17,8 @@ import {
   Unique
 } from '@mikro-orm/core';
 
+import Cache from '@core/cache/cache';
 import BaseEntity from '@core/db/BaseEntity';
-import cache from '@core/db/cache';
 import { QueryEvent } from '@util/events';
 import { now } from '@util/util';
 import Community from '../community/Community';
@@ -51,6 +51,8 @@ export enum MemberStatus {
 @Entity()
 @Unique({ properties: ['community', 'email'] })
 export default class Member extends BaseEntity {
+  static cache = new Cache();
+
   // ## FIELDS
 
   @Field({ nullable: true })
@@ -131,7 +133,7 @@ export default class Member extends BaseEntity {
 
   @AfterCreate()
   afterCreate() {
-    cache.invalidateKeys(
+    Member.cache.invalidateKeys(
       this.status === MemberStatus.PENDING
         ? [`${QueryEvent.GET_APPLICANTS}-${this.community.id}`]
         : [`${QueryEvent.GET_MEMBERS}-${this.community.id}`]
@@ -140,7 +142,7 @@ export default class Member extends BaseEntity {
 
   @AfterUpdate()
   afterUpdate() {
-    cache.invalidateKeys([
+    Member.cache.invalidateKeys([
       `${QueryEvent.GET_MEMBERS}-${this.id}`,
       `${QueryEvent.GET_MEMBERS}-${this.community.id}`
     ]);

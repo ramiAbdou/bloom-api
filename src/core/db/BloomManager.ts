@@ -11,9 +11,10 @@ import {
   wrap
 } from '@mikro-orm/core';
 
-import cache from '@core/db/cache';
+import Cache from '@core/cache/cache';
 import logger from '@system/logger/logger';
 import { now } from '@util/util';
+import { getAllEntityCaches, getEntityCache } from '../cache/cache.util';
 import {
   BloomCreateAndFlushArgs,
   BloomFindAndDeleteOptions,
@@ -48,7 +49,8 @@ class BloomManager {
     try {
       logger.log({ contextId, event: flushEvent, level: 'BEFORE_FLUSH' });
       await this.em.flush();
-      cache.invalidateKeys(invalidateKeys);
+      const caches: Cache[] = getAllEntityCaches();
+      caches.forEach((cache: Cache) => cache.invalidateKeys(invalidateKeys));
       logger.log({ contextId, event: flushEvent, level: 'AFTER_FLUSH' });
     } catch (e) {
       logger.log({
@@ -67,13 +69,15 @@ class BloomManager {
     where: FilterQuery<T>,
     options?: BloomFindOneOptions<T, P>
   ): Promise<Loaded<T, P>> {
+    const cache: Cache = getEntityCache(entityName);
+
     // Try to find and return the entity from the cache. We must return it as
     // a resolved Promise to ensure type safety.
     const { cacheKey } = options ?? {};
 
     // If we grab the entity from the cache, we need to merge it to the current
     // entity manager, as a normal findOne would do.
-    if (options?.cache !== false && cache.has(cacheKey)) {
+    if (cache.has(cacheKey)) {
       const entity = cache.get(cacheKey);
       if (entity) this.em.merge(entity, true);
       return entity as Promise<Loaded<T, P> | null>;
@@ -92,6 +96,8 @@ class BloomManager {
     where: FilterQuery<T>,
     options?: BloomFindOneOptions<T, P>
   ): Promise<Loaded<T, P>> {
+    const cache: Cache = getEntityCache(entityName);
+
     // Try to find and return the entity from the cache. We must return it as
     // a resolved Promise to ensure type safety.
     const { cacheKey } = options ?? {};
@@ -149,6 +155,8 @@ class BloomManager {
     where: FilterQuery<T>,
     options?: BloomFindOptions<T, P>
   ): Promise<Loaded<T, P>[]> {
+    const cache: Cache = getEntityCache(entityName);
+
     // Try to find and return the entity from the cache. We must return it as
     // a resolved Promise to ensure type safety.
     const { cacheKey } = options ?? {};

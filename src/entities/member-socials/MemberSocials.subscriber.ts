@@ -1,7 +1,6 @@
 import { EntityName, EventArgs, EventSubscriber } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
-import cache from '@core/db/cache';
 import MemberValue from '@entities/member-value/MemberValue';
 import Member from '@entities/member/Member';
 import Question, { QuestionCategory } from '@entities/question/Question';
@@ -15,7 +14,7 @@ export default class MemberSocialsSubscriber
   }
 
   async afterUpdate({ changeSet, entity: socials }: EventArgs<MemberSocials>) {
-    cache.invalidateKeys([
+    MemberSocials.cache.invalidateKeys([
       `${QueryEvent.GET_MEMBER_SOCIALS}-${socials.member.id}`
     ]);
 

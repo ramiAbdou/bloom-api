@@ -8,8 +8,8 @@ import {
   wrap
 } from '@mikro-orm/core';
 
+import Cache from '@core/cache/cache';
 import BaseEntity from '@core/db/BaseEntity';
-import cache from '@core/db/cache';
 import Supporter from '@entities/supporter/Supporter';
 import { QueryEvent } from '@util/events';
 import Event from '../event/Event';
@@ -19,13 +19,15 @@ import Member from '../member/Member';
 @Entity()
 @Unique({ properties: ['event', 'member', 'supporter'] })
 export default class EventGuest extends BaseEntity {
+  static cache = new Cache();
+
   // ## LIFECYCLE HOOKS
 
   @AfterCreate()
   async afterCreate() {
     await wrap(this.event).init();
 
-    cache.invalidateKeys([
+    EventGuest.cache.invalidateKeys([
       `${QueryEvent.GET_EVENT_GUESTS}-${this.event.id}`,
       `${QueryEvent.GET_EVENT_GUESTS}-${this.member?.id}`,
       `${QueryEvent.GET_EVENT_GUESTS}-${this.supporter?.id}`,
@@ -38,7 +40,7 @@ export default class EventGuest extends BaseEntity {
   async afterDelete() {
     await wrap(this.event).init();
 
-    cache.invalidateKeys([
+    EventGuest.cache.invalidateKeys([
       `${QueryEvent.GET_EVENT_GUESTS}-${this.event.id}`,
       `${QueryEvent.GET_EVENT_GUESTS}-${this.member?.id}`,
       `${QueryEvent.GET_EVENT_GUESTS}-${this.supporter?.id}`,

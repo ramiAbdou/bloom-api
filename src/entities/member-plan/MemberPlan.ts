@@ -10,8 +10,8 @@ import {
   Property
 } from '@mikro-orm/core';
 
+import Cache from '@core/cache/cache';
 import BaseEntity from '@core/db/BaseEntity';
-import cache from '@core/db/cache';
 import Community from '@entities/community/Community';
 import Member from '@entities/member/Member';
 import { QueryEvent } from '@util/events';
@@ -25,6 +25,8 @@ export enum RecurrenceType {
 @ObjectType()
 @Entity()
 export default class MemberPlan extends BaseEntity {
+  static cache = new Cache();
+
   // ## FIELDS
 
   @Field(() => Float)
@@ -55,14 +57,14 @@ export default class MemberPlan extends BaseEntity {
 
   @AfterCreate()
   afterCreate() {
-    cache.invalidateKeys([
+    MemberPlan.cache.invalidateKeys([
       `${QueryEvent.GET_MEMBER_PLANS}-${this.community.id}`
     ]);
   }
 
   @AfterUpdate()
   afterUpdate() {
-    cache.invalidateKeys([
+    MemberPlan.cache.invalidateKeys([
       `${QueryEvent.GET_MEMBER_PLANS}-${this.community.id}`
     ]);
   }

@@ -1,5 +1,6 @@
 import { Entity, Enum, Property } from '@mikro-orm/core';
 
+import Cache from '@core/cache/cache';
 import BaseEntity from '@core/db/BaseEntity';
 import { EventReminderPayload } from '@system/emails/util/getEventReminderVars';
 import { emitEmailEvent } from '@system/eventBus';
@@ -12,6 +13,8 @@ export interface TaskPayload {
 
 @Entity()
 export default class Task extends BaseEntity {
+  static cache = new Cache();
+
   // ## FIELDS
 
   @Property()

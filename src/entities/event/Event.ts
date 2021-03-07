@@ -14,8 +14,8 @@ import {
   wrap
 } from '@mikro-orm/core';
 
+import Cache from '@core/cache/cache';
 import BaseEntity from '@core/db/BaseEntity';
-import cache from '@core/db/cache';
 import { APP } from '@util/constants';
 import { QueryEvent } from '@util/events';
 import getGoogleCalendarEvent from '../../integrations/google/repo/getGoogleCalendarEvent';
@@ -33,6 +33,8 @@ export enum EventPrivacy {
 @ObjectType()
 @Entity()
 export default class Event extends BaseEntity {
+  static cache = new Cache();
+
   // ## FIELDS
 
   @Field()
@@ -105,14 +107,14 @@ export default class Event extends BaseEntity {
 
   @AfterCreate()
   afterCreate() {
-    cache.invalidateKeys([
+    Event.cache.invalidateKeys([
       `${QueryEvent.GET_UPCOMING_EVENTS}-${this.community.id}`
     ]);
   }
 
   @AfterUpdate()
   afterUpdate() {
-    cache.invalidateKeys([
+    Event.cache.invalidateKeys([
       `${QueryEvent.GET_EVENT}-${this.id}`,
       ...(day.utc().isAfter(day.utc(this.endTime))
         ? [`${QueryEvent.GET_PAST_EVENTS}-${this.community.id}`]

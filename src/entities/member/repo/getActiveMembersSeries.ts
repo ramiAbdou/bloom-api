@@ -2,7 +2,6 @@ import day from 'dayjs';
 import { QueryOrder } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
-import cache from '@core/db/cache';
 import Member from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
@@ -15,8 +14,8 @@ const getActiveMembersSeries = async (
 
   const cacheKey = `${QueryEvent.GET_ACTIVE_MEMBERS_SERIES}-${communityId}`;
 
-  if (cache.has(cacheKey)) {
-    return cache.get(cacheKey);
+  if (Member.cache.has(cacheKey)) {
+    return Member.cache.get(cacheKey);
   }
 
   const startOf30DaysAgo = day.utc().subtract(30, 'day').startOf('d');

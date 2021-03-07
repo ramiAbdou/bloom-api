@@ -1,7 +1,6 @@
 import day, { Dayjs } from 'dayjs';
 
 import BloomManager from '@core/db/BloomManager';
-import cache from '@core/db/cache';
 import Payment from '@entities/payment/Payment';
 import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
@@ -27,8 +26,8 @@ const getPaymentsSeries = async (
 
   const cacheKey = `${QueryEvent.GET_PAYMENTS_SERIES}-${communityId}`;
 
-  if (cache.has(cacheKey)) {
-    return cache.get(cacheKey);
+  if (Payment.cache.has(cacheKey)) {
+    return Payment.cache.get(cacheKey);
   }
 
   const startOfLastMonth: Dayjs = day.utc().subtract(1, 'month').startOf('d');

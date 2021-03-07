@@ -1,8 +1,8 @@
 import { Field, ObjectType } from 'type-graphql';
 import { AfterCreate, Entity, ManyToOne, Unique, wrap } from '@mikro-orm/core';
 
+import Cache from '@core/cache/cache';
 import BaseEntity from '@core/db/BaseEntity';
-import cache from '@core/db/cache';
 import { QueryEvent } from '@util/events';
 import Event from '../event/Event';
 import Member from '../member/Member';
@@ -11,13 +11,15 @@ import Member from '../member/Member';
 @Entity()
 @Unique({ properties: ['event', 'member'] })
 export default class EventWatch extends BaseEntity {
+  static cache = new Cache();
+
   // ## LIFECYCLE HOOKS
 
   @AfterCreate()
   async afterCreate() {
     await wrap(this.event).init();
 
-    cache.invalidateKeys([
+    EventWatch.cache.invalidateKeys([
       `${QueryEvent.GET_EVENT_WATCHES}-${this.event.id}`,
       `${QueryEvent.GET_EVENT_WATCHES}-${this.member.id}`,
       `${QueryEvent.GET_EVENT_WATCHES}-${this.event.community.id}`

@@ -9,8 +9,8 @@ import {
   Property
 } from '@mikro-orm/core';
 
+import Cache from '@core/cache/cache';
 import BaseEntity from '@core/db/BaseEntity';
-import cache from '@core/db/cache';
 import Community from '@entities/community/Community';
 import { QueryEvent } from '@util/events';
 
@@ -41,6 +41,8 @@ export enum QuestionType {
 @ObjectType()
 @Entity()
 export default class Question extends BaseEntity {
+  static cache = new Cache();
+
   // ## FIELDS
 
   // If the question is a special question, we have to store it in a different
@@ -162,7 +164,9 @@ export default class Question extends BaseEntity {
 
   @AfterUpdate()
   afterUpdate() {
-    cache.invalidateKeys([`${QueryEvent.GET_QUESTIONS}-${this.community.id}`]);
+    Question.cache.invalidateKeys([
+      `${QueryEvent.GET_QUESTIONS}-${this.community.id}`
+    ]);
   }
 
   // ## RELATIONSHIPS

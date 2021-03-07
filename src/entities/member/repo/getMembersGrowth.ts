@@ -1,7 +1,6 @@
 import day, { Dayjs } from 'dayjs';
 
 import BloomManager from '@core/db/BloomManager';
-import cache from '@core/db/cache';
 import Member, { MemberStatus } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
@@ -21,8 +20,8 @@ const getMembersGrowth = async (
 
   const cacheKey = `${QueryEvent.GET_MEMBERS_GROWTH}-${communityId}`;
 
-  if (cache.has(cacheKey)) {
-    return cache.get(cacheKey);
+  if (Member.cache.has(cacheKey)) {
+    return Member.cache.get(cacheKey);
   }
 
   const endOf30DaysAgo: Dayjs = day.utc().subtract(30, 'day').endOf('day');

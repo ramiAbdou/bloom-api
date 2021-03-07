@@ -1,7 +1,6 @@
 import day from 'dayjs';
 
 import BloomManager from '@core/db/BloomManager';
-import cache from '@core/db/cache';
 import Member, { MemberStatus } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
@@ -24,8 +23,8 @@ const getMembersSeries = async (
   const { communityId } = ctx;
   const cacheKey = `${QueryEvent.GET_MEMBERS_SERIES}-${communityId}`;
 
-  if (cache.has(cacheKey)) {
-    return cache.get(cacheKey);
+  if (Member.cache.has(cacheKey)) {
+    return Member.cache.get(cacheKey);
   }
 
   const members = await new BloomManager().find(Member, {

@@ -2,14 +2,16 @@ import { IsUrl } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
 import { AfterUpdate, Entity, OneToOne, Property, wrap } from '@mikro-orm/core';
 
+import Cache from '@core/cache/cache';
 import BaseEntity from '@core/db/BaseEntity';
-import cache from '@core/db/cache';
 import { QueryEvent } from '@util/events';
 import Member from '../member/Member';
 
 @ObjectType()
 @Entity()
 export default class MemberSocials extends BaseEntity {
+  static cache = new Cache();
+
   // ## FIELDS
 
   @Field({ nullable: true })
@@ -43,7 +45,7 @@ export default class MemberSocials extends BaseEntity {
   async afterUpdate() {
     await wrap(this.member).init();
 
-    cache.invalidateKeys([
+    MemberSocials.cache.invalidateKeys([
       `${QueryEvent.GET_MEMBER_SOCIALS}-${this.member.id}`,
       `${QueryEvent.GET_MEMBER_SOCIALS}-${this.member.community.id}`
     ]);

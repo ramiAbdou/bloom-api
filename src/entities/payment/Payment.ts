@@ -2,8 +2,8 @@ import { IsUrl } from 'class-validator';
 import { Field, Float, ObjectType } from 'type-graphql';
 import { AfterCreate, Entity, ManyToOne, Property } from '@mikro-orm/core';
 
+import Cache from '@core/cache/cache';
 import BaseEntity from '@core/db/BaseEntity';
-import cache from '@core/db/cache';
 import Community from '@entities/community/Community';
 import { QueryEvent } from '@util/events';
 import MemberPlan from '../member-plan/MemberPlan';
@@ -17,6 +17,8 @@ export enum PaymentType {
 @ObjectType()
 @Entity()
 export default class Payment extends BaseEntity {
+  static cache = new Cache();
+
   // ## FIELDS
 
   @Field(() => Float)
@@ -39,13 +41,13 @@ export default class Payment extends BaseEntity {
 
   @AfterCreate()
   afterCreate() {
-    cache.invalidateKeys([
+    Payment.cache.invalidateKeys([
       // Need to make sure that the 'isDuesActive' is updated.
       `${QueryEvent.GET_MEMBERS}-${this.member.id}`,
       `${QueryEvent.GET_MEMBERS}-${this.community.id}`,
       `${QueryEvent.GET_PAYMENTS}-${this.community.id}`,
       `${QueryEvent.GET_PAYMENTS}-${this.member.id}`,
-      `${QueryEvent.GET_TOTAL_DUES_SERIES}-${this.community.id}`
+      `${QueryEvent.GET_PAYMENTS_SERIES}-${this.community.id}`
     ]);
   }
 

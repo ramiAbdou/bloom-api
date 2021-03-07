@@ -1,8 +1,8 @@
 import { Field, ObjectType } from 'type-graphql';
 import { AfterUpdate, Entity, OneToOne, Property } from '@mikro-orm/core';
 
+import Cache from '@core/cache/cache';
 import BaseEntity from '@core/db/BaseEntity';
-import cache from '@core/db/cache';
 import getMailchimpAudienceName from '@integrations/mailchimp/repo/getMailchimpAudienceName';
 import getMailchimpAudiences from '@integrations/mailchimp/repo/getMailchimpAudiences';
 import { QueryEvent } from '@util/events';
@@ -12,6 +12,8 @@ import { MailchimpList } from './Integrations.types';
 @ObjectType()
 @Entity()
 export default class Integrations extends BaseEntity {
+  static cache = new Cache();
+
   // ## FIELDS
 
   @Property({ nullable: true })
@@ -54,7 +56,7 @@ export default class Integrations extends BaseEntity {
 
   @AfterUpdate()
   afterUpdate() {
-    cache.invalidateKeys([
+    Integrations.cache.invalidateKeys([
       `${QueryEvent.GET_INTEGRATIONS}-${this.community.id}`
     ]);
   }
