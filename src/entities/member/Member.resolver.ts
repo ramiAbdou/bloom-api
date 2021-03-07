@@ -14,9 +14,8 @@ import getChangePreview, {
   GetChangePreviewResult
 } from './repo/getChangePreview';
 import getDatabase from './repo/getDatabase';
-import getDirectory from './repo/getDirectory';
 import getMember, { GetMemberArgs } from './repo/getMember';
-import getMembers from './repo/getMembers';
+import getMembers, { GetMembersArgs } from './repo/getMembers';
 import getOwner, { GetOwnerArgs } from './repo/getOwner';
 import getUpcomingPayment, {
   GetUpcomingPaymentResult
@@ -93,12 +92,6 @@ export default class MemberResolver {
   }
 
   @Authorized()
-  @Query(() => [Member])
-  async getDirectory(@Ctx() ctx: GQLContext): Promise<Member[]> {
-    return getDirectory(ctx);
-  }
-
-  @Authorized()
   @Query(() => Member, { nullable: true })
   async getMember(
     @Args() args: GetMemberArgs,
@@ -109,8 +102,8 @@ export default class MemberResolver {
 
   @Authorized()
   @Query(() => [Member])
-  async getMembers(@Ctx() ctx: GQLContext): Promise<Member[]> {
-    return getMembers(ctx);
+  async getMembers(@Args() args: GetMembersArgs): Promise<Member[]> {
+    return getMembers(args);
   }
 
   @Query(() => Member)

@@ -2,11 +2,13 @@ import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import MemberSocials from '@entities/member-socials/MemberSocials';
-import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
 
 @ArgsType()
 export class GetMemberSocialsArgs {
+  @Field({ nullable: true })
+  communityId?: string;
+
   @Field({ nullable: true })
   memberId?: string;
 }
@@ -14,19 +16,26 @@ export class GetMemberSocialsArgs {
 /**
  * Returns the MemberSocials.
  *
+ * @param args.communityId - ID of the Community.
  * @param args.memberId - ID of the Member.
- * @param ctx.memberId - ID of the Member (authenticated).
  */
 const getMemberSocials = async (
-  args: GetMemberSocialsArgs,
-  ctx: Pick<GQLContext, 'memberId'>
-): Promise<MemberSocials> => {
-  const memberId: string = args?.memberId ?? ctx.memberId;
+  args: GetMemberSocialsArgs
+): Promise<MemberSocials[]> => {
+  const { communityId, memberId } = args;
 
-  const socials: MemberSocials = await new BloomManager().findOneOrFail(
+  const queryArgs = communityId
+    ? { member: { community: communityId } }
+    : { member: memberId };
+
+  const socials: MemberSocials[] = await new BloomManager().find(
     MemberSocials,
-    { member: memberId },
-    { cacheKey: `${QueryEvent.GET_MEMBER_SOCIALS}-${memberId}` }
+    { ...queryArgs },
+    {
+      cacheKey: communityId
+        ? `${QueryEvent.GET_MEMBER_SOCIALS}-${communityId}`
+        : `${QueryEvent.GET_MEMBER_SOCIALS}-${memberId}`
+    }
   );
 
   return socials;
