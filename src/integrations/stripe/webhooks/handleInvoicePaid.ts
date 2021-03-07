@@ -28,7 +28,7 @@ const handleInvoicePaid = async (event: Stripe.Event) => {
     bm.findOne(Community, { integrations: { stripeAccountId } }),
     bm.findOne(
       Member,
-      { integrations: { stripeCustomerId: invoice.customer as string } },
+      { memberIntegrations: { stripeCustomerId: invoice.customer as string } },
       { populate: ['integrations'] }
     ),
     bm.findOne(Payment, { stripeInvoiceId: invoice.id })
@@ -46,7 +46,7 @@ const handleInvoicePaid = async (event: Stripe.Event) => {
   }
 
   const method: Stripe.PaymentMethod = await stripe.paymentMethods.retrieve(
-    member.integrations.stripePaymentMethodId,
+    member.memberIntegrations.stripePaymentMethodId,
     { stripeAccount: stripeAccountId }
   );
 

@@ -2,6 +2,7 @@ import { IsUrl } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
 import {
   AfterCreate,
+  AfterUpdate,
   BeforeCreate,
   BeforeUpdate,
   Cascade,
@@ -137,6 +138,11 @@ export default class Member extends BaseEntity {
     );
   }
 
+  @AfterUpdate()
+  afterUpdate() {
+    cache.invalidateKeys([`${QueryEvent.GET_MEMBERS}-${this.community.id}`]);
+  }
+
   // ## RELATIONSHIPS
 
   @Field(() => [EventAttendee])
@@ -153,7 +159,7 @@ export default class Member extends BaseEntity {
 
   @Field(() => MemberIntegrations)
   @OneToOne(() => MemberIntegrations, (integrations) => integrations.member)
-  integrations: MemberIntegrations;
+  memberIntegrations: MemberIntegrations;
 
   @Field(() => [EventInvitee])
   @OneToMany(() => EventInvitee, ({ member }) => member)

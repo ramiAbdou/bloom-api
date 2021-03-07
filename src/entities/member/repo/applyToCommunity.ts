@@ -5,6 +5,7 @@ import { FilterQuery } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
+import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
 import updatePaymentMethod from '@entities/member-integrations/repo/updatePaymentMethod';
 import MemberPlan, { RecurrenceType } from '@entities/member-plan/MemberPlan';
 import MemberSocials from '@entities/member-socials/MemberSocials';
@@ -124,7 +125,13 @@ const applyToCommunity = async (
     );
   }
 
-  const member: Member = bm.create(Member, { community, email, user });
+  const member: Member = bm.create(Member, {
+    community,
+    email,
+    memberIntegrations: bm.create(MemberIntegrations, {}),
+    user
+  });
+
   const socials: MemberSocials = bm.create(MemberSocials, { member });
 
   const questions = community.questions.getItems();

@@ -6,6 +6,7 @@ import MemberIntegrations from './MemberIntegrations';
 import getChangePreview, {
   GetChangePreviewResult
 } from './repo/getChangePreview';
+import getMemberIntegrations from './repo/getMemberIntegrations';
 import getUpcomingPayment, {
   GetUpcomingPaymentResult
 } from './repo/getUpcomingPayment';
@@ -22,6 +23,14 @@ export default class MemberIntegrationsResolver {
     @Ctx() ctx: GQLContext
   ): Promise<GetChangePreviewResult> {
     return getChangePreview(args, ctx);
+  }
+
+  @Authorized()
+  @Query(() => [MemberIntegrations])
+  async getMemberIntegrations(
+    @Ctx() ctx: GQLContext
+  ): Promise<MemberIntegrations[]> {
+    return getMemberIntegrations(ctx);
   }
 
   @Authorized()

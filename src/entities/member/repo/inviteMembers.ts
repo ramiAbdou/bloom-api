@@ -3,6 +3,8 @@ import { ArgsType, Field, InputType } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
+import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
+import MemberSocials from '@entities/member-socials/MemberSocials';
 import User from '@entities/user/User';
 import { emitEmailEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
@@ -91,8 +93,10 @@ const inviteMembers = async (
 
       return bm.create(Member, {
         community,
+        memberIntegrations: bm.create(MemberIntegrations, {}),
         plan: community.defaultType.id,
         role: isAdmin ? MemberRole.ADMIN : null,
+        socials: bm.create(MemberSocials, {}),
         status: MemberStatus.INVITED,
         user
       });

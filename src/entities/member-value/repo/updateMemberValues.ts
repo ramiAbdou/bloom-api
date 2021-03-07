@@ -1,9 +1,7 @@
 import { ArgsType, Field, InputType } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
-import cache from '@core/db/cache';
 import { GQLContext } from '@util/constants';
-import { QueryEvent } from '@util/events';
 import MemberValue from '../MemberValue';
 
 @InputType()
@@ -34,7 +32,7 @@ const updateMemberValues = async (
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<MemberValue[]> => {
   const { items } = args;
-  const { communityId, memberId } = ctx;
+  const { memberId } = ctx;
 
   // Need to find all of the Question(s) with these ID's.
   const questionIds: string[] = items.map(({ questionId }) => questionId);
@@ -72,11 +70,6 @@ const updateMemberValues = async (
   );
 
   await bm.flush();
-
-  cache.invalidateKeys([
-    `${QueryEvent.GET_DATABASE}-${communityId}`,
-    `${QueryEvent.GET_DIRECTORY}-${communityId}`
-  ]);
 
   return updatedValues;
 };

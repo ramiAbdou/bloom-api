@@ -18,19 +18,19 @@ const createStripeCustomer = async (
 
   const bm = new BloomManager();
 
-  const integrations: MemberIntegrations = await bm.findOne(
+  const memberIntegrations: MemberIntegrations = await bm.findOne(
     MemberIntegrations,
     { member: memberId }
   );
 
   // If the stripeCustomerId already exists, there's no need create a new
   // customer.
-  if (integrations.stripeCustomerId) return integrations;
+  if (memberIntegrations.stripeCustomerId) return memberIntegrations;
 
-  await bm.em.populate(integrations, ['member.community.integrations']);
+  await bm.em.populate(memberIntegrations, ['member.community.integrations']);
 
-  const { email, fullName } = integrations.member;
-  const { stripeAccountId } = integrations.member.community.integrations;
+  const { email, fullName } = memberIntegrations.member;
+  const { stripeAccountId } = memberIntegrations.member.community.integrations;
 
   const existingStripeCustomers: Stripe.Customer[] = (
     await stripe.customers.list(
@@ -51,10 +51,10 @@ const createStripeCustomer = async (
         )
       ).id;
 
-  integrations.stripeCustomerId = stripeCustomerId;
+  memberIntegrations.stripeCustomerId = stripeCustomerId;
   await bm.flush({ flushEvent: MutationEvent.CREATE_STRIPE_CUSTOMER });
 
-  return integrations;
+  return memberIntegrations;
 };
 
 export default createStripeCustomer;

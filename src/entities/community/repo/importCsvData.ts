@@ -3,6 +3,7 @@ import day from 'dayjs';
 import { internet } from 'faker';
 
 import BloomManager from '@core/db/BloomManager';
+import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
 import MemberPlan from '@entities/member-plan/MemberPlan';
 import MemberSocials from '@entities/member-socials/MemberSocials';
 import MemberValue from '@entities/member-value/MemberValue';
@@ -74,6 +75,7 @@ const processRow = async ({
     email,
     firstName,
     lastName,
+    memberIntegrations: bm.create(MemberIntegrations, {}),
     role: email === ownerEmail ? MemberRole.OWNER : null,
     status: MemberStatus.ACCEPTED,
     user

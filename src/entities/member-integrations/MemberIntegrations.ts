@@ -1,7 +1,9 @@
 import { Authorized, Field, ObjectType } from 'type-graphql';
-import { Entity, OneToOne, Property } from '@mikro-orm/core';
+import { AfterUpdate, Entity, OneToOne, Property } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
+import cache from '@core/db/cache';
+import { QueryEvent } from '@util/events';
 import Member from '../member/Member';
 import getNextPaymentDate from './repo/getNextPaymentDate';
 import getPaymentMethod, {
@@ -52,9 +54,20 @@ export default class MemberIntegrations extends BaseEntity {
     return getNextPaymentDate(this.id);
   }
 
+  // ## LIFECYCLE HOOKS
+
+  @AfterUpdate()
+  afterUpdate() {
+    cache.invalidateKeys([
+      `${QueryEvent.GET_MEMBER_INTEGRATIONS}-${this.member.id}`
+    ]);
+  }
+
   // ## RELATIONSHIPS
 
   @Field(() => Member)
-  @OneToOne(() => Member, ({ integrations }) => integrations, { owner: true })
+  @OneToOne(() => Member, ({ memberIntegrations }) => memberIntegrations, {
+    owner: true
+  })
   member: Member;
 }
