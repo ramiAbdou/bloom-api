@@ -10,6 +10,11 @@ export class RestoreMembersArgs {
   memberIds: string[];
 }
 
+/**
+ * Returns the restored Member(s).
+ *
+ * @param args.memberIds IDs of the Member(s).
+ */
 const restoreMembers = async (args: RestoreMembersArgs): Promise<Member[]> => {
   const { memberIds } = args;
 
