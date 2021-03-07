@@ -22,7 +22,7 @@ const getActiveMembersGrowth = async (
   const startOf60DaysAgo = day.utc().subtract(60, 'day').startOf('d');
 
   const refreshesLastMonth: number = await bm.em.count(Member, {
-    community: { id: communityId },
+    community: communityId,
     refreshes: {
       createdAt: {
         $gte: startOf60DaysAgo.format(),
@@ -32,7 +32,7 @@ const getActiveMembersGrowth = async (
   });
 
   const refreshesThisMonth: number = await bm.em.count(Member, {
-    community: { id: communityId },
+    community: communityId,
     refreshes: { createdAt: { $gte: startOf30DaysAgo.format() } }
   });
 

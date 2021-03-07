@@ -12,24 +12,24 @@ import { TimeSeriesData } from '@util/gql';
  * including the current total number of members as well as the growth
  * percentage.
  *
- * @example getTotalGrowthSeries() => [
+ * @example getMembersSeries() => [
  *  { name: '2021-01-16T00:00:00Z', value: 100 },
  *  { name: '2021-01-17T00:00:00Z', value: 150 },
  *  { name: '2021-01-18T00:00:00Z', value: 200 },
  * ]
  */
-const getTotalMembersSeries = async (
+const getMembersSeries = async (
   ctx: Pick<GQLContext, 'communityId'>
 ): Promise<TimeSeriesData[]> => {
   const { communityId } = ctx;
-  const cacheKey = `${QueryEvent.GET_TOTAL_MEMBERS_SERIES}-${communityId}`;
+  const cacheKey = `${QueryEvent.GET_MEMBERS_SERIES}-${communityId}`;
 
   if (cache.has(cacheKey)) {
     return cache.get(cacheKey);
   }
 
   const members = await new BloomManager().find(Member, {
-    community: { id: communityId },
+    community: communityId,
     status: MemberStatus.ACCEPTED
   });
 
@@ -52,4 +52,4 @@ const getTotalMembersSeries = async (
   return result;
 };
 
-export default getTotalMembersSeries;
+export default getMembersSeries;

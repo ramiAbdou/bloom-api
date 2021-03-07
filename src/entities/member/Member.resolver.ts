@@ -2,14 +2,19 @@ import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import Member, { MemberRole } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
+import { TimeSeriesData } from '@util/gql';
 import applyToCommunity, {
   ApplyToCommunityArgs
 } from './repo/applyToCommunity';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import demoteMembers, { DemoteMembersArgs } from './repo/demoteMembers';
+import getActiveMembersGrowth from './repo/getActiveMembersGrowth';
+import getActiveMembersSeries from './repo/getActiveMembersSeries';
 import getApplicants from './repo/getApplicants';
 import getMember, { GetMemberArgs } from './repo/getMember';
 import getMembers, { GetMembersArgs } from './repo/getMembers';
+import getMembersGrowth from './repo/getMembersGrowth';
+import getMembersSeries from './repo/getMembersSeries';
 import getOwner, { GetOwnerArgs } from './repo/getOwner';
 import inviteMembers, { InviteMembersArgs } from './repo/inviteMembers';
 import isEmailTaken, { IsEmailTakenArgs } from './repo/isEmailTaken';
@@ -53,6 +58,20 @@ export default class MemberResolver {
   }
 
   @Authorized(MemberRole.ADMIN)
+  @Query(() => [Number, Number])
+  async getActiveMembersGrowth(@Ctx() ctx: GQLContext): Promise<number[]> {
+    return getActiveMembersGrowth(ctx);
+  }
+
+  @Authorized(MemberRole.ADMIN)
+  @Query(() => [TimeSeriesData])
+  async getActiveMembersSeries(
+    @Ctx() ctx: GQLContext
+  ): Promise<TimeSeriesData[]> {
+    return getActiveMembersSeries(ctx);
+  }
+
+  @Authorized(MemberRole.ADMIN)
   @Query(() => [Member])
   async getApplicants(@Ctx() ctx: GQLContext): Promise<Member[]> {
     return getApplicants(ctx);
@@ -76,6 +95,18 @@ export default class MemberResolver {
   @Query(() => Member)
   async getOwner(@Args() args: GetOwnerArgs): Promise<Member> {
     return getOwner(args);
+  }
+
+  @Authorized(MemberRole.ADMIN)
+  @Query(() => [Number, Number])
+  async getMembersGrowth(@Ctx() ctx: GQLContext): Promise<number[]> {
+    return getMembersGrowth(ctx);
+  }
+
+  @Authorized(MemberRole.ADMIN)
+  @Query(() => [TimeSeriesData])
+  async getMembersSeries(@Ctx() ctx: GQLContext): Promise<TimeSeriesData[]> {
+    return getMembersSeries(ctx);
   }
 
   @Authorized(MemberRole.ADMIN)

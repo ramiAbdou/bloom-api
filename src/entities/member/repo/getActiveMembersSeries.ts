@@ -24,7 +24,7 @@ const getActiveMembersSeries = async (
   const activeMembersThisMonth: Member[] = await new BloomManager().find(
     Member,
     {
-      community: { id: communityId },
+      community: communityId,
       refreshes: { createdAt: { $gte: startOf30DaysAgo.format() } }
     },
     { orderBy: { createdAt: QueryOrder.DESC }, populate: ['refreshes'] }
