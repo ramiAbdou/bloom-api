@@ -6,6 +6,7 @@ import { TimeSeriesData } from '@util/gql';
 import Community from './Community';
 import getActiveMembersGrowth from './repo/getActiveMembersGrowth';
 import getActiveMembersSeries from './repo/getActiveMembersSeries';
+import getCommunities, { GetCommunitiesArgs } from './repo/getCommunities';
 import getCommunity, { GetCommunityArgs } from './repo/getCommunity';
 import getEventAttendeesSeries from './repo/getEventAttendeesSeries';
 import getTotalDuesSeries from './repo/getTotalDuesSeries';
@@ -34,6 +35,12 @@ export default class CommunityResolver {
     @Ctx() ctx: GQLContext
   ): Promise<Community> {
     return getCommunity(args, ctx);
+  }
+
+  @Authorized()
+  @Query(() => [Community])
+  async getCommunities(@Args() args: GetCommunitiesArgs): Promise<Community[]> {
+    return getCommunities(args);
   }
 
   @Authorized(MemberRole.ADMIN)

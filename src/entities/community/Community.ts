@@ -79,10 +79,17 @@ export default class Community extends BaseEntity {
   }
 
   @AfterUpdate()
-  afterUpdate() {
+  async afterUpdate() {
+    await this.members.init();
+
+    const members: Member[] = this.members.getItems();
+
     cache.invalidateKeys([
-      `${QueryEvent.GET_COMMUNITY}-${this.id}`,
-      `${QueryEvent.GET_COMMUNITY}-${this.urlName}`
+      `${QueryEvent.GET_COMMUNITIES}-${this.id}`,
+      `${QueryEvent.GET_COMMUNITIES}-${this.urlName}`,
+      ...members.map((member: Member) => {
+        return `${QueryEvent.GET_COMMUNITIES}-${member.user.id}`;
+      })
     ]);
   }
 
