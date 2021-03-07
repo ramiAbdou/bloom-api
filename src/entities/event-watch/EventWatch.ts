@@ -1,5 +1,5 @@
 import { Field, ObjectType } from 'type-graphql';
-import { AfterCreate, Entity, ManyToOne, Unique } from '@mikro-orm/core';
+import { AfterCreate, Entity, ManyToOne, Unique, wrap } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
 import cache from '@core/db/cache';
@@ -14,8 +14,14 @@ export default class EventWatch extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @AfterCreate()
-  afterCreate() {
-    cache.invalidateKeys([`${QueryEvent.GET_EVENT_WATCHES}-${this.event.id}`]);
+  async afterCreate() {
+    await wrap(this.event).init();
+
+    cache.invalidateKeys([
+      `${QueryEvent.GET_EVENT_WATCHES}-${this.event.id}`,
+      `${QueryEvent.GET_EVENT_WATCHES}-${this.member.id}`,
+      `${QueryEvent.GET_EVENT_WATCHES}-${this.event.community.id}`
+    ]);
   }
 
   // ## RELATIONSHIPS

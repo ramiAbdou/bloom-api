@@ -1,6 +1,7 @@
 import { IsUrl } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
 import {
+  AfterUpdate,
   BeforeCreate,
   Collection,
   Entity,
@@ -11,8 +12,10 @@ import {
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
+import cache from '@core/db/cache';
 import Supporter from '@entities/supporter/Supporter';
 import { isProduction } from '@util/constants';
+import { QueryEvent } from '@util/events';
 import Application from '../application/Application';
 import Event from '../event/Event';
 import Integrations from '../integrations/Integrations';
@@ -73,6 +76,14 @@ export default class Community extends BaseEntity {
 
       this.logoUrl = `${DIGITAL_OCEAN_URL}/${this.urlName}`;
     }
+  }
+
+  @AfterUpdate()
+  afterUpdate() {
+    cache.invalidateKeys([
+      `${QueryEvent.GET_COMMUNITY}-${this.id}`,
+      `${QueryEvent.GET_COMMUNITY}-${this.urlName}`
+    ]);
   }
 
   // ## RELATIONSHIPS

@@ -35,11 +35,15 @@ export default class EventGuest extends BaseEntity {
   }
 
   @AfterDelete()
-  afterDelete() {
+  async afterDelete() {
+    await wrap(this.event).init();
+
     cache.invalidateKeys([
       `${QueryEvent.GET_EVENT_GUESTS}-${this.event.id}`,
       `${QueryEvent.GET_EVENT_GUESTS}-${this.member?.id}`,
-      `${QueryEvent.GET_EVENT_GUESTS}-${this.supporter?.id}`
+      `${QueryEvent.GET_EVENT_GUESTS}-${this.supporter?.id}`,
+      `${QueryEvent.GET_EVENT_GUESTS}-${this.event.community.id}`,
+      `${QueryEvent.GET_UPCOMING_EVENT_GUESTS}-${this.event.community.id}`
     ]);
   }
 
