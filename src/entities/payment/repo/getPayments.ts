@@ -1,35 +1,41 @@
 import { ArgsType, Field } from 'type-graphql';
-import { QueryOrder } from '@mikro-orm/core';
+import { FilterQuery, QueryOrder } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
-import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
 import Payment from '../Payment';
 
 @ArgsType()
 export class GetPaymentsArgs {
   @Field({ nullable: true })
+  communityId?: string;
+
+  @Field({ nullable: true })
   memberId?: string;
 }
 
 /**
- * Returns the Payment(s) of a Member.
+ * Returns the Payment(s) of a Community or Member.
  *
+ * @param args.communityId - ID of the Community.
  * @param args.memberId - ID of the Member.
- * @param ctx.memberId - ID of the Member (authenticated).
  */
-const getPayments = async (
-  args: GetPaymentsArgs,
-  ctx: Pick<GQLContext, 'memberId'>
-): Promise<Payment[]> => {
-  const memberId: string = args.memberId ?? ctx.memberId;
+const getPayments = async (args: GetPaymentsArgs): Promise<Payment[]> => {
+  const { communityId, memberId } = args;
+
+  const queryArgs: FilterQuery<Payment> = communityId
+    ? { community: communityId }
+    : { member: memberId };
 
   const payments: Payment[] = await new BloomManager().find(
     Payment,
-    { member: memberId },
+    { ...queryArgs },
     {
-      cacheKey: `${QueryEvent.GET_PAYMENTS}-${memberId}`,
-      orderBy: { createdAt: QueryOrder.DESC }
+      cacheKey: communityId
+        ? `${QueryEvent.GET_PAYMENTS}-${communityId}`
+        : `${QueryEvent.GET_PAYMENTS}-${memberId}`,
+      orderBy: { createdAt: QueryOrder.DESC },
+      populate: communityId ? ['member'] : []
     }
   );
 

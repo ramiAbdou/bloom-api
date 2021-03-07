@@ -20,8 +20,7 @@ const getDirectory = async (
     { community: communityId, status: MemberStatus.ACCEPTED },
     {
       cacheKey: `${QueryEvent.GET_DIRECTORY}-${communityId}`,
-      orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC },
-      populate: ['values']
+      orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC }
     }
   );
 

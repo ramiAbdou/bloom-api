@@ -21,6 +21,14 @@ export class UpdateMemberValuesArgs {
   items: MemberValueArgs[];
 }
 
+/**
+ * Updates the MemberValue(s).
+ *
+ * @param args.items.questionId - ID of the Question.
+ * @param args.items.value - Value to update in the MemberValue.
+ * @param ctx.communityId - ID of the Community.
+ * @param ctx.memberId - ID of the Member.
+ */
 const updateMemberValues = async (
   args: UpdateMemberValuesArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
@@ -28,11 +36,14 @@ const updateMemberValues = async (
   const { items } = args;
   const { communityId, memberId } = ctx;
 
+  // Need to find all of the Question(s) with these ID's.
+  const questionIds: string[] = items.map(({ questionId }) => questionId);
+
   const bm = new BloomManager();
 
   const values: MemberValue[] = await bm.find(MemberValue, {
     member: memberId,
-    question: items.map(({ questionId }) => questionId)
+    question: questionIds
   });
 
   const updatedValues: MemberValue[] = items.reduce(
@@ -40,7 +51,9 @@ const updateMemberValues = async (
       const stringifiedValue = value?.toString();
 
       const existingEntity: MemberValue = values.find(
-        (element: MemberValue) => element.question.id === questionId
+        (element: MemberValue) => {
+          return element.question.id === questionId;
+        }
       );
 
       let entity: MemberValue = existingEntity;

@@ -16,6 +16,13 @@ export class CreateQuestionsArgs {
   questions: EntityData<Question>[];
 }
 
+/**
+ * Returns the nenw Question(s).
+ *
+ * @param args.highlightedQuestionTitle - Title of highlighted Question.
+ * @param args.questions - Question(s) data.
+ * @param ctx.communityId - ID of the Community (authenticated).
+ */
 const createQuestions = async (
   args: CreateQuestionsArgs,
   ctx: Pick<GQLContext, 'communityId'>
@@ -24,22 +31,22 @@ const createQuestions = async (
   const { communityId } = ctx;
 
   const bm = new BloomManager();
-  const community: Community = await bm.findOne(Community, { id: communityId });
+  const community: Community = await bm.findOne(Community, communityId);
 
   let highlightedQuestion: Question;
 
   const questions: Question[] = initialQuestions.map(
-    (question: EntityData<Question>) => {
-      const persistedQuestion: Question = bm.create(Question, {
-        ...question,
+    (questionData: EntityData<Question>) => {
+      const question: Question = bm.create(Question, {
+        ...questionData,
         community: communityId
       });
 
-      if (persistedQuestion.title === highlightedQuestionTitle) {
-        highlightedQuestion = persistedQuestion;
+      if (question.title === highlightedQuestionTitle) {
+        highlightedQuestion = question;
       }
 
-      return persistedQuestion;
+      return question;
     }
   );
 

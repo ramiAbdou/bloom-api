@@ -4,7 +4,8 @@ import {
   AfterUpdate,
   Entity,
   ManyToOne,
-  Property
+  Property,
+  wrap
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
@@ -28,13 +29,23 @@ export default class MemberValue extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @AfterCreate()
-  afterCreate() {
-    cache.invalidateKeys([`${QueryEvent.GET_MEMBER_VALUES}-${this.member.id}`]);
+  async afterCreate() {
+    await wrap(this.member).init();
+
+    cache.invalidateKeys([
+      `${QueryEvent.GET_MEMBER_VALUES}-${this.member.id}`,
+      `${QueryEvent.GET_MEMBER_VALUES}-${this.member.community.id}`
+    ]);
   }
 
   @AfterUpdate()
-  afterUpdate() {
-    cache.invalidateKeys([`${QueryEvent.GET_MEMBER_VALUES}-${this.member.id}`]);
+  async afterUpdate() {
+    await wrap(this.member).init();
+
+    cache.invalidateKeys([
+      `${QueryEvent.GET_MEMBER_VALUES}-${this.member.id}`,
+      `${QueryEvent.GET_MEMBER_VALUES}-${this.member.community.id}`
+    ]);
   }
 
   // ## RELATIONSHIPS

@@ -4,7 +4,7 @@ import { AuthTokens, GQLContext } from '@util/constants';
 import { VerifyEvent } from '@util/events';
 import { TokenArgs } from '@util/gql';
 import { decodeToken } from '@util/util';
-import joinEventViaToken from '../../event-attendee/repo/createEventAttendeeFromGuestToken';
+import createEventAttendeeFromGuestToken from '../../event-attendee/repo/createEventAttendeeFromGuestToken';
 import refreshToken from './refreshToken';
 
 @ObjectType()
@@ -22,6 +22,15 @@ export class VerifiedToken {
   userId?: string;
 }
 
+/**
+ * Returns the VerifiedToken based on the VerifyEvent that is supplied.
+ *
+ * @param args.event - VerifyEvent to process.
+ * @param args.guestId - ID of the EventGuest.
+ * @param args.memberId - ID of the Member.
+ * @param args.userId - ID of the User.
+ * @param ctx.res - Express response object.
+ */
 const verifyToken = async (
   args: TokenArgs,
   ctx: Pick<GQLContext, 'res'>
@@ -35,7 +44,7 @@ const verifyToken = async (
   let tokens: AuthTokens;
 
   if (event === VerifyEvent.JOIN_EVENT) {
-    await joinEventViaToken({ guestId });
+    await createEventAttendeeFromGuestToken({ guestId });
   }
 
   if ([VerifyEvent.LOG_IN].includes(event)) {

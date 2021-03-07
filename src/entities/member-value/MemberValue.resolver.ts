@@ -12,10 +12,9 @@ export default class MemberValueResolver {
   @Authorized()
   @Query(() => [MemberValue])
   async getMemberValues(
-    @Args() args: GetMemberValueArgs,
-    @Ctx() ctx: GQLContext
+    @Args() args: GetMemberValueArgs
   ): Promise<MemberValue[]> {
-    return getMemberValues(args, ctx);
+    return getMemberValues(args);
   }
 
   @Authorized()

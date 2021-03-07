@@ -14,7 +14,7 @@ export default class QuestionResolver {
   }
 
   @Authorized(MemberRole.ADMIN)
-  @Mutation(() => Question, { nullable: true })
+  @Mutation(() => Question)
   async updateQuestion(@Args() args: UpdateQuestionArgs): Promise<Question> {
     return updateQuestion(args);
   }

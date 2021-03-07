@@ -21,7 +21,7 @@ const getDatabase = async (
     {
       cacheKey: `${QueryEvent.GET_DATABASE}-${communityId}`,
       orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC },
-      populate: ['socials', 'values']
+      populate: ['socials']
     }
   );
 

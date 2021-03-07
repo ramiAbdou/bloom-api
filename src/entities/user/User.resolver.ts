@@ -4,6 +4,7 @@ import { GQLContext } from '@util/constants';
 import { TokenArgs } from '@util/gql';
 import getTokens, { GetTokensArgs, GetTokensResult } from './repo/getTokens';
 import getUser, { GetUserArgs } from './repo/getUser';
+import logout from './repo/logout';
 import sendLoginLink, { SendLoginLinkArgs } from './repo/sendLoginLink';
 import verifyToken, { VerifiedToken } from './repo/verifyToken';
 import User from './User';
@@ -30,10 +31,8 @@ export default class UserResolver {
    * Logs a user out of the session by removing the HTTP only cookies.
    */
   @Mutation(() => Boolean)
-  async logout(@Ctx() { res }: GQLContext) {
-    res.clearCookie('accessToken');
-    res.clearCookie('refreshToken');
-    return true;
+  async logout(@Ctx() ctx: GQLContext) {
+    return logout(ctx);
   }
 
   @Mutation(() => Boolean, { nullable: true })

@@ -13,6 +13,12 @@ export class UpdateQuestionArgs {
   title: string;
 }
 
+/**
+ * Returns the updated Question.
+ *
+ * @param args.questionId - ID of the Question.
+ * @param args.title - Title to change the Question to.
+ */
 const updateQuestion = async (args: UpdateQuestionArgs): Promise<Question> => {
   const { questionId, ...questionData } = args;
 
