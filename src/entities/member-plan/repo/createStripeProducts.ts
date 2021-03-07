@@ -61,17 +61,17 @@ const attachStripeProduct = async (
  * Creates the corresponding Stripe products and prices for every MemberPlan
  * that isn't free. Updates the MemberPlan entity as well.
  */
-const createStripeProducts = async ({
-  communityId
-}: Pick<GQLContext, 'communityId'>) => {
+const createStripeProducts = async (ctx: Pick<GQLContext, 'communityId'>) => {
+  const { communityId } = ctx;
+
   const bm = new BloomManager();
 
   const [integrations, plans]: [
     Integrations,
     MemberPlan[]
   ] = await Promise.all([
-    bm.findOne(Integrations, { community: { id: communityId } }),
-    bm.find(MemberPlan, { community: { id: communityId } })
+    bm.findOne(Integrations, { community: communityId }),
+    bm.find(MemberPlan, { community: communityId })
   ]);
 
   const updatedTypes: MemberPlan[] = await Promise.all(

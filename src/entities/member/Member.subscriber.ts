@@ -13,7 +13,7 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
   }
 
   async afterUpdate({ changeSet, entity: member }: EventArgs<Member>) {
-    cache.invalidateKeys([`${QueryEvent.GET_MEMBER}-${member.id}`]);
+    cache.invalidateKeys([`${QueryEvent.GET_MEMBERS}-${member.id}`]);
 
     const { originalEntity } = changeSet;
 

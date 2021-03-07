@@ -1,5 +1,7 @@
 import { Field, Float, ObjectType } from 'type-graphql';
 import {
+  AfterCreate,
+  AfterUpdate,
   Collection,
   Entity,
   Enum,
@@ -9,8 +11,10 @@ import {
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
+import cache from '@core/db/cache';
 import Community from '@entities/community/Community';
 import Member from '@entities/member/Member';
+import { QueryEvent } from '@util/events';
 
 export enum RecurrenceType {
   LIFETIME = 'Lifetime',
@@ -45,6 +49,22 @@ export default class MemberPlan extends BaseEntity {
   @Property({ persist: false })
   get isFree(): boolean {
     return !this.amount;
+  }
+
+  // ## LIFECYCLE HOOKS
+
+  @AfterCreate()
+  afterCreate() {
+    cache.invalidateKeys([
+      `${QueryEvent.GET_MEMBER_PLANS}-${this.community.id}`
+    ]);
+  }
+
+  @AfterUpdate()
+  afterUpdate() {
+    cache.invalidateKeys([
+      `${QueryEvent.GET_MEMBER_PLANS}-${this.community.id}`
+    ]);
   }
 
   // ## RELATIONSHIPS

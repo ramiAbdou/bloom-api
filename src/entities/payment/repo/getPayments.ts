@@ -34,8 +34,7 @@ const getPayments = async (args: GetPaymentsArgs): Promise<Payment[]> => {
       cacheKey: communityId
         ? `${QueryEvent.GET_PAYMENTS}-${communityId}`
         : `${QueryEvent.GET_PAYMENTS}-${memberId}`,
-      orderBy: { createdAt: QueryOrder.DESC },
-      populate: communityId ? ['member'] : []
+      orderBy: { createdAt: QueryOrder.DESC }
     }
   );
 

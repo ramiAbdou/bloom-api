@@ -1,9 +1,8 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
-import cache from '@core/db/cache';
 import { GQLContext } from '@util/constants';
-import { MutationEvent, QueryEvent } from '@util/events';
+import { MutationEvent } from '@util/events';
 import MemberSocials from '../MemberSocials';
 
 @ArgsType()
@@ -26,9 +25,9 @@ export class UpdateMemberSocialsArgs {
 
 const updateMemberSocials = async (
   args: UpdateMemberSocialsArgs,
-  ctx: Pick<GQLContext, 'communityId' | 'memberId'>
+  ctx: Pick<GQLContext, 'memberId'>
 ): Promise<MemberSocials> => {
-  const { communityId, memberId } = ctx;
+  const { memberId } = ctx;
 
   const socials: MemberSocials = await new BloomManager().findOneAndUpdate(
     MemberSocials,
@@ -36,11 +35,6 @@ const updateMemberSocials = async (
     args,
     { flushEvent: MutationEvent.UPDATE_MEMBER_SOCIALS }
   );
-
-  cache.invalidateKeys([
-    `${QueryEvent.GET_MEMBER_SOCIALS}-${memberId}`,
-    `${QueryEvent.GET_MEMBER_SOCIALS}-${communityId}`
-  ]);
 
   return socials;
 };

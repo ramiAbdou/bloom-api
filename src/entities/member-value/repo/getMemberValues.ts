@@ -15,7 +15,7 @@ export class GetMemberValueArgs {
 }
 
 /**
- * Returns the MemberValue(s) of a Community or Member.
+ * Returns the MemberValue(s). Note that this returns an array.
  *
  * @param args.communityId - ID of the Community.
  * @param args.memberId - ID of the Member.

@@ -24,7 +24,7 @@ const getMemberPlans = async (
 ): Promise<MemberPlan[]> => {
   const communityId: string = args.communityId ?? ctx.communityId;
 
-  const types: MemberPlan[] = await new BloomManager().find(
+  const plans: MemberPlan[] = await new BloomManager().find(
     MemberPlan,
     { community: communityId },
     {
@@ -33,7 +33,7 @@ const getMemberPlans = async (
     }
   );
 
-  return types;
+  return plans;
 };
 
 export default getMemberPlans;

@@ -54,7 +54,7 @@ const createMemberPlans = async (
 
   if (defaultType) community.defaultType = defaultType;
 
-  await bm.flush({ flushEvent: MutationEvent.CREATE_MEMBER_TYPES });
+  await bm.flush({ flushEvent: MutationEvent.CREATE_MEMBER_PLANS });
 
   return plans;
 };

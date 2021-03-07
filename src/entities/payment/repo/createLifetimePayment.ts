@@ -36,9 +36,9 @@ const createLifetimePayment = async (
     MemberIntegrations,
     MemberPlan
   ] = await Promise.all([
-    bm.findOne(Integrations, { community: { id: communityId } }),
-    bm.findOne(MemberIntegrations, { member: memberId }),
-    bm.findOne(MemberPlan, { id: memberPlanId })
+    bm.findOne(Integrations, { community: communityId }),
+    bm.findOne(MemberIntegrations, memberId),
+    bm.findOne(MemberPlan, memberPlanId)
   ]);
 
   if (memberIntegrations.stripeSubscriptionId) {

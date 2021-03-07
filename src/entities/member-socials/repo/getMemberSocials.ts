@@ -14,7 +14,7 @@ export class GetMemberSocialsArgs {
 }
 
 /**
- * Returns the MemberSocials.
+ * Returns the MemberSocials(s). Note this returns an array.
  *
  * @param args.communityId - ID of the Community.
  * @param args.memberId - ID of the Member.

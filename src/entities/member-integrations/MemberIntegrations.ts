@@ -10,18 +10,6 @@ import getPaymentMethod, {
   GetPaymentMethodResult
 } from './repo/getPaymentMethod';
 
-export enum MemberRole {
-  ADMIN = 'Admin',
-  OWNER = 'Owner'
-}
-
-export enum MemberStatus {
-  ACCEPTED = 'Accepted',
-  INVITED = 'Invited',
-  PENDING = 'Pending',
-  REJECTED = 'Rejected'
-}
-
 @ObjectType()
 @Entity()
 export default class MemberIntegrations extends BaseEntity {
