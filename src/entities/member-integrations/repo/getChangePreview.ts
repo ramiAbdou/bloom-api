@@ -7,7 +7,7 @@ import MemberPlan from '@entities/member-plan/MemberPlan';
 import { CreateSubsciptionArgs } from '@entities/payment/repo/createSubscription';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
-import Member from '../Member';
+import MemberIntegrations from '../MemberIntegrations';
 
 @ObjectType()
 export class GetChangePreviewResult {
@@ -35,19 +35,19 @@ const getChangePreview = async (
 
   const bm = new BloomManager();
 
-  const [community, member, plan]: [
+  const [community, integrations, plan]: [
     Community,
-    Member,
+    MemberIntegrations,
     MemberPlan
   ] = await Promise.all([
     bm.findOne(Community, communityId, { populate: ['integrations'] }),
-    bm.findOne(Member, memberId),
+    bm.findOne(MemberIntegrations, { member: memberId }),
     bm.findOne(MemberPlan, memberPlanId)
   ]);
 
-  const { stripeCustomerId, stripeSubscriptionId } = member;
+  const { stripeCustomerId, stripeSubscriptionId } = integrations;
 
-  if (!member.stripeSubscriptionId) return null;
+  if (!integrations.stripeSubscriptionId) return null;
 
   const subscription = await stripe.subscriptions.retrieve(
     stripeSubscriptionId,

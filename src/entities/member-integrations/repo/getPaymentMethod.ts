@@ -2,7 +2,7 @@ import { Field, ObjectType } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import { stripe } from '@integrations/stripe/Stripe.util';
-import Member from '../Member';
+import MemberIntegrations from '../MemberIntegrations';
 
 @ObjectType()
 export class GetPaymentMethodResult {
@@ -22,17 +22,17 @@ export class GetPaymentMethodResult {
 const getPaymentMethod = async (
   memberId: string
 ): Promise<GetPaymentMethodResult> => {
-  const { community, stripePaymentMethodId } = await new BloomManager().findOne(
-    Member,
-    { id: memberId },
-    { populate: ['community.integrations'] }
+  const { member, stripePaymentMethodId } = await new BloomManager().findOne(
+    MemberIntegrations,
+    { member: memberId },
+    { populate: ['member.community.integrations'] }
   );
 
   if (!stripePaymentMethodId) return null;
 
   const paymentMethod = await stripe.paymentMethods.retrieve(
     stripePaymentMethodId,
-    { stripeAccount: community.integrations.stripeAccountId }
+    { stripeAccount: member.community.integrations.stripeAccountId }
   );
 
   const { address } = paymentMethod.billing_details;

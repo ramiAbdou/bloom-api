@@ -6,7 +6,7 @@ import Community from '@entities/community/Community';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
 import { MutationEvent } from '@util/events';
-import Member from '../Member';
+import MemberIntegrations from '../MemberIntegrations';
 import createStripeCustomer from './createStripeCustomer';
 
 @ArgsType()
@@ -18,25 +18,25 @@ export class UpdatePaymentMethodArgs {
 const updatePaymentMethod = async (
   args: UpdatePaymentMethodArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
-) => {
+): Promise<MemberIntegrations> => {
   const { paymentMethodId } = args;
   const { communityId, memberId } = ctx;
 
   const bm = new BloomManager();
 
-  const [community, member]: [Community, Member] = await Promise.all([
-    bm.findOne(Community, { id: communityId }, { populate: ['integrations'] }),
-    bm.findOne(Member, { id: memberId })
+  const [community, integrations]: [
+    Community,
+    MemberIntegrations
+  ] = await Promise.all([
+    bm.findOne(Community, communityId, { populate: ['integrations'] }),
+    bm.findOne(MemberIntegrations, { member: memberId })
   ]);
-
-  let { stripeCustomerId } = member;
 
   // If no Stripe customer ID exists on the member, create and attach the
   // stripeCustomerId to the member.
-  if (!stripeCustomerId) {
-    const updatedMember: Member = await createStripeCustomer({ memberId });
-    stripeCustomerId = updatedMember.stripeCustomerId;
-  }
+  const stripeCustomerId: string =
+    integrations.stripeCustomerId ??
+    (await createStripeCustomer({ memberId }))?.stripeCustomerId;
 
   // Attaches the PaymentMethod to the customer.
   await stripe.paymentMethods.attach(
@@ -59,10 +59,10 @@ const updatePaymentMethod = async (
     }
   );
 
-  member.stripePaymentMethodId = paymentMethodId;
+  integrations.stripePaymentMethodId = paymentMethodId;
   await bm.flush({ flushEvent: MutationEvent.UPDATE_PAYMENT_METHOD });
 
-  return member;
+  return integrations;
 };
 
 export default updatePaymentMethod;

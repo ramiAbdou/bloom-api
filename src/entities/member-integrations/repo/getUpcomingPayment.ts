@@ -6,7 +6,7 @@ import BloomManager from '@core/db/BloomManager';
 import Integrations from '@entities/integrations/Integrations';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
-import Member from '../Member';
+import MemberIntegrations from '../MemberIntegrations';
 
 @ObjectType()
 export class GetUpcomingPaymentResult {
@@ -30,9 +30,12 @@ const getUpcomingPayment = async (
 
   const bm = new BloomManager();
 
-  const [integrations, member]: [Integrations, Member] = await Promise.all([
+  const [integrations, member]: [
+    Integrations,
+    MemberIntegrations
+  ] = await Promise.all([
     bm.findOne(Integrations, { community: communityId }),
-    bm.findOne(Member, memberId)
+    bm.findOne(MemberIntegrations, { member: memberId })
   ]);
 
   const invoice: Stripe.Invoice = await stripe.invoices.retrieveUpcoming(

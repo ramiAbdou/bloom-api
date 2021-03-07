@@ -2,22 +2,15 @@ import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import Member, { MemberRole } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
-import { CreateSubsciptionArgs } from '../payment/repo/createSubscription';
 import applyToCommunity, {
   ApplyToCommunityArgs
 } from './repo/applyToCommunity';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import demoteMembers, { DemoteMembersArgs } from './repo/demoteMembers';
 import getApplicants from './repo/getApplicants';
-import getChangePreview, {
-  GetChangePreviewResult
-} from './repo/getChangePreview';
 import getMember, { GetMemberArgs } from './repo/getMember';
 import getMembers, { GetMembersArgs } from './repo/getMembers';
 import getOwner, { GetOwnerArgs } from './repo/getOwner';
-import getUpcomingPayment, {
-  GetUpcomingPaymentResult
-} from './repo/getUpcomingPayment';
 import inviteMembers, { InviteMembersArgs } from './repo/inviteMembers';
 import isEmailTaken, { IsEmailTakenArgs } from './repo/isEmailTaken';
 import promoteMembers, { PromoteMembersArgs } from './repo/promoteMembers';
@@ -26,9 +19,6 @@ import respondToApplicants, {
 } from './repo/respondToApplicants';
 import restoreMembers, { RestoreMembersArgs } from './repo/restoreMembers';
 import updateMember, { UpdateMemberArgs } from './repo/updateMember';
-import updatePaymentMethod, {
-  UpdatePaymentMethodArgs
-} from './repo/updatePaymentMethod';
 
 @Resolver()
 export default class MemberResolver {
@@ -69,15 +59,6 @@ export default class MemberResolver {
   }
 
   @Authorized()
-  @Query(() => GetChangePreviewResult, { nullable: true })
-  async getChangePreview(
-    @Args() args: CreateSubsciptionArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<GetChangePreviewResult> {
-    return getChangePreview(args, ctx);
-  }
-
-  @Authorized()
   @Query(() => Member, { nullable: true })
   async getMember(
     @Args() args: GetMemberArgs,
@@ -95,14 +76,6 @@ export default class MemberResolver {
   @Query(() => Member)
   async getOwner(@Args() args: GetOwnerArgs): Promise<Member> {
     return getOwner(args);
-  }
-
-  @Authorized()
-  @Query(() => GetUpcomingPaymentResult, { nullable: true })
-  async getUpcomingPayment(
-    @Ctx() ctx: GQLContext
-  ): Promise<GetUpcomingPaymentResult> {
-    return getUpcomingPayment(ctx);
   }
 
   @Authorized(MemberRole.ADMIN)
@@ -150,14 +123,5 @@ export default class MemberResolver {
     @Ctx() ctx: GQLContext
   ): Promise<Member> {
     return updateMember(args, ctx);
-  }
-
-  @Authorized()
-  @Mutation(() => Member, { nullable: true })
-  async updatePaymentMethod(
-    @Args() args: UpdatePaymentMethodArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<Member> {
-    return updatePaymentMethod(args, ctx);
   }
 }

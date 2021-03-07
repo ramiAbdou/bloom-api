@@ -3,9 +3,9 @@ import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
+import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
+import createStripeCustomer from '@entities/member-integrations/repo/createStripeCustomer';
 import MemberPlan from '@entities/member-plan/MemberPlan';
-import Member from '@entities/member/Member';
-import createStripeCustomer from '@entities/member/repo/createStripeCustomer';
 import createStripeSubscription, {
   CreateStripeSubscriptionArgs
 } from '@integrations/stripe/repo/createStripeSubscription';
@@ -37,19 +37,19 @@ const createSubscription = async (
 
   const bm = new BloomManager();
 
-  const [community, member, type]: [
+  const [community, integrations, type]: [
     Community,
-    Member,
+    MemberIntegrations,
     MemberPlan
   ] = await Promise.all([
     bm.findOne(Community, communityId, { populate: ['integrations'] }),
-    bm.findOne(Member, memberId),
+    bm.findOne(MemberIntegrations, { member: memberId }),
     bm.findOne(MemberPlan, memberPlanId)
   ]);
 
   const createSubscriptionArgs: CreateStripeSubscriptionArgs = {
     accountId: community.integrations.stripeAccountId,
-    customerId: member.stripeCustomerId,
+    customerId: integrations.stripeCustomerId,
     priceId: type.stripePriceId
   };
 
@@ -57,16 +57,16 @@ const createSubscription = async (
     accountId: community.integrations.stripeAccountId,
     priceId: type.stripePriceId,
     prorationDate,
-    subscriptionId: member.stripeSubscriptionId
+    subscriptionId: integrations.stripeSubscriptionId
   };
 
-  const subscription: Stripe.Subscription = member.stripeSubscriptionId
+  const subscription: Stripe.Subscription = integrations.stripeSubscriptionId
     ? await updateStripeSubscription(updateSubscriptionArgs)
     : await createStripeSubscription(createSubscriptionArgs);
 
   // If the Stripe subscription succeeds, attach the payment method to the
   // user.
-  member.stripeSubscriptionId = subscription.id;
+  integrations.stripeSubscriptionId = subscription.id;
 
   await bm.flush({ flushEvent: MutationEvent.CREATE_SUBSCRIPTION });
 

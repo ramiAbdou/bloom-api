@@ -28,7 +28,7 @@ const getPaymentReceiptVars = async (
 
   const [community, payment]: [Community, Payment] = await Promise.all([
     bm.findOne(Community, { integrations: { stripeAccountId } }),
-    bm.findOne(Payment, { id: paymentId })
+    bm.findOne(Payment, paymentId)
   ]);
 
   const member: Member = await bm.findOne(Member, payment.member.id);

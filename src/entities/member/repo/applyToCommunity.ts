@@ -5,6 +5,7 @@ import { FilterQuery } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
+import updatePaymentMethod from '@entities/member-integrations/repo/updatePaymentMethod';
 import MemberPlan, { RecurrenceType } from '@entities/member-plan/MemberPlan';
 import MemberSocials from '@entities/member-socials/MemberSocials';
 import MemberValue from '@entities/member-value/MemberValue';
@@ -19,7 +20,6 @@ import { emitEmailEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
 import { EmailEvent, MutationEvent } from '@util/events';
 import Member from '../Member';
-import updatePaymentMethod from './updatePaymentMethod';
 
 @InputType()
 export class MemberValueInput {

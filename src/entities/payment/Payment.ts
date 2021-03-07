@@ -40,7 +40,7 @@ export default class Payment extends BaseEntity {
   @AfterCreate()
   afterCreate() {
     cache.invalidateKeys([
-      `${QueryEvent.GET_DATABASE}-${this.community.id}`,
+      `${QueryEvent.GET_MEMBERS}-${this.community.id}`,
       `${QueryEvent.GET_PAYMENTS}-${this.community.id}`,
       `${QueryEvent.GET_PAYMENTS}-${this.member.id}`,
       `${QueryEvent.GET_TOTAL_DUES_SERIES}-${this.community.id}`

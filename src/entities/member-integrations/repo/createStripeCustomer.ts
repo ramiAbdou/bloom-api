@@ -5,7 +5,7 @@ import BloomManager from '@core/db/BloomManager';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
 import { MutationEvent } from '@util/events';
-import Member from '../Member';
+import MemberIntegrations from '../MemberIntegrations';
 
 /**
  * If the user does not have an associated Stripe customer object, create
@@ -13,23 +13,28 @@ import Member from '../Member';
  */
 const createStripeCustomer = async (
   ctx: Pick<GQLContext, 'memberId'>
-): Promise<Member> => {
+): Promise<MemberIntegrations> => {
   const { memberId } = ctx;
 
   const bm = new BloomManager();
-  const member: Member = await bm.findOne(Member, { id: memberId });
+
+  const integrations: MemberIntegrations = await bm.findOne(
+    MemberIntegrations,
+    { member: memberId }
+  );
 
   // If the stripeCustomerId already exists, there's no need create a new
   // customer.
-  if (member.stripeCustomerId) return member;
+  if (integrations.stripeCustomerId) return integrations;
 
-  await bm.em.populate(member, ['community.integrations']);
+  await bm.em.populate(integrations, ['member.community.integrations']);
 
-  const { stripeAccountId } = member.community.integrations;
+  const { email, fullName } = integrations.member;
+  const { stripeAccountId } = integrations.member.community.integrations;
 
   const existingStripeCustomers: Stripe.Customer[] = (
     await stripe.customers.list(
-      { email: member.email, limit: 1 },
+      { email, limit: 1 },
       { stripeAccount: stripeAccountId }
     )
   )?.data;
@@ -41,15 +46,15 @@ const createStripeCustomer = async (
     ? existingStripeCustomers[0].id
     : (
         await stripe.customers.create(
-          { email: member.email, name: member.fullName },
+          { email, name: fullName },
           { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
         )
       ).id;
 
-  member.stripeCustomerId = stripeCustomerId;
+  integrations.stripeCustomerId = stripeCustomerId;
   await bm.flush({ flushEvent: MutationEvent.CREATE_STRIPE_CUSTOMER });
 
-  return member;
+  return integrations;
 };
 
 export default createStripeCustomer;

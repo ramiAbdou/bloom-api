@@ -1,5 +1,5 @@
 import { IsUrl } from 'class-validator';
-import { Authorized, Field, ObjectType } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
 import {
   AfterCreate,
   BeforeCreate,
@@ -25,16 +25,13 @@ import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
 import EventInvitee from '../event-invitee/EventInvitee';
 import EventWatch from '../event-watch/EventWatch';
+import MemberIntegrations from '../member-integrations/MemberIntegrations';
 import MemberPlan from '../member-plan/MemberPlan';
 import MemberRefresh from '../member-refresh/MemberRefresh';
 import MemberSocials from '../member-socials/MemberSocials';
 import MemberValue from '../member-value/MemberValue';
 import Payment from '../payment/Payment';
 import User from '../user/User';
-import getNextPaymentDate from './repo/getNextPaymentDate';
-import getPaymentMethod, {
-  GetPaymentMethodResult
-} from './repo/getPaymentMethod';
 import isDuesActive from './repo/isDuesActive';
 
 export enum MemberRole {
@@ -97,38 +94,11 @@ export default class Member extends BaseEntity {
   @Enum({ items: () => MemberStatus, type: String })
   status: MemberStatus = MemberStatus.PENDING;
 
-  // We don't store any of the customer's financial data in our server. Stripe
-  // handles all of that for us, we just need Stripe's customer ID in order
-  // to use recurring payments.
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  stripeCustomerId: string;
-
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  stripePaymentMethodId: string;
-
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  stripeSubscriptionId: string;
-
   // ## METHODS
 
   @Field(() => Boolean)
   async isDuesActive(): Promise<boolean> {
     return isDuesActive({ memberId: this.id });
-  }
-
-  @Authorized()
-  @Field(() => GetPaymentMethodResult, { nullable: true })
-  async paymentMethod() {
-    return getPaymentMethod(this.id);
-  }
-
-  @Authorized()
-  @Field(() => String, { nullable: true })
-  async nextPaymentDate() {
-    return getNextPaymentDate(this.id);
   }
 
   // ## LIFECYCLE HOOKS
@@ -180,6 +150,10 @@ export default class Member extends BaseEntity {
   @Field(() => [EventGuest])
   @OneToMany(() => EventGuest, ({ member }) => member)
   guests = new Collection<EventGuest>(this);
+
+  @Field(() => MemberIntegrations)
+  @OneToOne(() => MemberIntegrations, (integrations) => integrations.member)
+  integrations: MemberIntegrations;
 
   @Field(() => [EventInvitee])
   @OneToMany(() => EventInvitee, ({ member }) => member)

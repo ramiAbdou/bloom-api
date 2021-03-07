@@ -4,9 +4,9 @@ import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import Integrations from '@entities/integrations/Integrations';
+import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
+import createStripeCustomer from '@entities/member-integrations/repo/createStripeCustomer';
 import MemberPlan from '@entities/member-plan/MemberPlan';
-import Member from '@entities/member/Member';
-import createStripeCustomer from '@entities/member/repo/createStripeCustomer';
 import createAndPayStripeInvoice from '@integrations/stripe/repo/createAndPayStripeInvoice';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
@@ -31,29 +31,29 @@ const createLifetimePayment = async (
 
   const bm = new BloomManager();
 
-  const [integrations, member, type]: [
+  const [integrations, memberIntegrations, type]: [
     Integrations,
-    Member,
+    MemberIntegrations,
     MemberPlan
   ] = await Promise.all([
     bm.findOne(Integrations, { community: { id: communityId } }),
-    bm.findOne(Member, { id: memberId }),
+    bm.findOne(MemberIntegrations, { member: memberId }),
     bm.findOne(MemberPlan, { id: memberPlanId })
   ]);
 
-  if (member.stripeSubscriptionId) {
-    await stripe.subscriptions.del(member.stripeSubscriptionId, {
+  if (memberIntegrations.stripeSubscriptionId) {
+    await stripe.subscriptions.del(memberIntegrations.stripeSubscriptionId, {
       idempotencyKey: nanoid(),
       stripeAccount: integrations.stripeAccountId
     });
 
-    member.stripeSubscriptionId = null;
+    memberIntegrations.stripeSubscriptionId = null;
     await bm.flush({ flushEvent: MutationEvent.DELETE_SUBSCRIPTION });
   }
 
   const invoice: Stripe.Invoice = await createAndPayStripeInvoice({
     accountId: integrations.stripeAccountId,
-    customerId: member.stripeCustomerId,
+    customerId: memberIntegrations.stripeCustomerId,
     priceId: type.stripePriceId
   });
 
