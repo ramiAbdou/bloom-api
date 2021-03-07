@@ -1,5 +1,6 @@
 import { Field, ObjectType } from 'type-graphql';
 import {
+  AfterCreate,
   AfterUpdate,
   ArrayType,
   BeforeCreate,
@@ -161,6 +162,13 @@ export default class Question extends BaseEntity {
   }
 
   // ## LIFECYCLE HOOKS
+
+  @AfterCreate()
+  afterCreate() {
+    Question.cache.invalidateKeys([
+      `${QueryEvent.GET_QUESTIONS}-${this.community.id}`
+    ]);
+  }
 
   @AfterUpdate()
   afterUpdate() {
