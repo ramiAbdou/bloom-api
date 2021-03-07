@@ -12,10 +12,10 @@ export class CreateEventWatchArgs {
 }
 
 /**
- * Returns a new EventWatch.
+ * Returns a new EventWatch (w/ Member populated).
  *
- * @param args.eventId - ID of the event.
- * @param ctx.memberId - ID of the member.
+ * @param args.eventId - ID of the Event.
+ * @param ctx.memberId - ID of the Member (authenticated).
  */
 const createEventWatch = async (
   args: CreateEventWatchArgs,
@@ -32,11 +32,13 @@ const createEventWatch = async (
     { event: eventId, member: memberId }
   );
 
+  // Populate the Member on the EventWatch (for React).
+  await bm.em.populate(watch, ['member']);
+
   if (!wasFound) {
     await bm.flush({ flushEvent: MutationEvent.CREATE_EVENT_WATCH });
   }
 
-  await bm.em.populate(watch, ['member.values', 'member.user']);
   return watch;
 };
 

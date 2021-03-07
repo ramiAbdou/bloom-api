@@ -113,7 +113,6 @@ export enum QueryEvent {
   GET_MEMBERS = 'getMembers',
   GET_OWNER = 'getOwner',
   GET_PAST_EVENTS = 'getPastEvents',
-  GET_PAST_EVENT_WATCHES = 'getPastEventWatches',
   GET_PAYMENTS = 'getPayments',
   GET_RANKED_QUESTIONS = 'getRankedQuestions',
   GET_QUESTIONS = 'getQuestions',

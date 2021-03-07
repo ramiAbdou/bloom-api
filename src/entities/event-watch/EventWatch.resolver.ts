@@ -7,7 +7,6 @@ import createEventWatch, {
   CreateEventWatchArgs
 } from './repo/createEventWatch';
 import getEventWatches, { GetEventWatchesArgs } from './repo/getEventWatches';
-import getPastEventWatches from './repo/getPastEventWatches';
 
 @Resolver()
 export default class EventWatchResolver {
@@ -26,10 +25,5 @@ export default class EventWatchResolver {
     @Args() args: GetEventWatchesArgs
   ): Promise<EventWatch[]> {
     return getEventWatches(args);
-  }
-
-  @Query(() => [EventWatch])
-  async getPastEventWatches(@Ctx() ctx: GQLContext): Promise<EventWatch[]> {
-    return getPastEventWatches(ctx);
   }
 }

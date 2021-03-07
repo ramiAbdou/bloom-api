@@ -14,6 +14,8 @@ import RankedQuestion from '../ranked-question/RankedQuestion';
 @ObjectType()
 @Entity()
 export default class Application extends BaseEntity {
+  // ## FIELDS
+
   @Field()
   @Property({ type: 'text' })
   description: string;

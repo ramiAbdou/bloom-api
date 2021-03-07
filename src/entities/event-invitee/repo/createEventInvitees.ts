@@ -9,6 +9,13 @@ export interface CreateEventInviteesArgs {
   memberIds: string[];
 }
 
+/**
+ * Returns the new EventInvitee(s).
+ *
+ * @param args.eventId - ID of the Event.
+ * @param args.memberIds - IDs of the Member(s) to invite.
+ * @param ctx.communityId - ID of the Community (authenticated).
+ */
 const createEventInvitees = async (
   args: CreateEventInviteesArgs,
   ctx: Pick<GQLContext, 'communityId'>

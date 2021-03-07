@@ -78,7 +78,7 @@ export default class Event extends BaseEntity {
   @IsUrl()
   videoUrl: string;
 
-  // ## MEMBERS
+  // ## METHODS
 
   @Field(() => String)
   async eventUrl(): Promise<string> {
@@ -95,7 +95,7 @@ export default class Event extends BaseEntity {
     return googleCalendarEvent.htmlLink;
   }
 
-  // ## LIFECYCLE
+  // ## LIFECYCLE HOOKS
 
   @BeforeCreate()
   beforeCreate() {

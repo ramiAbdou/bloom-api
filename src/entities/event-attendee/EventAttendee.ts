@@ -12,7 +12,7 @@ import Member from '../member/Member';
 @Entity()
 @Unique({ properties: ['event', 'member', 'supporter'] })
 export default class EventAttendee extends BaseEntity {
-  // ## LIFECYCLE
+  // ## LIFECYCLE HOOKS
 
   @AfterCreate()
   async afterCreate() {
