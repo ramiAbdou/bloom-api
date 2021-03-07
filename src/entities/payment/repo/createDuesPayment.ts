@@ -23,7 +23,10 @@ const createDuesPayment = async (
   const { communityId, memberId } = ctx;
 
   const bm = new BloomManager();
-  const member: Member = await bm.findOne(Member, memberId);
+
+  const member: Member = await bm.findOne(Member, memberId, {
+    populate: ['memberIntegrations']
+  });
 
   // Only if the subscription worked should the Payment be created.
 
