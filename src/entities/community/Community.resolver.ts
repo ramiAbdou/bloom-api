@@ -9,7 +9,6 @@ import getActiveMembersSeries from './repo/getActiveMembersSeries';
 import getCommunities, { GetCommunitiesArgs } from './repo/getCommunities';
 import getCommunity, { GetCommunityArgs } from './repo/getCommunity';
 import getEventAttendeesSeries from './repo/getEventAttendeesSeries';
-import getTotalDuesSeries from './repo/getTotalDuesSeries';
 import getTotalMembersGrowth from './repo/getTotalMembersGrowth';
 import getTotalMembersSeries from './repo/getTotalMembersSeries';
 
@@ -49,12 +48,6 @@ export default class CommunityResolver {
     @Ctx() ctx: GQLContext
   ): Promise<TimeSeriesData[]> {
     return getEventAttendeesSeries(ctx);
-  }
-
-  @Authorized(MemberRole.ADMIN)
-  @Query(() => [TimeSeriesData])
-  async getTotalDuesSeries(@Ctx() ctx: GQLContext): Promise<TimeSeriesData[]> {
-    return getTotalDuesSeries(ctx);
   }
 
   @Authorized(MemberRole.ADMIN)

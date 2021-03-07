@@ -1,4 +1,4 @@
-import day from 'dayjs';
+import day, { Dayjs } from 'dayjs';
 
 import BloomManager from '@core/db/BloomManager';
 import cache from '@core/db/cache';
@@ -12,26 +12,29 @@ import { TimeSeriesData } from '@util/gql';
  * including the current total number of members as well as the growth
  * percentage.
  *
- * @example getTotalDuesSeries() => [
+ * @param ctx.communityId - ID of the Community.
+ *
+ * @example getPaymentsSeries() => [
  *  { name: '2021-01-16T00:00:00Z', value: 100 },
  *  { name: '2021-01-17T00:00:00Z', value: 150 },
  *  { name: '2021-01-18T00:00:00Z', value: 200 },
  * ]
  */
-const getTotalDuesSeries = async (
+const getPaymentsSeries = async (
   ctx: Pick<GQLContext, 'communityId'>
 ): Promise<TimeSeriesData[]> => {
   const { communityId } = ctx;
-  const cacheKey = `${QueryEvent.GET_TOTAL_DUES_SERIES}-${communityId}`;
+
+  const cacheKey = `${QueryEvent.GET_PAYMENTS_SERIES}-${communityId}`;
 
   if (cache.has(cacheKey)) {
     return cache.get(cacheKey);
   }
 
-  const startOfLastMonth = day.utc().subtract(1, 'month').startOf('d');
+  const startOfLastMonth: Dayjs = day.utc().subtract(1, 'month').startOf('d');
 
   const payments = await new BloomManager().find(Payment, {
-    community: { id: communityId },
+    community: communityId,
     createdAt: { $gte: startOfLastMonth.format() }
   });
 
@@ -56,4 +59,4 @@ const getTotalDuesSeries = async (
   return result;
 };
 
-export default getTotalDuesSeries;
+export default getPaymentsSeries;
