@@ -10,11 +10,13 @@ import {
   Enum,
   ManyToOne,
   OneToMany,
-  Property
+  Property,
+  wrap
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
 import cache from '@core/db/cache';
+import { APP } from '@util/constants';
 import { QueryEvent } from '@util/events';
 import getGoogleCalendarEvent from '../../integrations/google/repo/getGoogleCalendarEvent';
 import Community from '../community/Community';
@@ -22,7 +24,6 @@ import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
 import EventInvitee from '../event-invitee/EventInvitee';
 import EventWatch from '../event-watch/EventWatch';
-import getEventUrl from './repo/getEventUrl';
 
 export enum EventPrivacy {
   MEMBERS_ONLY = 'Members Only',
@@ -41,12 +42,6 @@ export default class Event extends BaseEntity {
   @Field()
   @Property()
   endTime: string;
-
-  @Field(() => String)
-  @Property({ persist: false })
-  get eventUrl(): Promise<string> | string {
-    return getEventUrl({ eventId: this.id });
-  }
 
   @Field({ nullable: true })
   @Property({ nullable: true })
@@ -85,6 +80,12 @@ export default class Event extends BaseEntity {
 
   // ## MEMBERS
 
+  @Field(() => String)
+  async eventUrl(): Promise<string> {
+    await wrap(this.community).init();
+    return `${APP.CLIENT_URL}/${this.community?.urlName}/events/${this.id}`;
+  }
+
   @Field(() => String, { nullable: true })
   async googleCalendarEventUrl(): Promise<string> {
     const googleCalendarEvent = await getGoogleCalendarEvent(
@@ -113,7 +114,7 @@ export default class Event extends BaseEntity {
   afterUpdate() {
     cache.invalidateKeys([
       `${QueryEvent.GET_EVENT}-${this.id}`,
-      ...(day().isAfter(day(this.endTime))
+      ...(day.utc().isAfter(day.utc(this.endTime))
         ? [`${QueryEvent.GET_PAST_EVENTS}-${this.community.id}`]
         : [`${QueryEvent.GET_UPCOMING_EVENTS}-${this.community.id}`])
     ]);

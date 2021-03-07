@@ -47,7 +47,7 @@ export class CreateEventArgs {
 }
 
 /**
- * Returns an Event.
+ * Returns a new Event.
  *
  * @param args - Event data (eg: description, endTime, startTime).
  * @param ctx.communityId - ID of the Community (authenticated).

@@ -13,8 +13,8 @@ export class DeleteEventGuestArgs {
 }
 
 /**
- * Returns the deleted EventGuest. Returns true if successful, throws error
- * otherwise.
+ * Returns the deleted EventGuest. Also, removes the EventGuest from the
+ * Event's Google Calendar invitation.
  *
  * @param args.eventId - ID of the Event.
  * @param ctx.memberId - ID of the Member (authenticated).

@@ -51,7 +51,7 @@ const processGoogleEvent = async ({
     const googleCalendarEvent = await createGoogleCalendarEvent({
       description: event.description,
       end: { dateTime: event.endTime },
-      location: await event.eventUrl,
+      location: await event.eventUrl(),
       start: { dateTime: event.startTime },
       summary: event.title,
       visibility:

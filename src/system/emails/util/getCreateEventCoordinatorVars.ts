@@ -55,7 +55,8 @@ const getCreateEventCoordinatorVars = async (
     'endTime' | 'eventUrl' | 'privacy' | 'startTime' | 'summary' | 'title'
   > = {
     endTime: event.endTime,
-    eventUrl: await event.eventUrl,
+    // @ts-ignore b/c we need to await the call.
+    eventUrl: await event.eventUrl(),
     privacy: event.privacy,
     startTime: event.startTime,
     summary: event.summary,

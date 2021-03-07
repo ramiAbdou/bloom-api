@@ -4,7 +4,7 @@ import { AuthTokens, GQLContext } from '@util/constants';
 import { VerifyEvent } from '@util/events';
 import { TokenArgs } from '@util/gql';
 import { decodeToken } from '@util/util';
-import joinEventViaToken from '../../event-guest/repo/joinEventViaToken';
+import joinEventViaToken from '../../event-attendee/repo/createEventAttendeeFromGuestToken';
 import refreshToken from './refreshToken';
 
 @ObjectType()
