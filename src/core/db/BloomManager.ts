@@ -14,7 +14,7 @@ import {
 import Cache from '@core/cache/Cache';
 import logger from '@system/logger/logger';
 import { now } from '@util/util';
-import { getAllEntityCaches, getEntityCache } from '../cache/cache.util';
+import { getAllEntityCaches, getEntityCache } from '../cache/Cache.util';
 import {
   BloomCreateAndFlushArgs,
   BloomFindAndDeleteOptions,
