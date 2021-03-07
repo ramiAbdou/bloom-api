@@ -2,6 +2,7 @@ import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { MemberRole } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
+import { TimeSeriesData } from '@util/gql';
 import EventAttendee from './EventAttendee';
 import createEventAttendee, {
   CreateEventAttendeeArgs
@@ -9,6 +10,7 @@ import createEventAttendee, {
 import getEventAttendees, {
   GetEventAttendeesArgs
 } from './repo/getEventAttendees';
+import getEventAttendeesSeries from './repo/getEventAttendeesSeries';
 
 @Resolver()
 export default class EventAttendeeResolver {
@@ -27,5 +29,13 @@ export default class EventAttendeeResolver {
     @Ctx() ctx: GQLContext
   ): Promise<EventAttendee[]> {
     return getEventAttendees(args, ctx);
+  }
+
+  @Authorized(MemberRole.ADMIN)
+  @Query(() => [TimeSeriesData])
+  async getEventAttendeesSeries(
+    @Ctx() ctx: GQLContext
+  ): Promise<TimeSeriesData[]> {
+    return getEventAttendeesSeries(ctx);
   }
 }

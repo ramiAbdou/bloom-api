@@ -10,6 +10,8 @@ import { TimeSeriesData } from '@util/gql';
 /**
  * Returns the event attendees series over the last month.
  *
+ * @param ctx.communityId - ID of the Community (authenticated).
+ *
  * @example getEventAttendeesSeries() => [
  *  { name: '2021-01-16T00:00:00Z', value: 100 },
  *  { name: '2021-01-17T00:00:00Z', value: 150 },
