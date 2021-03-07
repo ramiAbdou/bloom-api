@@ -27,7 +27,7 @@ import Question from '../question/Question';
 @ObjectType()
 @Entity()
 export default class Community extends BaseEntity {
-  static cache = new Cache();
+  static cache: Cache = new Cache();
 
   // ## FIELDS
 

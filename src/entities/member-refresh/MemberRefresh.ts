@@ -8,7 +8,7 @@ import Member from '../member/Member';
 @ObjectType()
 @Entity()
 export default class MemberRefresh extends BaseEntity {
-  static cache = new Cache();
+  static cache: Cache = new Cache();
 
   // ## RELATIONSHIPS
 

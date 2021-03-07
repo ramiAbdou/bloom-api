@@ -41,7 +41,7 @@ export enum QuestionType {
 @ObjectType()
 @Entity()
 export default class Question extends BaseEntity {
-  static cache = new Cache();
+  static cache: Cache = new Cache();
 
   // ## FIELDS
 

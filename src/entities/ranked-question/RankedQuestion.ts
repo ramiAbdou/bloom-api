@@ -9,7 +9,7 @@ import Question from '@entities/question/Question';
 @ObjectType()
 @Entity()
 export default class RankedQuestion extends BaseEntity {
-  static cache = new Cache();
+  static cache: Cache = new Cache();
 
   // ## FIELDS
 

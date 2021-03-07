@@ -25,7 +25,7 @@ export enum RecurrenceType {
 @ObjectType()
 @Entity()
 export default class MemberPlan extends BaseEntity {
-  static cache = new Cache();
+  static cache: Cache = new Cache();
 
   // ## FIELDS
 

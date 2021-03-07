@@ -11,7 +11,7 @@ import Member from '../member/Member';
 @Entity()
 @Unique({ properties: ['event', 'member'] })
 export default class EventWatch extends BaseEntity {
-  static cache = new Cache();
+  static cache: Cache = new Cache();
 
   // ## LIFECYCLE HOOKS
 

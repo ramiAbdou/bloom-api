@@ -15,7 +15,7 @@ import RankedQuestion from '../ranked-question/RankedQuestion';
 @ObjectType()
 @Entity()
 export default class Application extends BaseEntity {
-  static cache = new Cache();
+  static cache: Cache = new Cache();
 
   // ## FIELDS
 

@@ -12,7 +12,7 @@ import { MailchimpList } from './Integrations.types';
 @ObjectType()
 @Entity()
 export default class Integrations extends BaseEntity {
-  static cache = new Cache();
+  static cache: Cache = new Cache();
 
   // ## FIELDS
 

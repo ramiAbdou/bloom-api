@@ -13,7 +13,7 @@ export interface TaskPayload {
 
 @Entity()
 export default class Task extends BaseEntity {
-  static cache = new Cache();
+  static cache: Cache = new Cache();
 
   // ## FIELDS
 

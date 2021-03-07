@@ -17,7 +17,7 @@ import Question from '../question/Question';
 @ObjectType()
 @Entity()
 export default class MemberValue extends BaseEntity {
-  static cache = new Cache();
+  static cache: Cache = new Cache();
 
   // ## FIELDS
 

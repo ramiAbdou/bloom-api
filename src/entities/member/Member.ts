@@ -51,7 +51,7 @@ export enum MemberStatus {
 @Entity()
 @Unique({ properties: ['community', 'email'] })
 export default class Member extends BaseEntity {
-  static cache = new Cache();
+  static cache: Cache = new Cache();
 
   // ## FIELDS
 

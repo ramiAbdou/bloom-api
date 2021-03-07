@@ -17,7 +17,7 @@ export enum PaymentType {
 @ObjectType()
 @Entity()
 export default class Payment extends BaseEntity {
-  static cache = new Cache();
+  static cache: Cache = new Cache();
 
   // ## FIELDS
 

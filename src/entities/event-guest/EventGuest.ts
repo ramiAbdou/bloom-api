@@ -19,7 +19,7 @@ import Member from '../member/Member';
 @Entity()
 @Unique({ properties: ['event', 'member', 'supporter'] })
 export default class EventGuest extends BaseEntity {
-  static cache = new Cache();
+  static cache: Cache = new Cache();
 
   // ## LIFECYCLE HOOKS
 

@@ -19,7 +19,7 @@ import User from '@entities/user/User';
 @Entity()
 @Unique({ properties: ['community', 'email'] })
 export default class Supporter extends BaseEntity {
-  static cache = new Cache();
+  static cache: Cache = new Cache();
 
   // ## FIELDS
 

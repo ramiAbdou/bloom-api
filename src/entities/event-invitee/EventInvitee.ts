@@ -10,7 +10,7 @@ import Member from '../member/Member';
 @Entity()
 @Unique({ properties: ['event', 'member'] })
 export default class EventInvitee extends BaseEntity {
-  static cache = new Cache();
+  static cache: Cache = new Cache();
 
   // ## RELATIONSHIPS
 
