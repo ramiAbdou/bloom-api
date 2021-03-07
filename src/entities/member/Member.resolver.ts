@@ -8,12 +8,10 @@ import applyToCommunity, {
 } from './repo/applyToCommunity';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import demoteMembers, { DemoteMembersArgs } from './repo/demoteMembers';
-import getAllMembers from './repo/getAllMembers';
 import getApplicants from './repo/getApplicants';
 import getChangePreview, {
   GetChangePreviewResult
 } from './repo/getChangePreview';
-import getDatabase from './repo/getDatabase';
 import getMember, { GetMemberArgs } from './repo/getMember';
 import getMembers, { GetMembersArgs } from './repo/getMembers';
 import getOwner, { GetOwnerArgs } from './repo/getOwner';
@@ -71,24 +69,12 @@ export default class MemberResolver {
   }
 
   @Authorized()
-  @Query(() => [Member])
-  async getAllMembers(@Ctx() ctx: GQLContext): Promise<Member[]> {
-    return getAllMembers(ctx);
-  }
-
-  @Authorized()
   @Query(() => GetChangePreviewResult, { nullable: true })
   async getChangePreview(
     @Args() args: CreateSubsciptionArgs,
     @Ctx() ctx: GQLContext
   ): Promise<GetChangePreviewResult> {
     return getChangePreview(args, ctx);
-  }
-
-  @Authorized(MemberRole.ADMIN)
-  @Query(() => [Member])
-  async getDatabase(@Ctx() ctx: GQLContext): Promise<Member[]> {
-    return getDatabase(ctx);
   }
 
   @Authorized()
