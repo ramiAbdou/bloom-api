@@ -21,6 +21,8 @@ export enum RecurrenceType {
 @ObjectType()
 @Entity()
 export default class MemberPlan extends BaseEntity {
+  // ## FIELDS
+
   @Field(() => Float)
   @Property({ columnType: 'decimal', type: Number })
   amount = 0.0;

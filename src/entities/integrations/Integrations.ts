@@ -50,7 +50,7 @@ export default class Integrations extends BaseEntity {
     });
   }
 
-  // ## LIFECYCLE
+  // ## LIFECYCLE HOOKS
 
   @AfterUpdate()
   afterUpdate() {

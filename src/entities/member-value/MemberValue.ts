@@ -16,13 +16,16 @@ import Question from '../question/Question';
 @ObjectType()
 @Entity()
 export default class MemberValue extends BaseEntity {
-  // We keep this loosely defined as a string to give flexibility, especially
-  // for multiple choice and multiple select values.
+  // ## FIELDS
+
+  // We keep this loosely defined as a string to give flexibility. For
+  // MULTIPLE_SELECT, if there are multiple values, they will be separated
+  // by commas.
   @Field({ nullable: true })
   @Property({ nullable: true, type: 'text' })
   value: string;
 
-  // ## LIFECYCLE
+  // ## LIFECYCLE HOOKS
 
   @AfterCreate()
   afterCreate() {

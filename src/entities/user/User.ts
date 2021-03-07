@@ -27,7 +27,7 @@ export default class User extends BaseEntity {
   @Property({ nullable: true, type: 'text', unique: true })
   refreshToken: string;
 
-  // ## LIFECYCLE
+  // ## LIFECYCLE HOOKS
 
   @BeforeCreate()
   async beforeCreate() {

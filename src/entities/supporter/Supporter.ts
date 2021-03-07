@@ -18,6 +18,8 @@ import User from '@entities/user/User';
 @Entity()
 @Unique({ properties: ['community', 'email'] })
 export default class Supporter extends BaseEntity {
+  // ## FIELDS
+
   @Field()
   @Property()
   email: string;

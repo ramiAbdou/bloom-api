@@ -17,6 +17,8 @@ export enum PaymentType {
 @ObjectType()
 @Entity()
 export default class Payment extends BaseEntity {
+  // ## FIELDS
+
   @Field(() => Float)
   @Property({ columnType: 'decimal', serializer: (value) => Number(value) })
   amount: number;
@@ -33,7 +35,7 @@ export default class Payment extends BaseEntity {
   @IsUrl()
   stripeInvoiceUrl: string;
 
-  // ## LIFECYCLE
+  // ## LIFECYCLE HOOKS
 
   @AfterCreate()
   afterCreate() {

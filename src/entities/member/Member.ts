@@ -50,6 +50,8 @@ export enum MemberStatus {
 @Entity()
 @Unique({ properties: ['community', 'email'] })
 export default class Member extends BaseEntity {
+  // ## FIELDS
+
   @Field({ nullable: true })
   @Property({ nullable: true, type: 'text' })
   bio: string;
@@ -92,8 +94,6 @@ export default class Member extends BaseEntity {
   @Enum({ items: () => MemberStatus, type: String })
   status: MemberStatus = MemberStatus.PENDING;
 
-  // ## STRIPE INFORMATION
-
   // We don't store any of the customer's financial data in our server. Stripe
   // handles all of that for us, we just need Stripe's customer ID in order
   // to use recurring payments.
@@ -109,7 +109,7 @@ export default class Member extends BaseEntity {
   @Property({ nullable: true })
   stripeSubscriptionId: string;
 
-  // ## STRIPE RELATED MEMBER FUNCTIONS
+  // ## METHODS
 
   @Field(() => Boolean)
   async isDuesActive(): Promise<boolean> {
@@ -128,7 +128,7 @@ export default class Member extends BaseEntity {
     return getNextPaymentDate(this.id);
   }
 
-  // ## LIFECYCLE
+  // ## LIFECYCLE HOOKS
 
   @BeforeCreate()
   beforeCreate() {

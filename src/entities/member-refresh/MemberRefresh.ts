@@ -7,6 +7,8 @@ import Member from '../member/Member';
 @ObjectType()
 @Entity()
 export default class MemberRefresh extends BaseEntity {
+  // ## RELATIONSHIPS
+
   @ManyToOne(() => Member)
   member: Member;
 }

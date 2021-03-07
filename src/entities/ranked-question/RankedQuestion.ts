@@ -8,6 +8,8 @@ import Question from '@entities/question/Question';
 @ObjectType()
 @Entity()
 export default class RankedQuestion extends BaseEntity {
+  // ## FIELDS
+
   @Field({ nullable: true })
   @Property({ nullable: true })
   rank: number = 0;

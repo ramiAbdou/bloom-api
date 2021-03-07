@@ -12,6 +12,8 @@ export interface TaskPayload {
 
 @Entity()
 export default class Task extends BaseEntity {
+  // ## FIELDS
+
   @Property()
   executeAt: string;
 

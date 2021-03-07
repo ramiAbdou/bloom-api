@@ -41,6 +41,8 @@ export enum QuestionType {
 @ObjectType()
 @Entity()
 export default class Question extends BaseEntity {
+  // ## FIELDS
+
   // If the question is a special question, we have to store it in a different
   // fashion. For example, EMAIL would be stored on the user, NOT the
   // member.
@@ -77,7 +79,7 @@ export default class Question extends BaseEntity {
   @Enum({ items: () => QuestionType, nullable: true, type: String })
   type: QuestionType;
 
-  // ## LIFECYCLE
+  // ## LIFECYCLE HOOKS
 
   @BeforeCreate()
   beforeCreate() {
@@ -155,6 +157,8 @@ export default class Question extends BaseEntity {
       this.type = QuestionType.SHORT_TEXT;
     }
   }
+
+  // ## LIFECYCLE HOOKS
 
   @AfterUpdate()
   afterUpdate() {

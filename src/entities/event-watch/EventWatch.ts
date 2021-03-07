@@ -11,7 +11,7 @@ import Member from '../member/Member';
 @Entity()
 @Unique({ properties: ['event', 'member'] })
 export default class EventWatch extends BaseEntity {
-  // ## LIFECYCLE
+  // ## LIFECYCLE HOOKS
 
   @AfterCreate()
   afterCreate() {

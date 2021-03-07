@@ -8,6 +8,8 @@ import Member from '../member/Member';
 @ObjectType()
 @Entity()
 export default class MemberSocials extends BaseEntity {
+  // ## FIELDS
+
   @Field({ nullable: true })
   @Property({ nullable: true })
   @IsUrl()
