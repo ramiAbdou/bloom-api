@@ -1,9 +1,9 @@
 import { ApplyToCommunityAdminsPayload } from 'src/system/emails/util/getApplyToCommunityAdminsVars';
 import { ApplyToCommunityPayload } from 'src/system/emails/util/getApplyToCommunityVars';
 import { ArgsType, Field, InputType } from 'type-graphql';
+import { FilterQuery } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
-import cache from '@core/db/cache';
 import Community from '@entities/community/Community';
 import MemberPlan, { RecurrenceType } from '@entities/member-plan/MemberPlan';
 import MemberSocials from '@entities/member-socials/MemberSocials';
@@ -17,8 +17,8 @@ import Question, {
 import User from '@entities/user/User';
 import { emitEmailEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, MutationEvent, QueryEvent } from '@util/events';
-import Member, { MemberStatus } from '../Member';
+import { EmailEvent, MutationEvent } from '@util/events';
+import Member from '../Member';
 import updatePaymentMethod from './updatePaymentMethod';
 
 @InputType()
@@ -103,14 +103,15 @@ const applyToCommunity = async (
 
   const bm = new BloomManager();
 
+  const queryArgs: FilterQuery<MemberPlan> = memberPlanId || {
+    community: { urlName }
+  };
+
   // Populate the questions and types so that we can capture the member
   // data in a relational manner.
   const [community, plan]: [Community, MemberPlan] = await Promise.all([
     bm.findOne(Community, { urlName }, { populate: ['questions'] }),
-    bm.findOne(
-      MemberPlan,
-      memberPlanId ? { id: memberPlanId } : { community: { urlName } }
-    )
+    bm.findOne(MemberPlan, queryArgs)
   ]);
 
   // The user can potentially already exist if they are a part of other
@@ -171,15 +172,6 @@ const applyToCommunity = async (
     applicantId: member.id,
     communityId: community.id
   } as ApplyToCommunityAdminsPayload);
-
-  cache.invalidateKeys(
-    member.status === MemberStatus.PENDING
-      ? [`${QueryEvent.GET_APPLICANTS}-${community.id}`]
-      : [
-          `${QueryEvent.GET_DATABASE}-${community.id}`,
-          `${QueryEvent.GET_DIRECTORY}-${community.id}`
-        ]
-  );
 
   await createApplicationPayment(
     { memberPlanId, paymentMethodId, recurrence: plan.recurrence },

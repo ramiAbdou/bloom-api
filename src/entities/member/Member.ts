@@ -1,6 +1,7 @@
 import { IsUrl } from 'class-validator';
 import { Authorized, Field, ObjectType } from 'type-graphql';
 import {
+  AfterCreate,
   BeforeCreate,
   BeforeUpdate,
   Cascade,
@@ -16,6 +17,8 @@ import {
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
+import cache from '@core/db/cache';
+import { QueryEvent } from '@util/events';
 import { now } from '@util/util';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
@@ -153,6 +156,15 @@ export default class Member extends BaseEntity {
     if (this.status === MemberStatus.ACCEPTED && !this.joinedAt) {
       this.joinedAt = now();
     }
+  }
+
+  @AfterCreate()
+  afterCreate() {
+    cache.invalidateKeys(
+      this.status === MemberStatus.PENDING
+        ? [`${QueryEvent.GET_APPLICANTS}-${this.community.id}`]
+        : [`${QueryEvent.GET_MEMBERS}-${this.community.id}`]
+    );
   }
 
   // ## RELATIONSHIPS
