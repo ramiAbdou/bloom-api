@@ -8,6 +8,7 @@ import applyToCommunity, {
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import demoteMembers, { DemoteMembersArgs } from './repo/demoteMembers';
 import getApplicants from './repo/getApplicants';
+import getMember, { GetMemberArgs } from './repo/getMember';
 import getMembers, { GetMembersArgs } from './repo/getMembers';
 import getOwner, { GetOwnerArgs } from './repo/getOwner';
 import inviteMembers, { InviteMembersArgs } from './repo/inviteMembers';
@@ -55,6 +56,15 @@ export default class MemberResolver {
   @Query(() => [Member])
   async getApplicants(@Ctx() ctx: GQLContext): Promise<Member[]> {
     return getApplicants(ctx);
+  }
+
+  @Authorized()
+  @Query(() => Member)
+  async getMember(
+    @Args() args: GetMemberArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<Member> {
+    return getMember(args, ctx);
   }
 
   @Authorized()

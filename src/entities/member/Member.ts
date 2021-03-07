@@ -140,7 +140,10 @@ export default class Member extends BaseEntity {
 
   @AfterUpdate()
   afterUpdate() {
-    cache.invalidateKeys([`${QueryEvent.GET_MEMBERS}-${this.community.id}`]);
+    cache.invalidateKeys([
+      `${QueryEvent.GET_MEMBERS}-${this.id}`,
+      `${QueryEvent.GET_MEMBERS}-${this.community.id}`
+    ]);
   }
 
   // ## RELATIONSHIPS
