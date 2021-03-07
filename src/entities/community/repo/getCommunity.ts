@@ -20,7 +20,7 @@ export class GetCommunityArgs {
  *
  * @param args.communityId - ID of the Community.
  * @param args.urlName - URL name of the Community.
- * @param ctx - ID of the Community.
+ * @param ctx.communityId - ID of the Community.
  */
 const getCommunity = async (
   args: GetCommunityArgs,

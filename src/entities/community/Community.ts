@@ -67,18 +67,6 @@ export default class Community extends BaseEntity {
   @Property({ unique: true })
   urlName: string;
 
-  // ## METHODS
-
-  async getCacheIdenitifers(): Promise<string[]> {
-    const members: Member[] = await this.members.loadItems();
-
-    return [
-      this.id,
-      this.urlName,
-      ...members.map((member: Member) => member.user.id)
-    ];
-  }
-
   // ## LIFECYCLE HOOKS
 
   @BeforeCreate()
@@ -94,13 +82,15 @@ export default class Community extends BaseEntity {
 
   @AfterUpdate()
   async afterUpdate() {
-    const cacheIds: string[] = await this.getCacheIdenitifers();
+    const members: Member[] = await this.members.loadItems();
 
-    const cacheKeys = cacheIds.map((cacheId: string) => {
-      return `${QueryEvent.GET_COMMUNITIES}-${cacheId}`;
-    });
-
-    Community.cache.invalidateKeys(cacheKeys);
+    Community.cache.invalidateKeys([
+      `${QueryEvent.GET_COMMUNITY}-${this.id}`,
+      `${QueryEvent.GET_COMMUNITY}-${this.urlName}`,
+      ...members.map((member: Member) => {
+        return `${QueryEvent.GET_COMMUNITIES}-${member.user.id}`;
+      })
+    ]);
   }
 
   // ## RELATIONSHIPS

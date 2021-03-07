@@ -30,11 +30,4 @@ export default abstract class BaseEntity {
   @Field()
   @Property({ onUpdate: () => now() })
   updatedAt: string = now();
-
-  // ## METHODS
-
-  // eslint-disable-next-line class-methods-use-this
-  async getCacheIdenitifers(): Promise<string[]> {
-    return [];
-  }
 }

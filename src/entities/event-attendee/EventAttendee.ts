@@ -14,31 +14,17 @@ import Member from '../member/Member';
 export default class EventAttendee extends BaseEntity {
   static cache: Cache = new Cache();
 
-  // ## METHODS
-
-  async getCacheIdenitifers(): Promise<string[]> {
-    await wrap(this.event).init();
-
-    return [
-      this.event.id,
-      this.member?.id,
-      this.supporter?.id,
-      this.event.community.id
-    ];
-  }
-
   // ## LIFECYCLE HOOKS
 
   @AfterCreate()
   async afterCreate() {
-    const cacheIds: string[] = await this.getCacheIdenitifers();
-
-    const cacheKeys = cacheIds.map((cacheId: string) => {
-      return `${QueryEvent.GET_EVENT_ATTENDEES}-${cacheId}`;
-    });
+    await wrap(this.event).init();
 
     EventAttendee.cache.invalidateKeys([
-      ...cacheKeys,
+      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.event.id}`,
+      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.member?.id}`,
+      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.supporter?.id}`,
+      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.event.community.id}`,
       `${QueryEvent.GET_EVENT_ATTENDEES_SERIES}-${this.event.community.id}`
     ]);
   }
