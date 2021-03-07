@@ -5,16 +5,15 @@ import { ErrorType } from '@util/errors';
 import User from '../User';
 
 interface GetLoginErrorArgs {
-  communityId?: string;
-  email?: string;
-  user?: User;
+  communityId: string;
+  email: string;
 }
 
 /**
- * Returns the user's login status error based on their members and
- * whether or not they've been accepted into a community.
+ * Returns an ErrorType if there is a login error. Otherwise, returns null.
  *
- * Precondition: Members MUST already be populated.
+ * @param args.communityId - ID of the Community.
+ * @param args.email - Email of the User to check status on.
  */
 const getLoginError = async (args: GetLoginErrorArgs): Promise<ErrorType> => {
   const { communityId, email } = args;
@@ -22,8 +21,8 @@ const getLoginError = async (args: GetLoginErrorArgs): Promise<ErrorType> => {
   if (communityId) {
     // Check if the email is a member of this community.
     const member: Member = await new BloomManager().findOne(Member, {
-      community: { id: communityId },
-      user: { email }
+      community: communityId,
+      email
     });
 
     if (!member) return ErrorType.NOT_MEMBER;
@@ -39,29 +38,41 @@ const getLoginError = async (args: GetLoginErrorArgs): Promise<ErrorType> => {
 
   const members: Member[] = user.members.getItems();
 
+  // True if the User has >= 1 Member with status INVITED.
+  const hasInvitedStatus: boolean = members.some((member: Member) => {
+    return member.status === MemberStatus.INVITED;
+  });
+
   // If when trying to login, the user has some a status of INVITED (only
   // possible if an admin added them manually), then we should set those
   // statuses to be ACCEPTED.
-  if (members.some(({ status }) => status === MemberStatus.INVITED)) {
+  if (hasInvitedStatus) {
     await acceptInvitations({ email });
+    return null;
   }
 
-  return members.reduce((acc: ErrorType, { status }: Member) => {
-    // SUCCESS CASE: If the user has been approved in some community,
-    // update the refresh token in the DB.
-    if ([MemberStatus.ACCEPTED, MemberStatus.INVITED].includes(status)) {
-      return null;
-    }
+  // True if the User has >= 1 Member with status ACCEPTED.
+  const hasAcceptedStatus: boolean = members.some((member: Member) => {
+    return member.status === MemberStatus.ACCEPTED;
+  });
 
-    // If acc is null and application is PENDING, don't do anything, cause
-    // the user is already approved. If acc isn't null, then set error to
-    // APPLICATION_PENDING.
-    if (acc && status === MemberStatus.PENDING) {
-      return ErrorType.APPLICATION_PENDING;
-    }
+  if (hasAcceptedStatus) return null;
 
-    return acc;
-  }, ErrorType.APPLICATION_REJECTED);
+  // True if the User has >= 1 Member with status PENDING.
+  const hasPendingStatus: boolean = members.some((member: Member) => {
+    return member.status === MemberStatus.PENDING;
+  });
+
+  if (hasPendingStatus) return ErrorType.APPLICATION_PENDING;
+
+  // True if the User has >= 1 Member with status REJECTED.
+  const hasRejectedStatus: boolean = members.some((member: Member) => {
+    return member.status === MemberStatus.REJECTED;
+  });
+
+  if (hasRejectedStatus) return ErrorType.APPLICATION_REJECTED;
+
+  return null;
 };
 
 export default getLoginError;
