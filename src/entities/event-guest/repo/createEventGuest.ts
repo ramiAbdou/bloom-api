@@ -43,13 +43,13 @@ const createEventGuest = async (
   const bm = new BloomManager();
 
   const [member, supporter]: [Member, Supporter] = await Promise.all([
-    bm.findOne(Member, memberId),
+    bm.findOne(Member, { id: memberId }),
     bm.findOne(Supporter, { community: communityId, email })
   ]);
 
   const existingGuest = await bm.findOne(
     EventGuest,
-    member ? { member } : { member: null, supporter },
+    member ? { event: eventId, member } : { event: eventId, supporter },
     { populate: ['member', 'supporter'] }
   );
 
@@ -68,7 +68,7 @@ const createEventGuest = async (
 
   const guest: EventGuest = await bm.createAndFlush(
     EventGuest,
-    { event: eventId, ...guestArgs },
+    { ...guestArgs, event: eventId },
     {
       flushEvent: MutationEvent.CREATE_EVENT_GUEST,
       populate: ['member', 'supporter']
