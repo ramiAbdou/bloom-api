@@ -1,6 +1,7 @@
 import Stripe from 'stripe';
 
 import BloomManager from '@core/db/BloomManager';
+import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
 import Member from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import Payment, { PaymentType } from '../Payment';
@@ -24,9 +25,10 @@ const createDuesPayment = async (
 
   const bm = new BloomManager();
 
-  const member: Member = await bm.findOne(Member, memberId, {
-    populate: ['memberIntegrations']
-  });
+  const [member, _]: [Member, MemberIntegrations] = await Promise.all([
+    bm.findOne(Member, memberId),
+    bm.findOne(MemberIntegrations, { member: memberId })
+  ]);
 
   // Only if the subscription worked should the Payment be created.
 

@@ -10,18 +10,17 @@ export interface UpdateStripeSubscriptionArgs {
   subscriptionId: string;
 }
 
-const updateStripeSubscription = async ({
-  accountId,
-  priceId,
-  prorationDate,
-  subscriptionId
-}: UpdateStripeSubscriptionArgs): Promise<Stripe.Subscription> => {
+const updateStripeSubscription = async (
+  args: UpdateStripeSubscriptionArgs
+): Promise<Stripe.Subscription> => {
+  const { accountId, priceId, prorationDate, subscriptionId } = args;
+
   const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(
     subscriptionId,
     { idempotencyKey: nanoid(), stripeAccount: accountId }
   );
 
-  const updatedSubscription = await stripe.subscriptions.update(
+  const updatedSubscription: Stripe.Subscription = await stripe.subscriptions.update(
     subscriptionId,
     {
       expand: ['latest_invoice.payment_intent'],
