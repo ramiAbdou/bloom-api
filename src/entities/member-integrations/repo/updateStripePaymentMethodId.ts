@@ -2,21 +2,29 @@ import { nanoid } from 'nanoid';
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
-import Community from '@entities/community/Community';
+import Integrations from '@entities/integrations/Integrations';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
 import { MutationEvent } from '@util/events';
 import MemberIntegrations from '../MemberIntegrations';
-import createStripeCustomer from './createStripeCustomer';
+import updateStripeCustomerId from './updateStripeCustomerId';
 
 @ArgsType()
-export class UpdatePaymentMethodArgs {
+export class UpdateStripePaymentMethodIdArgs {
   @Field()
   paymentMethodId: string;
 }
 
-const updatePaymentMethod = async (
-  args: UpdatePaymentMethodArgs,
+/**
+ * Returns the updated MemberIntegrations with Stripe paymentMethodId
+ * attached.
+ *
+ * @param args.paymentMethodId - ID of the Stripe PaymentMethod.
+ * @param ctx.communityId - ID of the Community (authenticated).
+ * @param ctx.memberId - ID of the Member (authenticated).
+ */
+const updateStripePaymentMethodId = async (
+  args: UpdateStripePaymentMethodIdArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<MemberIntegrations> => {
   const { paymentMethodId } = args;
@@ -24,19 +32,19 @@ const updatePaymentMethod = async (
 
   const bm = new BloomManager();
 
-  const [community, integrations]: [
-    Community,
+  const [communityIntegrations, memberIntegrations]: [
+    Integrations,
     MemberIntegrations
   ] = await Promise.all([
-    bm.findOne(Community, communityId, { populate: ['integrations'] }),
+    bm.findOne(Integrations, { community: communityId }),
     bm.findOne(MemberIntegrations, { member: memberId })
   ]);
 
   // If no Stripe customer ID exists on the member, create and attach the
   // stripeCustomerId to the member.
   const stripeCustomerId: string =
-    integrations.stripeCustomerId ??
-    (await createStripeCustomer({ memberId }))?.stripeCustomerId;
+    memberIntegrations.stripeCustomerId ??
+    (await updateStripeCustomerId(ctx))?.stripeCustomerId;
 
   // Attaches the PaymentMethod to the customer.
   await stripe.paymentMethods.attach(
@@ -44,7 +52,7 @@ const updatePaymentMethod = async (
     { customer: stripeCustomerId },
     {
       idempotencyKey: nanoid(),
-      stripeAccount: community.integrations.stripeAccountId
+      stripeAccount: communityIntegrations.stripeAccountId
     }
   );
 
@@ -55,14 +63,14 @@ const updatePaymentMethod = async (
     { invoice_settings: { default_payment_method: paymentMethodId } },
     {
       idempotencyKey: nanoid(),
-      stripeAccount: community.integrations.stripeAccountId
+      stripeAccount: communityIntegrations.stripeAccountId
     }
   );
 
-  integrations.stripePaymentMethodId = paymentMethodId;
-  await bm.flush({ flushEvent: MutationEvent.UPDATE_PAYMENT_METHOD });
+  memberIntegrations.stripePaymentMethodId = paymentMethodId;
+  await bm.flush({ flushEvent: MutationEvent.UPDATE_STRIPE_PAYMENT_METHOD_ID });
 
-  return integrations;
+  return memberIntegrations;
 };
 
-export default updatePaymentMethod;
+export default updateStripePaymentMethodId;

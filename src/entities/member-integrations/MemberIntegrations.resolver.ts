@@ -10,9 +10,9 @@ import getMemberIntegrations from './repo/getMemberIntegrations';
 import getUpcomingPayment, {
   GetUpcomingPaymentResult
 } from './repo/getUpcomingPayment';
-import updatePaymentMethod, {
-  UpdatePaymentMethodArgs
-} from './repo/updatePaymentMethod';
+import updateStripePaymentMethodId, {
+  UpdateStripePaymentMethodIdArgs
+} from './repo/updateStripePaymentMethodId';
 
 @Resolver()
 export default class MemberIntegrationsResolver {
@@ -43,10 +43,10 @@ export default class MemberIntegrationsResolver {
 
   @Authorized()
   @Mutation(() => MemberIntegrations, { nullable: true })
-  async updatePaymentMethod(
-    @Args() args: UpdatePaymentMethodArgs,
+  async updateStripePaymentMethodId(
+    @Args() args: UpdateStripePaymentMethodIdArgs,
     @Ctx() ctx: GQLContext
   ): Promise<MemberIntegrations> {
-    return updatePaymentMethod(args, ctx);
+    return updateStripePaymentMethodId(args, ctx);
   }
 }

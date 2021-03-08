@@ -4,7 +4,7 @@ import { ArgsType, Field } from 'type-graphql';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
-import createStripeCustomer from '@entities/member-integrations/repo/createStripeCustomer';
+import updateStripeCustomerId from '@entities/member-integrations/repo/updateStripeCustomerId';
 import MemberPlan from '@entities/member-plan/MemberPlan';
 import createStripeSubscription, {
   CreateStripeSubscriptionArgs
@@ -33,7 +33,7 @@ const createSubscription = async (
   const { memberPlanId, prorationDate } = args;
   const { communityId, memberId } = ctx;
 
-  await createStripeCustomer({ memberId });
+  await updateStripeCustomerId(ctx);
 
   const bm = new BloomManager();
 

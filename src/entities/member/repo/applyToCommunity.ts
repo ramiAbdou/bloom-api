@@ -6,7 +6,7 @@ import { FilterQuery } from '@mikro-orm/core';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
-import updatePaymentMethod from '@entities/member-integrations/repo/updatePaymentMethod';
+import updateStripePaymentMethodId from '@entities/member-integrations/repo/updateStripePaymentMethodId';
 import MemberPlan, { RecurrenceType } from '@entities/member-plan/MemberPlan';
 import MemberSocials from '@entities/member-socials/MemberSocials';
 import MemberValue from '@entities/member-value/MemberValue';
@@ -78,7 +78,7 @@ const createApplicationPayment = async (
   if (!paymentMethodId) return;
 
   try {
-    await updatePaymentMethod({ paymentMethodId }, ctx);
+    await updateStripePaymentMethodId({ paymentMethodId }, ctx);
 
     if (recurrence === RecurrenceType.LIFETIME) {
       await createLifetimePayment({ memberPlanId }, ctx);

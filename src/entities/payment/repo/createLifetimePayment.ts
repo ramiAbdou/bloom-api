@@ -5,7 +5,7 @@ import { ArgsType, Field } from 'type-graphql';
 import BloomManager from '@core/db/BloomManager';
 import Integrations from '@entities/integrations/Integrations';
 import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
-import createStripeCustomer from '@entities/member-integrations/repo/createStripeCustomer';
+import updateStripeCustomerId from '@entities/member-integrations/repo/updateStripeCustomerId';
 import MemberPlan from '@entities/member-plan/MemberPlan';
 import createAndPayStripeInvoice from '@integrations/stripe/repo/createAndPayStripeInvoice';
 import { stripe } from '@integrations/stripe/Stripe.util';
@@ -27,7 +27,7 @@ const createLifetimePayment = async (
   const { memberPlanId } = args;
   const { communityId, memberId } = ctx;
 
-  await createStripeCustomer({ memberId });
+  await updateStripeCustomerId(ctx);
 
   const bm = new BloomManager();
 
