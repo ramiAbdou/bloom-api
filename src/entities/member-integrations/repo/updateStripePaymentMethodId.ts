@@ -1,11 +1,10 @@
-import { nanoid } from 'nanoid';
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import Integrations from '@entities/integrations/Integrations';
-import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
 import { MutationEvent } from '@util/events';
+import attachStripePaymentMethod from '../../../integrations/stripe/repo/attachStripePaymentMethod';
 import MemberIntegrations from '../MemberIntegrations';
 import updateStripeCustomerId from './updateStripeCustomerId';
 
@@ -47,25 +46,11 @@ const updateStripePaymentMethodId = async (
     (await updateStripeCustomerId(ctx))?.stripeCustomerId;
 
   // Attaches the PaymentMethod to the customer.
-  await stripe.paymentMethods.attach(
-    paymentMethodId,
-    { customer: stripeCustomerId },
-    {
-      idempotencyKey: nanoid(),
-      stripeAccount: communityIntegrations.stripeAccountId
-    }
-  );
-
-  // Sets the PaymentMethod to be the default method for the customer. Will
-  // be used in future subscription payments.
-  await stripe.customers.update(
+  await attachStripePaymentMethod({
+    stripeAccountId: communityIntegrations.stripeAccountId,
     stripeCustomerId,
-    { invoice_settings: { default_payment_method: paymentMethodId } },
-    {
-      idempotencyKey: nanoid(),
-      stripeAccount: communityIntegrations.stripeAccountId
-    }
-  );
+    stripePaymentMethodId: paymentMethodId
+  });
 
   memberIntegrations.stripePaymentMethodId = paymentMethodId;
   await bm.flush({ flushEvent: MutationEvent.UPDATE_STRIPE_PAYMENT_METHOD_ID });
