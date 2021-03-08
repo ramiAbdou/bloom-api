@@ -31,7 +31,7 @@ const createLifetimePayment = async (
 
   const bm = new BloomManager();
 
-  const [integrations, memberIntegrations, type]: [
+  const [communityIntegrations, memberIntegrations, type]: [
     Integrations,
     MemberIntegrations,
     MemberPlan
@@ -44,7 +44,7 @@ const createLifetimePayment = async (
   if (memberIntegrations.stripeSubscriptionId) {
     await stripe.subscriptions.del(memberIntegrations.stripeSubscriptionId, {
       idempotencyKey: nanoid(),
-      stripeAccount: integrations.stripeAccountId
+      stripeAccount: communityIntegrations.stripeAccountId
     });
 
     memberIntegrations.stripeSubscriptionId = null;
@@ -52,7 +52,7 @@ const createLifetimePayment = async (
   }
 
   const invoice: Stripe.Invoice = await createAndPayStripeInvoice({
-    accountId: integrations.stripeAccountId,
+    accountId: communityIntegrations.stripeAccountId,
     customerId: memberIntegrations.stripeCustomerId,
     priceId: type.stripePriceId
   });

@@ -48,7 +48,7 @@ const getMembersGrowth = async (
 
   const growthPercentage = Number(((growthRatio - 1) * 100).toFixed(1));
   const result = [numMembersAddedSince + numMembers30DaysAgo, growthPercentage];
-  cache.set(cacheKey, result);
+  Member.cache.set(cacheKey, result);
 
   return result;
 };

@@ -1,6 +1,9 @@
 import Stripe from 'stripe';
 import { ArgsType, Field } from 'type-graphql';
 
+import BloomManager from '@core/db/BloomManager';
+import Integrations from '@entities/integrations/Integrations';
+import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
 import updateStripeCustomerId from '@entities/member-integrations/repo/updateStripeCustomerId';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
@@ -30,13 +33,25 @@ const createSubscription = async (
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<Payment> => {
   const { memberPlanId } = args;
+  const { communityId, memberId } = ctx;
 
   await updateStripeCustomerId(ctx);
-  const memberIntegrations = await updateStripeSubscriptionId(args, ctx);
+  await updateStripeSubscriptionId(args, ctx);
+
+  const bm = new BloomManager();
+
+  const [communityIntegrations, memberIntegrations]: [
+    Integrations,
+    MemberIntegrations
+  ] = await Promise.all([
+    bm.findOne(Integrations, { community: communityId }),
+    bm.findOne(MemberIntegrations, { member: memberId })
+  ]);
 
   const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(
     memberIntegrations.stripeSubscriptionId,
-    { expand: ['latest_invoice.payment_intent'] }
+    { expand: ['latest_invoice.payment_intent'] },
+    { stripeAccount: communityIntegrations.stripeAccountId }
   );
 
   const invoice = subscription.latest_invoice as Stripe.Invoice;

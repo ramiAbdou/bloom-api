@@ -47,7 +47,7 @@ const getActiveMembersSeries = async (
     })
   );
 
-  cache.set(cacheKey, result);
+  Member.cache.set(cacheKey, result);
 
   return result;
 };

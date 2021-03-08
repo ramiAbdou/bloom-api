@@ -38,7 +38,7 @@ const getActiveMembersGrowth = async (
   const growthRatio: number = refreshesThisMonth / (refreshesLastMonth || 1);
   const growthPercentage = Number(((growthRatio - 1) * 100).toFixed(1));
   const result = [refreshesThisMonth, growthPercentage];
-  cache.set(cacheKey, result);
+  Member.cache.set(cacheKey, result);
 
   return result;
 };

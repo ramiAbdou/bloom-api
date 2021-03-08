@@ -26,7 +26,7 @@ const createDuesPayment = async (
   const bm = new BloomManager();
 
   const [member, _]: [Member, MemberIntegrations] = await Promise.all([
-    bm.findOne(Member, memberId),
+    bm.findOne(Member, memberId, { populate: ['memberIntegrations'] }),
     bm.findOne(MemberIntegrations, { member: memberId })
   ]);
 

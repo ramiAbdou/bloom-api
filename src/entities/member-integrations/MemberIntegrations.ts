@@ -1,14 +1,27 @@
 import { Authorized, Field, ObjectType } from 'type-graphql';
-import { AfterUpdate, Entity, OneToOne, Property } from '@mikro-orm/core';
+import { AfterUpdate, Entity, OneToOne, Property, wrap } from '@mikro-orm/core';
 
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
+import { stripe } from '@integrations/stripe/Stripe.util';
 import { QueryEvent } from '@util/events';
 import Member from '../member/Member';
 import getNextPaymentDate from './repo/getNextPaymentDate';
-import getPaymentMethod, {
-  GetPaymentMethodResult
-} from './repo/getPaymentMethod';
+
+@ObjectType()
+export class PaymentMethod {
+  @Field()
+  brand: string;
+
+  @Field()
+  expirationDate: string;
+
+  @Field()
+  last4: string;
+
+  @Field()
+  zipCode: string;
+}
 
 @ObjectType()
 @Entity()
@@ -32,10 +45,30 @@ export default class MemberIntegrations extends BaseEntity {
 
   // ## METHODS
 
+  /**
+   * Returns a formatted version of the Stripe.PaymentMethod.
+   */
   @Authorized()
-  @Field(() => GetPaymentMethodResult, { nullable: true })
+  @Field(() => PaymentMethod, { nullable: true })
   async paymentMethod() {
-    return getPaymentMethod(this.id);
+    if (!this.stripePaymentMethodId) return null;
+
+    await wrap(this.member).init(true, ['community.integrations']);
+
+    const paymentMethod = await stripe.paymentMethods.retrieve(
+      this.stripePaymentMethodId,
+      { stripeAccount: this.member.community.integrations.stripeAccountId }
+    );
+
+    const { address } = paymentMethod.billing_details;
+    const { brand, exp_month, exp_year, last4 } = paymentMethod.card;
+
+    return {
+      brand: `${brand[0].toUpperCase()}${brand.slice(1)}`,
+      expirationDate: `${exp_month}/${exp_year}`,
+      last4,
+      zipCode: address.postal_code
+    };
   }
 
   @Authorized()
