@@ -1,8 +1,6 @@
 import Stripe from 'stripe';
 import { ArgsType, Field } from 'type-graphql';
 
-import BloomManager from '@core/db/BloomManager';
-import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
 import updateStripeCustomerId from '@entities/member-integrations/repo/updateStripeCustomerId';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
@@ -32,15 +30,9 @@ const createSubscription = async (
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<Payment> => {
   const { memberPlanId } = args;
-  const { memberId } = ctx;
 
   await updateStripeCustomerId(ctx);
-  await updateStripeSubscriptionId(args, ctx);
-
-  const memberIntegrations: MemberIntegrations = await new BloomManager().findOne(
-    MemberIntegrations,
-    { member: memberId }
-  );
+  const memberIntegrations = await updateStripeSubscriptionId(args, ctx);
 
   const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(
     memberIntegrations.stripeSubscriptionId,
