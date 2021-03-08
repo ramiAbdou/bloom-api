@@ -29,7 +29,7 @@ export interface FormatPersonalizationData {
  * Returns the formatted personalizations for a SendGrid email.
  *
  * If development environment, filters all personalizations out that aren't
- * going to rami@bl.community.
+ * going to TEST_EMAILS.
  *
  * @param {EmailVars[]} variables - Variables for an email template.
  */

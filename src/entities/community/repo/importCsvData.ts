@@ -51,7 +51,7 @@ const processRow = async ({
   // Precondition: Every row (JSON) should have a field called EMAIL.
   const { EMAIL: dirtyEmail, FIRST_NAME: firstName, LAST_NAME: lastName } = row;
 
-  const email =
+  const email: string =
     isProduction || TEST_EMAILS.includes(dirtyEmail)
       ? dirtyEmail?.toLowerCase()
       : internet.email();
