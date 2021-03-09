@@ -5,7 +5,7 @@ import CommunityIntegrations from '@entities/community-integrations/CommunityInt
 import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
-import { MutationEvent } from '@util/events';
+import { FlushEvent } from '@util/events';
 
 /**
  * Returns the updated MemberIntegrations with stripeSubscriptionId set to null.
@@ -38,7 +38,7 @@ const removeStripeSubscriptionId = async (
   });
 
   memberIntegrations.stripeSubscriptionId = null;
-  await bm.flush({ flushEvent: MutationEvent.REMOVE_STRIPE_SUBSCRIPTION_ID });
+  await bm.flush({ flushEvent: FlushEvent.REMOVE_STRIPE_SUBSCRIPTION_ID });
 
   return memberIntegrations;
 };

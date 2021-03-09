@@ -2,7 +2,7 @@ import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import { GQLContext } from '@util/constants';
-import { MutationEvent } from '@util/events';
+import { FlushEvent } from '@util/events';
 import EventWatch from '../EventWatch';
 
 @ArgsType()
@@ -36,7 +36,7 @@ const createEventWatch = async (
   await bm.em.populate(watch, ['member']);
 
   if (!wasFound) {
-    await bm.flush({ flushEvent: MutationEvent.CREATE_EVENT_WATCH });
+    await bm.flush({ flushEvent: FlushEvent.CREATE_EVENT_WATCH });
   }
 
   return watch;

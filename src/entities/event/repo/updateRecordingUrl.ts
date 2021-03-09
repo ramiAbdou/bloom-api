@@ -1,7 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
-import { MutationEvent } from '@util/events';
+import { FlushEvent } from '@util/events';
 import Event from '../Event';
 
 @ArgsType()
@@ -28,7 +28,7 @@ const updateRecordingUrl = async (
     Event,
     eventId,
     { recordingUrl },
-    { flushEvent: MutationEvent.UPDATE_RECORDING_URL }
+    { flushEvent: FlushEvent.UPDATE_RECORDING_URL }
   );
 
   return event;

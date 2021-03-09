@@ -1,7 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
-import { MutationEvent } from '@util/events';
+import { FlushEvent } from '@util/events';
 import Member from '../Member';
 
 @ArgsType()
@@ -21,7 +21,7 @@ const restoreMembers = async (args: RestoreMembersArgs): Promise<Member[]> => {
   const members: Member[] = await new BloomManager().findAndRestore(
     Member,
     memberIds,
-    { flushEvent: MutationEvent.RESTORE_MEMBERS }
+    { flushEvent: FlushEvent.RESTORE_MEMBERS }
   );
 
   return members;

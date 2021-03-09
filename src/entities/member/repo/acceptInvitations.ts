@@ -3,7 +3,7 @@ import { FilterQuery } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
 import { emitEmailEvent } from '@system/eventBus';
-import { EmailEvent, MutationEvent } from '@util/events';
+import { EmailEvent, FlushEvent } from '@util/events';
 import Member, { MemberStatus } from '../Member';
 
 interface AcceptInvitationsArgs {
@@ -29,7 +29,7 @@ const acceptInvitations = async (
     Member,
     { ...queryArgs, status: MemberStatus.INVITED },
     { status: MemberStatus.ACCEPTED },
-    { flushEvent: MutationEvent.ACCEPT_INVITATIONS }
+    { flushEvent: FlushEvent.ACCEPT_INVITATIONS }
   );
 
   members.forEach((member: Member) => {

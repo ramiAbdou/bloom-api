@@ -2,7 +2,7 @@ import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import { GQLContext } from '@util/constants';
-import { MutationEvent } from '@util/events';
+import { FlushEvent } from '@util/events';
 import Member from '../Member';
 
 @ArgsType()
@@ -39,7 +39,7 @@ const updateMember = async (
     Member,
     memberId,
     args,
-    { flushEvent: MutationEvent.UPDATE_MEMBER }
+    { flushEvent: FlushEvent.UPDATE_MEMBER }
   );
 
   return updatedMember;

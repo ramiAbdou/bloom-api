@@ -11,7 +11,7 @@ import updateStripeSubscription, {
   UpdateStripeSubscriptionArgs
 } from '@integrations/stripe/repo/updateStripeSubscription';
 import { GQLContext } from '@util/constants';
-import { MutationEvent } from '@util/events';
+import { FlushEvent } from '@util/events';
 import MemberIntegrations from '../MemberIntegrations';
 
 @ArgsType()
@@ -72,7 +72,7 @@ const updateStripeSubscriptionId = async (
   // user.
   memberIntegrations.stripeSubscriptionId = subscription.id;
 
-  await bm.flush({ flushEvent: MutationEvent.UPDATE_STRIPE_SUBSCRIPTION_ID });
+  await bm.flush({ flushEvent: FlushEvent.UPDATE_STRIPE_SUBSCRIPTION_ID });
 
   return memberIntegrations;
 };

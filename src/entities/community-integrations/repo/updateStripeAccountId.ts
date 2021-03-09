@@ -3,7 +3,7 @@ import createStripeProducts from '@entities/member-plan/repo/createStripeProduct
 import getStripeAccountId from '@integrations/stripe/repo/getStripeAccountId';
 import { emitEmailEvent } from '@system/eventBus';
 import { AuthQueryArgs, IntegrationsBrand } from '@util/constants';
-import { EmailEvent, MutationEvent } from '@util/events';
+import { EmailEvent, FlushEvent } from '@util/events';
 import CommunityIntegrations from '../CommunityIntegrations';
 
 /**
@@ -22,7 +22,7 @@ const updateStripeAccountId = async (
     CommunityIntegrations,
     { community: { urlName } },
     { stripeAccountId },
-    { flushEvent: MutationEvent.UPDATE_STRIPE_ACCOUNT_ID }
+    { flushEvent: FlushEvent.UPDATE_STRIPE_ACCOUNT_ID }
   );
 
   emitEmailEvent(EmailEvent.CONNECT_INTEGRATIONS, {

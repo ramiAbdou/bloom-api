@@ -4,7 +4,7 @@ import { ArgsType, Field } from 'type-graphql';
 import BloomManager from '@core/db/BloomManager';
 import { emitEmailEvent, emitMailchimpEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, MailchimpEvent, MutationEvent } from '@util/events';
+import { EmailEvent, FlushEvent, MailchimpEvent } from '@util/events';
 import { now } from '@util/util';
 import Member, { MemberStatus } from '../Member';
 
@@ -35,7 +35,7 @@ const respondToApplicants = async (
     Member,
     { id: memberIds },
     { joinedAt: now(), status: response },
-    { flushEvent: MutationEvent.RESPOND_TO_APPLICANTS }
+    { flushEvent: FlushEvent.RESPOND_TO_APPLICANTS }
   );
 
   if (response === MemberStatus.ACCEPTED) {

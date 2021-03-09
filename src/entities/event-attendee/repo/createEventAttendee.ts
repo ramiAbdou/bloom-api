@@ -5,7 +5,7 @@ import BloomManager from '@core/db/BloomManager';
 import Member from '@entities/member/Member';
 import Supporter from '@entities/supporter/Supporter';
 import { GQLContext } from '@util/constants';
-import { MutationEvent } from '@util/events';
+import { FlushEvent } from '@util/events';
 import EventAttendee from '../EventAttendee';
 
 @ArgsType()
@@ -65,7 +65,7 @@ const createEventAttendee = async (
     EventAttendee,
     { ...attendeeArgs, event: eventId },
     {
-      flushEvent: MutationEvent.CREATE_EVENT_ATTENDEE,
+      flushEvent: FlushEvent.CREATE_EVENT_ATTENDEE,
       populate: ['member', 'supporter']
     }
   );

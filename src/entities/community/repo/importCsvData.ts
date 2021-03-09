@@ -11,7 +11,7 @@ import Member, { MemberRole, MemberStatus } from '@entities/member/Member';
 import Question, { QuestionCategory } from '@entities/question/Question';
 import User from '@entities/user/User';
 import { isProduction, TEST_EMAILS } from '@util/constants';
-import { MutationEvent } from '@util/events';
+import { FlushEvent } from '@util/events';
 import Community from '../Community';
 
 type CsvRowData = Record<string | QuestionCategory, any>;
@@ -166,7 +166,7 @@ const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
     })
   );
 
-  await bm.flush({ flushEvent: MutationEvent.IMPORT_COMMUNITY_CSV });
+  await bm.flush({ flushEvent: FlushEvent.IMPORT_COMMUNITY_CSV });
   return community;
 };
 

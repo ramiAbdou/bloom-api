@@ -1,7 +1,7 @@
 import BloomManager from '@core/db/BloomManager';
 import { emitEmailEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, MutationEvent } from '@util/events';
+import { EmailEvent, FlushEvent } from '@util/events';
 import EventInvitee from '../EventInvitee';
 
 export interface CreateEventInviteesArgs {
@@ -31,7 +31,7 @@ const createEventInvitees = async (
     return bm.create(EventInvitee, { event: eventId, member: memberId });
   });
 
-  await bm.flush({ flushEvent: MutationEvent.CREATE_EVENT_INVITEES });
+  await bm.flush({ flushEvent: FlushEvent.CREATE_EVENT_INVITEES });
 
   emitEmailEvent(EmailEvent.CREATE_EVENT_INVITEES, {
     communityId,

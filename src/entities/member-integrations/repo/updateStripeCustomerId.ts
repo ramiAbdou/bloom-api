@@ -5,7 +5,7 @@ import CommunityIntegrations from '@entities/community-integrations/CommunityInt
 import Member from '@entities/member/Member';
 import createStripeCustomer from '@integrations/stripe/repo/createStripeCustomer';
 import { GQLContext } from '@util/constants';
-import { MutationEvent } from '@util/events';
+import { FlushEvent } from '@util/events';
 import MemberIntegrations from '../MemberIntegrations';
 
 /**
@@ -41,7 +41,7 @@ const updateStripeCustomerId = async (
   });
 
   memberIntegrations.stripeCustomerId = stripeCustomer.id;
-  await bm.flush({ flushEvent: MutationEvent.UPDATE_STRIPE_CUSTOMER_ID });
+  await bm.flush({ flushEvent: FlushEvent.UPDATE_STRIPE_CUSTOMER_ID });
 
   return memberIntegrations;
 };
