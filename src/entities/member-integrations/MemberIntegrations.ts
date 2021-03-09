@@ -62,11 +62,14 @@ export default class MemberIntegrations extends BaseEntity {
     if (!this.stripePaymentMethodId) return null;
 
     // Need to grab the stripeAccountId.
-    await wrap(this.member).init(true, ['community.integrations']);
+    await wrap(this.member).init(true, ['community.communityIntegrations']);
 
     const paymentMethod = await stripe.paymentMethods.retrieve(
       this.stripePaymentMethodId,
-      { stripeAccount: this.member.community.integrations.stripeAccountId }
+      {
+        stripeAccount: this.member.community.communityIntegrations
+          .stripeAccountId
+      }
     );
 
     const { address } = paymentMethod.billing_details;
@@ -92,11 +95,14 @@ export default class MemberIntegrations extends BaseEntity {
     if (!this.stripeSubscriptionId) return null;
 
     // Need to grab the stripeAccountId.
-    await wrap(this.member).init(true, ['community.integrations']);
+    await wrap(this.member).init(true, ['community.communityIntegrations']);
 
     const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(
       this.stripeSubscriptionId,
-      { stripeAccount: this.member.community.integrations.stripeAccountId }
+      {
+        stripeAccount: this.member.community.communityIntegrations
+          .stripeAccountId
+      }
     );
 
     return day.utc(subscription.current_period_end * 1000).format();

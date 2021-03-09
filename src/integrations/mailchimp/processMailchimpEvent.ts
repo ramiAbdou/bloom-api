@@ -1,5 +1,5 @@
 import BloomManager from '@core/db/BloomManager';
-import Integrations from '@entities/integrations/Integrations';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Member from '@entities/member/Member';
 import { MailchimpEvent } from '@util/events';
 import addToMailchimpAudience from './repo/addToMailchimpAudience';
@@ -24,8 +24,11 @@ const processMailchimpEvent = async (
 
   const bm = new BloomManager();
 
-  const [integrations, member]: [Integrations, Member] = await Promise.all([
-    bm.findOne(Integrations, { community: communityId }),
+  const [communityIntegrations, member]: [
+    CommunityIntegrations,
+    Member
+  ] = await Promise.all([
+    bm.findOne(CommunityIntegrations, { community: communityId }),
     bm.findOne(Member, memberId)
   ]);
 
@@ -34,8 +37,8 @@ const processMailchimpEvent = async (
       email: member.email,
       firstName: member.firstName,
       lastName: member.lastName,
-      mailchimpAccessToken: integrations.mailchimpAccessToken,
-      mailchimpListId: integrations.mailchimpListId
+      mailchimpAccessToken: communityIntegrations.mailchimpAccessToken,
+      mailchimpListId: communityIntegrations.mailchimpListId
     });
   }
 };

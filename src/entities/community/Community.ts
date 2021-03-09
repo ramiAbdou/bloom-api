@@ -17,8 +17,8 @@ import Supporter from '@entities/supporter/Supporter';
 import { isProduction } from '@util/constants';
 import { QueryEvent } from '@util/events';
 import Application from '../application/Application';
+import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
 import Event from '../event/Event';
-import Integrations from '../integrations/Integrations';
 import MemberPlan from '../member-plan/MemberPlan';
 import Member from '../member/Member';
 import Payment from '../payment/Payment';
@@ -103,6 +103,12 @@ export default class Community extends BaseEntity {
   })
   application: Application;
 
+  @Field(() => CommunityIntegrations, { nullable: true })
+  @OneToOne(() => CommunityIntegrations, ({ community }) => community, {
+    nullable: true
+  })
+  communityIntegrations: CommunityIntegrations;
+
   // If the community is invite-only, there will be no application. The only
   // way for someone to join is if the admin adds them manually.
   @OneToOne({ nullable: true })
@@ -115,12 +121,6 @@ export default class Community extends BaseEntity {
   @Field(() => Question)
   @OneToOne({ nullable: true })
   highlightedQuestion: Question;
-
-  @Field(() => Integrations, { nullable: true })
-  @OneToOne(() => Integrations, ({ community }) => community, {
-    nullable: true
-  })
-  integrations: Integrations;
 
   @Field(() => [Member])
   @OneToMany(() => Member, ({ community }) => community)

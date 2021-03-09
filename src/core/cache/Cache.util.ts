@@ -1,13 +1,13 @@
 import { EntityName } from '@mikro-orm/core';
 
 import Application from '@entities/application/Application';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
 import EventAttendee from '@entities/event-attendee/EventAttendee';
 import EventGuest from '@entities/event-guest/EventGuest';
 import EventInvitee from '@entities/event-invitee/EventInvitee';
 import EventWatch from '@entities/event-watch/EventWatch';
 import Event from '@entities/event/Event';
-import Integrations from '@entities/integrations/Integrations';
 import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
 import MemberPlan from '@entities/member-plan/MemberPlan';
 import MemberRefresh from '@entities/member-refresh/MemberRefresh';
@@ -35,7 +35,7 @@ export const getEntityCache = (entityName: EntityName<any>): Cache => {
   if (entityName === EventGuest) return EventGuest.cache;
   if (entityName === EventInvitee) return EventInvitee.cache;
   if (entityName === EventWatch) return EventWatch.cache;
-  if (entityName === Integrations) return Integrations.cache;
+  if (entityName === CommunityIntegrations) return CommunityIntegrations.cache;
   if (entityName === Member) return Member.cache;
   if (entityName === MemberIntegrations) return MemberIntegrations.cache;
   if (entityName === MemberPlan) return MemberPlan.cache;
@@ -63,7 +63,7 @@ export const getAllEntityCaches = (): Cache[] => {
     EventGuest.cache,
     EventInvitee.cache,
     EventWatch.cache,
-    Integrations.cache,
+    CommunityIntegrations.cache,
     Member.cache,
     MemberIntegrations.cache,
     MemberPlan.cache,

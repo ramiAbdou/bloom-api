@@ -35,23 +35,23 @@ const getChangePreview = async (
 
   const bm = new BloomManager();
 
-  const [community, integrations, plan]: [
+  const [community, memberIntegrations, plan]: [
     Community,
     MemberIntegrations,
     MemberPlan
   ] = await Promise.all([
-    bm.findOne(Community, communityId, { populate: ['integrations'] }),
+    bm.findOne(Community, communityId, { populate: ['communityIntegrations'] }),
     bm.findOne(MemberIntegrations, { member: memberId }),
     bm.findOne(MemberPlan, memberPlanId)
   ]);
 
-  const { stripeCustomerId, stripeSubscriptionId } = integrations;
+  const { stripeCustomerId, stripeSubscriptionId } = memberIntegrations;
 
-  if (!integrations.stripeSubscriptionId) return null;
+  if (!memberIntegrations.stripeSubscriptionId) return null;
 
   const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(
     stripeSubscriptionId,
-    { stripeAccount: community.integrations.stripeAccountId }
+    { stripeAccount: community.communityIntegrations.stripeAccountId }
   );
 
   const prorationDate: number = Math.floor(Date.now() / 1000);
@@ -66,7 +66,7 @@ const getChangePreview = async (
       subscription_proration_behavior: 'always_invoice',
       subscription_proration_date: prorationDate
     },
-    { stripeAccount: community.integrations.stripeAccountId }
+    { stripeAccount: community.communityIntegrations.stripeAccountId }
   );
 
   const dollarAmount = invoice.amount_due / 100;

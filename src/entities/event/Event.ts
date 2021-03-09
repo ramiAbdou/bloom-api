@@ -16,9 +16,9 @@ import {
 
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
+import getGoogleCalendarEvent from '@integrations/google/repo/getGoogleCalendarEvent';
 import { APP } from '@util/constants';
 import { QueryEvent } from '@util/events';
-import getGoogleCalendarEvent from '../../integrations/google/repo/getGoogleCalendarEvent';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';

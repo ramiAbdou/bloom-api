@@ -2,8 +2,8 @@ import { EntityData } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
 import Application from '@entities/application/Application';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
-import Integrations from '@entities/integrations/Integrations';
 import { MutationEvent } from '@util/events';
 
 /**
@@ -23,7 +23,7 @@ const createCommunity = async (
     {
       ...data,
       application: bm.create(Application, application ?? {}),
-      integrations: bm.create(Integrations, {})
+      communityIntegrations: bm.create(CommunityIntegrations, {})
     },
     { flushEvent: MutationEvent.CREATE_COMMUNITY }
   );

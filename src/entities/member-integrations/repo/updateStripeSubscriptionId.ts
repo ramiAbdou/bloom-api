@@ -2,7 +2,7 @@ import Stripe from 'stripe';
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
-import Integrations from '@entities/integrations/Integrations';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import MemberPlan from '@entities/member-plan/MemberPlan';
 import createStripeSubscription, {
   CreateStripeSubscriptionArgs
@@ -42,11 +42,11 @@ const updateStripeSubscriptionId = async (
   const bm = new BloomManager();
 
   const [communityIntegrations, memberIntegrations, type]: [
-    Integrations,
+    CommunityIntegrations,
     MemberIntegrations,
     MemberPlan
   ] = await Promise.all([
-    bm.findOne(Integrations, { community: communityId }),
+    bm.findOne(CommunityIntegrations, { community: communityId }),
     bm.findOne(MemberIntegrations, { member: memberId }),
     bm.findOne(MemberPlan, memberPlanId)
   ]);

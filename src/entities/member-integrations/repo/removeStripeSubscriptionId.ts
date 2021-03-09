@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
 
 import BloomManager from '@core/db/BloomManager';
-import Integrations from '@entities/integrations/Integrations';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
@@ -22,10 +22,10 @@ const removeStripeSubscriptionId = async (
   const bm = new BloomManager();
 
   const [communityIntegrations, memberIntegrations]: [
-    Integrations,
+    CommunityIntegrations,
     MemberIntegrations
   ] = await Promise.all([
-    bm.findOne(Integrations, { community: communityId }),
+    bm.findOne(CommunityIntegrations, { community: communityId }),
     bm.findOne(MemberIntegrations, { member: memberId })
   ]);
 

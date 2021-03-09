@@ -7,11 +7,11 @@ import getMailchimpAudienceName from '@integrations/mailchimp/repo/getMailchimpA
 import getMailchimpAudiences from '@integrations/mailchimp/repo/getMailchimpAudiences';
 import { QueryEvent } from '@util/events';
 import Community from '../community/Community';
-import { MailchimpList } from './Integrations.types';
+import { MailchimpList } from './CommunityIntegrations.types';
 
 @ObjectType()
 @Entity()
-export default class Integrations extends BaseEntity {
+export default class CommunityIntegrations extends BaseEntity {
   static cache: Cache = new Cache();
 
   // ## FIELDS
@@ -56,7 +56,7 @@ export default class Integrations extends BaseEntity {
 
   @AfterUpdate()
   afterUpdate() {
-    Integrations.cache.invalidateKeys([
+    CommunityIntegrations.cache.invalidateKeys([
       `${QueryEvent.GET_INTEGRATIONS}-${this.community.id}`
     ]);
   }
@@ -64,8 +64,10 @@ export default class Integrations extends BaseEntity {
   // ## RELATIONSHIPS
 
   @Field(() => Community)
-  @OneToOne(() => Community, ({ integrations }) => integrations, {
-    owner: true
-  })
+  @OneToOne(
+    () => Community,
+    ({ communityIntegrations }) => communityIntegrations,
+    { owner: true }
+  )
   community: Community;
 }

@@ -2,7 +2,7 @@ import Stripe from 'stripe';
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
-import Integrations from '@entities/integrations/Integrations';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
 import updateStripeCustomerId from '@entities/member-integrations/repo/updateStripeCustomerId';
 import { stripe } from '@integrations/stripe/Stripe.util';
@@ -41,10 +41,10 @@ const createSubscription = async (
   const bm = new BloomManager();
 
   const [communityIntegrations, memberIntegrations]: [
-    Integrations,
+    CommunityIntegrations,
     MemberIntegrations
   ] = await Promise.all([
-    bm.findOne(Integrations, { community: communityId }),
+    bm.findOne(CommunityIntegrations, { community: communityId }),
     bm.findOne(MemberIntegrations, { member: memberId })
   ]);
 

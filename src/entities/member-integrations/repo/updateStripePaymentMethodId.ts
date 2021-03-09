@@ -1,10 +1,10 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
-import Integrations from '@entities/integrations/Integrations';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
+import attachStripePaymentMethod from '@integrations/stripe/repo/attachStripePaymentMethod';
 import { GQLContext } from '@util/constants';
 import { MutationEvent } from '@util/events';
-import attachStripePaymentMethod from '../../../integrations/stripe/repo/attachStripePaymentMethod';
 import MemberIntegrations from '../MemberIntegrations';
 import updateStripeCustomerId from './updateStripeCustomerId';
 
@@ -32,10 +32,10 @@ const updateStripePaymentMethodId = async (
   const bm = new BloomManager();
 
   const [communityIntegrations, memberIntegrations]: [
-    Integrations,
+    CommunityIntegrations,
     MemberIntegrations
   ] = await Promise.all([
-    bm.findOne(Integrations, { community: communityId }),
+    bm.findOne(CommunityIntegrations, { community: communityId }),
     bm.findOne(MemberIntegrations, { member: memberId })
   ]);
 

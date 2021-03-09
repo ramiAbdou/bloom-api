@@ -27,7 +27,7 @@ const handleInvoicePaid = async (event: Stripe.Event) => {
     Member,
     Payment
   ] = await Promise.all([
-    bm.findOne(Community, { integrations: { stripeAccountId } }),
+    bm.findOne(Community, { communityIntegrations: { stripeAccountId } }),
     bm.findOne(
       Member,
       { memberIntegrations: { stripeCustomerId: invoice.customer as string } },

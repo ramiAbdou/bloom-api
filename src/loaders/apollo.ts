@@ -8,12 +8,12 @@ import MemberSocialsResolver from '@entities/member-socials/MemberSocials.resolv
 import { GQLContext } from '@util/constants';
 import { decodeToken } from '@util/util';
 import ApplicationResolver from '../entities/application/Application.resolver';
+import CommunityIntegrations from '../entities/community-integrations/CommunityIntegrations.resolver';
 import CommunityResolver from '../entities/community/Community.resolver';
 import EventAttendeeResolver from '../entities/event-attendee/EventAttendee.resolver';
 import EventGuestResolver from '../entities/event-guest/EventGuest.resolver';
 import EventWatchResolver from '../entities/event-watch/EventWatch.resolver';
 import EventResolver from '../entities/event/Event.resolver';
-import IntegrationsResolver from '../entities/integrations/Integrations.resolver';
 import MemberPlanResolver from '../entities/member-plan/MemberPlan.resolver';
 import MemberValueResolver from '../entities/member-value/MemberValue.resolver';
 import Member, { MemberRole } from '../entities/member/Member';
@@ -53,7 +53,7 @@ export const createSchema = async (): Promise<GraphQLSchema> =>
       RankedQuestionResolver,
       ApplicationResolver,
       CommunityResolver,
-      IntegrationsResolver,
+      CommunityIntegrations,
       EventResolver,
       EventAttendeeResolver,
       EventGuestResolver,

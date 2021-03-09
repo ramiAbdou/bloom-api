@@ -4,13 +4,13 @@ import BaseEntity from '@core/db/BaseEntity';
 import BloomManagerSubscriber from '@core/db/BloomManager.subscriber';
 import NamingStrategy from '@core/db/NamingStrategy';
 import Application from '@entities/application/Application';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
 import EventAttendee from '@entities/event-attendee/EventAttendee';
 import EventGuest from '@entities/event-guest/EventGuest';
 import EventInvitee from '@entities/event-invitee/EventInvitee';
 import EventWatch from '@entities/event-watch/EventWatch';
 import Event from '@entities/event/Event';
-import Integrations from '@entities/integrations/Integrations';
 import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
 import MemberPlan from '@entities/member-plan/MemberPlan';
 import MemberRefresh from '@entities/member-refresh/MemberRefresh';
@@ -41,7 +41,7 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
     BaseEntity,
     Application,
     RankedQuestion,
-    Integrations,
+    CommunityIntegrations,
     Community,
     Event,
     EventAttendee,

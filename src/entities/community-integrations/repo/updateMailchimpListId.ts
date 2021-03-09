@@ -4,7 +4,7 @@ import BloomManager from '@core/db/BloomManager';
 import { emitEmailEvent } from '@system/eventBus';
 import { GQLContext, IntegrationsBrand } from '@util/constants';
 import { EmailEvent, MutationEvent } from '@util/events';
-import Integrations from '../Integrations';
+import CommunityIntegrations from '../CommunityIntegrations';
 
 @ArgsType()
 export class UpdateMailchimpListIdArgs {
@@ -13,7 +13,7 @@ export class UpdateMailchimpListIdArgs {
 }
 
 /**
- * Returns the updated Integrations.
+ * Returns the updated CommunityIntegrations.
  *
  * @param args.mailchimpListId - ID of the Mailchimp List.
  * @param ctx.communityId - ID of the Community (authenticated).
@@ -21,12 +21,12 @@ export class UpdateMailchimpListIdArgs {
 const updateMailchimpListId = async (
   args: UpdateMailchimpListIdArgs,
   ctx: Pick<GQLContext, 'communityId'>
-): Promise<Integrations> => {
+): Promise<CommunityIntegrations> => {
   const { mailchimpListId } = args;
   const { communityId } = ctx;
 
-  const integrations = await new BloomManager().findOneAndUpdate(
-    Integrations,
+  const communityIntegrations = await new BloomManager().findOneAndUpdate(
+    CommunityIntegrations,
     { community: communityId },
     { mailchimpListId },
     { flushEvent: MutationEvent.UPDATE_MAILCHIMP_LIST_ID }
@@ -37,7 +37,7 @@ const updateMailchimpListId = async (
     communityId
   });
 
-  return integrations;
+  return communityIntegrations;
 };
 
 export default updateMailchimpListId;

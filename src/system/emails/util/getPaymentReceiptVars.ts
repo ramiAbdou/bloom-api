@@ -27,7 +27,7 @@ const getPaymentReceiptVars = async (
   const bm = new BloomManager();
 
   const [community, payment]: [Community, Payment] = await Promise.all([
-    bm.findOne(Community, { integrations: { stripeAccountId } }),
+    bm.findOne(Community, { communityIntegrations: { stripeAccountId } }),
     bm.findOne(Payment, paymentId)
   ]);
 

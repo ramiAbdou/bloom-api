@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
 
 import BloomManager from '@core/db/BloomManager';
-import Integrations from '@entities/integrations/Integrations';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import MemberPlan, { RecurrenceType } from '@entities/member-plan/MemberPlan';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
@@ -66,11 +66,11 @@ const createStripeProducts = async (ctx: Pick<GQLContext, 'communityId'>) => {
 
   const bm = new BloomManager();
 
-  const [integrations, plans]: [
-    Integrations,
+  const [communityIntegrations, plans]: [
+    CommunityIntegrations,
     MemberPlan[]
   ] = await Promise.all([
-    bm.findOne(Integrations, { community: communityId }),
+    bm.findOne(CommunityIntegrations, { community: communityId }),
     bm.find(MemberPlan, { community: communityId })
   ]);
 
@@ -78,7 +78,7 @@ const createStripeProducts = async (ctx: Pick<GQLContext, 'communityId'>) => {
     plans.map(async (plan: MemberPlan) => {
       return attachStripeProduct({
         plan,
-        stripeAccountId: integrations.stripeAccountId
+        stripeAccountId: communityIntegrations.stripeAccountId
       });
     })
   );

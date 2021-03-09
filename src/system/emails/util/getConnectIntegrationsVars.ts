@@ -1,8 +1,8 @@
 import { FilterQuery } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
-import Integrations from '@entities/integrations/Integrations';
 import Member from '@entities/member/Member';
 import { APP, IntegrationsBrand, KeyValue } from '@util/constants';
 import { EmailPayload } from '../emails.types';
@@ -32,9 +32,9 @@ const getConnectIntegrationsVars = async (
     ? { id: communityId }
     : { urlName };
 
-  const [community, integrations, members]: [
+  const [community, communityIntegrations, members]: [
     Community,
-    Integrations,
+    CommunityIntegrations,
     Member[]
   ] = await Promise.all([
     bm.findOne(
@@ -42,7 +42,7 @@ const getConnectIntegrationsVars = async (
       { ...communityArgs },
       { fields: ['name', 'urlName'] }
     ),
-    bm.findOne(Integrations, { community: { ...communityArgs } }),
+    bm.findOne(CommunityIntegrations, { community: { ...communityArgs } }),
     bm.find(
       Member,
       { community: { ...communityArgs }, role: { $ne: null } },
@@ -54,14 +54,17 @@ const getConnectIntegrationsVars = async (
 
   if (brand === IntegrationsBrand.MAILCHIMP) {
     details = [
-      { key: 'Mailchimp List', value: await integrations.mailchimpListName() },
-      { key: 'Mailchimp List ID', value: integrations.mailchimpListId }
+      {
+        key: 'Mailchimp List',
+        value: await communityIntegrations.mailchimpListName()
+      },
+      { key: 'Mailchimp List ID', value: communityIntegrations.mailchimpListId }
     ];
   }
 
   if (brand === IntegrationsBrand.STRIPE) {
     details = [
-      { key: 'Stripe Account ID', value: integrations.stripeAccountId }
+      { key: 'Stripe Account ID', value: communityIntegrations.stripeAccountId }
     ];
   }
 
