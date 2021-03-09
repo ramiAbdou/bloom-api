@@ -37,7 +37,6 @@ export enum MailchimpEvent {
 }
 
 export enum MutationEvent {
-  ACCEPT_APPLICANTS = 'ACCEPT_APPLICANTS',
   ACCEPT_INVITATIONS = 'ACCEPT_INVITATIONS',
   APPLY_TO_COMMUNITY = 'applyToCommunity',
   CREATE_COMMUNITY = 'createCommunity',
@@ -57,7 +56,6 @@ export enum MutationEvent {
   DELETE_EVENT_GUEST = 'deleteEventGuest',
   DELETE_MEMBERS = 'deleteMembers',
   DEMOTE_MEMBERS = 'demoteMembers',
-  IGNORE_APPLICANTS = 'IGNORE_APPLICANTS',
   IMPORT_COMMUNITY_CSV = 'IMPORT_COMMUNITY_CSV',
   INVITE_MEMBERS = 'inviteMembers',
   LOGOUT = 'logout',

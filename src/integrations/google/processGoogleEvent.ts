@@ -15,20 +15,24 @@ export interface GoogleEventArgs {
   googleEvent: GoogleEvent;
 }
 
-const processGoogleEvent = async ({
-  eventId,
-  guestId,
-  googleEvent
-}: GoogleEventArgs) => {
+/**
+ * Processes the GoogleEvent properly.
+ *
+ * @param args.eventId - ID of the Event.
+ * @param args.guestId - ID of the EventGuest.
+ * @param args.googleEvent - Internal Google Event.
+ */
+const processGoogleEvent = async (args: GoogleEventArgs) => {
+  const { eventId, guestId, googleEvent } = args;
+
   const bm = new BloomManager();
 
   const [event, guest]: [Event, EventGuest] = await Promise.all([
-    bm.findOne(Event, { id: eventId }, { filters: false }),
-    bm.findOne(
-      EventGuest,
-      { id: guestId },
-      { filters: false, populate: ['member', 'supporter'] }
-    )
+    bm.findOne(Event, eventId, { filters: false }),
+    bm.findOne(EventGuest, guestId, {
+      filters: false,
+      populate: ['member', 'supporter']
+    })
   ]);
 
   if (

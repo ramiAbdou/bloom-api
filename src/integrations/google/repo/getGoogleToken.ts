@@ -8,11 +8,10 @@ interface JwtGoogleToken {
 }
 
 /**
- * Exchanges the given code for an ID token from the Google API. We then
- * decode the token and return the email stored in the decoded JWT.
+ * Returns the decoded JwtGoogleToken including the email of the User. Uses
+ * the standard OAuth code-token exchange.
  *
- * @param code Code from authorization callback that we need to exchange for
- * a token from the Google API.
+ * @param code - Code from auth callback to exchange for Google API token.
  */
 const getGoogleToken = async (code: string): Promise<JwtGoogleToken> => {
   const options: AxiosRequestConfig = {

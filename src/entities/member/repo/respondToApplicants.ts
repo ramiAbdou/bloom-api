@@ -35,12 +35,7 @@ const respondToApplicants = async (
     Member,
     { id: memberIds },
     { joinedAt: now(), status: response },
-    {
-      flushEvent:
-        response === MemberStatus.ACCEPTED
-          ? MutationEvent.ACCEPT_APPLICANTS
-          : MutationEvent.IGNORE_APPLICANTS
-    }
+    { flushEvent: MutationEvent.RESPOND_TO_APPLICANTS }
   );
 
   if (response === MemberStatus.ACCEPTED) {

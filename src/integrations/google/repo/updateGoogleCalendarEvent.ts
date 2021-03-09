@@ -5,12 +5,12 @@ import { GoogleEvent } from '@util/events';
 import { eventsCalendar } from '../Google.util';
 
 /**
- * Creates the Google Calendar event on the events calendar.
+ * Returns the updated Google Calendar event.
  *
- * @param eventId ID of the event.
- * @param args.description Description of the event.
- * @param args.summary Summary time of the event.
- * @param args.visibility Visibility of the event (public or private).
+ * @param eventId - ID of the event.
+ * @param args.description - Description of the event.
+ * @param args.summary - Summary time of the event.
+ * @param args.visibility - Visibility of the event (public or private).
  */
 const updateGoogleCalendarEvent = async (
   eventId: string,

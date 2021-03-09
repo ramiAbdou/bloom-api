@@ -1,13 +1,11 @@
 import { calendar_v3 } from 'googleapis';
 
-import { GoogleEvent } from '@util/events';
 import logger from '@system/logger/logger';
+import { GoogleEvent } from '@util/events';
 import { eventsCalendar } from '../Google.util';
 
 /**
- * Removes attendee from the Google Calendar event.
- *
- * Precondition: Google Calendar event must not be null.
+ * Returns the updated Google Calendar event after removing the attendee.
  *
  * @param eventId ID of the event.
  * @param attendee.email Email of the user.
@@ -15,7 +13,7 @@ import { eventsCalendar } from '../Google.util';
 const deleteGoogleCalendarEventAttendee = async (
   eventId: string,
   attendee: calendar_v3.Schema$EventAttendee
-) => {
+): Promise<calendar_v3.Schema$Event> => {
   if (!eventId) return null;
 
   // Need to fetch all of the previous event attendees first to append

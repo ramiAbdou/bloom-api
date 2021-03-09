@@ -1,21 +1,21 @@
 import { calendar_v3 } from 'googleapis';
 
-import { GoogleEvent } from '@util/events';
 import logger from '@system/logger/logger';
+import { GoogleEvent } from '@util/events';
 import { eventsCalendar } from '../Google.util';
 
 /**
- * Adds attendee to the Google Calendar event.
+ * Returns the updated Google Calendar event after adding an attendee to it.
  *
- * @param eventId ID of the event.
- * @param attendee.displayName Full name of the user.
- * @param attendee.email Email of the user.
- * @param attendee.responseStatus 'accepted'.
+ * @param eventId - ID of the event.
+ * @param attendee.displayName - Full name of the user.
+ * @param attendee.email - Email of the user.
+ * @param attendee.responseStatus - 'accepted'.
  */
 const addGoogleCalendarEventAttendee = async (
   eventId: string,
   attendee: calendar_v3.Schema$EventAttendee
-) => {
+): Promise<calendar_v3.Schema$Event> => {
   if (!eventId) return null;
 
   // Need to fetch all of the previous event attendees first to append
