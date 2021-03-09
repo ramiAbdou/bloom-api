@@ -1,10 +1,9 @@
 import jwt from 'jsonwebtoken';
 
-import { APP, JWT } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import Member from '@entities/member/Member';
-import User from '@entities/user/User';
+import { APP, JWT } from '@util/constants';
 import URLBuilder from '@util/URLBuilder';
 import { EmailPayload } from '../emails.types';
 
@@ -16,17 +15,17 @@ export interface InviteMembersPayload {
 
 export interface InviteMembersVars {
   community: Pick<Community, 'name'>;
-  coordinator: Pick<User, 'fullName'>;
+  coordinator: Pick<Member, 'fullName'>;
   invitationUrl: string;
-  user: Pick<User, 'email' | 'firstName'>;
+  member: Pick<Member, 'email' | 'firstName'>;
 }
 
 /**
  * Returns email variables for INVITE_MEMBERS.
  *
- * @param {string} context.communityId
- * @param {string} context.coordinatorId
- * @param {string} context.memberId
+ * @param context.communityId - ID of the Community.
+ * @param context.coordinatorId - ID of the Member (admin).
+ * @param context.memberId - ID of the Member.
  */
 const getInviteMembersVars = async (
   context: EmailPayload
@@ -41,12 +40,12 @@ const getInviteMembersVars = async (
 
   const [community, coordinator, members]: [
     Community,
-    User,
+    Member,
     Member[]
   ] = await Promise.all([
-    bm.findOne(Community, { id: communityId }),
-    bm.findOne(User, { members: { id: coordinatorId } }),
-    bm.find(Member, { id: memberIds }, { populate: ['user'] })
+    bm.findOne(Community, communityId),
+    bm.findOne(Member, coordinatorId),
+    bm.find(Member, { id: memberIds })
   ]);
 
   const variables: InviteMembersVars[] = members.map((member: Member) => {
@@ -60,7 +59,7 @@ const getInviteMembersVars = async (
       community: { name: community.name },
       coordinator: { fullName: coordinator.fullName },
       invitationUrl,
-      user: { email: member.user.email, firstName: member.user.firstName }
+      member: { email: member.email, firstName: member.firstName }
     };
   });
 

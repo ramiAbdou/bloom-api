@@ -9,7 +9,6 @@ import deleteEventGuest, {
   DeleteEventGuestArgs
 } from './repo/deleteEventGuest';
 import getEventGuests, { GetEventGuestsArgs } from './repo/getEventGuests';
-import getPastEventGuests from './repo/getPastEventGuests';
 import getUpcomingEventGuests from './repo/getUpcomingEventGuests';
 
 @Resolver()
@@ -33,14 +32,10 @@ export default class EventGuestResolver {
 
   @Query(() => [EventGuest])
   async getEventGuests(
-    @Args() args: GetEventGuestsArgs
+    @Args() args: GetEventGuestsArgs,
+    @Ctx() ctx: GQLContext
   ): Promise<EventGuest[]> {
-    return getEventGuests(args);
-  }
-
-  @Query(() => [EventGuest])
-  async getPastEventGuests(@Ctx() ctx: GQLContext): Promise<EventGuest[]> {
-    return getPastEventGuests(ctx);
+    return getEventGuests(args, ctx);
   }
 
   @Query(() => [EventGuest])

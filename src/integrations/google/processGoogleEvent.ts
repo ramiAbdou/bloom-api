@@ -15,16 +15,24 @@ export interface GoogleEventArgs {
   googleEvent: GoogleEvent;
 }
 
-const processGoogleEvent = async ({
-  eventId,
-  guestId,
-  googleEvent
-}: GoogleEventArgs) => {
+/**
+ * Processes the GoogleEvent properly.
+ *
+ * @param args.eventId - ID of the Event.
+ * @param args.guestId - ID of the EventGuest.
+ * @param args.googleEvent - Internal Google Event.
+ */
+const processGoogleEvent = async (args: GoogleEventArgs) => {
+  const { eventId, guestId, googleEvent } = args;
+
   const bm = new BloomManager();
 
   const [event, guest]: [Event, EventGuest] = await Promise.all([
-    bm.findOne(Event, { id: eventId }, { filters: false }),
-    bm.findOne(EventGuest, { id: guestId }, { filters: false })
+    bm.findOne(Event, eventId, { filters: false }),
+    bm.findOne(EventGuest, guestId, {
+      filters: false,
+      populate: ['member', 'supporter']
+    })
   ]);
 
   if (
@@ -33,8 +41,8 @@ const processGoogleEvent = async ({
     guest
   ) {
     await addGoogleCalendarEventAttendee(event.googleCalendarEventId, {
-      displayName: `${guest.firstName} ${guest.lastName}`,
-      email: guest.email,
+      displayName: guest?.member?.fullName ?? guest?.supporter?.fullName,
+      email: guest?.member?.email ?? guest?.supporter?.email,
       responseStatus: 'accepted'
     });
 
@@ -47,7 +55,7 @@ const processGoogleEvent = async ({
     const googleCalendarEvent = await createGoogleCalendarEvent({
       description: event.description,
       end: { dateTime: event.endTime },
-      location: await event.eventUrl,
+      location: await event.eventUrl(),
       start: { dateTime: event.startTime },
       summary: event.title,
       visibility:
@@ -66,7 +74,7 @@ const processGoogleEvent = async ({
 
   if (googleEvent === GoogleEvent.DELETE_CALENDAR_EVENT_ATTENDEE) {
     await deleteGoogleCalendarEventAttendee(event.googleCalendarEventId, {
-      email: guest.email
+      email: guest?.member?.email ?? guest?.supporter?.email
     });
   }
 

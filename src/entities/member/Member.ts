@@ -1,5 +1,8 @@
-import { Authorized, Field, ObjectType } from 'type-graphql';
+import { IsUrl } from 'class-validator';
+import { Field, ObjectType } from 'type-graphql';
 import {
+  AfterCreate,
+  AfterUpdate,
   BeforeCreate,
   BeforeUpdate,
   Cascade,
@@ -8,25 +11,29 @@ import {
   Enum,
   ManyToOne,
   OneToMany,
-  Property
+  OneToOne,
+  Property,
+  QueryOrder,
+  Unique
 } from '@mikro-orm/core';
 
+import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
+import { QueryEvent } from '@util/events';
 import { now } from '@util/util';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
 import EventInvitee from '../event-invitee/EventInvitee';
 import EventWatch from '../event-watch/EventWatch';
-import MemberData from '../member-data/MemberData';
-import MemberPayment from '../member-payment/MemberPayment';
+import MemberIntegrations from '../member-integrations/MemberIntegrations';
+import MemberPlan from '../member-plan/MemberPlan';
 import MemberRefresh from '../member-refresh/MemberRefresh';
-import MemberType from '../member-type/MemberType';
+import MemberSocials from '../member-socials/MemberSocials';
+import MemberValue from '../member-value/MemberValue';
+import Payment from '../payment/Payment';
 import User from '../user/User';
-import getNextPaymentDate from './repo/getNextPaymentDate';
-import getPaymentMethod, {
-  GetPaymentMethodResult
-} from './repo/getPaymentMethod';
+import isDuesActive from './repo/isDuesActive';
 
 export enum MemberRole {
   ADMIN = 'Admin',
@@ -42,19 +49,43 @@ export enum MemberStatus {
 
 @ObjectType()
 @Entity()
+@Unique({ properties: ['community', 'email'] })
 export default class Member extends BaseEntity {
+  static cache: Cache = new Cache();
+
+  // ## FIELDS
+
   @Field({ nullable: true })
   @Property({ nullable: true, type: 'text' })
   bio: string;
 
-  @Field({ defaultValue: false })
+  @Field()
   @Property()
-  isDuesActive: boolean = false;
+  email: string;
+
+  @Field()
+  @Property()
+  firstName: string;
+
+  @Field()
+  @Property({ persist: false })
+  get fullName(): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
+
+  @Field()
+  @Property()
+  lastName: string;
 
   // Refers to the date that the member was ACCEPTED.
   @Field({ nullable: true })
   @Property({ nullable: true })
   joinedAt?: string;
+
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  @IsUrl()
+  pictureUrl: string;
 
   // If the member has a role, it will either be ADMIN or OWNER. There should
   // only be one OWNER in a community.
@@ -66,38 +97,14 @@ export default class Member extends BaseEntity {
   @Enum({ items: () => MemberStatus, type: String })
   status: MemberStatus = MemberStatus.PENDING;
 
-  // ## STRIPE INFORMATION
+  // ## METHODS
 
-  // We don't store any of the customer's financial data in our server. Stripe
-  // handles all of that for us, we just need Stripe's customer ID in order
-  // to use recurring payments.
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  stripeCustomerId: string;
-
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  stripePaymentMethodId: string;
-
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  stripeSubscriptionId: string;
-
-  // ## STRIPE RELATED MEMBER FUNCTIONS
-
-  @Authorized()
-  @Field(() => GetPaymentMethodResult, { nullable: true })
-  async paymentMethod() {
-    return getPaymentMethod(this.id);
+  @Field(() => Boolean)
+  async isDuesActive(): Promise<boolean> {
+    return isDuesActive({ memberId: this.id });
   }
 
-  @Authorized()
-  @Field(() => String, { nullable: true })
-  async nextPaymentDate() {
-    return getNextPaymentDate(this.id);
-  }
-
-  // ## LIFECYCLE
+  // ## LIFECYCLE HOOKS
 
   @BeforeCreate()
   beforeCreate() {
@@ -111,8 +118,10 @@ export default class Member extends BaseEntity {
 
     // If no member type is provided, assign them the default member.
     // Every community should've assigned one default member.
-    if (!this.type) this.type = this.community.defaultType;
-    if (this.type.isFree) this.isDuesActive = true;
+    if (!this.plan) this.plan = this.community.defaultType;
+
+    this.firstName = this.firstName.trim();
+    this.lastName = this.lastName.trim();
   }
 
   @BeforeUpdate()
@@ -120,6 +129,23 @@ export default class Member extends BaseEntity {
     if (this.status === MemberStatus.ACCEPTED && !this.joinedAt) {
       this.joinedAt = now();
     }
+  }
+
+  @AfterCreate()
+  afterCreate() {
+    Member.cache.invalidateKeys(
+      this.status === MemberStatus.PENDING
+        ? [`${QueryEvent.GET_APPLICANTS}-${this.community.id}`]
+        : [`${QueryEvent.GET_MEMBERS}-${this.community.id}`]
+    );
+  }
+
+  @AfterUpdate()
+  afterUpdate() {
+    Member.cache.invalidateKeys([
+      `${QueryEvent.GET_MEMBERS}-${this.id}`,
+      `${QueryEvent.GET_MEMBERS}-${this.community.id}`
+    ]);
   }
 
   // ## RELATIONSHIPS
@@ -132,39 +158,49 @@ export default class Member extends BaseEntity {
   @ManyToOne(() => Community)
   community: Community;
 
-  // Data will only be populated if a question has ever been answered before.
-  @Field(() => [MemberData])
-  @OneToMany(() => MemberData, ({ member }) => member, {
-    cascade: [Cascade.ALL]
-  })
-  data = new Collection<MemberData>(this);
-
   @Field(() => [EventGuest])
   @OneToMany(() => EventGuest, ({ member }) => member)
   guests = new Collection<EventGuest>(this);
+
+  @Field(() => MemberIntegrations)
+  @OneToOne(() => MemberIntegrations, (integrations) => integrations.member)
+  memberIntegrations: MemberIntegrations;
 
   @Field(() => [EventInvitee])
   @OneToMany(() => EventInvitee, ({ member }) => member)
   invitees = new Collection<EventInvitee>(this);
 
-  @Field(() => [MemberPayment])
-  @OneToMany(() => MemberPayment, ({ member }) => member)
-  payments: Collection<MemberPayment> = new Collection<MemberPayment>(this);
-
-  @OneToMany(() => MemberRefresh, ({ member }) => member)
-  refreshes: Collection<MemberRefresh> = new Collection<MemberRefresh>(this);
+  @Field(() => [Payment])
+  @OneToMany(() => Payment, ({ member }) => member, {
+    orderBy: { createdAt: QueryOrder.DESC }
+  })
+  payments: Collection<Payment> = new Collection<Payment>(this);
 
   // 99% of the time, type MUST exist. However, in some communities, the OWNER
   // or ADMINs are not actually general members of the community. For example,
   // in ColorStack, the Community Manager isn't a part of the community, but
   // in MALIK, even the National President is a general dues-paying member.
-  @Field(() => MemberType)
-  @ManyToOne(() => MemberType, { nullable: true })
-  type: MemberType;
+  @Field(() => MemberPlan)
+  @ManyToOne(() => MemberPlan, { nullable: true })
+  plan: MemberPlan;
+
+  @OneToMany(() => MemberRefresh, ({ member }) => member)
+  refreshes: Collection<MemberRefresh> = new Collection<MemberRefresh>(this);
+
+  @Field(() => MemberSocials)
+  @OneToOne(() => MemberSocials, ({ member }) => member)
+  socials: MemberSocials;
 
   @Field(() => User)
   @ManyToOne(() => User)
   user: User;
+
+  // Data will only be populated if a question has ever been answered before.
+  @Field(() => [MemberValue])
+  @OneToMany(() => MemberValue, ({ member }) => member, {
+    cascade: [Cascade.ALL]
+  })
+  values = new Collection<MemberValue>(this);
 
   @Field(() => [EventWatch])
   @OneToMany(() => EventWatch, ({ member }) => member)

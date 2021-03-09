@@ -3,6 +3,8 @@ import { ArgsType, Field, InputType } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
+import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
+import MemberSocials from '@entities/member-socials/MemberSocials';
 import User from '@entities/user/User';
 import { emitEmailEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
@@ -33,9 +35,8 @@ export class InviteMembersArgs {
 /**
  * Throws error if one member has an email that already exists.
  *
- * @param {AddMemberInput[]} args.members
- * @param {string} args.members.email
- * @param {string} ctx.communityId
+ * @param args.members.email
+ * @param ctx.communityId
  */
 const assertInviteMembers = async (
   args: InviteMembersArgs,
@@ -62,11 +63,11 @@ const assertInviteMembers = async (
  * Creates new Members (and maybe Users) based on the data given.
  * Precondition: Only members who are admins can call this function.
  *
- * @param {AddMemberInput[]} args.members - Data for new members to create.
- * @param {string} args.members.email
- * @param {string} args.members.firstName
- * @param {string} args.members.lastName
- * @param {string} ctx.communityId
+ * @param args.members - Data for new members to create.
+ * @param args.members.email
+ * @param args.members.firstName
+ * @param args.members.lastName
+ * @param ctx.communityId
  */
 const inviteMembers = async (
   args: InviteMembersArgs,
@@ -91,15 +92,17 @@ const inviteMembers = async (
 
       return bm.create(Member, {
         community,
+        memberIntegrations: bm.create(MemberIntegrations, {}),
+        plan: community.defaultType.id,
         role: isAdmin ? MemberRole.ADMIN : null,
+        socials: bm.create(MemberSocials, {}),
         status: MemberStatus.INVITED,
-        type: community.defaultType.id,
         user
       });
     })
   );
 
-  await bm.flush({ flushEvent: FlushEvent.ADD_MEMBERS });
+  await bm.flush({ flushEvent: FlushEvent.INVITE_MEMBERS });
 
   emitEmailEvent(EmailEvent.INVITE_MEMBERS, {
     communityId,

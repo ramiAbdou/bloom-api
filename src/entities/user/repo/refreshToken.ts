@@ -2,10 +2,10 @@ import { Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { FilterQuery } from '@mikro-orm/core';
 
-import { AuthTokens, JWT } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import createMemberRefresh from '@entities/member-refresh/repo/createMemberRefresh';
 import Member from '@entities/member/Member';
+import { AuthTokens, JWT } from '@util/constants';
 import { FlushEvent } from '@util/events';
 import { setHttpOnlyTokens } from '@util/util';
 import User from '../User';
@@ -22,12 +22,11 @@ interface RefreshTokenArgs {
  * Refreshes the user's tokens and sets the HTTP only cookies if Express
  * res object is provided.
  *
- * @param {RefreshTokenArgs} args
- * @param {string} [args.email]
- * @param {string} [args.memberId]
- * @param {string} [args.rToken]
- * @param {string} [args.res]
- * @param {string} [args.userId]
+ * @param args.email - Email of User to refresh.
+ * @param args.memberId - ID of the Member to refresh.
+ * @param args.rToken - Refresh token of User to refresh.
+ * @param args.res - Express Response object.
+ * @param args.userId - ID of the User to refresh.
  */
 const refreshToken = async (args: RefreshTokenArgs): Promise<AuthTokens> => {
   const { email, memberId, res, rToken, userId } = args;

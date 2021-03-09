@@ -3,21 +3,24 @@ import { GraphQLSchema } from 'graphql';
 import { AuthChecker, buildSchema } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
+import MemberIntegrationsResolver from '@entities/member-integrations/MemberIntegrations.resolver';
+import MemberSocialsResolver from '@entities/member-socials/MemberSocials.resolver';
 import { GQLContext } from '@util/constants';
 import { decodeToken } from '@util/util';
-import CommunityApplicationResolver from '../entities/community-application/CommunityApplication.resolver';
-import CommunityIntegrationsResolver from '../entities/community-integrations/CommunityIntegrations.resolver';
+import ApplicationResolver from '../entities/application/Application.resolver';
+import CommunityIntegrations from '../entities/community-integrations/CommunityIntegrations.resolver';
 import CommunityResolver from '../entities/community/Community.resolver';
 import EventAttendeeResolver from '../entities/event-attendee/EventAttendee.resolver';
 import EventGuestResolver from '../entities/event-guest/EventGuest.resolver';
 import EventWatchResolver from '../entities/event-watch/EventWatch.resolver';
 import EventResolver from '../entities/event/Event.resolver';
-import MemberDataResolver from '../entities/member-data/MemberData.resolver';
-import MemberPaymentResolver from '../entities/member-payment/MemberPayment.resolver';
-import MemberTypeResolver from '../entities/member-type/MemberType.resolver';
+import MemberPlanResolver from '../entities/member-plan/MemberPlan.resolver';
+import MemberValueResolver from '../entities/member-value/MemberValue.resolver';
 import Member, { MemberRole } from '../entities/member/Member';
 import MemberResolver from '../entities/member/Member.resolver';
+import PaymentResolver from '../entities/payment/Payment.resolver';
 import QuestionResolver from '../entities/question/Question.resolver';
+import RankedQuestionResolver from '../entities/ranked-question/RankedQuestion.resolver';
 import UserResolver from '../entities/user/User.resolver';
 
 /**
@@ -47,17 +50,20 @@ export const createSchema = async (): Promise<GraphQLSchema> =>
   buildSchema({
     authChecker,
     resolvers: [
+      RankedQuestionResolver,
+      ApplicationResolver,
       CommunityResolver,
-      CommunityApplicationResolver,
-      CommunityIntegrationsResolver,
+      CommunityIntegrations,
       EventResolver,
       EventAttendeeResolver,
       EventGuestResolver,
       EventWatchResolver,
       MemberResolver,
-      MemberDataResolver,
-      MemberPaymentResolver,
-      MemberTypeResolver,
+      MemberIntegrationsResolver,
+      MemberSocialsResolver,
+      MemberValueResolver,
+      MemberPlanResolver,
+      PaymentResolver,
       QuestionResolver,
       UserResolver
     ]

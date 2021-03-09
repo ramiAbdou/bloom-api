@@ -10,19 +10,20 @@ import {
   Enum,
   ManyToOne,
   OneToMany,
-  Property
+  Property,
+  wrap
 } from '@mikro-orm/core';
 
+import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
-import cache from '@core/db/cache';
+import getGoogleCalendarEvent from '@integrations/google/repo/getGoogleCalendarEvent';
+import { APP } from '@util/constants';
 import { QueryEvent } from '@util/events';
-import getGoogleCalendarEvent from '../../integrations/google/repo/getGoogleCalendarEvent';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
 import EventInvitee from '../event-invitee/EventInvitee';
 import EventWatch from '../event-watch/EventWatch';
-import getEventUrl from './repo/getEventUrl';
 
 export enum EventPrivacy {
   MEMBERS_ONLY = 'Members Only',
@@ -32,6 +33,10 @@ export enum EventPrivacy {
 @ObjectType()
 @Entity()
 export default class Event extends BaseEntity {
+  static cache: Cache = new Cache();
+
+  // ## FIELDS
+
   @Field()
   @Property({ type: 'text' })
   description: string;
@@ -39,12 +44,6 @@ export default class Event extends BaseEntity {
   @Field()
   @Property()
   endTime: string;
-
-  @Field(() => String)
-  @Property({ persist: false })
-  get eventUrl(): Promise<string> | string {
-    return getEventUrl({ eventId: this.id });
-  }
 
   @Field({ nullable: true })
   @Property({ nullable: true })
@@ -81,7 +80,13 @@ export default class Event extends BaseEntity {
   @IsUrl()
   videoUrl: string;
 
-  // ## MEMBER FUNCTIONS
+  // ## METHODS
+
+  @Field(() => String)
+  async eventUrl(): Promise<string> {
+    await wrap(this.community).init();
+    return `${APP.CLIENT_URL}/${this.community?.urlName}/events/${this.id}`;
+  }
 
   @Field(() => String, { nullable: true })
   async googleCalendarEventUrl(): Promise<string> {
@@ -92,7 +97,7 @@ export default class Event extends BaseEntity {
     return googleCalendarEvent.htmlLink;
   }
 
-  // ## LIFECYCLE
+  // ## LIFECYCLE HOOKS
 
   @BeforeCreate()
   beforeCreate() {
@@ -102,16 +107,16 @@ export default class Event extends BaseEntity {
 
   @AfterCreate()
   afterCreate() {
-    cache.invalidateKeys([
+    Event.cache.invalidateKeys([
       `${QueryEvent.GET_UPCOMING_EVENTS}-${this.community.id}`
     ]);
   }
 
   @AfterUpdate()
   afterUpdate() {
-    cache.invalidateKeys([
+    Event.cache.invalidateKeys([
       `${QueryEvent.GET_EVENT}-${this.id}`,
-      ...(day().isAfter(day(this.endTime))
+      ...(day.utc().isAfter(day.utc(this.endTime))
         ? [`${QueryEvent.GET_PAST_EVENTS}-${this.community.id}`]
         : [`${QueryEvent.GET_UPCOMING_EVENTS}-${this.community.id}`])
     ]);

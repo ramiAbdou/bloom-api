@@ -11,7 +11,7 @@ export class UpdateEventArgs {
   description?: string;
 
   @Field()
-  id: string;
+  eventId: string;
 
   @Field({ nullable: true })
   imageUrl?: string;
@@ -29,20 +29,23 @@ export class UpdateEventArgs {
   videoUrl?: string;
 }
 
-const updateEvent = async ({
-  id: eventId,
-  ...args
-}: UpdateEventArgs): Promise<Event> => {
+/**
+ * Returns the updated Event.
+ *
+ * @param args.eventId - ID of the Event.
+ * @param args - Event data (eg: description, endTime, startTime).
+ */
+const updateEvent = async (args: UpdateEventArgs): Promise<Event> => {
+  const { eventId, ...eventData } = args;
+
   const event: Event = await new BloomManager().findOneAndUpdate(
     Event,
-    { id: eventId },
-    { ...args },
+    eventId,
+    { ...eventData },
     { flushEvent: FlushEvent.UPDATE_EVENT }
   );
 
-  emitGoogleEvent(GoogleEvent.UPDATE_CALENDAR_EVENT, {
-    eventId
-  });
+  emitGoogleEvent(GoogleEvent.UPDATE_CALENDAR_EVENT, { eventId });
 
   return event;
 };

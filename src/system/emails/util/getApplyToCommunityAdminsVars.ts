@@ -1,7 +1,7 @@
-import { APP } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
-import User from '@entities/user/User';
+import Member from '@entities/member/Member';
+import { APP } from '@util/constants';
 import { EmailPayload } from '../emails.types';
 
 export interface ApplyToCommunityAdminsPayload {
@@ -10,17 +10,17 @@ export interface ApplyToCommunityAdminsPayload {
 }
 
 export interface ApplyToCommunityAdminsVars {
-  applicant: Pick<User, 'fullName'>;
+  applicant: Pick<Member, 'fullName'>;
   applicantUrl: string;
   community: Pick<Community, 'name'>;
-  user: Pick<User, 'email' | 'firstName'>;
+  member: Pick<Member, 'email' | 'firstName'>;
 }
 
 /**
  * Returns email variables for APPLY_TO_COMMUNITY_ADMINS.
  *
- * @param {string} context.applicantId
- * @param {string} context.memberId
+ * @param context.applicantId - ID of the Member (status: PENDING).
+ * @param context.memberId - ID of the Member.
  */
 const getApplyToCommunityAdminsVars = async (
   context: EmailPayload
@@ -31,28 +31,30 @@ const getApplyToCommunityAdminsVars = async (
 
   const [community, admins, applicant]: [
     Community,
-    User[],
-    User
+    Member[],
+    Member
   ] = await Promise.all([
     bm.findOne(Community, { id: communityId }),
-    bm.find(User, { members: { community: communityId, role: { $ne: null } } }),
-    bm.findOne(User, { members: { id: applicantId } })
+    bm.find(Member, { community: communityId, role: { $ne: null } }),
+    bm.findOne(Member, { id: applicantId })
   ]);
 
   const partialCommunity: Pick<Community, 'name'> = { name: community.name };
 
-  const partialApplicant: Pick<User, 'fullName'> = {
+  const partialApplicant: Pick<Member, 'fullName'> = {
     fullName: applicant.fullName
   };
 
-  const variables: ApplyToCommunityAdminsVars[] = admins.map((admin: User) => {
-    return {
-      applicant: partialApplicant,
-      applicantUrl: `${APP.CLIENT_URL}/${community.urlName}/applicants`,
-      community: partialCommunity,
-      user: { email: admin.email, firstName: admin.firstName }
-    };
-  });
+  const variables: ApplyToCommunityAdminsVars[] = admins.map(
+    (admin: Member) => {
+      return {
+        applicant: partialApplicant,
+        applicantUrl: `${APP.CLIENT_URL}/${community.urlName}/applicants`,
+        community: partialCommunity,
+        member: { email: admin.email, firstName: admin.firstName }
+      };
+    }
+  );
 
   return variables;
 };

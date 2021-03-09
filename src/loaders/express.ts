@@ -4,11 +4,11 @@ import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import helmet from 'helmet';
 
-import { APP } from '@util/constants';
 import refreshTokenFlow from '@entities/user/repo/refreshToken';
 import googleRouter from '@integrations/google/Google.router';
 import mailchimpRouter from '@integrations/mailchimp/Mailchimp.router';
 import stripeRouter from '@integrations/stripe/Stripe.router';
+import { APP } from '@util/constants';
 import { verifyToken } from '@util/util';
 
 /**

@@ -11,9 +11,10 @@ import {
   wrap
 } from '@mikro-orm/core';
 
-import cache from '@core/db/cache';
+import Cache from '@core/cache/Cache';
 import logger from '@system/logger/logger';
 import { now } from '@util/util';
+import { getAllEntityCaches, getEntityCache } from '../cache/Cache.util';
 import {
   BloomCreateAndFlushArgs,
   BloomFindAndDeleteOptions,
@@ -38,41 +39,25 @@ class BloomManager {
     this.em = em || db.em?.fork();
   }
 
+  /**
+   * Returns a clean EntityManager.
+   */
   fork = () => new BloomManager();
-
-  async flush?(args?: FlushArgs) {
-    const { flushEvent } = args ?? {};
-
-    const contextId = nanoid();
-
-    try {
-      logger.log({ contextId, event: flushEvent, level: 'BEFORE_FLUSH' });
-      await this.em.flush();
-      logger.log({ contextId, event: flushEvent, level: 'AFTER_FLUSH' });
-    } catch (e) {
-      logger.log({
-        contextId,
-        error: e.stack,
-        event: flushEvent,
-        level: 'FLUSH_ERROR'
-      });
-
-      throw e;
-    }
-  }
 
   async findOne<T, P>(
     entityName: EntityName<T>,
     where: FilterQuery<T>,
     options?: BloomFindOneOptions<T, P>
   ): Promise<Loaded<T, P>> {
+    const cache: Cache = getEntityCache(entityName);
+
     // Try to find and return the entity from the cache. We must return it as
     // a resolved Promise to ensure type safety.
     const { cacheKey } = options ?? {};
 
     // If we grab the entity from the cache, we need to merge it to the current
     // entity manager, as a normal findOne would do.
-    if (options?.cache !== false && cache.has(cacheKey)) {
+    if (cache.has(cacheKey) && !!where) {
       const entity = cache.get(cacheKey);
       if (entity) this.em.merge(entity, true);
       return entity as Promise<Loaded<T, P> | null>;
@@ -91,13 +76,15 @@ class BloomManager {
     where: FilterQuery<T>,
     options?: BloomFindOneOptions<T, P>
   ): Promise<Loaded<T, P>> {
+    const cache: Cache = getEntityCache(entityName);
+
     // Try to find and return the entity from the cache. We must return it as
     // a resolved Promise to ensure type safety.
     const { cacheKey } = options ?? {};
 
     // If we grab the entity from the cache, we need to merge it to the current
     // entity manager, as a normal findOne would do.
-    if (cache.has(cacheKey)) {
+    if (cache.has(cacheKey) && !!where) {
       const entity = cache.get(cacheKey);
       if (entity) this.em.merge(entity);
       return entity as Promise<Loaded<T, P> | null>;
@@ -121,7 +108,8 @@ class BloomManager {
     data: EntityData<T>,
     options?: BloomFindOneOptions<T, P>
   ): Promise<[Loaded<T, P> | T, boolean]> {
-    const result = await this.findOne<T, P>(entityName, where, options);
+    let result = await this.findOne<T, P>(entityName, where, options);
+    if (result && options?.update) result = wrap(result).assign(data);
     return [result ?? this.create(entityName, data), !!result];
   }
 
@@ -147,13 +135,15 @@ class BloomManager {
     where: FilterQuery<T>,
     options?: BloomFindOptions<T, P>
   ): Promise<Loaded<T, P>[]> {
+    const cache: Cache = getEntityCache(entityName);
+
     // Try to find and return the entity from the cache. We must return it as
     // a resolved Promise to ensure type safety.
     const { cacheKey } = options ?? {};
 
     // If we grab the entity from the cache, we need to merge it to the current
     // entity manager, as a normal findOne would do.
-    if (cache.has(cacheKey)) {
+    if (cache.has(cacheKey) && !!where) {
       const result = cache.get(cacheKey);
       result.forEach((entity) => entity && this.em.merge(entity));
       return result as Promise<Loaded<T, P>[]>;
@@ -281,6 +271,29 @@ class BloomManager {
     const entity: New<T, P> = this.em.create(entityName, data);
     this.em.persist(entity);
     return entity;
+  }
+
+  async flush?(args?: FlushArgs) {
+    const { invalidateKeys, flushEvent } = args ?? {};
+
+    const contextId = nanoid();
+
+    try {
+      logger.log({ contextId, event: flushEvent, level: 'BEFORE_FLUSH' });
+      await this.em.flush();
+      const caches: Cache[] = getAllEntityCaches();
+      caches.forEach((cache: Cache) => cache.invalidateKeys(invalidateKeys));
+      logger.log({ contextId, event: flushEvent, level: 'AFTER_FLUSH' });
+    } catch (e) {
+      logger.log({
+        contextId,
+        error: e.stack,
+        event: flushEvent,
+        level: 'FLUSH_ERROR'
+      });
+
+      throw e;
+    }
   }
 
   /**

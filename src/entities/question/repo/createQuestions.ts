@@ -1,9 +1,9 @@
 import { ArgsType, Field } from 'type-graphql';
 import { EntityData } from '@mikro-orm/core';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
+import { GQLContext } from '@util/constants';
 import { FlushEvent } from '@util/events';
 import Question from '../Question';
 
@@ -16,30 +16,37 @@ export class CreateQuestionsArgs {
   questions: EntityData<Question>[];
 }
 
+/**
+ * Returns the nenw Question(s).
+ *
+ * @param args.highlightedQuestionTitle - Title of highlighted Question.
+ * @param args.questions - Question(s) data.
+ * @param ctx.communityId - ID of the Community (authenticated).
+ */
 const createQuestions = async (
-  {
-    highlightedQuestionTitle,
-    questions: initialQuestions
-  }: CreateQuestionsArgs,
-  { communityId }: Pick<GQLContext, 'communityId'>
+  args: CreateQuestionsArgs,
+  ctx: Pick<GQLContext, 'communityId'>
 ): Promise<Question[]> => {
+  const { highlightedQuestionTitle, questions: initialQuestions } = args;
+  const { communityId } = ctx;
+
   const bm = new BloomManager();
-  const community: Community = await bm.findOne(Community, { id: communityId });
+  const community: Community = await bm.findOne(Community, communityId);
 
   let highlightedQuestion: Question;
 
   const questions: Question[] = initialQuestions.map(
-    (question: EntityData<Question>) => {
-      const persistedQuestion: Question = bm.create(Question, {
-        ...question,
+    (questionData: EntityData<Question>) => {
+      const question: Question = bm.create(Question, {
+        ...questionData,
         community: communityId
       });
 
-      if (persistedQuestion.title === highlightedQuestionTitle) {
-        highlightedQuestion = persistedQuestion;
+      if (question.title === highlightedQuestionTitle) {
+        highlightedQuestion = question;
       }
 
-      return persistedQuestion;
+      return question;
     }
   );
 

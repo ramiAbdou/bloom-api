@@ -1,7 +1,7 @@
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import Event from '@entities/event/Event';
-import User from '@entities/user/User';
+import Member from '@entities/member/Member';
 import { EmailPayload } from '../emails.types';
 
 export interface CreateEventInviteesPayload {
@@ -16,7 +16,7 @@ export interface CreateEventInviteesVars {
     Event,
     'endTime' | 'eventUrl' | 'privacy' | 'startTime' | 'summary' | 'title'
   >;
-  user: Pick<User, 'email' | 'firstName'>;
+  member: Pick<Member, 'email' | 'firstName'>;
 }
 
 const getCreateEventInviteesVars = async (
@@ -30,14 +30,14 @@ const getCreateEventInviteesVars = async (
 
   const bm = new BloomManager();
 
-  const [community, event, users]: [
+  const [community, event, members]: [
     Community,
     Event,
-    User[]
+    Member[]
   ] = await Promise.all([
     bm.findOne(Community, { id: communityId }),
     bm.findOne(Event, { id: eventId }),
-    bm.find(User, { members: { id: memberIds } })
+    bm.find(Member, { id: memberIds })
   ]);
 
   const partialCommunity: Pick<Community, 'name'> = { name: community.name };
@@ -47,18 +47,19 @@ const getCreateEventInviteesVars = async (
     'endTime' | 'eventUrl' | 'privacy' | 'startTime' | 'summary' | 'title'
   > = {
     endTime: event.endTime,
-    eventUrl: await event.eventUrl,
+    // @ts-ignore b/c we need to await the call.
+    eventUrl: await event.eventUrl(),
     privacy: event.privacy,
     startTime: event.startTime,
     summary: event.summary,
     title: event.title
   };
 
-  const variables: CreateEventInviteesVars[] = users.map((user: User) => {
+  const variables: CreateEventInviteesVars[] = members.map((member: Member) => {
     return {
       community: partialCommunity,
       event: partialEvent,
-      user: { email: user.email, firstName: user.firstName }
+      member: { email: member.email, firstName: member.firstName }
     };
   });
 

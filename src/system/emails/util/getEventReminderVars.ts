@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken';
 import BloomManager from '@core/db/BloomManager';
 import EventGuest from '@entities/event-guest/EventGuest';
 import Event from '@entities/event/Event';
+import Member from '@entities/member/Member';
 import { VerifiedToken } from '@entities/user/repo/verifyToken';
-import User from '@entities/user/User';
 import { APP, JWT } from '@util/constants';
 import { VerifyEvent } from '@util/events';
 import URLBuilder from '@util/URLBuilder';
@@ -17,7 +17,7 @@ export interface EventReminderPayload {
 export interface EventReminderVars {
   event: Pick<Event, 'startTime' | 'title'>;
   joinUrl: string;
-  user: Pick<User, 'email' | 'firstName'>;
+  member: Pick<Member, 'email' | 'firstName'>;
 }
 
 const getEventReminderVars = async (
@@ -26,7 +26,7 @@ const getEventReminderVars = async (
   const { eventId } = context as EventReminderPayload;
 
   const event: Event = await new BloomManager().findOne(Event, eventId, {
-    populate: ['community', 'guests']
+    populate: ['community', 'guests.member', 'guests.supporter']
   });
 
   const guests: EventGuest[] = event.guests.getItems();
@@ -48,7 +48,10 @@ const getEventReminderVars = async (
     return {
       event: { startTime: event.startTime, title: event.title },
       joinUrl,
-      user: { email: guest.email, firstName: guest.firstName }
+      member: {
+        email: guest.member?.email ?? guest.supporter?.email,
+        firstName: guest.member?.firstName ?? guest.supporter?.firstName
+      }
     };
   });
 

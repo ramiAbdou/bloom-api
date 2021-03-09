@@ -15,16 +15,15 @@ interface AcceptInvitationsArgs {
  * Updates all of the INVITED statuses to ACCEPTED on a member.
  * Precondition: Should only be called when a user is logging into Bloom.
  *
- * @param {AcceptInvitationsArgs} args
- * @param {string} args.email
- * @param {string[]} args.memberIds
+ * @param args.email - Email of the Member to accept.
+ * @param args.memberIds - IDs of the Member(s) to accept.
  */
 const acceptInvitations = async (
   args: AcceptInvitationsArgs
 ): Promise<Member[]> => {
-  const queryArgs: FilterQuery<Member> = args.email
-    ? { user: { email: args.email } }
-    : { id: args.memberIds };
+  const { email, memberIds } = args;
+
+  const queryArgs: FilterQuery<Member> = email ? { email } : { id: memberIds };
 
   const members: Member[] = await new BloomManager().findAndUpdate(
     Member,

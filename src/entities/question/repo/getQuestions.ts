@@ -1,35 +1,30 @@
-import { ArgsType, Field } from 'type-graphql';
-import { FilterQuery, QueryOrder } from '@mikro-orm/core';
+import { QueryOrder } from '@mikro-orm/core';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
+import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/events';
 import Question from '../Question';
 
-@ArgsType()
-export class GetQuestionsArgs {
-  @Field({ nullable: true })
-  urlName?: string;
-}
-
+/**
+ * Returns the Question(s).
+ *
+ * @param ctx.communityId - ID of the Community (authenticated).
+ */
 const getQuestions = async (
-  { urlName }: GetQuestionsArgs,
-  { communityId }: Pick<GQLContext, 'communityId'>
-) => {
-  const args: FilterQuery<Question> = urlName
-    ? { community: { urlName } }
-    : { community: { id: communityId } };
+  ctx: Pick<GQLContext, 'communityId'>
+): Promise<Question[]> => {
+  const { communityId } = ctx;
 
-  const key = urlName ?? communityId;
-
-  return new BloomManager().find(
+  const questions: Question[] = await new BloomManager().find(
     Question,
-    { ...args },
+    { community: communityId },
     {
-      cacheKey: `${QueryEvent.GET_QUESTIONS}-${key}`,
-      orderBy: { createdAt: QueryOrder.ASC }
+      cacheKey: `${QueryEvent.GET_QUESTIONS}-${communityId}`,
+      orderBy: { createdAt: QueryOrder.ASC, rank: QueryOrder.ASC }
     }
   );
+
+  return questions;
 };
 
 export default getQuestions;

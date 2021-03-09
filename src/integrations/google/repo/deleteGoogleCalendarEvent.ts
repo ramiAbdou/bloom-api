@@ -1,11 +1,11 @@
-import { GoogleEvent } from '@util/events';
 import logger from '@system/logger/logger';
+import { GoogleEvent } from '@util/events';
 import { eventsCalendar } from '../Google.util';
 
 /**
- * Deletes the Google Calendar event.
+ * Returns true if the Google Calendar event was deleted successfully.
  *
- * @param eventId ID of the event.
+ * @param eventId - ID of the Google Calendar event.
  */
 const deleteGoogleCalendarEvent = async (eventId: string): Promise<boolean> => {
   if (!eventId) return false;

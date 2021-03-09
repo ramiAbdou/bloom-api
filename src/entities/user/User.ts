@@ -1,4 +1,4 @@
-import { IsEmail, IsUrl } from 'class-validator';
+import { IsEmail } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
 import {
   BeforeCreate,
@@ -8,12 +8,16 @@ import {
   Property
 } from '@mikro-orm/core';
 
+import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
+import Supporter from '@entities/supporter/Supporter';
 import Member from '../member/Member';
 
 @ObjectType()
 @Entity()
 export default class User extends BaseEntity {
+  static cache: Cache = new Cache();
+
   // ## FIELDS
 
   @Field()
@@ -21,64 +25,16 @@ export default class User extends BaseEntity {
   @IsEmail()
   email: string;
 
-  @Field()
-  @Property()
-  firstName: string;
-
-  @Field()
-  @Property({ persist: false })
-  get fullName(): string {
-    return `${this.firstName} ${this.lastName}`;
-  }
-
-  @Field()
-  @Property()
-  lastName: string;
-
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  @IsUrl()
-  pictureUrl: string;
-
   // Server-generated token that we use to keep the user logged-in when sending
   // GraphQL requests.
   @Property({ nullable: true, type: 'text', unique: true })
   refreshToken: string;
 
-  // ## SOCIAL MEDIA INFORMATION
-
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  @IsUrl()
-  clubhouseUrl: string;
-
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  @IsUrl()
-  facebookUrl: string;
-
-  @Field({ nullable: true })
-  @Property({ nullable: true, unique: true })
-  @IsUrl()
-  instagramUrl: string;
-
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  @IsUrl()
-  linkedInUrl: string;
-
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  @IsUrl()
-  twitterUrl: string;
-
-  // ## LIFECYCLE
+  // ## LIFECYCLE HOOKS
 
   @BeforeCreate()
   async beforeCreate() {
     this.email = this.email.toLowerCase();
-    this.firstName = this.firstName.trim();
-    this.lastName = this.lastName.trim();
   }
 
   // ## RELATIONSHIPS
@@ -86,4 +42,8 @@ export default class User extends BaseEntity {
   @Field(() => [Member])
   @OneToMany(() => Member, ({ user }) => user)
   members: Collection<Member> = new Collection<Member>(this);
+
+  @Field(() => [Supporter])
+  @OneToMany(() => Supporter, ({ user }) => user)
+  supporters: Collection<Supporter> = new Collection<Supporter>(this);
 }

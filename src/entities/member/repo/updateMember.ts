@@ -9,18 +9,32 @@ import Member from '../Member';
 export class UpdateMemberArgs {
   @Field({ nullable: true })
   bio?: string;
+
+  @Field({ nullable: true })
+  firstName?: string;
+
+  @Field({ nullable: true })
+  lastName?: string;
+
+  @Field({ nullable: true })
+  pictureUrl?: string;
 }
 
 /**
- * Returns the updated MEMBER, instead of the updated user so that React App
- * can more easily update it's global state with updated data.
+ * Returns the updated Member.
  *
- * @param args.bio Bio of the member.
+ * @param args.bio Bio of the Member.
+ * @param args.firstName First name of the Member.
+ * @param args.lastName Last name of the Member.
+ * @param args.pictureUrl Profile picture URL of the Member.
+ * @param ctx.memberId ID of the Member (authenticated).
  */
 const updateMember = async (
   args: UpdateMemberArgs,
-  { memberId }: Pick<GQLContext, 'memberId'>
+  ctx: Pick<GQLContext, 'memberId'>
 ): Promise<Member> => {
+  const { memberId } = ctx;
+
   const updatedMember: Member = await new BloomManager().findOneAndUpdate(
     Member,
     memberId,

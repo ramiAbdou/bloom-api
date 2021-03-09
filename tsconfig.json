@@ -10,7 +10,7 @@
     "outDir": "./dist/", // Outputs the compiled JS to the /dist folder.
     "paths": {
       // Used for path aliases.
-      "@core/*": ["./src/core/*"],
+      "@core/*": ["src/core/*"],
       "@entities/*": ["src/entities/*"],
       "@integrations/*": ["./src/integrations/*"],
       "@system/*": ["./src/system/*"],

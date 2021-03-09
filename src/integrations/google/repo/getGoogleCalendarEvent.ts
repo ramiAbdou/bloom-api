@@ -2,6 +2,11 @@ import { calendar_v3 } from 'googleapis';
 
 import { eventsCalendar } from '../Google.util';
 
+/**
+ * Returns the Google Calendar event.
+ *
+ * @param googleCalendarEventId - ID of the Google Calendar event.
+ */
 const getGoogleCalendarEvent = async (
   googleCalendarEventId: string
 ): Promise<calendar_v3.Schema$Event> => {

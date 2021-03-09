@@ -1,9 +1,9 @@
 import { ArgsType, Field, ObjectType } from 'type-graphql';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
-import { decodeToken } from '@util/util';
 import Member from '@entities/member/Member';
+import { GQLContext } from '@util/constants';
+import { decodeToken } from '@util/util';
 import refreshToken from './refreshToken';
 
 @ArgsType()
@@ -31,17 +31,18 @@ export class GetTokensResult {
  * communities).
  *
  * @param args.urlName URL name of the community, if present.
- * @param ctx GQL Context.
+ * @param ctx.communityId - ID of the Community (authenticated).
+ * @param ctx.memberId - ID of the Member (authenticated).
+ * @param ctx.res - Express response object.
+ * @param ctx.userId - ID of the User (authenticated).
  */
 const getTokens = async (
-  { urlName }: GetTokensArgs,
-  {
-    communityId,
-    memberId,
-    res,
-    userId
-  }: Pick<GQLContext, 'communityId' | 'memberId' | 'res' | 'userId'>
+  args: GetTokensArgs,
+  ctx: Pick<GQLContext, 'communityId' | 'memberId' | 'res' | 'userId'>
 ): Promise<GetTokensResult> => {
+  const { urlName } = args;
+  const { communityId, memberId, res, userId } = ctx;
+
   if (!urlName) return { communityId, memberId, userId };
 
   const member: Member = await new BloomManager().findOne(Member, {

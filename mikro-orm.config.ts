@@ -1,10 +1,9 @@
 import { Connection, IDatabaseDriver, Options } from '@mikro-orm/core';
 
-import BaseCompositeEntity from '@core/db/BaseCompositeEntity';
 import BaseEntity from '@core/db/BaseEntity';
 import BloomManagerSubscriber from '@core/db/BloomManager.subscriber';
 import NamingStrategy from '@core/db/NamingStrategy';
-import CommunityApplication from '@entities/community-application/CommunityApplication';
+import Application from '@entities/application/Application';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
 import EventAttendee from '@entities/event-attendee/EventAttendee';
@@ -12,16 +11,20 @@ import EventGuest from '@entities/event-guest/EventGuest';
 import EventInvitee from '@entities/event-invitee/EventInvitee';
 import EventWatch from '@entities/event-watch/EventWatch';
 import Event from '@entities/event/Event';
-import MemberData from '@entities/member-data/MemberData';
-import MemberPayment from '@entities/member-payment/MemberPayment';
+import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
+import MemberPlan from '@entities/member-plan/MemberPlan';
 import MemberRefresh from '@entities/member-refresh/MemberRefresh';
-import MemberType from '@entities/member-type/MemberType';
+import MemberSocials from '@entities/member-socials/MemberSocials';
+import MemberSocialsSubscriber from '@entities/member-socials/MemberSocials.subscriber';
+import MemberValue from '@entities/member-value/MemberValue';
 import Member from '@entities/member/Member';
 import MemberSubscriber from '@entities/member/Member.subscriber';
+import Payment from '@entities/payment/Payment';
 import Question from '@entities/question/Question';
+import RankedQuestion from '@entities/ranked-question/RankedQuestion';
+import Supporter from '@entities/supporter/Supporter';
 import Task from '@entities/task/Task';
 import User from '@entities/user/User';
-import UserSubscriber from '@entities/user/User.subscriber';
 import { APP, isProduction } from '@util/constants';
 
 /**
@@ -36,8 +39,8 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
   driverOptions: { connection: { ssl: isProduction } },
   entities: [
     BaseEntity,
-    BaseCompositeEntity,
-    CommunityApplication,
+    Application,
+    RankedQuestion,
     CommunityIntegrations,
     Community,
     Event,
@@ -45,12 +48,15 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
     EventGuest,
     EventInvitee,
     EventWatch,
-    MemberData,
-    MemberPayment,
+    Payment,
+    MemberIntegrations,
     MemberRefresh,
-    MemberType,
+    MemberSocials,
+    MemberPlan,
+    MemberValue,
     Member,
     Question,
+    Supporter,
     Task,
     User
   ],
@@ -59,7 +65,7 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
   subscribers: [
     new BloomManagerSubscriber(),
     new MemberSubscriber(),
-    new UserSubscriber()
+    new MemberSocialsSubscriber()
   ],
   type: 'postgresql'
 };

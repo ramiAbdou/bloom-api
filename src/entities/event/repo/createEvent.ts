@@ -1,4 +1,3 @@
-import utc from 'dayjs/plugin/utc';
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
@@ -42,17 +41,27 @@ export class CreateEventArgs {
   videoUrl: string;
 }
 
+/**
+ * Returns a new Event.
+ *
+ * @param args - Event data (eg: description, endTime, startTime).
+ * @param ctx.communityId - ID of the Community (authenticated).
+ * @param ctx.memberId - ID of the Member (authenticated).
+ */
 const createEvent = async (
-  { invitees: memberIdsToInvite, ...args }: CreateEventArgs,
-  { communityId, memberId }: GQLContext
+  args: CreateEventArgs,
+  ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<Event> => {
+  const { communityId, memberId } = ctx;
+  const { invitees: memberIdsToInvite, ...eventData } = args;
+
   const event: Event = await new BloomManager().createAndFlush(
     Event,
-    { ...args, community: communityId },
+    { ...eventData, community: communityId },
     { flushEvent: FlushEvent.CREATE_EVENT }
   );
 
-  const eventId = event.id;
+  const eventId: string = event.id;
 
   await createEventInvitees(
     { eventId, memberIds: memberIdsToInvite },

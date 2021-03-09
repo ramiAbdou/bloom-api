@@ -29,29 +29,27 @@ export interface FormatPersonalizationData {
  * Returns the formatted personalizations for a SendGrid email.
  *
  * If development environment, filters all personalizations out that aren't
- * going to rami@bl.community.
+ * going to TEST_EMAILS.
  *
- * @param {EmailVars[]} variables - Variables for an email template.
+ * @param variables - Variables for an email template.
  */
 const formatPersonalizations = (
   variables: EmailVars[]
 ): FormatPersonalizationData[] => {
   return variables
     .filter((vars: EmailVars) => {
-      return !!isProduction || TEST_EMAILS.includes(vars.user.email);
+      return !!isProduction || TEST_EMAILS.includes(vars.member.email);
     })
     .map((vars: EmailVars) => {
-      return { dynamicTemplateData: vars, to: { email: vars.user.email } };
+      return { dynamicTemplateData: vars, to: { email: vars.member.email } };
     });
 };
 
 /**
- * Returns the email personalizations according to the args.emailEvent.
+ * Returns the email personalizations according to the EmailEvent.
  *
- * @param {EmailPayload} args.emailPayload
- * @param {EmailEvent} args.emailEvent
- *
- * @returns {FormatPersonalizationData[][]} - Nested array of personalizations.
+ * @param args.emailPayload - Context to query the variables for email.
+ * @param args.emailEvent - Type of EmailEvent.
  */
 const getPersonalizations = async (
   args: EmailArgs

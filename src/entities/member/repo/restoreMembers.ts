@@ -10,14 +10,21 @@ export class RestoreMembersArgs {
   memberIds: string[];
 }
 
-const restoreMembers = async ({
-  memberIds
-}: RestoreMembersArgs): Promise<Member[]> => {
-  return new BloomManager().findAndRestore(
+/**
+ * Returns the restored Member(s).
+ *
+ * @param args.memberIds IDs of the Member(s).
+ */
+const restoreMembers = async (args: RestoreMembersArgs): Promise<Member[]> => {
+  const { memberIds } = args;
+
+  const members: Member[] = await new BloomManager().findAndRestore(
     Member,
-    { id: memberIds },
+    memberIds,
     { flushEvent: FlushEvent.RESTORE_MEMBERS }
   );
+
+  return members;
 };
 
 export default restoreMembers;

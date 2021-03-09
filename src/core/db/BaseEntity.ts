@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid';
 import { Field, ID, ObjectType } from 'type-graphql';
 import { PrimaryKey, Property } from '@mikro-orm/core';
 
+import Cache from '@core/cache/Cache';
 import { now } from '@util/util';
 
 /**
@@ -10,6 +11,10 @@ import { now } from '@util/util';
  */
 @ObjectType()
 export default abstract class BaseEntity {
+  static cache: Cache;
+
+  // ## FIELDS
+
   @Field(() => ID)
   @PrimaryKey()
   id: string = nanoid();

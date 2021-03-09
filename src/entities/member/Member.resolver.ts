@@ -1,25 +1,21 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
-import { QueryOrder } from '@mikro-orm/core';
 
-import BloomManager from '@core/db/BloomManager';
-import Member, { MemberRole, MemberStatus } from '@entities/member/Member';
+import Member, { MemberRole } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
-import { QueryEvent } from '@util/events';
-import { CreateSubsciptionArgs } from '../member-payment/repo/createSubscription';
+import { TimeSeriesData } from '@util/gql';
 import applyToCommunity, {
   ApplyToCommunityArgs
 } from './repo/applyToCommunity';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import demoteMembers, { DemoteMembersArgs } from './repo/demoteMembers';
-import getChangePreview, {
-  GetChangePreviewResult
-} from './repo/getChangePreview';
-import getCommunityMembers from './repo/getCommunityMembers';
+import getActiveMembersGrowth from './repo/getActiveMembersGrowth';
+import getActiveMembersSeries from './repo/getActiveMembersSeries';
+import getApplicants from './repo/getApplicants';
 import getMember, { GetMemberArgs } from './repo/getMember';
-import getMembers from './repo/getMembers';
-import getUpcomingPayment, {
-  GetUpcomingPaymentResult
-} from './repo/getUpcomingPayment';
+import getMembers, { GetMembersArgs } from './repo/getMembers';
+import getMembersGrowth from './repo/getMembersGrowth';
+import getMembersSeries from './repo/getMembersSeries';
+import getOwner, { GetOwnerArgs } from './repo/getOwner';
 import inviteMembers, { InviteMembersArgs } from './repo/inviteMembers';
 import isEmailTaken, { IsEmailTakenArgs } from './repo/isEmailTaken';
 import promoteMembers, { PromoteMembersArgs } from './repo/promoteMembers';
@@ -28,9 +24,6 @@ import respondToApplicants, {
 } from './repo/respondToApplicants';
 import restoreMembers, { RestoreMembersArgs } from './repo/restoreMembers';
 import updateMember, { UpdateMemberArgs } from './repo/updateMember';
-import updatePaymentMethod, {
-  UpdatePaymentMethodArgs
-} from './repo/updatePaymentMethod';
 
 @Resolver()
 export default class MemberResolver {
@@ -65,64 +58,27 @@ export default class MemberResolver {
   }
 
   @Authorized(MemberRole.ADMIN)
-  @Query(() => [Member])
-  async getApplicants(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
-    return new BloomManager().find(
-      Member,
-      { community: { id: communityId }, status: MemberStatus.PENDING },
-      {
-        cacheKey: `${QueryEvent.GET_APPLICANTS}-${communityId}`,
-        orderBy: { createdAt: QueryOrder.DESC },
-        populate: ['data', 'user']
-      }
-    );
+  @Query(() => [Number, Number])
+  async getActiveMembersGrowth(@Ctx() ctx: GQLContext): Promise<number[]> {
+    return getActiveMembersGrowth(ctx);
   }
 
-  @Authorized()
-  @Query(() => GetChangePreviewResult, { nullable: true })
-  async getChangePreview(
-    @Args() args: CreateSubsciptionArgs,
+  @Authorized(MemberRole.ADMIN)
+  @Query(() => [TimeSeriesData])
+  async getActiveMembersSeries(
     @Ctx() ctx: GQLContext
-  ): Promise<GetChangePreviewResult> {
-    return getChangePreview(args, ctx);
-  }
-
-  @Authorized()
-  @Query(() => [Member])
-  async getCommunityMembers(@Ctx() ctx: GQLContext): Promise<Member[]> {
-    return getCommunityMembers(ctx);
+  ): Promise<TimeSeriesData[]> {
+    return getActiveMembersSeries(ctx);
   }
 
   @Authorized(MemberRole.ADMIN)
   @Query(() => [Member])
-  async getDatabase(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
-    return new BloomManager().find(
-      Member,
-      { community: { id: communityId }, status: MemberStatus.ACCEPTED },
-      {
-        cacheKey: `${QueryEvent.GET_DATABASE}-${communityId}`,
-        orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC },
-        populate: ['data', 'user']
-      }
-    );
+  async getApplicants(@Ctx() ctx: GQLContext): Promise<Member[]> {
+    return getApplicants(ctx);
   }
 
   @Authorized()
-  @Query(() => [Member])
-  async getDirectory(@Ctx() { communityId }: GQLContext): Promise<Member[]> {
-    return new BloomManager().find(
-      Member,
-      { community: { id: communityId }, status: MemberStatus.ACCEPTED },
-      {
-        cacheKey: `${QueryEvent.GET_DIRECTORY}-${communityId}`,
-        orderBy: { createdAt: QueryOrder.DESC },
-        populate: ['data', 'user']
-      }
-    );
-  }
-
-  @Authorized()
-  @Query(() => Member, { nullable: true })
+  @Query(() => Member)
   async getMember(
     @Args() args: GetMemberArgs,
     @Ctx() ctx: GQLContext
@@ -132,21 +88,33 @@ export default class MemberResolver {
 
   @Authorized()
   @Query(() => [Member])
-  async getMembers(@Ctx() ctx: GQLContext): Promise<Member[]> {
-    return getMembers(ctx);
+  async getMembers(@Args() args: GetMembersArgs): Promise<Member[]> {
+    return getMembers(args);
   }
 
-  @Authorized()
-  @Query(() => GetUpcomingPaymentResult, { nullable: true })
-  async getUpcomingPayment(
-    @Ctx() ctx: GQLContext
-  ): Promise<GetUpcomingPaymentResult> {
-    return getUpcomingPayment(ctx);
+  @Query(() => Member)
+  async getOwner(@Args() args: GetOwnerArgs): Promise<Member> {
+    return getOwner(args);
+  }
+
+  @Authorized(MemberRole.ADMIN)
+  @Query(() => [Number, Number])
+  async getMembersGrowth(@Ctx() ctx: GQLContext): Promise<number[]> {
+    return getMembersGrowth(ctx);
+  }
+
+  @Authorized(MemberRole.ADMIN)
+  @Query(() => [TimeSeriesData])
+  async getMembersSeries(@Ctx() ctx: GQLContext): Promise<TimeSeriesData[]> {
+    return getMembersSeries(ctx);
   }
 
   @Authorized(MemberRole.ADMIN)
   @Mutation(() => [Member])
-  async inviteMembers(@Args() args: InviteMembersArgs, @Ctx() ctx: GQLContext) {
+  async inviteMembers(
+    @Args() args: InviteMembersArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<Member[]> {
     return inviteMembers(args, ctx);
   }
 
@@ -160,7 +128,7 @@ export default class MemberResolver {
   async promoteMembers(
     @Args() args: PromoteMembersArgs,
     @Ctx() ctx: GQLContext
-  ) {
+  ): Promise<Member[]> {
     return promoteMembers(args, ctx);
   }
 
@@ -169,7 +137,7 @@ export default class MemberResolver {
   async respondToApplicants(
     @Args() args: RespondToApplicantsArgs,
     @Ctx() ctx: GQLContext
-  ) {
+  ): Promise<Member[]> {
     return respondToApplicants(args, ctx);
   }
 
@@ -186,14 +154,5 @@ export default class MemberResolver {
     @Ctx() ctx: GQLContext
   ): Promise<Member> {
     return updateMember(args, ctx);
-  }
-
-  @Authorized()
-  @Mutation(() => Member, { nullable: true })
-  async updatePaymentMethod(
-    @Args() args: UpdatePaymentMethodArgs,
-    @Ctx() ctx: GQLContext
-  ) {
-    return updatePaymentMethod(args, ctx);
   }
 }

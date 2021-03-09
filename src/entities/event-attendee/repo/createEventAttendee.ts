@@ -1,8 +1,9 @@
 import { ArgsType, Field } from 'type-graphql';
-import { FilterQuery } from '@mikro-orm/core';
+import { EntityData } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
-import User from '@entities/user/User';
+import Member from '@entities/member/Member';
+import Supporter from '@entities/supporter/Supporter';
 import { GQLContext } from '@util/constants';
 import { FlushEvent } from '@util/events';
 import EventAttendee from '../EventAttendee';
@@ -25,43 +26,48 @@ export class CreateEventAttendeeArgs {
 /**
  * Returns a new EventAttendee.
  *
- * @param args.email - Email of the NON-MEMBER attendee.
- * @param args.firstName - First name of the NON-MEMBER attendee.
- * @param args.lastName - Last name of the NON-MEMBER attendee.
- * @param args.eventId - ID of the event.
- * @param ctx.memberId - ID of the member.
- * @param ctx.userId - ID of the user.
+ * @param args.email - Email of the Supporter.
+ * @param args.firstName - First name of the Supporter.
+ * @param args.lastName - Last name of the Supporter.
+ * @param args.eventId - ID of the Event.
+ * @param ctx.memberId - ID of the Member (authenticated).
  */
 const createEventAttendee = async (
-  { eventId, ...args }: CreateEventAttendeeArgs,
-  { memberId, userId }: Pick<GQLContext, 'memberId' | 'userId'>
-) => {
-  const user = await new BloomManager().findOne(
-    User,
-    { id: userId },
-    { fields: ['email', 'firstName', 'lastName'] }
-  );
+  args: CreateEventAttendeeArgs,
+  ctx: Pick<GQLContext, 'communityId' | 'memberId'>
+): Promise<EventAttendee> => {
+  const { email, eventId, firstName, lastName } = args;
+  const { communityId, memberId } = ctx;
 
-  const attendeeArgs: FilterQuery<EventAttendee> = {
-    email: args.email ?? user.email,
-    event: eventId,
-    firstName: args.email ?? user.firstName,
-    lastName: args.email ?? user.lastName,
-    member: memberId
-  };
+  const bm = new BloomManager();
 
-  const existingAttendee = await new BloomManager().findOne(
+  const [member, supporter]: [Member, Supporter] = await Promise.all([
+    bm.findOne(Member, memberId),
+    bm.findOne(Supporter, { community: communityId, email })
+  ]);
+
+  const existingAttendee = await bm.findOne(
     EventAttendee,
-    attendeeArgs,
-    { populate: ['member.user'] }
+    member ? { event: eventId, member } : { event: eventId, supporter },
+    { populate: ['member', 'supporter'] }
   );
 
   if (existingAttendee) return existingAttendee;
 
-  const attendee = await new BloomManager().createAndFlush(
+  const attendeeArgs: EntityData<EventAttendee> = member
+    ? { member }
+    : {
+        supporter:
+          supporter ?? bm.create(Supporter, { email, firstName, lastName })
+      };
+
+  const attendee = await bm.createAndFlush(
     EventAttendee,
-    attendeeArgs,
-    { flushEvent: FlushEvent.CREATE_EVENT_ATTENDEE, populate: ['member.user'] }
+    { ...attendeeArgs, event: eventId },
+    {
+      flushEvent: FlushEvent.CREATE_EVENT_ATTENDEE,
+      populate: ['member', 'supporter']
+    }
   );
 
   return attendee;

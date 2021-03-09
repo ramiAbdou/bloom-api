@@ -3,8 +3,10 @@ import day from 'dayjs';
 import { internet } from 'faker';
 
 import BloomManager from '@core/db/BloomManager';
-import MemberData from '@entities/member-data/MemberData';
-import MemberType from '@entities/member-type/MemberType';
+import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
+import MemberPlan from '@entities/member-plan/MemberPlan';
+import MemberSocials from '@entities/member-socials/MemberSocials';
+import MemberValue from '@entities/member-value/MemberValue';
 import Member, { MemberRole, MemberStatus } from '@entities/member/Member';
 import Question, { QuestionCategory } from '@entities/question/Question';
 import User from '@entities/user/User';
@@ -20,7 +22,7 @@ interface ProcessRowArgs {
   ownerEmail: string;
   questions: Question[];
   row: CsvRowData;
-  types: MemberType[];
+  plans: MemberPlan[];
   uniqueEmails: Set<string>;
 }
 
@@ -43,13 +45,13 @@ const processRow = async ({
   questions,
   ownerEmail,
   row,
-  types,
+  plans,
   uniqueEmails
 }: ProcessRowArgs) => {
-  // Precondition: Every row (JSON) should have a field called 'EMAIL'.
+  // Precondition: Every row (JSON) should have a field called EMAIL.
   const { EMAIL: dirtyEmail, FIRST_NAME: firstName, LAST_NAME: lastName } = row;
 
-  const email =
+  const email: string =
     isProduction || TEST_EMAILS.includes(dirtyEmail)
       ? dirtyEmail?.toLowerCase()
       : internet.email();
@@ -58,11 +60,7 @@ const processRow = async ({
   if (!email || uniqueEmails.has(email)) return;
   uniqueEmails.add(email);
 
-  const [user, wasFound] = await bm.findOneOrCreate(
-    User,
-    { email },
-    { email, firstName, lastName }
-  );
+  const [user, wasFound] = await bm.findOneOrCreate(User, { email }, { email });
 
   // If a member already exists for the user, then don't create a new
   // member. The possible case for this is for an OWNER of a community.
@@ -74,10 +72,16 @@ const processRow = async ({
   // // potentially be persisted already.
   const member: Member = bm.create(Member, {
     community,
+    email,
+    firstName,
+    lastName,
+    memberIntegrations: bm.create(MemberIntegrations, {}),
     role: email === ownerEmail ? MemberRole.OWNER : null,
     status: MemberStatus.ACCEPTED,
     user
   });
+
+  const socials: MemberSocials = bm.create(MemberSocials, { member });
 
   if (email === ownerEmail) community.owner = member;
 
@@ -87,13 +91,13 @@ const processRow = async ({
       // was already processed.
       if (!value) return;
 
-      if (key === QuestionCategory.MEMBERSHIP_TYPE) {
-        member.type = types.find(({ name }) => value === name);
+      if (key === QuestionCategory.MEMBER_PLAN) {
+        member.plan = plans.find(({ name }) => value === name);
         return;
       }
 
-      if (key === QuestionCategory.LINKEDIN_URL) {
-        user.linkedInUrl = value;
+      if (key === QuestionCategory.LINKED_IN_URL) {
+        socials.linkedInUrl = value;
         return;
       }
 
@@ -118,7 +122,7 @@ const processRow = async ({
         return key === category || key === title;
       });
 
-      if (question) bm.create(MemberData, { member, question, value });
+      if (question) bm.create(MemberValue, { member, question, value });
     }
   );
 };
@@ -137,12 +141,12 @@ const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
     Community,
     Record<string, any>[]
   ] = await Promise.all([
-    bm.findOne(Community, { urlName }, { populate: ['questions', 'types'] }),
+    bm.findOne(Community, { urlName }, { populate: ['questions', 'plans'] }),
     csv().fromFile(`./membership-csv/${urlName}.csv`)
   ]);
 
   const questions = community.questions.getItems();
-  const types = community.types.getItems();
+  const plans = community.plans.getItems();
 
   // Adds protection against any emails that are duplicates in the CSV file,
   // INCLUDING case-insensitive duplicates.
@@ -154,9 +158,9 @@ const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
         bm,
         community,
         ownerEmail,
+        plans,
         questions,
         row,
-        types,
         uniqueEmails
       });
     })

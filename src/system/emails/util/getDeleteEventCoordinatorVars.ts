@@ -1,7 +1,7 @@
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import Event from '@entities/event/Event';
-import User from '@entities/user/User';
+import Member from '@entities/member/Member';
 import { EmailPayload } from '../emails.types';
 
 export interface DeleteEventCoordinatorPayload {
@@ -13,15 +13,15 @@ export interface DeleteEventCoordinatorPayload {
 export interface DeleteEventCoordinatorVars {
   community: Pick<Community, 'name'>;
   event: Pick<Event, 'title'>;
-  user: Pick<User, 'email' | 'firstName'>;
+  member: Pick<Member, 'email' | 'firstName'>;
 }
 
 /**
  * Returns the variables for the DELETE_EVENT_COORDINATOR email.
  *
- * @param {string} context.communityId
- * @param {string} context.coordinatorId
- * @param {string} context.eventId
+ * @param context.communityId - ID of the Community.
+ * @param context.coordinatorId - ID of the Member (coordinator).
+ * @param context.eventId - ID of the Event.
  */
 const getDeleteEventCoordinatorVars = async (
   context: EmailPayload
@@ -34,22 +34,22 @@ const getDeleteEventCoordinatorVars = async (
 
   const bm = new BloomManager();
 
-  const [community, event, user]: [Community, Event, User] = await Promise.all([
+  const [community, event, member]: [
+    Community,
+    Event,
+    Member
+  ] = await Promise.all([
     bm.findOne(Community, { id: communityId }),
     bm.findOne(Event, { id: eventId }, { filters: false }),
-    bm.findOne(User, { members: { id: coordinatorId } })
+    bm.findOne(Member, { id: coordinatorId })
   ]);
 
-  const partialCommunity: Pick<Community, 'name'> = { name: community.name };
-  const partialEvent: Pick<Event, 'title'> = { title: event.title };
-
-  const partialUser: Pick<User, 'email' | 'firstName'> = {
-    email: user.email,
-    firstName: user.firstName
-  };
-
   const variables: DeleteEventCoordinatorVars[] = [
-    { community: partialCommunity, event: partialEvent, user: partialUser }
+    {
+      community: { name: community.name },
+      event: { title: event.title },
+      member: { email: member.email, firstName: member.firstName }
+    }
   ];
 
   return variables;

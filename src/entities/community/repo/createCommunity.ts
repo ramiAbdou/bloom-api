@@ -1,10 +1,9 @@
 import { EntityData } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
-import CommunityApplication from '@entities/community-application/CommunityApplication';
+import Application from '@entities/application/Application';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
-import Question, { QuestionCategory } from '@entities/question/Question';
 import { FlushEvent } from '@util/events';
 
 /**
@@ -12,34 +11,22 @@ import { FlushEvent } from '@util/events';
  * of a logo. For now, the community should send Bloom a square logo that
  * we will manually add to the Digital Ocean space.
  */
-const createCommunity = async ({
-  application,
-  ...data
-}: EntityData<Community>): Promise<Community> => {
+const createCommunity = async (
+  args: EntityData<Community>
+): Promise<Community> => {
+  const { application, ...data } = args;
+
   const bm = new BloomManager();
 
-  // Add the first name, last name and joined at dates to array of questions.
-  const allQuestions: EntityData<Question>[] = [
-    { category: QuestionCategory.FIRST_NAME, title: 'First Name' },
-    { category: QuestionCategory.LAST_NAME, title: 'Last Name' },
-    { category: QuestionCategory.DUES_STATUS, title: 'Status' },
-    { category: QuestionCategory.MEMBERSHIP_TYPE, title: 'Membership Type' }
-  ];
-
-  const persistedQuestions: Question[] = allQuestions.map(
-    (question: EntityData<Question>) => bm.create(Question, question)
+  const community: Community = await bm.createAndFlush(
+    Community,
+    {
+      ...data,
+      application: bm.create(Application, application ?? {}),
+      communityIntegrations: bm.create(CommunityIntegrations, {})
+    },
+    { flushEvent: FlushEvent.CREATE_COMMUNITY }
   );
-
-  const community: Community = bm.create(Community, {
-    ...data,
-    application: application
-      ? bm.create(CommunityApplication, application)
-      : null,
-    integrations: bm.create(CommunityIntegrations, {}),
-    questions: persistedQuestions
-  });
-
-  await bm.flush({ flushEvent: FlushEvent.CREATE_COMMUNITY });
 
   return community;
 };

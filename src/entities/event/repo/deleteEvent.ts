@@ -9,16 +9,26 @@ import Event from '../Event';
 @ArgsType()
 export class DeleteEventArgs {
   @Field()
-  id: string;
+  eventId: string;
 }
 
+/**
+ * Returns the soft-deleted Event.
+ *
+ * @param args.eventId - ID of the Event.
+ * @param ctx.communityId - ID of the Community (authenticated).
+ * @param ctx.memberId - ID of the Member (authenticated).
+ */
 const deleteEvent = async (
-  { id: eventId }: DeleteEventArgs,
-  { communityId, memberId }: Pick<GQLContext, 'communityId' | 'memberId'>
+  args: DeleteEventArgs,
+  ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<Event> => {
+  const { eventId } = args;
+  const { communityId, memberId } = ctx;
+
   const event: Event = await new BloomManager().findOneAndDelete(
     Event,
-    { id: eventId },
+    eventId,
     { flushEvent: FlushEvent.DELETE_EVENT, soft: true }
   );
 
@@ -28,11 +38,7 @@ const deleteEvent = async (
     eventId
   });
 
-  emitEmailEvent(EmailEvent.DELETE_EVENT_GUESTS, {
-    communityId,
-    eventId
-  });
-
+  emitEmailEvent(EmailEvent.DELETE_EVENT_GUESTS, { communityId, eventId });
   emitGoogleEvent(GoogleEvent.DELETE_CALENDAR_EVENT, { eventId });
 
   return event;

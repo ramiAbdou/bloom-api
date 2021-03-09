@@ -1,5 +1,5 @@
 import BloomManager from '@core/db/BloomManager';
-import User from '@entities/user/User';
+import Member from '@entities/member/Member';
 import { EmailPayload } from '../emails.types';
 
 export interface LoginLinkEmailPayload {
@@ -9,7 +9,7 @@ export interface LoginLinkEmailPayload {
 
 export interface LoginLinkEmailVars {
   loginUrl: string;
-  user: Pick<User, 'email' | 'firstName'>;
+  member: Pick<Member, 'email' | 'firstName'>;
 }
 
 const getLoginLinkVars = async (
@@ -17,13 +17,13 @@ const getLoginLinkVars = async (
 ): Promise<LoginLinkEmailVars[]> => {
   const { email, loginUrl } = context as LoginLinkEmailPayload;
 
-  const user: User = await new BloomManager().findOne(
-    User,
+  const member: Member = await new BloomManager().findOne(
+    Member,
     { email },
     { fields: ['email', 'firstName'] }
   );
 
-  const variables: LoginLinkEmailVars[] = [{ loginUrl, user }];
+  const variables: LoginLinkEmailVars[] = [{ loginUrl, member }];
   return variables;
 };
 

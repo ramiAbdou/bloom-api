@@ -1,53 +1,45 @@
-import { IsEmail } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
-import {
-  AfterCreate,
-  Entity,
-  ManyToOne,
-  PrimaryKeyType,
-  Property
-} from '@mikro-orm/core';
+import { AfterCreate, Entity, ManyToOne, Unique, wrap } from '@mikro-orm/core';
 
-import BaseCompositeEntity from '@core/db/BaseCompositeEntity';
-import cache from '@core/db/cache';
+import Cache from '@core/cache/Cache';
+import BaseEntity from '@core/db/BaseEntity';
+import Supporter from '@entities/supporter/Supporter';
 import { QueryEvent } from '@util/events';
 import Event from '../event/Event';
 import Member from '../member/Member';
 
 @ObjectType()
 @Entity()
-export default class EventAttendee extends BaseCompositeEntity {
-  @Field({ nullable: true })
-  @Property({ nullable: true, primary: true })
-  @IsEmail()
-  email: string;
+@Unique({ properties: ['event', 'member', 'supporter'] })
+export default class EventAttendee extends BaseEntity {
+  static cache: Cache = new Cache();
 
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  firstName: string;
-
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  lastName: string;
-
-  // ## LIFECYCLE
+  // ## LIFECYCLE HOOKS
 
   @AfterCreate()
-  afterCreate() {
-    cache.invalidateKeys([
-      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.event.id}`
+  async afterCreate() {
+    await wrap(this.event).init();
+
+    EventAttendee.cache.invalidateKeys([
+      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.event.id}`,
+      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.member?.id}`,
+      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.supporter?.id}`,
+      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.event.community.id}`,
+      `${QueryEvent.GET_EVENT_ATTENDEES_SERIES}-${this.event.community.id}`
     ]);
   }
 
   // ## RELATIONSHIPS
 
   @Field(() => Event)
-  @ManyToOne(() => Event, { primary: true })
+  @ManyToOne(() => Event)
   event: Event;
 
   @Field(() => Member, { nullable: true })
   @ManyToOne(() => Member, { nullable: true })
   member: Member;
 
-  [PrimaryKeyType]: [string, string];
+  @Field(() => Supporter, { nullable: true })
+  @ManyToOne(() => Supporter, { nullable: true })
+  supporter: Supporter;
 }

@@ -93,3 +93,16 @@ export const splitArrayIntoChunks = (
     return acc;
   }, []);
 };
+
+/**
+ * Returns the first value in which the condition is true.
+ */
+export const take = (arr: ([boolean, any] | any)[]) => {
+  for (let i = 0; i < arr.length; i++) {
+    const element = arr[i];
+    if (!Array.isArray(element) && !!element) return element;
+    if (element[0]) return element[1];
+  }
+
+  return null;
+};

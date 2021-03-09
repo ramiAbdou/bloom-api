@@ -1,7 +1,7 @@
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import Event from '@entities/event/Event';
-import User from '@entities/user/User';
+import Member from '@entities/member/Member';
 import { EmailPayload } from '../emails.types';
 
 export interface CreateEventCoordinatorPayload {
@@ -16,7 +16,7 @@ export interface CreateEventCoordinatorVars {
     Event,
     'endTime' | 'eventUrl' | 'privacy' | 'startTime' | 'summary' | 'title'
   >;
-  user: Pick<User, 'email' | 'firstName'>;
+  member: Pick<Member, 'email' | 'firstName'>;
 }
 
 const getCreateEventCoordinatorVars = async (
@@ -30,7 +30,11 @@ const getCreateEventCoordinatorVars = async (
 
   const bm = new BloomManager();
 
-  const [community, event, user]: [Community, Event, User] = await Promise.all([
+  const [community, event, member]: [
+    Community,
+    Event,
+    Member
+  ] = await Promise.all([
     bm.findOne(Community, { id: communityId }, { fields: ['name'] }),
     bm.findOne(
       Event,
@@ -38,8 +42,8 @@ const getCreateEventCoordinatorVars = async (
       { fields: ['endTime', 'privacy', 'startTime', 'summary', 'title'] }
     ),
     bm.findOne(
-      User,
-      { members: { id: coordinatorId } },
+      Member,
+      { id: coordinatorId },
       { fields: ['email', 'firstName'] }
     )
   ]);
@@ -51,7 +55,8 @@ const getCreateEventCoordinatorVars = async (
     'endTime' | 'eventUrl' | 'privacy' | 'startTime' | 'summary' | 'title'
   > = {
     endTime: event.endTime,
-    eventUrl: await event.eventUrl,
+    // @ts-ignore b/c we need to await the call.
+    eventUrl: await event.eventUrl(),
     privacy: event.privacy,
     startTime: event.startTime,
     summary: event.summary,
@@ -59,7 +64,7 @@ const getCreateEventCoordinatorVars = async (
   };
 
   const variables: CreateEventCoordinatorVars[] = [
-    { community: partialCommunity, event: partialEvent, user }
+    { community: partialCommunity, event: partialEvent, member }
   ];
 
   return variables;

@@ -3,9 +3,16 @@ import { URLSearchParams } from 'url';
 
 import { APP, AuthQueryArgs, isProduction } from '@util/constants';
 
-const getMailchimpAccessToken = async ({
-  code
-}: AuthQueryArgs): Promise<string> => {
+/**
+ * Returns the Mailchimp access token.
+ *
+ * @param args.code - Code to exchange for token from Mailchimp API.
+ */
+const getMailchimpAccessToken = async (
+  args: AuthQueryArgs
+): Promise<string> => {
+  const { code } = args;
+
   // All the other redirect URIs use localhost when in development, but
   // Mailchimp forces us to use 127.0.0.1 instead, so we can't use the
   // APP.SERVER_URL local URL.
@@ -23,9 +30,9 @@ const getMailchimpAccessToken = async ({
     url: 'https://login.mailchimp.com/oauth2/token'
   };
 
-  const resposne = await axios(options);
+  const response = await axios(options);
 
-  return resposne.data?.access_token;
+  return response.data?.access_token;
 };
 
 export default getMailchimpAccessToken;

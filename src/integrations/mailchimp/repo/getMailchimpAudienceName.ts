@@ -5,10 +5,16 @@ interface GetMailchimpAudienceNameArgs {
   mailchimpListId?: string;
 }
 
-const getMailchimpAudienceName = async ({
-  mailchimpAccessToken,
-  mailchimpListId
-}: GetMailchimpAudienceNameArgs): Promise<string> => {
+/**
+ * Returns the Mailchimp Audience name.
+ *
+ * @param args.mailchimpAccessToken - Mailchimp access token (for querying).
+ * @param args.mailchimpListId - ID of the Mailchimp List to add to.
+ */
+const getMailchimpAudienceName = async (
+  args: GetMailchimpAudienceNameArgs
+): Promise<string> => {
+  const { mailchimpAccessToken, mailchimpListId } = args;
   if (!mailchimpAccessToken || !mailchimpListId) return null;
 
   const options: AxiosRequestConfig = {

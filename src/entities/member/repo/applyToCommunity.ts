@@ -1,24 +1,29 @@
 import { ApplyToCommunityAdminsPayload } from 'src/system/emails/util/getApplyToCommunityAdminsVars';
 import { ApplyToCommunityPayload } from 'src/system/emails/util/getApplyToCommunityVars';
 import { ArgsType, Field, InputType } from 'type-graphql';
+import { FilterQuery } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
-import cache from '@core/db/cache';
 import Community from '@entities/community/Community';
-import MemberData from '@entities/member-data/MemberData';
-import createLifetimePayment from '@entities/member-payment/repo/createLifetimePayment';
-import createSubscription from '@entities/member-payment/repo/createSubscription';
-import MemberType, { RecurrenceType } from '@entities/member-type/MemberType';
-import Question, { QuestionCategory } from '@entities/question/Question';
+import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
+import updateStripePaymentMethodId from '@entities/member-integrations/repo/updateStripePaymentMethodId';
+import MemberPlan, { RecurrenceType } from '@entities/member-plan/MemberPlan';
+import MemberSocials from '@entities/member-socials/MemberSocials';
+import MemberValue from '@entities/member-value/MemberValue';
+import createLifetimePayment from '@entities/payment/repo/createLifetimePayment';
+import createSubscription from '@entities/payment/repo/createSubscription';
+import Question, {
+  QuestionCategory,
+  QuestionType
+} from '@entities/question/Question';
 import User from '@entities/user/User';
 import { emitEmailEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent, QueryEvent } from '@util/events';
-import Member, { MemberStatus } from '../Member';
-import updatePaymentMethod from './updatePaymentMethod';
+import { EmailEvent, FlushEvent } from '@util/events';
+import Member from '../Member';
 
 @InputType()
-export class MemberDataInput {
+export class MemberValueInput {
   @Field(() => String, { nullable: true })
   category?: QuestionCategory;
 
@@ -31,14 +36,14 @@ export class MemberDataInput {
 
 @ArgsType()
 export class ApplyToCommunityArgs {
-  @Field(() => [MemberDataInput])
-  data: MemberDataInput[];
+  @Field(() => [MemberValueInput])
+  data: MemberValueInput[];
 
   @Field()
   email: string;
 
   @Field({ nullable: true })
-  memberTypeId?: string;
+  memberPlanId?: string;
 
   @Field({ nullable: true })
   paymentMethodId?: string;
@@ -48,7 +53,7 @@ export class ApplyToCommunityArgs {
 }
 
 interface CreateApplicationPaymentArgs {
-  memberTypeId: string;
+  memberPlanId: string;
   paymentMethodId: string;
   recurrence: RecurrenceType;
 }
@@ -58,27 +63,29 @@ interface CreateApplicationPaymentArgs {
  * method ID is provided, nothing happens. If the recurrence is LIFETIME,
  * creates a one-time payment, and otherwise creates a subscription.
  *
- * @param args.memberTypeId Type ID to apply for.
+ * @param args.memberPlanId Type ID to apply for.
  * @param args.paymentMethodId ID of the Stripe Payment Method.
  * @param args.recurrence Recurrence of the new type to apply to.
  * @param ctx.communityId ID of the community.
  * @param ctx.memberId ID of the member.
  */
 const createApplicationPayment = async (
-  { memberTypeId, paymentMethodId, recurrence }: CreateApplicationPaymentArgs,
+  args: CreateApplicationPaymentArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
-) => {
+): Promise<Member> => {
+  const { memberPlanId, paymentMethodId, recurrence } = args;
+
   if (!paymentMethodId) return;
 
   try {
-    await updatePaymentMethod({ paymentMethodId }, ctx);
+    await updateStripePaymentMethodId({ paymentMethodId }, ctx);
 
     if (recurrence === RecurrenceType.LIFETIME) {
-      await createLifetimePayment({ memberTypeId }, ctx);
+      await createLifetimePayment({ memberPlanId }, ctx);
       return;
     }
 
-    await createSubscription({ memberTypeId }, ctx);
+    await createSubscription({ memberPlanId }, ctx);
   } catch (e) {
     await new BloomManager().findOneAndDelete(Member, { id: ctx.memberId });
     throw new Error(`There was a problem processing your payment.`);
@@ -90,19 +97,22 @@ const createApplicationPayment = async (
  * A user is either created OR fetched based on the email.
  */
 const applyToCommunity = async (
-  { data, email, memberTypeId, paymentMethodId, urlName }: ApplyToCommunityArgs,
+  args: ApplyToCommunityArgs,
   ctx: Pick<GQLContext, 'res'>
 ): Promise<Member> => {
+  const { data, email, memberPlanId, paymentMethodId, urlName } = args;
+
   const bm = new BloomManager();
+
+  const queryArgs: FilterQuery<MemberPlan> = memberPlanId || {
+    community: { urlName }
+  };
 
   // Populate the questions and types so that we can capture the member
   // data in a relational manner.
-  const [community, type]: [Community, MemberType] = await Promise.all([
+  const [community, plan]: [Community, MemberPlan] = await Promise.all([
     bm.findOne(Community, { urlName }, { populate: ['questions'] }),
-    bm.findOne(
-      MemberType,
-      memberTypeId ? { id: memberTypeId } : { community: { urlName } }
-    )
+    bm.findOne(MemberPlan, queryArgs)
   ]);
 
   // The user can potentially already exist if they are a part of other
@@ -115,12 +125,20 @@ const applyToCommunity = async (
     );
   }
 
-  const member: Member = bm.create(Member, { community, user });
+  const member: Member = bm.create(Member, {
+    community,
+    email,
+    memberIntegrations: bm.create(MemberIntegrations, {}),
+    user
+  });
+
+  const socials: MemberSocials = bm.create(MemberSocials, { member });
+
   const questions = community.questions.getItems();
 
   // Some data we store on the user entity, and some we store as member
   // data.
-  data.forEach(({ category, questionId, value: values }: MemberDataInput) => {
+  data.forEach(({ category, questionId, value: values }: MemberValueInput) => {
     // If there's no value, then short circuit. Because for the initial
     // creation of data, it must exist.
     if (!values?.length) return;
@@ -133,18 +151,21 @@ const applyToCommunity = async (
 
     category = category ?? question.category;
 
-    const value = (question?.type === 'MULTIPLE_SELECT'
+    const value = (question?.type === QuestionType.MULTIPLE_SELECT
       ? values
       : values[0]
     )?.toString();
 
-    if (category === 'EMAIL') user.email = value;
-    else if (category === QuestionCategory.FIRST_NAME) user.firstName = value;
-    else if (category === QuestionCategory.LAST_NAME) user.lastName = value;
-    else if (category === QuestionCategory.LINKEDIN_URL) {
-      user.linkedInUrl = value;
-    } else if (category === 'MEMBERSHIP_TYPE') member.type = type;
-    else bm.create(MemberData, { member, question, value });
+    if (category === QuestionCategory.EMAIL) user.email = value;
+    else if (category === QuestionCategory.FIRST_NAME) {
+      member.firstName = value;
+    } else if (category === QuestionCategory.LAST_NAME) {
+      member.lastName = value;
+    } else if (category === QuestionCategory.LINKED_IN_URL) {
+      socials.linkedInUrl = value;
+    } else if (category === QuestionCategory.MEMBER_PLAN) {
+      member.plan = plan;
+    } else bm.create(MemberValue, { member, question, value });
   });
 
   await bm.flush({ flushEvent: FlushEvent.APPLY_TO_COMMUNITY });
@@ -159,14 +180,8 @@ const applyToCommunity = async (
     communityId: community.id
   } as ApplyToCommunityAdminsPayload);
 
-  cache.invalidateKeys(
-    member.status === MemberStatus.PENDING
-      ? [`${QueryEvent.GET_APPLICANTS}-${community.id}`]
-      : [`${QueryEvent.GET_DATABASE}-${community.id}`]
-  );
-
   await createApplicationPayment(
-    { memberTypeId, paymentMethodId, recurrence: type.recurrence },
+    { memberPlanId, paymentMethodId, recurrence: plan.recurrence },
     { communityId: community.id, memberId: member.id }
   );
 

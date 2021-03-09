@@ -4,23 +4,30 @@ import Stripe from 'stripe';
 import { stripe } from '../Stripe.util';
 
 export interface CreateStripeSubscriptionArgs {
-  accountId: string;
-  customerId: string;
-  priceId: string;
+  stripeAccountId: string;
+  stripeCustomerId: string;
+  stripePriceId: string;
 }
 
-const createStripeSubscription = async ({
-  accountId,
-  customerId,
-  priceId
-}: CreateStripeSubscriptionArgs): Promise<Stripe.Subscription> => {
+/**
+ * Returns the new Stripe.Subscription.
+ *
+ * @param args.stripeAccountId - ID of the Stripe Account.
+ * @param args.stripeCustomerId - ID of the Stripe Customer.
+ * @param args.stripePriceId - ID of the Stripe Price.
+ */
+const createStripeSubscription = async (
+  args: CreateStripeSubscriptionArgs
+): Promise<Stripe.Subscription> => {
+  const { stripeAccountId, stripeCustomerId, stripePriceId } = args;
+
   const subscription: Stripe.Subscription = await stripe.subscriptions.create(
     {
-      customer: customerId,
+      customer: stripeCustomerId,
       expand: ['latest_invoice.payment_intent'],
-      items: [{ price: priceId }]
+      items: [{ price: stripePriceId }]
     },
-    { idempotencyKey: nanoid(), stripeAccount: accountId }
+    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
   return subscription;

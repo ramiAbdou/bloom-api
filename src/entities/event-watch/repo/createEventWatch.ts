@@ -12,15 +12,18 @@ export class CreateEventWatchArgs {
 }
 
 /**
- * Returns a new EventWatch.
+ * Returns a new EventWatch (w/ Member populated).
  *
- * @param args.eventId - ID of the event.
- * @param ctx.memberId - ID of the member.
+ * @param args.eventId - ID of the Event.
+ * @param ctx.memberId - ID of the Member (authenticated).
  */
 const createEventWatch = async (
-  { eventId }: CreateEventWatchArgs,
-  { memberId }: Pick<GQLContext, 'memberId'>
-) => {
+  args: CreateEventWatchArgs,
+  ctx: Pick<GQLContext, 'memberId'>
+): Promise<EventWatch> => {
+  const { eventId } = args;
+  const { memberId } = ctx;
+
   const bm = new BloomManager();
 
   const [watch, wasFound]: [EventWatch, boolean] = await bm.findOneOrCreate(
@@ -29,8 +32,13 @@ const createEventWatch = async (
     { event: eventId, member: memberId }
   );
 
-  if (!wasFound) await bm.flush({ flushEvent: FlushEvent.CREATE_EVENT_WATCH });
-  await bm.em.populate(watch, ['member.data', 'member.user']);
+  // Populate the Member on the EventWatch (for React).
+  await bm.em.populate(watch, ['member']);
+
+  if (!wasFound) {
+    await bm.flush({ flushEvent: FlushEvent.CREATE_EVENT_WATCH });
+  }
+
   return watch;
 };
 

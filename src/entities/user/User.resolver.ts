@@ -1,11 +1,11 @@
-import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { Args, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@util/constants';
 import { TokenArgs } from '@util/gql';
 import getTokens, { GetTokensArgs, GetTokensResult } from './repo/getTokens';
 import getUser, { GetUserArgs } from './repo/getUser';
+import logout from './repo/logout';
 import sendLoginLink, { SendLoginLinkArgs } from './repo/sendLoginLink';
-import updateUser, { UpdateUserArgs } from './repo/updateUser';
 import verifyToken, { VerifiedToken } from './repo/verifyToken';
 import User from './User';
 
@@ -19,8 +19,11 @@ export default class UserResolver {
     return getTokens(args, ctx);
   }
 
-  @Query(() => User, { nullable: true })
-  async getUser(@Args() args: GetUserArgs, @Ctx() ctx: GQLContext) {
+  @Query(() => User)
+  async getUser(
+    @Args() args: GetUserArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<User> {
     return getUser(args, ctx);
   }
 
@@ -28,10 +31,8 @@ export default class UserResolver {
    * Logs a user out of the session by removing the HTTP only cookies.
    */
   @Mutation(() => Boolean)
-  async logout(@Ctx() { res }: GQLContext) {
-    res.clearCookie('accessToken');
-    res.clearCookie('refreshToken');
-    return true;
+  async logout(@Ctx() ctx: GQLContext) {
+    return logout(ctx);
   }
 
   @Mutation(() => Boolean, { nullable: true })
@@ -39,16 +40,7 @@ export default class UserResolver {
     return sendLoginLink(args);
   }
 
-  @Authorized()
-  @Mutation(() => User)
-  async updateUser(
-    @Args() args: UpdateUserArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<User> {
-    return updateUser(args, ctx);
-  }
-
-  @Query(() => VerifiedToken)
+  @Mutation(() => VerifiedToken)
   async verifyToken(@Args() args: TokenArgs, @Ctx() ctx: GQLContext) {
     return verifyToken(args, ctx);
   }

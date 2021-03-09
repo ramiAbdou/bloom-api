@@ -1,9 +1,9 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import { DeleteMembersPayload } from '@system/emails/util/getDeleteMembersVars';
 import { emitEmailEvent } from '@system/eventBus';
+import { GQLContext } from '@util/constants';
 import { EmailEvent, FlushEvent } from '@util/events';
 import Member from '../Member';
 
@@ -14,10 +14,10 @@ export class DeleteMembersArgs {
 }
 
 /**
- * Returns the soft-deleted Members.
+ * Returns the soft-deleted Member(s).
  *
- * @param {string[]} args.memberIds - IDs of the Members to delete.
- * @param {string} ctx.communityId - ID of the Community.
+ * @param args.memberIds - IDs of the Member(s) to delete.
+ * @param ctx.communityId - ID of the Community.
  */
 const deleteMembers = async (
   args: DeleteMembersArgs,

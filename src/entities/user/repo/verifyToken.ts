@@ -4,7 +4,7 @@ import { AuthTokens, GQLContext } from '@util/constants';
 import { VerifyEvent } from '@util/events';
 import { TokenArgs } from '@util/gql';
 import { decodeToken } from '@util/util';
-import joinEventViaToken from '../../event-guest/repo/joinEventViaToken';
+import createEventAttendeeFromGuestToken from '../../event-attendee/repo/createEventAttendeeFromGuestToken';
 import refreshToken from './refreshToken';
 
 @ObjectType()
@@ -22,25 +22,37 @@ export class VerifiedToken {
   userId?: string;
 }
 
+/**
+ * Returns the VerifiedToken based on the VerifyEvent that is supplied.
+ *
+ * @param args.event - VerifyEvent to process.
+ * @param args.guestId - ID of the EventGuest.
+ * @param args.memberId - ID of the Member.
+ * @param args.userId - ID of the User.
+ * @param ctx.res - Express response object.
+ */
 const verifyToken = async (
   args: TokenArgs,
   ctx: Pick<GQLContext, 'res'>
 ): Promise<VerifiedToken> => {
-  const verifiedToken: VerifiedToken = decodeToken(args.token) ?? {};
+  const { token } = args;
+  const { res } = ctx;
+
+  const verifiedToken: VerifiedToken = decodeToken(token) ?? {};
   const { event, guestId, memberId, userId } = verifiedToken;
 
   let tokens: AuthTokens;
 
   if (event === VerifyEvent.JOIN_EVENT) {
-    await joinEventViaToken({ guestId });
+    await createEventAttendeeFromGuestToken({ guestId });
   }
 
   if ([VerifyEvent.LOG_IN].includes(event)) {
-    tokens = await refreshToken({ memberId, res: ctx.res, userId });
+    tokens = await refreshToken({ memberId, res, userId });
   }
 
   if (event === VerifyEvent.LOG_IN && !tokens) {
-    ctx.res.cookie('LOGIN_LINK_ERROR', 'TOKEN_EXPIRED');
+    res.cookie('LOGIN_LINK_ERROR', 'TOKEN_EXPIRED');
     return null;
   }
 

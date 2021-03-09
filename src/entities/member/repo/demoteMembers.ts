@@ -1,9 +1,9 @@
 import { DemoteMembersPayload } from 'src/system/emails/util/getDemoteMembersVars';
 import { ArgsType, Field } from 'type-graphql';
 
-import { GQLContext } from '@util/constants';
 import BloomManager from '@core/db/BloomManager';
 import { emitEmailEvent } from '@system/eventBus';
+import { GQLContext } from '@util/constants';
 import { EmailEvent, FlushEvent } from '@util/events';
 import Member from '../Member';
 
@@ -14,10 +14,10 @@ export class DemoteMembersArgs {
 }
 
 /**
- * Returns the updated Members.
+ * Returns the demoted Member(s).
  *
- * @param {string[]} args.memberIds - IDs of the Members to delete.
- * @param {string} ctx.communityId - ID of the Community.
+ * @param args.memberIds - IDs of the Member(s) to delete.
+ * @param ctx.communityId - ID of the Community (authenticated).
  */
 const demoteMembers = async (
   args: DemoteMembersArgs,
