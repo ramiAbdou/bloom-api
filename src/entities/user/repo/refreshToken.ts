@@ -22,12 +22,11 @@ interface RefreshTokenArgs {
  * Refreshes the user's tokens and sets the HTTP only cookies if Express
  * res object is provided.
  *
- * @param {RefreshTokenArgs} args
- * @param {string} [args.email]
- * @param {string} [args.memberId]
- * @param {string} [args.rToken]
- * @param {string} [args.res]
- * @param {string} [args.userId]
+ * @param args.email - Email of User to refresh.
+ * @param args.memberId - ID of the Member to refresh.
+ * @param args.rToken - Refresh token of User to refresh.
+ * @param args.res - Express Response object.
+ * @param args.userId - ID of the User to refresh.
  */
 const refreshToken = async (args: RefreshTokenArgs): Promise<AuthTokens> => {
   const { email, memberId, res, rToken, userId } = args;

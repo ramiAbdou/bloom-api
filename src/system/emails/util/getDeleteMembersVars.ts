@@ -15,10 +15,10 @@ export interface DeleteMembersVars {
 }
 
 /**
+ * Returns the variables for the DELETE_MEMBERS email.
  *
- * @param {DeleteMembersPayload} context
- * @param {string} context.communityId
- * @param {string[]} context.memberIds
+ * @param context.communityId - ID of the Community.
+ * @param context.memberIds - ID of the Member(s).
  */
 const getDeleteMembersVars = async (
   context: EmailPayload
@@ -32,9 +32,9 @@ const getDeleteMembersVars = async (
     Member,
     Member[]
   ] = await Promise.all([
-    bm.findOne(Community, { id: communityId }),
+    bm.findOne(Community, communityId),
     bm.findOne(Member, { community: communityId, role: MemberRole.OWNER }),
-    bm.find(Member, { id: memberIds })
+    bm.find(Member, memberIds)
   ]);
 
   const variables: DeleteMembersVars[] = members.map((member: Member) => {

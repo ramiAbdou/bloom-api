@@ -19,8 +19,8 @@ export interface ApplyToCommunityAdminsVars {
 /**
  * Returns email variables for APPLY_TO_COMMUNITY_ADMINS.
  *
- * @param {string} context.applicantId
- * @param {string} context.memberId
+ * @param context.applicantId - ID of the Member (status: PENDING).
+ * @param context.memberId - ID of the Member.
  */
 const getApplyToCommunityAdminsVars = async (
   context: EmailPayload

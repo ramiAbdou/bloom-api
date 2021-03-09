@@ -18,8 +18,8 @@ export interface AcceptedIntoCommunityVars {
 /**
  * Returns email variables for ACCEPTED_TO_COMMUNITY.
  *
- * @param {string} context.communityId
- * @param {string} context.memberId
+ * @param context.communityId - ID of the Community.
+ * @param context.memberId - ID of the Member.
  */
 const getAcceptedIntoCommunityVars = async (
   context: EmailPayload
@@ -29,8 +29,8 @@ const getAcceptedIntoCommunityVars = async (
   const bm = new BloomManager();
 
   const [community, members]: [Community, Member[]] = await Promise.all([
-    bm.findOne(Community, { id: communityId }),
-    bm.find(Member, { id: memberIds })
+    bm.findOne(Community, communityId),
+    bm.find(Member, memberIds)
   ]);
 
   const variables: AcceptedIntoCommunityVars[] = members.map(

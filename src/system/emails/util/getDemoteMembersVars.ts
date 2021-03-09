@@ -17,9 +17,8 @@ export interface DemoteMembersVars {
 /**
  * Returns the variables for the DEMOTE_MEMBERS email.
  *
- * @param {DeleteMembersPayload} context
- * @param {string} context.communityId
- * @param {string[]} context.memberIds
+ * @param context.communityId - ID of the Community.
+ * @param context.memberIds - ID of the Member(s).
  */
 const getDemoteMembersVars = async (
   context: EmailPayload

@@ -19,9 +19,9 @@ export interface DeleteEventCoordinatorVars {
 /**
  * Returns the variables for the DELETE_EVENT_COORDINATOR email.
  *
- * @param {string} context.communityId
- * @param {string} context.coordinatorId
- * @param {string} context.eventId
+ * @param context.communityId - ID of the Community.
+ * @param context.coordinatorId - ID of the Member (coordinator).
+ * @param context.eventId - ID of the Event.
  */
 const getDeleteEventCoordinatorVars = async (
   context: EmailPayload

@@ -31,7 +31,7 @@ export interface FormatPersonalizationData {
  * If development environment, filters all personalizations out that aren't
  * going to TEST_EMAILS.
  *
- * @param {EmailVars[]} variables - Variables for an email template.
+ * @param variables - Variables for an email template.
  */
 const formatPersonalizations = (
   variables: EmailVars[]
@@ -46,12 +46,10 @@ const formatPersonalizations = (
 };
 
 /**
- * Returns the email personalizations according to the args.emailEvent.
+ * Returns the email personalizations according to the EmailEvent.
  *
- * @param {EmailPayload} args.emailPayload
- * @param {EmailEvent} args.emailEvent
- *
- * @returns {FormatPersonalizationData[][]} - Nested array of personalizations.
+ * @param args.emailPayload - Context to query the variables for email.
+ * @param args.emailEvent - Type of EmailEvent.
  */
 const getPersonalizations = async (
   args: EmailArgs

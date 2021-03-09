@@ -23,9 +23,9 @@ export interface InviteMembersVars {
 /**
  * Returns email variables for INVITE_MEMBERS.
  *
- * @param {string} context.communityId
- * @param {string} context.coordinatorId
- * @param {string} context.memberId
+ * @param context.communityId - ID of the Community.
+ * @param context.coordinatorId - ID of the Member (admin).
+ * @param context.memberId - ID of the Member.
  */
 const getInviteMembersVars = async (
   context: EmailPayload

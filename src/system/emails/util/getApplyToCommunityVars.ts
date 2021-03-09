@@ -16,8 +16,8 @@ export interface ApplyToCommunityVars {
 /**
  * Returns email variables for APPLY_TO_COMMUNITY.
  *
- * @param {string} context.communityId
- * @param {string} context.memberId
+ * @param context.communityId - ID of the Community.
+ * @param context.memberId - ID of the Member.
  */
 const getApplyToCommunityVars = async (
   context: EmailPayload
