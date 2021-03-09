@@ -47,8 +47,8 @@ const getPaymentsSeries = async (
 
       const totalAmount: number = payments
         .filter(({ createdAt }) => createdAt < dateKey)
-        .reduce((acc: number, { amount }) => {
-          return acc + Number(amount);
+        .reduce((acc: number, payment: Payment) => {
+          return acc + Number(payment.amount);
         }, 0);
 
       return { name: dateKey, value: totalAmount };

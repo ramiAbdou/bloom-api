@@ -9,7 +9,7 @@ import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
 import updateStripeSubscriptionId from '../../member-integrations/repo/updateStripeSubscriptionId';
 import Payment from '../Payment';
-import createDuesPayment from './createDuesPayment';
+import createPayment from './createPayment';
 
 @ArgsType()
 export class CreateSubsciptionArgs {
@@ -56,7 +56,7 @@ const createSubscription = async (
 
   const invoice = subscription.latest_invoice as Stripe.Invoice;
 
-  const payment: Payment = await createDuesPayment(
+  const payment: Payment = await createPayment(
     { invoice, planId: memberPlanId },
     ctx
   );

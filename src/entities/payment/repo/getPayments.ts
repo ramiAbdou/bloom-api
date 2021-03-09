@@ -15,7 +15,7 @@ export class GetPaymentsArgs {
 }
 
 /**
- * Returns the Payment(s) of a Community or Member.
+ * Returns the Payment(s).
  *
  * @param args.communityId - ID of the Community.
  * @param args.memberId - ID of the Member.
