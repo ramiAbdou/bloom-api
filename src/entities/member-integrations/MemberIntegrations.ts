@@ -99,7 +99,7 @@ export default class MemberIntegrations extends BaseEntity {
       { stripeAccount: this.member.community.integrations.stripeAccountId }
     );
 
-    return day.utc(subscription?.current_period_end).format();
+    return day.utc(subscription.current_period_end * 1000).format();
   }
 
   // ## LIFECYCLE HOOKS

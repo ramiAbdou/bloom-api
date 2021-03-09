@@ -7,9 +7,6 @@ import getChangePreview, {
   GetChangePreviewResult
 } from './repo/getChangePreview';
 import getMemberIntegrations from './repo/getMemberIntegrations';
-import getUpcomingPayment, {
-  GetUpcomingPaymentResult
-} from './repo/getUpcomingPayment';
 import updateStripePaymentMethodId, {
   UpdateStripePaymentMethodIdArgs
 } from './repo/updateStripePaymentMethodId';
@@ -31,14 +28,6 @@ export default class MemberIntegrationsResolver {
     @Ctx() ctx: GQLContext
   ): Promise<MemberIntegrations[]> {
     return getMemberIntegrations(ctx);
-  }
-
-  @Authorized()
-  @Query(() => GetUpcomingPaymentResult, { nullable: true })
-  async getUpcomingPayment(
-    @Ctx() ctx: GQLContext
-  ): Promise<GetUpcomingPaymentResult> {
-    return getUpcomingPayment(ctx);
   }
 
   @Authorized()
