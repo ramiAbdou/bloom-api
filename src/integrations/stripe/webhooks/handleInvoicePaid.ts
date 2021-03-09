@@ -13,6 +13,8 @@ import { stripe } from '../Stripe.util';
 /**
  * Handles a paid Stripe invoice by sending an email confirmation and if there
  * isn't a Payment stored yet,
+ *
+ * @param event - Stripe.Event to handle: 'invoice.paid'.
  */
 const handleInvoicePaid = async (event: Stripe.Event) => {
   const stripeAccountId: string = event.account;
@@ -29,7 +31,7 @@ const handleInvoicePaid = async (event: Stripe.Event) => {
     bm.findOne(
       Member,
       { memberIntegrations: { stripeCustomerId: invoice.customer as string } },
-      { populate: ['integrations'] }
+      { populate: ['memberIntegrations'] }
     ),
     bm.findOne(Payment, { stripeInvoiceId: invoice.id })
   ]);

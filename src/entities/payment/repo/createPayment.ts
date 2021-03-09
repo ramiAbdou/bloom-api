@@ -24,7 +24,7 @@ const assertCreatePayment = (args: CreatePaymentArgs) => {
 /**
  * Returns a new Payment.
  *
- * @param args.invoice - Stripe invoice.
+ * @param args.invoice - Stripe.Invoice.
  * @param args.planId - ID of the MemberPlan.
  * @param ctx.communityId - ID of the Community (authenticated).
  * @param ctx.memberId - ID of the Member (authenticated).

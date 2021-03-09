@@ -4,31 +4,44 @@ import Stripe from 'stripe';
 import { stripe } from '../Stripe.util';
 
 export interface UpdateStripeSubscriptionArgs {
-  accountId: string;
-  priceId: string;
   prorationDate: number;
-  subscriptionId: string;
+  stripeAccountId: string;
+  stripePriceId: string;
+  stripeSubscriptionId: string;
 }
 
+/**
+ * Returns the updated Stripe.Subscription.
+ *
+ * @param args.prorationDate UTC timestamp of the proration date.
+ * @param args.stripeAccountId - ID of the Stripe.Account.
+ * @param args.stripePriceId - ID of the Stripe.Price.
+ * @param args.stripeSubscriptionId - ID of the Stripe.Subscription
+ */
 const updateStripeSubscription = async (
   args: UpdateStripeSubscriptionArgs
 ): Promise<Stripe.Subscription> => {
-  const { accountId, priceId, prorationDate, subscriptionId } = args;
+  const {
+    stripeAccountId,
+    stripePriceId,
+    prorationDate,
+    stripeSubscriptionId
+  } = args;
 
   const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(
-    subscriptionId,
-    { idempotencyKey: nanoid(), stripeAccount: accountId }
+    stripeSubscriptionId,
+    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
   const updatedSubscription: Stripe.Subscription = await stripe.subscriptions.update(
-    subscriptionId,
+    stripeSubscriptionId,
     {
       expand: ['latest_invoice.payment_intent'],
-      items: [{ id: subscription.items.data[0].id, price: priceId }],
+      items: [{ id: subscription.items.data[0].id, price: stripePriceId }],
       proration_behavior: 'always_invoice',
       proration_date: prorationDate
     },
-    { idempotencyKey: nanoid(), stripeAccount: accountId }
+    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
   return updatedSubscription;

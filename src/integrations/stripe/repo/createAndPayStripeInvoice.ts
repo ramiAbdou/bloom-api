@@ -4,29 +4,36 @@ import Stripe from 'stripe';
 import { stripe } from '../Stripe.util';
 
 interface CreateAndPayStripeInvoiceArgs {
-  accountId: string;
-  customerId: string;
-  priceId: string;
+  stripeAccountId: string;
+  stripeCustomerId: string;
+  stripePriceId: string;
 }
 
-const createAndPayStripeInvoice = async ({
-  accountId,
-  customerId,
-  priceId
-}: CreateAndPayStripeInvoiceArgs): Promise<Stripe.Invoice> => {
+/**
+ * Returns the paid Stripe.Invoice.
+ *
+ * @param args.stripeAccountId - ID of the Stripe Account.
+ * @param args.stripeCustomerId - ID of the Stripe Customer.
+ * @param args.stripePriceId - ID of the Stripe Price.
+ */
+const createAndPayStripeInvoice = async (
+  args: CreateAndPayStripeInvoiceArgs
+): Promise<Stripe.Invoice> => {
+  const { stripeAccountId, stripeCustomerId, stripePriceId } = args;
+
   await stripe.invoiceItems.create(
-    { customer: customerId, price: priceId },
-    { idempotencyKey: nanoid(), stripeAccount: accountId }
+    { customer: stripeCustomerId, price: stripePriceId },
+    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
   const invoice: Stripe.Invoice = await stripe.invoices.create(
-    { auto_advance: false, customer: customerId },
-    { idempotencyKey: nanoid(), stripeAccount: accountId }
+    { auto_advance: false, customer: stripeCustomerId },
+    { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
   const paidInvoice: Stripe.Invoice = await stripe.invoices.pay(invoice.id, {
     idempotencyKey: nanoid(),
-    stripeAccount: accountId
+    stripeAccount: stripeAccountId
   });
 
   return paidInvoice;

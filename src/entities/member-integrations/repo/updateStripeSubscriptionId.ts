@@ -58,10 +58,10 @@ const updateStripeSubscriptionId = async (
   };
 
   const updateSubscriptionArgs: UpdateStripeSubscriptionArgs = {
-    accountId: communityIntegrations.stripeAccountId,
-    priceId: type.stripePriceId,
     prorationDate,
-    subscriptionId: memberIntegrations.stripeSubscriptionId
+    stripeAccountId: communityIntegrations.stripeAccountId,
+    stripePriceId: type.stripePriceId,
+    stripeSubscriptionId: memberIntegrations.stripeSubscriptionId
   };
 
   const subscription: Stripe.Subscription = memberIntegrations.stripeSubscriptionId

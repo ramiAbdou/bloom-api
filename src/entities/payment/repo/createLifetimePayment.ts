@@ -48,9 +48,9 @@ const createLifetimePayment = async (
   ]);
 
   const invoice: Stripe.Invoice = await createAndPayStripeInvoice({
-    accountId: communityIntegrations.stripeAccountId,
-    customerId: memberIntegrations.stripeCustomerId,
-    priceId: plan.stripePriceId
+    stripeAccountId: communityIntegrations.stripeAccountId,
+    stripeCustomerId: memberIntegrations.stripeCustomerId,
+    stripePriceId: plan.stripePriceId
   });
 
   const payment: Payment = await createPayment(
