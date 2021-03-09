@@ -30,7 +30,7 @@ const getUpcomingPayment = async (
 
   const bm = new BloomManager();
 
-  const [integrations, member]: [
+  const [integrations, memberIntegrations]: [
     Integrations,
     MemberIntegrations
   ] = await Promise.all([
@@ -39,7 +39,7 @@ const getUpcomingPayment = async (
   ]);
 
   const invoice: Stripe.Invoice = await stripe.invoices.retrieveUpcoming(
-    { customer: member.stripeCustomerId },
+    { customer: memberIntegrations.stripeCustomerId },
     { stripeAccount: integrations.stripeAccountId }
   );
 

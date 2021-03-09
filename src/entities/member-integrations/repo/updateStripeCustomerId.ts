@@ -20,11 +20,13 @@ const updateStripeCustomerId = async (
 
   const bm = new BloomManager();
 
-  const [communityIntegrations, memberIntegrations]: [
+  const [communityIntegrations, member, memberIntegrations]: [
     Integrations,
+    Member,
     MemberIntegrations
   ] = await Promise.all([
     bm.findOne(Integrations, { community: communityId }),
+    bm.findOne(Member, memberId),
     bm.findOne(MemberIntegrations, { member: memberId })
   ]);
 
@@ -32,13 +34,10 @@ const updateStripeCustomerId = async (
   // customer.
   if (memberIntegrations.stripeCustomerId) return memberIntegrations;
 
-  const { stripeAccountId }: Integrations = communityIntegrations;
-  const { email, fullName }: Member = memberIntegrations.member;
-
   const stripeCustomer: Stripe.Customer = await createStripeCustomer({
-    email,
-    fullName,
-    stripeAccountId
+    email: member.email,
+    fullName: member.fullName,
+    stripeAccountId: communityIntegrations.stripeAccountId
   });
 
   memberIntegrations.stripeCustomerId = stripeCustomer.id;

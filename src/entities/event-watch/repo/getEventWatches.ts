@@ -19,7 +19,7 @@ export class GetEventWatchesArgs {
 }
 
 /**
- * Returns the EventWatch(s) of either the Event or Member.
+ * Returns the EventWatch(s).
  *
  * @param args.communityId - ID of the Event.
  * @param args.eventId - ID of the Event.

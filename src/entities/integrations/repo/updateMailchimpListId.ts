@@ -12,16 +12,23 @@ export class UpdateMailchimpListIdArgs {
   mailchimpListId: string;
 }
 
+/**
+ * Returns the updated Integrations.
+ *
+ * @param args.mailchimpListId - ID of the Mailchimp List.
+ * @param ctx.communityId - ID of the Community (authenticated).
+ */
 const updateMailchimpListId = async (
   args: UpdateMailchimpListIdArgs,
   ctx: Pick<GQLContext, 'communityId'>
 ): Promise<Integrations> => {
+  const { mailchimpListId } = args;
   const { communityId } = ctx;
 
   const integrations = await new BloomManager().findOneAndUpdate(
     Integrations,
-    { community: { id: communityId } },
-    { ...args },
+    { community: communityId },
+    { mailchimpListId },
     { flushEvent: MutationEvent.UPDATE_MAILCHIMP_LIST_ID }
   );
 

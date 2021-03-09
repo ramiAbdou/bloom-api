@@ -17,7 +17,7 @@ export class GetEventAttendeesArgs {
 }
 
 /**
- * Returns the EventAttendee(s) of either a Community, Event, or Member.
+ * Returns the EventAttendee(s).
  *
  * @param args.eventId - ID of the Event.
  * @param args.memberId - ID of the Member.

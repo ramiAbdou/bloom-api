@@ -17,7 +17,7 @@ export class GetEventGuestsArgs {
 }
 
 /**
- * Returns the EventGuest(s) of either the Event or Member.
+ * Returns the EventGuest(s).
  *
  * @param args.eventId - ID of the Event.
  * @param args.memberId - ID of the Member.

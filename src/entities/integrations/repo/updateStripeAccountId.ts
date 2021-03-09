@@ -10,8 +10,7 @@ import Integrations from '../Integrations';
  * Stores the Stripe tokens in the database after executing the
  * OAuth token flow.
  *
- * @param code Stripe's API produced authorization code that we exchange for
- * tokens.
+ * @param code - Code to exchange for token from Stripe API.
  */
 const updateStripeAccountId = async (
   args: AuthQueryArgs

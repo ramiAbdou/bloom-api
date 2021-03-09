@@ -1,3 +1,5 @@
+import day from 'dayjs';
+import Stripe from 'stripe';
 import { Authorized, Field, ObjectType } from 'type-graphql';
 import { AfterUpdate, Entity, OneToOne, Property, wrap } from '@mikro-orm/core';
 
@@ -6,7 +8,6 @@ import BaseEntity from '@core/db/BaseEntity';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { QueryEvent } from '@util/events';
 import Member from '../member/Member';
-import getNextPaymentDate from './repo/getNextPaymentDate';
 
 @ObjectType()
 export class PaymentMethod {
@@ -47,12 +48,20 @@ export default class MemberIntegrations extends BaseEntity {
 
   /**
    * Returns a formatted version of the Stripe.PaymentMethod.
+   *
+   * @example paymentMethod() => {
+   *  brand: "Visa",
+   *  expirationDate: "08/24",
+   *  last4: "3221",
+   *  zipCode: "91789",
+   * }
    */
   @Authorized()
   @Field(() => PaymentMethod, { nullable: true })
-  async paymentMethod() {
+  async paymentMethod(): Promise<PaymentMethod> {
     if (!this.stripePaymentMethodId) return null;
 
+    // Need to grab the stripeAccountId.
     await wrap(this.member).init(true, ['community.integrations']);
 
     const paymentMethod = await stripe.paymentMethods.retrieve(
@@ -71,10 +80,26 @@ export default class MemberIntegrations extends BaseEntity {
     };
   }
 
+  /**
+   * Returns the renewalDate of the Stripe.Subscription, if the
+   * stripeSubscriptionId exists. Returns null, otherwise.
+   *
+   * @example renewalDate() => "2021-04-09T07:19:20-08:00"
+   */
   @Authorized()
   @Field(() => String, { nullable: true })
-  async nextPaymentDate() {
-    return getNextPaymentDate(this.id);
+  async renewalDate(): Promise<string> {
+    if (!this.stripeSubscriptionId) return null;
+
+    // Need to grab the stripeAccountId.
+    await wrap(this.member).init(true, ['community.integrations']);
+
+    const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(
+      this.stripeSubscriptionId,
+      { stripeAccount: this.member.community.integrations.stripeAccountId }
+    );
+
+    return day.utc(subscription?.current_period_end).format();
   }
 
   // ## LIFECYCLE HOOKS

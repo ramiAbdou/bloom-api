@@ -5,10 +5,9 @@ import { MutationEvent } from '@util/events';
 import Integrations from '../Integrations';
 
 /**
- * Returns the updated community after updating it's Mailchimp token. If
- * no community was found based on the urlName, returns null.
+ * Returns the updated Integrations.
  *
- * Precondition: The community ID must represent a community.
+ * @param args.code - Code to exchange for token from Mailchimp API.
  */
 const updateMailchimpAccessToken = async (
   args: AuthQueryArgs

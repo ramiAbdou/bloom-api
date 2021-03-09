@@ -5,7 +5,7 @@ import { now } from '@util/util';
 import EventGuest from '../EventGuest';
 
 /**
- * Returns the upcoming EventGuest(s) of a Community.
+ * Returns the upcoming EventGuest(s).
  *
  * @param ctx.communityId - ID of the Community.
  */
