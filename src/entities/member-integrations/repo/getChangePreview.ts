@@ -49,12 +49,12 @@ const getChangePreview = async (
 
   if (!integrations.stripeSubscriptionId) return null;
 
-  const subscription = await stripe.subscriptions.retrieve(
+  const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(
     stripeSubscriptionId,
     { stripeAccount: community.integrations.stripeAccountId }
   );
 
-  const prorationDate = Math.floor(Date.now() / 1000);
+  const prorationDate: number = Math.floor(Date.now() / 1000);
 
   const invoice: Stripe.Invoice = await stripe.invoices.retrieveUpcoming(
     {
