@@ -19,7 +19,7 @@ export class GetMembersArgs {
 }
 
 /**
- * Returns the Member(s) of a User.
+ * Returns the Member(s).
  *
  * @param args.communityId - ID of the Community.
  * @param args.memberId - ID of the Member.
@@ -36,6 +36,7 @@ const getMembers = async (args: GetMembersArgs): Promise<Member[]> => {
 
   const members: Member[] = await new BloomManager().find(
     Member,
+    // @ts-ignore b/c not sure why the TS error appears.
     { ...queryArgs, status: MemberStatus.ACCEPTED },
     {
       cacheKey: communityId

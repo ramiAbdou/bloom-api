@@ -35,9 +35,8 @@ export class InviteMembersArgs {
 /**
  * Throws error if one member has an email that already exists.
  *
- * @param {AddMemberInput[]} args.members
- * @param {string} args.members.email
- * @param {string} ctx.communityId
+ * @param args.members.email
+ * @param ctx.communityId
  */
 const assertInviteMembers = async (
   args: InviteMembersArgs,
@@ -64,11 +63,11 @@ const assertInviteMembers = async (
  * Creates new Members (and maybe Users) based on the data given.
  * Precondition: Only members who are admins can call this function.
  *
- * @param {AddMemberInput[]} args.members - Data for new members to create.
- * @param {string} args.members.email
- * @param {string} args.members.firstName
- * @param {string} args.members.lastName
- * @param {string} ctx.communityId
+ * @param args.members - Data for new members to create.
+ * @param args.members.email
+ * @param args.members.firstName
+ * @param args.members.lastName
+ * @param ctx.communityId
  */
 const inviteMembers = async (
   args: InviteMembersArgs,

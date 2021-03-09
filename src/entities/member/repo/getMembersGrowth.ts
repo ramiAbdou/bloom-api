@@ -10,6 +10,7 @@ import { QueryEvent } from '@util/events';
  * including the current total number of members as well as the growth
  * percentage.
  *
+ * @param ctx.communityId - ID of the Community (authenticated).
  * @example getTotalGrowth() => [528, 173.1]
  * @example getTotalGrowth() => [1, 100]
  */
@@ -30,7 +31,7 @@ const getMembersGrowth = async (
   const bm = new BloomManager();
 
   const numMembers30DaysAgo: number = await bm.em.count(Member, {
-    community: { id: communityId },
+    community: communityId,
     deletedAt: { $eq: null, $gt: endOf30DaysAgo.format() },
     joinedAt: { $lte: endOf30DaysAgo.format() },
     status: MemberStatus.ACCEPTED
