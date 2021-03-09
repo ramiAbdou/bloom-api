@@ -6,9 +6,15 @@ interface GetMailchimpAudiences {
   mailchimpAccessToken?: string;
 }
 
-const getMailchimpAudiences = async ({
-  mailchimpAccessToken
-}: GetMailchimpAudiences): Promise<MailchimpList[]> => {
+/**
+ * Returns the Mailchimp Audience(s).
+ *
+ * @param args.mailchimpAccessToken - Mailchimp access token (for querying).
+ */
+const getMailchimpAudiences = async (
+  args: GetMailchimpAudiences
+): Promise<MailchimpList[]> => {
+  const { mailchimpAccessToken } = args;
   if (!mailchimpAccessToken) return [];
 
   const options: AxiosRequestConfig = {

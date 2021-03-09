@@ -10,16 +10,23 @@ export interface MailchimpEventArgs {
   mailchimpEvent: MailchimpEvent;
 }
 
-const processMailchimpEvent = async ({
-  communityId,
-  memberId,
-  mailchimpEvent
-}: MailchimpEventArgs): Promise<void> => {
+/**
+ * Processes the MailchimpEvent properly.
+ *
+ * @param args.communityId - ID of the Community.
+ * @param args.memberId - ID of the Member.
+ * @param args.mailchimpEvent - Internal Mailchimp event.
+ */
+const processMailchimpEvent = async (
+  args: MailchimpEventArgs
+): Promise<void> => {
+  const { communityId, memberId, mailchimpEvent } = args;
+
   const bm = new BloomManager();
 
   const [integrations, member]: [Integrations, Member] = await Promise.all([
-    bm.findOne(Integrations, { community: { id: communityId } }),
-    bm.findOne(Member, { id: memberId })
+    bm.findOne(Integrations, { community: communityId }),
+    bm.findOne(Member, memberId)
   ]);
 
   if (mailchimpEvent === MailchimpEvent.ADD_TO_AUDIENCE) {

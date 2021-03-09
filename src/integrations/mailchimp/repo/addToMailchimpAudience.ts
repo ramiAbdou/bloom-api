@@ -8,13 +8,24 @@ interface AddToMailchimpAudienceArgs {
   mailchimpListId: string;
 }
 
-const addToMailchimpAudience = async ({
-  email,
-  firstName,
-  lastName,
-  mailchimpAccessToken,
-  mailchimpListId
-}: AddToMailchimpAudienceArgs) => {
+/**
+ * Adds someone to the Mailchimp Audience.
+ *
+ * @param args.email - Email to add to Mailchimp audience.
+ * @param args.firstName - First name to add to Mailchimp audience.
+ * @param args.lastName - Last name to add to Mailchimp audience.
+ * @param args.mailchimpAccessToken - Mailchimp access token (for querying).
+ * @param args.mailchimpListId - ID of the Mailchimp List to add to.
+ */
+const addToMailchimpAudience = async (args: AddToMailchimpAudienceArgs) => {
+  const {
+    email,
+    firstName,
+    lastName,
+    mailchimpAccessToken,
+    mailchimpListId
+  } = args;
+
   if (!mailchimpAccessToken || !mailchimpListId) return;
 
   const options: AxiosRequestConfig = {
