@@ -77,7 +77,7 @@ class BloomManager {
 
     // If we grab the entity from the cache, we need to merge it to the current
     // entity manager, as a normal findOne would do.
-    if (cache.has(cacheKey)) {
+    if (cache.has(cacheKey) && !!where) {
       const entity = cache.get(cacheKey);
       if (entity) this.em.merge(entity, true);
       return entity as Promise<Loaded<T, P> | null>;
