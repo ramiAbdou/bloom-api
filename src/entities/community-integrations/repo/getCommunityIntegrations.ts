@@ -6,7 +6,7 @@ import { QueryEvent } from '@util/events';
 import CommunityIntegrations from '../CommunityIntegrations';
 
 @ArgsType()
-export class GetIntegrationsArgs {
+export class GetCommunityIntegrationsArgs {
   @Field({ nullable: true })
   communityId?: string;
 }
@@ -17,8 +17,8 @@ export class GetIntegrationsArgs {
  * @param args.communityId - ID of the Community.
  * @param ctx.communityId - ID of the Community (authenticated).
  */
-const getIntegrations = async (
-  args: GetIntegrationsArgs,
+const getCommunityIntegrations = async (
+  args: GetCommunityIntegrationsArgs,
   ctx: Pick<GQLContext, 'communityId'>
 ): Promise<CommunityIntegrations> => {
   const communityId: string = args.communityId ?? ctx.communityId;
@@ -26,10 +26,10 @@ const getIntegrations = async (
   const communityIntegrations: CommunityIntegrations = await new BloomManager().findOne(
     CommunityIntegrations,
     { community: communityId },
-    { cacheKey: `${QueryEvent.GET_INTEGRATIONS}-${communityId}` }
+    { cacheKey: `${QueryEvent.GET_COMMUNITY_INTEGRATIONS}-${communityId}` }
   );
 
   return communityIntegrations;
 };
 
-export default getIntegrations;
+export default getCommunityIntegrations;

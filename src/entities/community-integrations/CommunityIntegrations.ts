@@ -57,7 +57,7 @@ export default class CommunityIntegrations extends BaseEntity {
   @AfterUpdate()
   afterUpdate() {
     CommunityIntegrations.cache.invalidateKeys([
-      `${QueryEvent.GET_INTEGRATIONS}-${this.community.id}`
+      `${QueryEvent.GET_COMMUNITY_INTEGRATIONS}-${this.community.id}`
     ]);
   }
 

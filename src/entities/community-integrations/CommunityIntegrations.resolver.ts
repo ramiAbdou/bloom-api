@@ -3,7 +3,9 @@ import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { MemberRole } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import CommunityIntegrations from './CommunityIntegrations';
-import getIntegrations, { GetIntegrationsArgs } from './repo/getIntegrations';
+import getCommunityIntegrations, {
+  GetCommunityIntegrationsArgs
+} from './repo/getCommunityIntegrations';
 import updateMailchimpListId, {
   UpdateMailchimpListIdArgs
 } from './repo/updateMailchimpListId';
@@ -11,11 +13,11 @@ import updateMailchimpListId, {
 @Resolver()
 export default class CommunityIntegrationsResolver {
   @Query(() => CommunityIntegrations)
-  async getIntegrations(
-    @Args() args: GetIntegrationsArgs,
+  async getCommunityIntegrations(
+    @Args() args: GetCommunityIntegrationsArgs,
     @Ctx() ctx: GQLContext
   ): Promise<CommunityIntegrations> {
-    return getIntegrations(args, ctx);
+    return getCommunityIntegrations(args, ctx);
   }
 
   @Authorized(MemberRole.ADMIN)
