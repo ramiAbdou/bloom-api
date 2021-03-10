@@ -28,11 +28,12 @@ const processGoogleEvent = async (args: GoogleEventArgs) => {
   const bm = new BloomManager();
 
   const [event, guest]: [Event, EventGuest] = await Promise.all([
-    bm.findOne(Event, eventId, { filters: false }),
-    bm.findOne(EventGuest, guestId, {
-      filters: false,
-      populate: ['member', 'supporter']
-    })
+    bm.findOne(Event, { id: eventId }, { filters: false }),
+    bm.findOne(
+      EventGuest,
+      { id: guestId },
+      { filters: false, populate: ['member', 'supporter'] }
+    )
   ]);
 
   if (

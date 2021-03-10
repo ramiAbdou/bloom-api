@@ -49,6 +49,8 @@ class BloomManager {
     where: FilterQuery<T>,
     options?: BloomFindOneOptions<T, P>
   ): Promise<Loaded<T, P>> {
+    if (!where) return null;
+
     const cache: Cache = getEntityCache(entityName);
 
     // Try to find and return the entity from the cache. We must return it as
