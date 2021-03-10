@@ -23,6 +23,15 @@ export class UpdateMemberSocialsArgs {
   twitterUrl?: string;
 }
 
+/**
+ * Returns the updated MemberSocials.
+ *
+ * @param args.clubhouseUrl Clubhouse URL of the Member.
+ * @param args.facebookUrl Facebook URL of the Member.
+ * @param args.instagramUrl Instagram URL of the Member.
+ * @param args.linkedInUrl LinkedIn URL of the Member.
+ * @param ctx.memberId ID of the Member (authenticated).
+ */
 const updateMemberSocials = async (
   args: UpdateMemberSocialsArgs,
   ctx: Pick<GQLContext, 'memberId'>
