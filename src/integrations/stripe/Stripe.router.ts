@@ -10,6 +10,11 @@ import handleInvoicePaid from './webhooks/handleInvoicePaid';
 
 const router: Router = Router();
 
+/**
+ * GET /auth
+ * - Handles the Stripe Authorization flow when an admin is connecting their
+ * Stripe account.
+ */
 router.get('/auth', async ({ query }: Request, res: Response) => {
   const { code, state: urlName } = query as AuthQueryArgs;
   await updateStripeAccountId({ code, state: urlName });
