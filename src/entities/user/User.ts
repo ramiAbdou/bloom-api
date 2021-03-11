@@ -25,6 +25,9 @@ export default class User extends BaseEntity {
   @IsEmail()
   email: string;
 
+  @Property({ nullable: true, unique: true })
+  googleId: string;
+
   // Server-generated token that we use to keep the user logged-in when sending
   // GraphQL requests.
   @Property({ nullable: true, type: 'text', unique: true })

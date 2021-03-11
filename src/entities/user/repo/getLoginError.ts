@@ -28,15 +28,11 @@ const getLoginError = async (args: GetLoginErrorArgs): Promise<ErrorType> => {
     if (!member) return ErrorType.NOT_MEMBER;
   }
 
-  const user: User = await new BloomManager().findOne(
-    User,
-    { email },
-    { populate: ['members'] }
-  );
+  const user: User = await new BloomManager().findOne(User, { email });
 
   if (!user) return ErrorType.USER_NOT_FOUND;
 
-  const members: Member[] = user.members.getItems();
+  const members: Member[] = await user.members.loadItems();
 
   // True if the User has >= 1 Member with status INVITED.
   const hasInvitedStatus: boolean = members.some((member: Member) => {
