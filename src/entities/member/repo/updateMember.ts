@@ -38,7 +38,7 @@ const updateMember = async (
   const updatedMember: Member = await new BloomManager().findOneAndUpdate(
     Member,
     memberId,
-    args,
+    { ...args },
     { flushEvent: FlushEvent.UPDATE_MEMBER }
   );
 

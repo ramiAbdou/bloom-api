@@ -1,4 +1,5 @@
 import { IsUrl } from 'class-validator';
+import day from 'dayjs';
 import { Field, ObjectType } from 'type-graphql';
 import {
   AfterCreate,
@@ -14,7 +15,8 @@ import {
   OneToOne,
   Property,
   QueryOrder,
-  Unique
+  Unique,
+  wrap
 } from '@mikro-orm/core';
 
 import Cache from '@core/cache/Cache';
@@ -27,13 +29,12 @@ import EventGuest from '../event-guest/EventGuest';
 import EventInvitee from '../event-invitee/EventInvitee';
 import EventWatch from '../event-watch/EventWatch';
 import MemberIntegrations from '../member-integrations/MemberIntegrations';
-import MemberPlan from '../member-plan/MemberPlan';
+import MemberPlan, { RecurrenceType } from '../member-plan/MemberPlan';
 import MemberRefresh from '../member-refresh/MemberRefresh';
 import MemberSocials from '../member-socials/MemberSocials';
 import MemberValue from '../member-value/MemberValue';
-import Payment from '../payment/Payment';
+import Payment, { PaymentType } from '../payment/Payment';
 import User from '../user/User';
-import isDuesActive from './repo/isDuesActive';
 
 export enum MemberRole {
   ADMIN = 'Admin',
@@ -99,9 +100,43 @@ export default class Member extends BaseEntity {
 
   // ## METHODS
 
+  /**
+   * Returns true if the Member has paid their dues in less than the
+   * RecurrenceType of their MemberPlan.
+   *
+   * Example: If the Member's current MemberPlan is on a MONTHLY recurrence
+   * and they paid dues less than a month ago, then they are active. Otherwise,
+   * they are not.
+   */
   @Field(() => Boolean)
   async isDuesActive(): Promise<boolean> {
-    return isDuesActive({ memberId: this.id });
+    await wrap(this.plan).init();
+
+    const payments: Payment[] = await this.payments.loadItems();
+
+    const lastDuesPayment: Payment = payments.find((payment: Payment) => {
+      return payment.type === PaymentType.DUES;
+    });
+
+    if (!lastDuesPayment) return false;
+
+    const { createdAt } = lastDuesPayment;
+    const { recurrence } = this.plan;
+
+    // If it's a LIFETIME payment, then they are active!
+    if (recurrence === RecurrenceType.LIFETIME) return true;
+
+    if (recurrence === RecurrenceType.MONTHLY) {
+      const oneMonthAgo: day.Dayjs = day.utc().subtract(1, 'month');
+      return day.utc(createdAt)?.isAfter(oneMonthAgo);
+    }
+
+    if (recurrence === RecurrenceType.YEARLY) {
+      const oneYearAgo: day.Dayjs = day.utc().subtract(1, 'year');
+      return day.utc(createdAt)?.isAfter(oneYearAgo);
+    }
+
+    return false;
   }
 
   // ## LIFECYCLE HOOKS

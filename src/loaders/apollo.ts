@@ -50,7 +50,6 @@ export const createSchema = async (): Promise<GraphQLSchema> =>
   buildSchema({
     authChecker,
     resolvers: [
-      RankedQuestionResolver,
       ApplicationResolver,
       CommunityResolver,
       CommunityIntegrations,
@@ -65,6 +64,7 @@ export const createSchema = async (): Promise<GraphQLSchema> =>
       MemberPlanResolver,
       PaymentResolver,
       QuestionResolver,
+      RankedQuestionResolver,
       UserResolver
     ]
   });

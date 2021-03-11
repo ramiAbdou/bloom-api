@@ -12,6 +12,7 @@ import User from '../User';
 
 interface RefreshTokenArgs {
   email?: string;
+  googleId?: string;
   memberId?: string;
   rToken?: string;
   res?: Response;
@@ -23,19 +24,21 @@ interface RefreshTokenArgs {
  * res object is provided.
  *
  * @param args.email - Email of User to refresh.
+ * @param args.googleId - Google ID of User to refresh.
  * @param args.memberId - ID of the Member to refresh.
  * @param args.rToken - Refresh token of User to refresh.
  * @param args.res - Express Response object.
  * @param args.userId - ID of the User to refresh.
  */
 const refreshToken = async (args: RefreshTokenArgs): Promise<AuthTokens> => {
-  const { email, memberId, res, rToken, userId } = args;
+  const { email, googleId, memberId, res, rToken, userId } = args;
 
-  if (!email && !memberId && !rToken && !userId) return null;
+  if (!email && !googleId && !memberId && !rToken && !userId) return null;
 
   let queryArgs: FilterQuery<User>;
 
-  if (userId) queryArgs = { id: userId };
+  if (googleId) queryArgs = { googleId };
+  else if (userId) queryArgs = { id: userId };
   else if (email) queryArgs = { email };
   else if (rToken) queryArgs = { refreshToken: rToken };
   else if (memberId) queryArgs = { members: { id: memberId } };
