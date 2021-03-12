@@ -4,10 +4,10 @@
   "description": "Bloom's Core API",
   "main": "dist/index.ts",
   "scripts": {
-    "build:dev": "NODE_ENV=dev webpack --config ./webpack.config.ts",
-    "build:stage": "NODE_ENV=stage webpack --config ./webpack.config.ts",
-    "build:prod": "NODE_ENV=prod webpack --config ./webpack.config.ts",
-    "dev": "NODE_ENV=dev ts-node-dev -r tsconfig-paths/register src/loaders/index.ts"
+    "build:dev": "APP_ENV=dev webpack --config ./webpack.config.prod.ts",
+    "build:stage": "APP_ENV=stage webpack --config ./webpack.config.prod.ts",
+    "build:prod": "APP_ENV=prod webpack --config ./webpack.config.prod.ts",
+    "dev": "APP_ENV=dev ts-node-dev -r tsconfig-paths/register src/loaders/index.ts"
   },
   "engines": {
     "node": "12.16.3",
@@ -50,6 +50,7 @@
     "helmet": "^3.22.1",
     "jsonwebtoken": "^8.5.1",
     "lru-cache": "^6.0.0",
+    "mikro-orm": "^4.4.4",
     "mjml": "^4.7.1",
     "mocha": "^7.1.1",
     "nanoid": "^3.1.12",
@@ -64,10 +65,12 @@
   "devDependencies": {
     "@types/deline": "^1.0.1",
     "@types/dotenv-webpack": "^1.8.0",
+    "@types/duplicate-package-checker-webpack-plugin": "^2.1.0",
     "@types/terser-webpack-plugin": "^5.0.2",
     "awesome-typescript-loader": "^5.2.1",
     "deline": "^1.0.4",
     "dotenv-webpack": "^1.8.0",
+    "duplicate-package-checker-webpack-plugin": "^3.0.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-typescript-prettier": "^2.1.1",
     "eslint-import-resolver-typescript": "^2.0.0",

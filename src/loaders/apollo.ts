@@ -46,8 +46,15 @@ const authChecker: AuthChecker<GQLContext> = async (
 /**
  * Builds the schema with the application's resolvers.
  */
-export const createSchema = async (): Promise<GraphQLSchema> =>
-  buildSchema({
+// export const createSchema = async (): Promise<GraphQLSchema> =>
+
+/**
+ * Initializes and export the Apollo server. Need to import all of the
+ * GraphQL resolvers in order to build the schema. Also handles the Express
+ * request sessions for users.
+ */
+const loadApollo = async () => {
+  const schema: GraphQLSchema = await buildSchema({
     authChecker,
     resolvers: [
       ApplicationResolver,
@@ -69,12 +76,6 @@ export const createSchema = async (): Promise<GraphQLSchema> =>
     ]
   });
 
-/**
- * Initializes and export the Apollo server. Need to import all of the
- * GraphQL resolvers in order to build the schema. Also handles the Express
- * request sessions for users.
- */
-const loadApollo = async () => {
   // Set the playground to false so that's it's not accessible to the outside
   // world. Also handles the request context.
   const config: ApolloServerExpressConfig = {
@@ -85,7 +86,7 @@ const loadApollo = async () => {
       return { communityId, memberId, res, userId };
     },
     playground: false,
-    schema: await createSchema()
+    schema
   };
 
   return new ApolloServer(config);

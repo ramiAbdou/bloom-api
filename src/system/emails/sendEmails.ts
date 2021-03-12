@@ -5,16 +5,19 @@ import { EmailArgs } from './emails.types';
 import getPersonalizations, {
   FormatPersonalizationData
 } from './getPersonalizations';
+import getTemplateId from './getTemplateId';
 
 interface SendEmailsBatch extends EmailArgs {
   personalizations: FormatPersonalizationData[];
 }
 
 const sendEmailsBatch = async (args: SendEmailsBatch) => {
+  const templateId: string = getTemplateId(args.emailEvent);
+
   const options: MailDataRequired = {
     from: { email: 'team@onbloom.co', name: 'Bloom' },
     personalizations: args.personalizations,
-    templateId: process.env[`SENDGRID_${args.emailEvent}_TEMPLATE_ID`]
+    templateId
   };
 
   try {

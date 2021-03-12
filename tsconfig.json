@@ -14,14 +14,15 @@
       "@entities/*": ["src/entities/*"],
       "@integrations/*": ["./src/integrations/*"],
       "@system/*": ["./src/system/*"],
-      "@util/*": ["./src/util/*"],
+      "@util/*": ["./src/util/*"]
     },
     "resolveJsonModule": true, // Allows JSON files to be resolved.
+    "skipLibCheck": true,
     "sourceMap": true,
     "strictPropertyInitialization": false,
     "target": "es2018",
     "typeRoots": ["./node_modules/@types", "src/@types"]
   },
-  "include": ["./**/*.ts"],
-  "exclude": ["node_modules"],
+  "include": ["./**/*.ts", "webpack.config.prod.ts"],
+  "exclude": ["node_modules"]
 }

@@ -1,13 +1,21 @@
 import { TsConfigPathsPlugin } from 'awesome-typescript-loader';
 import Dotenv from 'dotenv-webpack';
+import DuplicatePackageCheckerPlugin from 'duplicate-package-checker-webpack-plugin';
 import knexPackage from 'knex/package.json';
 import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import { EnvironmentPlugin, IgnorePlugin } from 'webpack';
 import mikroOrmPackage from '@mikro-orm/core/package.json';
 
+let dotEnvName: string;
+
+if (process.env.APP_ENV === 'dev') dotEnvName = '.env.dev';
+else if (process.env.APP_ENV === 'stage') dotEnvName = '.env.stage';
+else if (process.env.APP_ENV === 'prod') dotEnvName = '.env.prod';
+
 // And anything MikroORM's packaging can be ignored if it's not on disk.
-// Later we check these dynamically and tell webpack to ignore the ones we don't have.
+// Later we check these dynamically and tell webpack to ignore the ones we
+// don't have.
 const optionalModules = new Set([
   ...Object.keys(knexPackage.browser),
   ...Object.keys(mikroOrmPackage.peerDependencies)
@@ -16,19 +24,11 @@ const optionalModules = new Set([
 export default {
   entry: path.join(__dirname, '/src/loaders/index.ts'),
 
-  // externals,
-
+  // Automatically sets the NODE_ENV to production as well.
   mode: 'production',
 
   module: {
-    rules: [
-      { loader: 'awesome-typescript-loader', test: /\.ts$/ },
-      {
-        include: /node_modules/,
-        test: /\.mjs$/,
-        type: 'javascript/auto'
-      }
-    ]
+    rules: [{ loader: 'awesome-typescript-loader', test: /\.ts$/ }]
   },
 
   // MikroORM entities throw errors when minimization is true.
@@ -57,7 +57,13 @@ export default {
   output: { filename: 'index.js', path: path.join(__dirname, '/dist') },
 
   plugins: [
-    new Dotenv(),
+    // Loads the appropriate .env file based on the APP_ENV.
+    new Dotenv({ path: path.resolve(__dirname, dotEnvName) }),
+
+    // Checks to see if there are any duplicate packages in our node_modules,
+    // and gives a warning so we can fix them if needed.
+    new DuplicatePackageCheckerPlugin(),
+
     new EnvironmentPlugin({ WEBPACK: true }),
 
     // Ignore any of our optional modules if they aren't installed. This
@@ -84,6 +90,10 @@ export default {
 
   // Gets path aliases from tsconfig.js.
   resolve: {
+    alias: {
+      // Resolves a conflict of multiple graphql versions.
+      graphql$: path.resolve('./node_modules/graphql/index.js')
+    },
     extensions: ['.ts', '.js', '.json'],
     plugins: [new TsConfigPathsPlugin()]
   },
