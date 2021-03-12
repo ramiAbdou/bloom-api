@@ -1,4 +1,6 @@
-.env
+.env.dev
+.env.stage
+.env.prod
 dist
 google.json
 logs

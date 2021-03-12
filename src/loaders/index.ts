@@ -27,6 +27,10 @@ day.extend(timezone);
  * wouldn't be loaded so events can be triggered and fired correctly.
  */
 const startServer = async () => {
+  if (!process.env.APP_ENV) {
+    throw new Error('APP_ENV must be supplied!');
+  }
+
   const app = loadExpress();
 
   const [apolloServer] = await Promise.all([

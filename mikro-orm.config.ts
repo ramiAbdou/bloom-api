@@ -24,7 +24,7 @@ import RankedQuestion from '@entities/ranked-question/RankedQuestion';
 import Supporter from '@entities/supporter/Supporter';
 import Task from '@entities/task/Task';
 import User from '@entities/user/User';
-import { APP, isDevelopment } from '@util/constants';
+import { APP } from '@util/constants';
 
 /**
  * Exports all of the database connection and initialization information.
@@ -35,7 +35,7 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
   // to true b/c we need since BaseEntity is in a different folder than the
   // rest of the entities.
   discovery: { disableDynamicFileAccess: true },
-  driverOptions: { connection: { ssl: !isDevelopment } },
+  driverOptions: { connection: { ssl: process.env.APP_ENV !== 'dev' } },
   entities: [
     BaseEntity,
     Application,

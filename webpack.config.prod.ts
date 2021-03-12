@@ -6,6 +6,11 @@ import TerserPlugin from 'terser-webpack-plugin';
 import { EnvironmentPlugin, IgnorePlugin } from 'webpack';
 import mikroOrmPackage from '@mikro-orm/core/package.json';
 
+let dotEnvName: string;
+
+if (process.env.APP_ENV === 'stage') dotEnvName = '.env.stage';
+else if (process.env.APP_ENV === 'prod') dotEnvName = '.env.prod';
+
 // And anything MikroORM's packaging can be ignored if it's not on disk.
 // Later we check these dynamically and tell webpack to ignore the ones we don't have.
 const optionalModules = new Set([
@@ -57,7 +62,7 @@ export default {
   output: { filename: 'index.js', path: path.join(__dirname, '/dist') },
 
   plugins: [
-    new Dotenv(),
+    new Dotenv({ path: path.resolve(__dirname, dotEnvName) }),
     new EnvironmentPlugin({ WEBPACK: true }),
 
     // Ignore any of our optional modules if they aren't installed. This
