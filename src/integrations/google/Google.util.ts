@@ -8,7 +8,7 @@ const googleClient = new google.auth.JWT(
   null,
   googleConfig.private_key,
   SCOPES,
-  'team@bl.community'
+  'team@onbloom.co'
 );
 
 // In the future, could have other Service Account calendar (eg: Meetups, etc)

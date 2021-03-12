@@ -4,7 +4,7 @@ import day from 'dayjs';
 import { Response } from 'express';
 import jwt from 'jsonwebtoken';
 
-import { AuthTokens, isProduction, JWT } from '@util/constants';
+import { AuthTokens, isDevelopment, JWT } from '@util/constants';
 
 /**
  * Returns the decoded information stored inside the JWT token. We first
@@ -59,7 +59,7 @@ export const setHttpOnlyTokens = (
   res: Response,
   { accessToken, refreshToken }: AuthTokens
 ) => {
-  const options = { httpOnly: true, secure: isProduction };
+  const options = { httpOnly: true, secure: !isDevelopment };
   res.cookie('refreshToken', refreshToken, options);
 
   res.cookie('accessToken', accessToken, {

@@ -14,8 +14,9 @@ import {
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Supporter from '@entities/supporter/Supporter';
-import { isProduction } from '@util/constants';
+import { isDevelopment, isProduction, isStage } from '@util/constants';
 import { QueryEvent } from '@util/events';
+import { take } from '@util/util';
 import Application from '../application/Application';
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
 import Event from '../event/Event';
@@ -72,9 +73,11 @@ export default class Community extends BaseEntity {
   @BeforeCreate()
   beforeCreate() {
     if (!this.logoUrl) {
-      const DIGITAL_OCEAN_URL = isProduction
-        ? process.env.DIGITAL_OCEAN_BUCKET_URL
-        : process.env.DIGITAL_OCEAN_TEST_BUCKET_URL;
+      const DIGITAL_OCEAN_URL = take([
+        [isDevelopment, process.env.DIGITAL_OCEAN_DEV_BUCKET_URL],
+        [isStage, process.env.DIGITAL_OCEAN_STAGE_BUCKET_URL],
+        [isProduction, process.env.DIGITAL_OCEAN_PROD_BUCKET_URL]
+      ]);
 
       this.logoUrl = `${DIGITAL_OCEAN_URL}/${this.urlName}`;
     }

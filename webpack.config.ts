@@ -4,7 +4,7 @@ import path from 'path';
 import nodeExternals from 'webpack-node-externals';
 
 export default {
-  entry: path.join(__dirname, '/src/index.ts'),
+  entry: path.join(__dirname, '/src/loaders/index.ts'),
   externals: [nodeExternals()], // Removes large node packages from build.
   mode: 'production',
   module: {
@@ -17,5 +17,6 @@ export default {
   plugins: [new Dotenv()],
 
   // Gets path aliases from tsconfig.js.
-  resolve: { extensions: ['.ts', '.js'], plugins: [new TsConfigPathsPlugin()] }
+  resolve: { extensions: ['.ts', '.js'], plugins: [new TsConfigPathsPlugin()] },
+  target: 'node'
 };

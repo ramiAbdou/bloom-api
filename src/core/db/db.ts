@@ -1,7 +1,7 @@
 import dbConfig from 'mikro-orm.config';
 import { EntityManager, MikroORM } from '@mikro-orm/core';
 
-import { isProduction } from '@util/constants';
+import { isDevelopment } from '@util/constants';
 
 class Db {
   em: EntityManager;
@@ -21,7 +21,8 @@ class Db {
    * polluted data. Anywhere this is used, don't forget to close the connection!
    */
   cleanForTesting = async (): Promise<void> => {
-    if (isProduction) return;
+    if (!isDevelopment) return;
+
     const orm = await this.createConnection();
     await orm.getSchemaGenerator().dropSchema();
     await orm.getSchemaGenerator().createSchema();
