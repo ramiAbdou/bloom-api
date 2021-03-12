@@ -26,8 +26,8 @@ router.post(
   bodyParser.raw({ type: 'application/json' }),
   async (req: Request, res: Response) => {
     const secret = isProduction
-      ? process.env.STRIPE_WEBHOOK_SECRET
-      : process.env.STRIPE_TEST_WEBHOOK_SECRET;
+      ? process.env.STRIPE_PROD_WEBHOOK_SECRET
+      : process.env.STRIPE_DEV_WEBHOOK_SECRET;
 
     const event: Stripe.Event = stripe.webhooks.constructEvent(
       req.body,

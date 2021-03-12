@@ -4,10 +4,10 @@
   "description": "Bloom's Core API",
   "main": "dist/index.ts",
   "scripts": {
-    "build": "webpack --config ./webpack.config.ts",
-    "dev": "NODE_ENV=dev ts-node-dev -r tsconfig-paths/register src/loaders/index.ts",
-    "stage": "NODE_ENV=stage pm2 start index.js -i max",
-    "prod": "NODE_ENV=prod pm2 start index.js -i max"
+    "build:dev": "NODE_ENV=dev webpack --config ./webpack.config.ts",
+    "build:stage": "NODE_ENV=stage webpack --config ./webpack.config.ts",
+    "build:prod": "NODE_ENV=prod webpack --config ./webpack.config.ts",
+    "dev": "NODE_ENV=dev ts-node-dev -r tsconfig-paths/register src/loaders/index.ts"
   },
   "engines": {
     "node": "12.16.3",
