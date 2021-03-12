@@ -1,6 +1,6 @@
 import sg, { MailDataRequired } from '@sendgrid/mail';
 import logger from '@system/logger/logger';
-import { isProduction } from '@util/constants';
+import { isDevelopment } from '@util/constants';
 import { EmailArgs } from './emails.types';
 import getPersonalizations, {
   FormatPersonalizationData
@@ -12,7 +12,7 @@ interface SendEmailsBatch extends EmailArgs {
 
 const sendEmailsBatch = async (args: SendEmailsBatch) => {
   const options: MailDataRequired = {
-    from: { email: 'team@bl.community', name: 'Bloom' },
+    from: { email: 'team@onbloom.co', name: 'Bloom' },
     personalizations: args.personalizations,
     templateId: process.env[`SENDGRID_${args.emailEvent}_TEMPLATE_ID`]
   };
@@ -37,7 +37,7 @@ const sendEmailsBatch = async (args: SendEmailsBatch) => {
 const sendEmails = async (args: EmailArgs) => {
   // Shouldn't send any emails in development. If needed, comment this line
   // out manually each time.
-  if (!isProduction) return;
+  if (isDevelopment) return;
 
   const chunkedPersonalizations = await getPersonalizations(args);
 

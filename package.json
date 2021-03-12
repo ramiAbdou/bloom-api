@@ -1,14 +1,13 @@
 {
   "name": "bloom-api",
   "version": "1.0.0",
-  "description": "Bloom University's Core API",
+  "description": "Bloom's Core API",
   "main": "dist/index.ts",
   "scripts": {
     "build": "webpack --config ./webpack.config.ts",
-    "db:update:dump": "node -r tsconfig-paths/register ./node_modules/.bin/mikro-orm schema:update --dump",
-    "dev": "ts-node-dev -r tsconfig-paths/register src/loaders/index.ts",
-    "start": "pm2 start dist/index.js -i max",
-    "test": "NODE_ENV=testing mocha --timeout 10000 --exit -r ts-node/register -r tsconfig-paths/register src/**/*.test.ts"
+    "dev": "NODE_ENV=dev ts-node-dev -r tsconfig-paths/register src/loaders/index.ts",
+    "stage": "NODE_ENV=stage pm2 start index.js -i max",
+    "prod": "NODE_ENV=prod pm2 start index.js -i max"
   },
   "engines": {
     "node": "12.16.3",
@@ -65,6 +64,7 @@
   "devDependencies": {
     "@types/deline": "^1.0.1",
     "@types/dotenv-webpack": "^1.8.0",
+    "@types/terser-webpack-plugin": "^5.0.2",
     "awesome-typescript-loader": "^5.2.1",
     "deline": "^1.0.4",
     "dotenv-webpack": "^1.8.0",
@@ -74,13 +74,13 @@
     "eslint-plugin-simple-import-sort": "^5.0.3",
     "eslint-plugin-sort-keys-fix": "^1.1.1",
     "prettier": "^2.0.5",
+    "terser-webpack-plugin": "^4.2.3",
     "ts-node": "^8.10.1",
     "ts-node-dev": "^1.0.0-pre.44",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.8.3",
     "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11",
-    "webpack-node-externals": "^1.7.2"
+    "webpack-cli": "^3.3.11"
   },
   "mikro-orm": {
     "useTsNode": true,

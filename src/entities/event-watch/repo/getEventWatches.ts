@@ -1,5 +1,4 @@
 import { ArgsType, Field } from 'type-graphql';
-import { FilterQuery } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
 import { QueryEvent } from '@util/events';
@@ -30,7 +29,7 @@ const getEventWatches = async (
 ): Promise<EventWatch[]> => {
   const { communityId, eventId, memberId } = args;
 
-  const queryArgs: FilterQuery<EventWatch> = take([
+  const queryArgs = take([
     [communityId, { event: { community: communityId } }],
     [eventId, { event: eventId }],
     [memberId, { member: memberId }]
