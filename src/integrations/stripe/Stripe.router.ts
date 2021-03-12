@@ -4,7 +4,7 @@ import Stripe from 'stripe';
 
 import updateStripeAccountId from '@entities/community-integrations/repo/updateStripeAccountId';
 import logger from '@system/logger/logger';
-import { APP, AuthQueryArgs, isProduction } from '@util/constants';
+import { APP, AuthQueryArgs } from '@util/constants';
 import { stripe } from './Stripe.util';
 import handleInvoicePaid from './webhooks/handleInvoicePaid';
 
@@ -25,9 +25,7 @@ router.post(
   '/webhook',
   bodyParser.raw({ type: 'application/json' }),
   async (req: Request, res: Response) => {
-    const secret = isProduction
-      ? process.env.STRIPE_PROD_WEBHOOK_SECRET
-      : process.env.STRIPE_DEV_WEBHOOK_SECRET;
+    const secret = process.env.STRIPE_WEBHOOK_SECRET;
 
     const event: Stripe.Event = stripe.webhooks.constructEvent(
       req.body,
