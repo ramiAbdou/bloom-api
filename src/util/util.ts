@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
 import day from 'dayjs';
-import { Response } from 'express';
+import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 
-import { AuthTokens, isDevelopment, JWT } from '@util/constants';
+import { JWT } from '@util/constants';
 
 /**
  * Returns the decoded information stored inside the JWT token. We first
@@ -19,18 +19,17 @@ export const decodeToken = (token: string): any => {
 };
 
 /**
- * Returns true if the entity has and of the keys in the given entity, even
- * if the value of the key is null.
- *
- * @param entity Object with keys. Could be empty, but not null.
- * @param keys List of keys in the object.
- *
- * @example hasKeys({ firstName: 'Rami', age: 21 }, ['firstName']) => true
- * @example hasKeys({ firstName: 'Rami', age: 21 }, ['lastName']) => false
+ * Loads the environment variables based on the APP_ENV. Uses dotenv.config().
  */
-export function hasKeys<T>(entity: T, keys: (keyof T)[]) {
-  return keys.some((key: keyof T) => key in entity);
-}
+export const loadEnvironment = (): void => {
+  let dotEnvName: string;
+
+  if (process.env.APP_ENV === 'dev') dotEnvName = '.env.dev';
+  else if (process.env.APP_ENV === 'stage') dotEnvName = '.env.stage';
+  else if (process.env.APP_ENV === 'prod') dotEnvName = '.env.prod';
+
+  dotenv.config({ path: dotEnvName });
+};
 
 /**
  * Returns the current UTC timestamp as a string to the millisecond.
@@ -49,23 +48,6 @@ export const verifyToken = (token: string): boolean => {
   } catch {
     return false;
   }
-};
-
-/**
- * Sets the appropriate refreshToken and accessToken httpOnly cookies on the
- * Express Response object with the token values passed in.
- */
-export const setHttpOnlyTokens = (
-  res: Response,
-  { accessToken, refreshToken }: AuthTokens
-) => {
-  const options = { httpOnly: true, secure: !isDevelopment };
-  res.cookie('refreshToken', refreshToken, options);
-
-  res.cookie('accessToken', accessToken, {
-    ...options,
-    maxAge: JWT.EXPIRES_IN * 1000 // x1000 because represented as milliseconds.
-  });
 };
 
 /**

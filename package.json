@@ -12,11 +12,28 @@
     "format:check": "prettier --ignore-path .gitignore --list-different \"**/*.+(js|ts|json|md)\"",
     "lint": "eslint --ignore-path .gitignore . --ext .ts",
     "lint:fix": "eslint --ignore-path .gitignore . --ext .ts --fix",
-    "test": "jest",
+    "test:dev": "APP_ENV=dev jest",
+    "test:stage": "APP_ENV=stage jest",
+    "test:prod": "APP_ENV=prod jest",
     "test:coverage": "jest --coverage",
     "test:related": "jest --findRelatedTests",
     "test:watch": "jest --watch",
     "validate": "npm-run-all --parallel format:check lint build:dev"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run format:check && lint-staged && npm run build:dev"
+    }
+  },
+  "lint-staged": {
+    "*.+(js|ts)": [
+      "npm run lint"
+    ],
+    "src/**/*.(js|ts|json|md)": [
+      "npm run format",
+      "npm run test:related",
+      "git add"
+    ]
   },
   "engines": {
     "node": "12.16.3",
@@ -81,6 +98,7 @@
     "eslint": "^6.8.0",
     "eslint-config-airbnb-typescript-prettier": "^2.1.1",
     "eslint-import-resolver-typescript": "^2.0.0",
+    "eslint-plugin-jest": "^24.3.1",
     "eslint-plugin-simple-import-sort": "^5.0.3",
     "eslint-plugin-sort-keys-fix": "^1.1.1",
     "husky": "^5.1.3",

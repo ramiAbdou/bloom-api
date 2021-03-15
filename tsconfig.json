@@ -1,22 +1,21 @@
 {
   "compilerOptions": {
-    "baseUrl": ".", // Just used for the paths.
+    "baseUrl": ".",
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
-    "experimentalDecorators": true, // Allows the @ decorators used by MikroORM.
+    "experimentalDecorators": true,
     "lib": ["es2018", "esnext.asynciterable"],
     "module": "commonjs",
     "moduleResolution": "node",
-    "outDir": "./dist/", // Outputs the compiled JS to the /dist folder.
+    "outDir": "./dist/",
     "paths": {
-      // Used for path aliases.
       "@core/*": ["src/core/*"],
       "@entities/*": ["src/entities/*"],
       "@integrations/*": ["./src/integrations/*"],
       "@system/*": ["./src/system/*"],
       "@util/*": ["./src/util/*"]
     },
-    "resolveJsonModule": true, // Allows JSON files to be resolved.
+    "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,
     "strictPropertyInitialization": false,

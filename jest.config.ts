@@ -1,4 +1,7 @@
+import { pathsToModuleNameMapper } from 'ts-jest/utils';
+
 import { Config as JestConfig } from '@jest/types';
+import { compilerOptions } from './tsconfig.json';
 
 const jestConfig: JestConfig.InitialOptions = {
   collectCoverageFrom: ['**/src/**/*.ts'],
@@ -14,8 +17,13 @@ const jestConfig: JestConfig.InitialOptions = {
     // TODO: When tests are added everywhere, uncomment this line.
     // global: { branches: 80, functions: 80, lines: 80, statements: 80 }
   },
+  moduleFileExtensions: ['js', 'ts'],
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
+    prefix: '<rootDir>/'
+  }),
   preset: 'ts-jest',
-  testEnvironment: 'jest-environment-node'
+  setupFiles: ['./jest.setup.ts'],
+  testEnvironment: 'node'
 };
 
 export default jestConfig;

@@ -5,9 +5,8 @@ import { FilterQuery } from '@mikro-orm/core';
 import BloomManager from '@core/db/BloomManager';
 import createMemberRefresh from '@entities/member-refresh/repo/createMemberRefresh';
 import Member from '@entities/member/Member';
-import { AuthTokens, JWT } from '@util/constants';
+import { AuthTokens, isDevelopment, JWT } from '@util/constants';
 import { FlushEvent } from '@util/events';
-import { setHttpOnlyTokens } from '@util/util';
 import User from '../User';
 
 interface RefreshTokenArgs {
@@ -75,7 +74,16 @@ const refreshToken = async (args: RefreshTokenArgs): Promise<AuthTokens> => {
   };
 
   // If an Express Response object is passed in, set the HTTP only cookies.
-  if (res) setHttpOnlyTokens(res, tokens);
+  if (res) {
+    const options = { httpOnly: true, secure: !isDevelopment };
+
+    res.cookie('accessToken', tokens.accessToken, {
+      ...options,
+      maxAge: JWT.EXPIRES_IN * 1000 // x1000 because represented as milliseconds.
+    });
+
+    res.cookie('refreshToken', tokens.refreshToken, options);
+  }
 
   // Update the refreshToken in the DB, and create a refresh entity.
   user.refreshToken = tokens.refreshToken;
