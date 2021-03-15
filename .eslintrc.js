@@ -1,3 +1,8 @@
+/**
+ * @see https://github.com/toshi-toma/eslint-config-airbnb-typescript-prettier/blob/master/index.js
+ * for the default options of airbnb-typescript-prettier.
+ */
+
 module.exports = {
   env: {
     mocha: true
@@ -73,7 +78,7 @@ module.exports = {
   },
   settings: {
     'import/resolver': {
-      typescript: { directory: './tsconfig.json' }
+      typescript: { project: './tsconfig.json' }
     },
     react: { version: '999.999.999' }
   }

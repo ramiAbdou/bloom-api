@@ -23,6 +23,5 @@
     "target": "es2018",
     "typeRoots": ["./node_modules/@types", "src/@types"]
   },
-  "include": ["./**/*.ts", "webpack.config.prod.ts"],
-  "exclude": ["node_modules"]
+  "include": ["./**/*.ts", "webpack.config.prod.ts"]
 }

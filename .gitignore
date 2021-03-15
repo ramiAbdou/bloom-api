@@ -1,6 +1,8 @@
 .env.dev
 .env.stage
 .env.prod
+.vscode
+coverage
 dist
 google.json
 logs
