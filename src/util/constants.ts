@@ -58,3 +58,8 @@ export type GQLContext = {
   res: Response;
   userId: string;
 };
+
+export interface TestObject {
+  input: any;
+  output: any;
+}

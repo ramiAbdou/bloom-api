@@ -39,18 +39,6 @@ export const loadEnvironment = (): void => {
 export const now = () => day.utc().format();
 
 /**
- * Returns true if the token is both a valid JWT token and if it has not yet
- * expired.
- */
-export const verifyToken = (token: string): boolean => {
-  try {
-    return !!jwt.verify(token, JWT.SECRET);
-  } catch {
-    return false;
-  }
-};
-
-/**
  * Returns the original array split into chunks with a maximum size of N. If
  * original array is less than size N, just returns original array.
  *
@@ -77,14 +65,28 @@ export const splitArrayIntoChunks = (
 };
 
 /**
- * Returns the first value in which the condition is true.
+ * Returns the second value of the 2-tuple who's first value returns true.
+ *
+ * @param arr - Array of 2-tuples in which the first value gets evaluated to a
+ * boolean.
  */
-export const take = (arr: ([boolean, any] | any)[]) => {
+export const take = (arr: [any, any][]) => {
   for (let i = 0; i < arr.length; i++) {
-    const element = arr[i];
-    if (!Array.isArray(element) && !!element) return element;
+    const element: [any, any] = arr[i];
     if (element[0]) return element[1];
   }
 
   return null;
+};
+
+/**
+ * Returns true if the token is both a valid JWT token and if it has not yet
+ * expired.
+ */
+export const verifyToken = (token: string): boolean => {
+  try {
+    return !!jwt.verify(token, JWT.SECRET);
+  } catch {
+    return false;
+  }
 };
