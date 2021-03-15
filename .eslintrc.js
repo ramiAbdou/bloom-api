@@ -4,7 +4,7 @@
  */
 
 module.exports = {
-  env: { "jest": true },
+  env: { jest: true },
   extends: ['airbnb-typescript-prettier'],
   plugins: ['jest', 'simple-import-sort', 'sort-keys-fix'],
   overrides: [
