@@ -1,43 +1,14 @@
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import helmet from 'helmet';
 
-import refreshTokenFlow from '@entities/user/repo/refreshToken';
 import googleRouter from '@integrations/google/Google.router';
 import mailchimpRouter from '@integrations/mailchimp/Mailchimp.router';
 import stripeRouter from '@integrations/stripe/Stripe.router';
 import { APP } from '@util/constants';
-import { verifyToken } from '@util/util';
-
-/**
- * When a user is sending a request to the GraphQL resolvers, they pass along
- * an accessToken and refreshToken along in every request. If the access token
- * is expired, we need to update BOTH tokens and send them back.
- */
-const refreshTokenIfExpired = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { accessToken, refreshToken } = req.cookies;
-
-  // If the accessToken has expired, but there is a valid refreshToken and
-  // the request comes to the /graphql endpoint, we run the refresh flow.
-  if (refreshToken && req.url === '/graphql' && !verifyToken(accessToken)) {
-    const tokens = await refreshTokenFlow({ rToken: refreshToken, res });
-
-    // We have to update the tokens on the request as well in order to ensure
-    // that GraphQL context can set the user ID properly.
-    if (tokens) {
-      req.cookies.accessToken = tokens.accessToken;
-      req.cookies.refreshToken = tokens.refreshToken;
-    }
-  }
-
-  return next();
-};
+import refreshTokenIfExpired from './refreshTokenIfExpired';
 
 /**
  * Initializes and export the Express server. Middleware includes
@@ -45,7 +16,7 @@ const refreshTokenIfExpired = async (
  *
  * @see https://www.npmjs.com/package/helmet#how-it-works
  */
-const loadExpress = () => {
+const initExpress = () => {
   const app = express();
 
   // Limit urlencoded and json body sizes to 10 KB.
@@ -78,4 +49,4 @@ const loadExpress = () => {
   return app;
 };
 
-export default loadExpress;
+export default initExpress;

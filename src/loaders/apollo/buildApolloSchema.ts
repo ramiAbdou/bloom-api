@@ -1,0 +1,48 @@
+import { GraphQLSchema } from 'graphql';
+import { buildSchema } from 'type-graphql';
+
+import ApplicationResolver from '@entities/application/Application.resolver';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations.resolver';
+import CommunityResolver from '@entities/community/Community.resolver';
+import EventAttendeeResolver from '@entities/event-attendee/EventAttendee.resolver';
+import EventGuestResolver from '@entities/event-guest/EventGuest.resolver';
+import EventWatchResolver from '@entities/event-watch/EventWatch.resolver';
+import EventResolver from '@entities/event/Event.resolver';
+import MemberIntegrationsResolver from '@entities/member-integrations/MemberIntegrations.resolver';
+import MemberPlanResolver from '@entities/member-plan/MemberPlan.resolver';
+import MemberSocialsResolver from '@entities/member-socials/MemberSocials.resolver';
+import MemberValueResolver from '@entities/member-value/MemberValue.resolver';
+import MemberResolver from '@entities/member/Member.resolver';
+import PaymentResolver from '@entities/payment/Payment.resolver';
+import QuestionResolver from '@entities/question/Question.resolver';
+import RankedQuestionResolver from '@entities/ranked-question/RankedQuestion.resolver';
+import UserResolver from '@entities/user/User.resolver';
+import isAuthenticated from './isAuthenticated';
+
+const buildApolloSchema = async (): Promise<GraphQLSchema> => {
+  const schema: GraphQLSchema = await buildSchema({
+    authChecker: isAuthenticated,
+    resolvers: [
+      ApplicationResolver,
+      CommunityResolver,
+      CommunityIntegrations,
+      EventResolver,
+      EventAttendeeResolver,
+      EventGuestResolver,
+      EventWatchResolver,
+      MemberResolver,
+      MemberIntegrationsResolver,
+      MemberSocialsResolver,
+      MemberValueResolver,
+      MemberPlanResolver,
+      PaymentResolver,
+      QuestionResolver,
+      RankedQuestionResolver,
+      UserResolver
+    ]
+  });
+
+  return schema;
+};
+
+export default buildApolloSchema;

@@ -14,10 +14,10 @@ import { Express } from 'express';
 import db from '@core/db/db';
 import { LoggerEvent } from '@util/constants.events';
 import logger from '@system/logger/logger';
-import loadApollo from './apollo';
-import loadExpress from './express';
+import initApollo from './loaders/apollo/initApollo';
+import initExpress from './loaders/express/initExpress';
 
-import './misc';
+import './loaders/misc';
 
 day.extend(advancedFormat);
 day.extend(utc);
@@ -38,7 +38,7 @@ const startServer = async () => {
     Express,
     ApolloServer,
     MikroORM
-  ] = await Promise.all([loadExpress(), loadApollo(), db.createConnection()]);
+  ] = await Promise.all([initExpress(), initApollo(), db.createConnection()]);
 
   apolloServer.applyMiddleware({
     app,

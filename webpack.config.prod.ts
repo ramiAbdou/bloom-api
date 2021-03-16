@@ -22,7 +22,7 @@ const optionalModules = new Set([
 ]);
 
 export default {
-  entry: path.join(__dirname, '/src/loaders/index.ts'),
+  entry: path.join(__dirname, '/src/index.ts'),
 
   // Automatically sets the NODE_ENV to production as well.
   mode: 'production',
