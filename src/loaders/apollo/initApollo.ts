@@ -1,4 +1,8 @@
-import { ApolloServer, ApolloServerExpressConfig } from 'apollo-server-express';
+import {
+  ApolloServer,
+  ApolloServerExpressConfig,
+  ExpressContext
+} from 'apollo-server-express';
 import { GraphQLSchema } from 'graphql';
 
 import { GQLContext } from '@util/constants';
@@ -10,13 +14,13 @@ import buildApolloSchema from './buildApolloSchema';
  * GraphQL resolvers in order to build the schema. Also handles the Express
  * request sessions for users.
  */
-const initApollo = async () => {
+const initApollo = async (): Promise<ApolloServer> => {
   const schema: GraphQLSchema = await buildApolloSchema();
 
   // Set the playground to false so that's it's not accessible to the outside
   // world. Also handles the request context.
   const config: ApolloServerExpressConfig = {
-    context: (args) => {
+    context: (args: ExpressContext) => {
       const { req, res } = args;
       const decodedToken = decodeToken(req.cookies.accessToken);
       const { communityId, memberId, userId } = decodedToken ?? {};

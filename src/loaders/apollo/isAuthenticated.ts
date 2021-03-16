@@ -10,9 +10,12 @@ import { GQLContext } from '@util/constants';
  * idToken using the refreshToken if it is invalid.
  */
 const isAuthenticated: AuthChecker<GQLContext> = async (
-  { context: { memberId } },
+  args,
   roles: string[]
 ): Promise<boolean> => {
+  const { memberId } = args.context ?? {};
+
+  // If the User isn't logged in, there won't be any memberId stored.
   if (!memberId) return false;
 
   const { role } = await new BloomManager().findOne(Member, memberId);
