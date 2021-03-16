@@ -14,7 +14,7 @@ import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Community from '@entities/community/Community';
 import Member from '@entities/member/Member';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 
 export enum RecurrenceType {
   LIFETIME = 'Lifetime',

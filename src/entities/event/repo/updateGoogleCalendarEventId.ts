@@ -1,5 +1,5 @@
 import BloomManager from '@core/db/BloomManager';
-import { FlushEvent } from '@util/events';
+import { FlushEvent } from '@util/constants.events';
 import Event from '../Event';
 
 export interface UpdateGoogleCalendarEventIdArgs {

@@ -5,7 +5,7 @@ import CommunityIntegrations from '@entities/community-integrations/CommunityInt
 import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
-import { FlushEvent } from '@util/events';
+import { FlushEvent } from '@util/constants.events';
 
 /**
  * Returns the updated MemberIntegrations with stripeSubscriptionId set to null.

@@ -1,7 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import Event from '../Event';
 
 @ArgsType()

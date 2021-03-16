@@ -40,6 +40,7 @@ export const TEST_EMAILS = ['ra494@cornell.edu', 'rami@onbloom.co'];
  */
 
 export type AuthQueryArgs = { code: string; state?: string };
+
 export type AuthTokens = { accessToken: string; refreshToken: string };
 
 export enum IntegrationsBrand {

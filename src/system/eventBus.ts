@@ -13,7 +13,7 @@ import {
   GoogleEvent,
   MailchimpEvent,
   TaskEvent
-} from '@util/events';
+} from '@util/constants.events';
 import createTask from '../entities/task/repo/createTask';
 import { EmailArgs, EmailPayload } from './emails/emails.types';
 import sendEmails from './emails/sendEmails';

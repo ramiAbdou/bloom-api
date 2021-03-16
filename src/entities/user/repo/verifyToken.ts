@@ -1,8 +1,8 @@
 import { Field, ObjectType } from 'type-graphql';
 
 import { AuthTokens, GQLContext } from '@util/constants';
-import { VerifyEvent } from '@util/events';
-import { TokenArgs } from '@util/gql';
+import { VerifyEvent } from '@util/constants.events';
+import { TokenArgs } from '@util/constants.gql';
 import { decodeToken } from '@util/util';
 import createEventAttendeeFromGuestToken from '../../event-attendee/repo/createEventAttendeeFromGuestToken';
 import refreshToken from './refreshToken';

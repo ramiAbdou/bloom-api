@@ -3,7 +3,7 @@ import { FilterQuery } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
 import { emitEmailEvent } from '@system/eventBus';
-import { EmailEvent, FlushEvent } from '@util/events';
+import { EmailEvent, FlushEvent } from '@util/constants.events';
 import Member, { MemberStatus } from '../Member';
 
 interface AcceptInvitationsArgs {

@@ -4,7 +4,7 @@ import { EntityData } from '@mikro-orm/core';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import { GQLContext } from '@util/constants';
-import { FlushEvent } from '@util/events';
+import { FlushEvent } from '@util/constants.events';
 import Question from '../Question';
 
 @ArgsType()

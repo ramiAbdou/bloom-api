@@ -3,7 +3,7 @@ import { FilterQuery } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
 import { GQLContext } from '@util/constants';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import { take } from '@util/util';
 import EventGuest from '../EventGuest';
 

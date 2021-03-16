@@ -3,7 +3,7 @@ import createStripeProducts from '@entities/member-plan/repo/createStripeProduct
 import getStripeAccountId from '@integrations/stripe/repo/getStripeAccountId';
 import { emitEmailEvent } from '@system/eventBus';
 import { AuthQueryArgs, IntegrationsBrand } from '@util/constants';
-import { EmailEvent, FlushEvent } from '@util/events';
+import { EmailEvent, FlushEvent } from '@util/constants.events';
 import CommunityIntegrations from '../CommunityIntegrations';
 
 /**

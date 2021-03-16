@@ -12,7 +12,7 @@ import { MikroORM } from '@mikro-orm/core';
 import { APP } from '@util/constants';
 import { Express } from 'express';
 import db from '@core/db/db';
-import { LoggerEvent } from '@util/events';
+import { LoggerEvent } from '@util/constants.events';
 import logger from '@system/logger/logger';
 import loadApollo from './apollo';
 import loadExpress from './express';

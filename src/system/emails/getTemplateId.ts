@@ -1,4 +1,4 @@
-import { EmailEvent } from '@util/events';
+import { EmailEvent } from '@util/constants.events';
 
 const getTemplateId = (emailEvent: EmailEvent) => {
   if (emailEvent === EmailEvent.ACCEPTED_INTO_COMMUNITY) {

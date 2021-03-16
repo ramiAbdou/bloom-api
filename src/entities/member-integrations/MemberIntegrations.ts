@@ -6,7 +6,7 @@ import { AfterUpdate, Entity, OneToOne, Property, wrap } from '@mikro-orm/core';
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import { stripe } from '@integrations/stripe/Stripe.util';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import Member from '../member/Member';
 
 @ObjectType()

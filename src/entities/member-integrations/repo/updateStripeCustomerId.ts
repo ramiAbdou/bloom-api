@@ -5,7 +5,7 @@ import CommunityIntegrations from '@entities/community-integrations/CommunityInt
 import Member from '@entities/member/Member';
 import createStripeCustomer from '@integrations/stripe/repo/createStripeCustomer';
 import { GQLContext } from '@util/constants';
-import { FlushEvent } from '@util/events';
+import { FlushEvent } from '@util/constants.events';
 import MemberIntegrations from '../MemberIntegrations';
 
 /**

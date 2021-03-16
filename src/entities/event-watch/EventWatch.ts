@@ -3,7 +3,7 @@ import { AfterCreate, Entity, ManyToOne, Unique, wrap } from '@mikro-orm/core';
 
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import Event from '../event/Event';
 import Member from '../member/Member';
 

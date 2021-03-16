@@ -30,7 +30,7 @@
     "*.+(js|ts)": [
       "npm run lint"
     ],
-    "src/**/*.(js|ts|json|md)": [
+    "*.+(js|ts|json|md)": [
       "npm run format",
       "npm run test:related",
       "git add"

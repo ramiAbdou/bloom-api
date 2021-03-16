@@ -3,7 +3,7 @@ import { FilterQuery } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
 import MemberValue from '@entities/member-value/MemberValue';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 
 @ArgsType()
 export class GetMemberValueArgs {

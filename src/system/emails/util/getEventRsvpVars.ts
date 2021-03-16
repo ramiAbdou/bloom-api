@@ -7,7 +7,7 @@ import Event from '@entities/event/Event';
 import Member from '@entities/member/Member';
 import { VerifiedToken } from '@entities/user/repo/verifyToken';
 import { APP, JWT } from '@util/constants';
-import { VerifyEvent } from '@util/events';
+import { VerifyEvent } from '@util/constants.events';
 import { buildUrl } from '@util/util';
 import { EmailPayload } from '../emails.types';
 

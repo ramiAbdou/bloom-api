@@ -11,7 +11,7 @@ import updateStripeSubscription, {
   UpdateStripeSubscriptionArgs
 } from '@integrations/stripe/repo/updateStripeSubscription';
 import { GQLContext } from '@util/constants';
-import { FlushEvent } from '@util/events';
+import { FlushEvent } from '@util/constants.events';
 import MemberIntegrations from '../MemberIntegrations';
 
 @ArgsType()

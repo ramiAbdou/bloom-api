@@ -10,7 +10,7 @@ import {
 
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import Member from '../member/Member';
 import Question from '../question/Question';
 

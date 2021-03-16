@@ -6,7 +6,7 @@ import Member from '@entities/member/Member';
 import Supporter from '@entities/supporter/Supporter';
 import { emitEmailEvent, emitGoogleEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent, GoogleEvent } from '@util/events';
+import { EmailEvent, FlushEvent, GoogleEvent } from '@util/constants.events';
 import EventGuest from '../EventGuest';
 
 @ArgsType()

@@ -4,7 +4,7 @@ import BloomManager from '@core/db/BloomManager';
 import { DeleteMembersPayload } from '@system/emails/util/getDeleteMembersVars';
 import { emitEmailEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent } from '@util/events';
+import { EmailEvent, FlushEvent } from '@util/constants.events';
 import Member from '../Member';
 
 @ArgsType()

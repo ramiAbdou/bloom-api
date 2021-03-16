@@ -11,7 +11,7 @@ import {
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Supporter from '@entities/supporter/Supporter';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import Event from '../event/Event';
 import Member from '../member/Member';
 

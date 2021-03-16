@@ -2,7 +2,7 @@ import { QueryOrder } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
 import { GQLContext } from '@util/constants';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import Member, { MemberStatus } from '../Member';
 
 /**

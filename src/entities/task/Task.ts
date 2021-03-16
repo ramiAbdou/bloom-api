@@ -4,7 +4,7 @@ import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import { EventReminderPayload } from '@system/emails/util/getEventReminderVars';
 import { emitEmailEvent } from '@system/eventBus';
-import { EmailEvent, TaskEvent } from '@util/events';
+import { EmailEvent, TaskEvent } from '@util/constants.events';
 
 export interface TaskPayload {
   communityId?: string;

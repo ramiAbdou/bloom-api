@@ -6,7 +6,7 @@ import BloomManager from '@core/db/BloomManager';
 import createMemberRefresh from '@entities/member-refresh/repo/createMemberRefresh';
 import Member from '@entities/member/Member';
 import { AuthTokens, isDevelopment, JWT } from '@util/constants';
-import { FlushEvent } from '@util/events';
+import { FlushEvent } from '@util/constants.events';
 import User from '../User';
 
 interface RefreshTokenArgs {

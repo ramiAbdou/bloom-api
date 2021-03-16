@@ -21,7 +21,7 @@ import {
 
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import { now } from '@util/util';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';

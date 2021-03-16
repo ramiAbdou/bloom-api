@@ -3,8 +3,8 @@ import day from 'dayjs';
 import BloomManager from '@core/db/BloomManager';
 import EventAttendee from '@entities/event-attendee/EventAttendee';
 import { GQLContext } from '@util/constants';
-import { QueryEvent } from '@util/events';
-import { TimeSeriesData } from '@util/gql';
+import { QueryEvent } from '@util/constants.events';
+import { TimeSeriesData } from '@util/constants.gql';
 
 /**
  * Returns the event attendees series over the last month.

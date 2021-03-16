@@ -6,7 +6,7 @@ import CommunityIntegrations from '@entities/community-integrations/CommunityInt
 import MemberPlan, { RecurrenceType } from '@entities/member-plan/MemberPlan';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
-import { FlushEvent } from '@util/events';
+import { FlushEvent } from '@util/constants.events';
 
 interface CreateStripeProductArgs {
   stripeAccountId: string;

@@ -8,7 +8,7 @@ import MemberSocials from '@entities/member-socials/MemberSocials';
 import User from '@entities/user/User';
 import { emitEmailEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent } from '@util/events';
+import { EmailEvent, FlushEvent } from '@util/constants.events';
 import Member, { MemberRole, MemberStatus } from '../Member';
 
 @InputType()
