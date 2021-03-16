@@ -5,10 +5,10 @@ import { compilerOptions } from './tsconfig.json';
 
 const jestConfig: JestConfig.InitialOptions = {
   collectCoverageFrom: ['**/src/**/*.ts'],
-  coveragePathIgnorePatterns: ['.test.ts'],
+  coveragePathIgnorePatterns: ['.test.ts', 'constants.*.ts'],
   coverageThreshold: {
     // @ts-ignore b/c we're allowed to specify custom paths.
-    './src/util/util.ts': {
+    './src/util/*.ts': {
       branches: 100,
       functions: 100,
       lines: 100,
