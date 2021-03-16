@@ -14,6 +14,7 @@ import {
 import Cache from '@core/cache/Cache';
 import logger from '@system/logger/logger';
 import { now } from '@util/util';
+import { getEntityCache } from '../cache/Cache.util';
 import {
   BloomCreateAndFlushArgs,
   BloomFindAndDeleteOptions,
@@ -51,7 +52,7 @@ class BloomManager {
 
     // Try to find and return the entity from the cache. We must return it as
     // a resolved Promise to ensure type safety.
-    const cache: Cache = Cache.getEntityCache(entityName);
+    const cache: Cache = getEntityCache(entityName);
     const { cacheKey } = options ?? {};
 
     // If we grab the entity from the cache, we need to merge it to the current
@@ -83,7 +84,7 @@ class BloomManager {
 
     // Try to find and return the entity from the cache. We must return it as
     // a resolved Promise to ensure type safety.
-    const cache: Cache = Cache.getEntityCache(entityName);
+    const cache: Cache = getEntityCache(entityName);
     const { cacheKey } = options ?? {};
 
     // If we grab the entity from the cache, we need to merge it to the current
@@ -111,7 +112,7 @@ class BloomManager {
     where: FilterQuery<T>,
     options?: BloomFindOptions<T, P>
   ): Promise<Loaded<T, P>[]> {
-    const cache: Cache = Cache.getEntityCache(entityName);
+    const cache: Cache = getEntityCache(entityName);
 
     // Try to find and return the entity from the cache. We must return it as
     // a resolved Promise to ensure type safety.
