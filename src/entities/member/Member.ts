@@ -168,7 +168,7 @@ export default class Member extends BaseEntity {
 
   @AfterCreate()
   afterCreate() {
-    Member.cache.invalidateKeys(
+    Member.cache.invalidate(
       this.status === MemberStatus.PENDING
         ? [`${QueryEvent.GET_APPLICANTS}-${this.community.id}`]
         : [`${QueryEvent.GET_MEMBERS}-${this.community.id}`]
@@ -177,7 +177,7 @@ export default class Member extends BaseEntity {
 
   @AfterUpdate()
   afterUpdate() {
-    Member.cache.invalidateKeys([
+    Member.cache.invalidate([
       `${QueryEvent.GET_MEMBERS}-${this.id}`,
       `${QueryEvent.GET_MEMBERS}-${this.community.id}`
     ]);

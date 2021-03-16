@@ -41,7 +41,7 @@ export default class Payment extends BaseEntity {
 
   @AfterCreate()
   afterCreate() {
-    Payment.cache.invalidateKeys([
+    Payment.cache.invalidate([
       // Need to make sure that the 'isDuesActive' is updated.
       `${QueryEvent.GET_MEMBERS}-${this.member.id}`,
       `${QueryEvent.GET_MEMBERS}-${this.community.id}`,

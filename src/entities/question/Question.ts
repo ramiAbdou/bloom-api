@@ -165,14 +165,14 @@ export default class Question extends BaseEntity {
 
   @AfterCreate()
   afterCreate() {
-    Question.cache.invalidateKeys([
+    Question.cache.invalidate([
       `${QueryEvent.GET_QUESTIONS}-${this.community.id}`
     ]);
   }
 
   @AfterUpdate()
   afterUpdate() {
-    Question.cache.invalidateKeys([
+    Question.cache.invalidate([
       `${QueryEvent.GET_QUESTIONS}-${this.community.id}`
     ]);
   }

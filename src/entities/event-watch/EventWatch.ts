@@ -19,7 +19,7 @@ export default class EventWatch extends BaseEntity {
   async afterCreate() {
     await wrap(this.event).init();
 
-    EventWatch.cache.invalidateKeys([
+    EventWatch.cache.invalidate([
       `${QueryEvent.GET_EVENT_WATCHES}-${this.event.id}`,
       `${QueryEvent.GET_EVENT_WATCHES}-${this.member.id}`,
       `${QueryEvent.GET_EVENT_WATCHES}-${this.event.community.id}`

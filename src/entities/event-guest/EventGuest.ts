@@ -27,7 +27,7 @@ export default class EventGuest extends BaseEntity {
   async afterCreate() {
     await wrap(this.event).init();
 
-    EventGuest.cache.invalidateKeys([
+    EventGuest.cache.invalidate([
       `${QueryEvent.GET_EVENT_GUESTS}-${this.event.id}`,
       `${QueryEvent.GET_EVENT_GUESTS}-${this.member?.id}`,
       `${QueryEvent.GET_EVENT_GUESTS}-${this.supporter?.id}`,
@@ -40,7 +40,7 @@ export default class EventGuest extends BaseEntity {
   async afterDelete() {
     await wrap(this.event).init();
 
-    EventGuest.cache.invalidateKeys([
+    EventGuest.cache.invalidate([
       `${QueryEvent.GET_EVENT_GUESTS}-${this.event.id}`,
       `${QueryEvent.GET_EVENT_GUESTS}-${this.member?.id}`,
       `${QueryEvent.GET_EVENT_GUESTS}-${this.supporter?.id}`,

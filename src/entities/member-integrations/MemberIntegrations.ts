@@ -112,7 +112,7 @@ export default class MemberIntegrations extends BaseEntity {
 
   @AfterUpdate()
   afterUpdate() {
-    MemberIntegrations.cache.invalidateKeys([
+    MemberIntegrations.cache.invalidate([
       `${QueryEvent.GET_MEMBER_INTEGRATIONS}-${this.member.id}`
     ]);
   }

@@ -45,7 +45,7 @@ export default class MemberSocials extends BaseEntity {
   async afterUpdate() {
     await wrap(this.member).init();
 
-    MemberSocials.cache.invalidateKeys([
+    MemberSocials.cache.invalidate([
       `${QueryEvent.GET_MEMBER_SOCIALS}-${this.member.id}`,
       `${QueryEvent.GET_MEMBER_SOCIALS}-${this.member.community.id}`
     ]);

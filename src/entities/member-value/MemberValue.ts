@@ -34,7 +34,7 @@ export default class MemberValue extends BaseEntity {
   async afterCreate() {
     await wrap(this.member).init();
 
-    MemberValue.cache.invalidateKeys([
+    MemberValue.cache.invalidate([
       `${QueryEvent.GET_MEMBER_VALUES}-${this.member.id}`,
       `${QueryEvent.GET_MEMBER_VALUES}-${this.member.community.id}`
     ]);
@@ -44,7 +44,7 @@ export default class MemberValue extends BaseEntity {
   async afterUpdate() {
     await wrap(this.member).init();
 
-    MemberValue.cache.invalidateKeys([
+    MemberValue.cache.invalidate([
       `${QueryEvent.GET_MEMBER_VALUES}-${this.member.id}`,
       `${QueryEvent.GET_MEMBER_VALUES}-${this.member.community.id}`
     ]);

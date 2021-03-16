@@ -107,14 +107,14 @@ export default class Event extends BaseEntity {
 
   @AfterCreate()
   afterCreate() {
-    Event.cache.invalidateKeys([
+    Event.cache.invalidate([
       `${QueryEvent.GET_UPCOMING_EVENTS}-${this.community.id}`
     ]);
   }
 
   @AfterUpdate()
   afterUpdate() {
-    Event.cache.invalidateKeys([
+    Event.cache.invalidate([
       `${QueryEvent.GET_EVENT}-${this.id}`,
       ...(day.utc().isAfter(day.utc(this.endTime))
         ? [`${QueryEvent.GET_PAST_EVENTS}-${this.community.id}`]

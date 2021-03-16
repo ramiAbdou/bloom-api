@@ -14,7 +14,6 @@ import {
 import Cache from '@core/cache/Cache';
 import logger from '@system/logger/logger';
 import { now } from '@util/util';
-import { getAllEntityCaches, getEntityCache } from '../cache/Cache.util';
 import {
   BloomCreateAndFlushArgs,
   BloomFindAndDeleteOptions,
@@ -52,7 +51,7 @@ class BloomManager {
 
     // Try to find and return the entity from the cache. We must return it as
     // a resolved Promise to ensure type safety.
-    const cache: Cache = getEntityCache(entityName);
+    const cache: Cache = Cache.getEntityCache(entityName);
     const { cacheKey } = options ?? {};
 
     // If we grab the entity from the cache, we need to merge it to the current
@@ -84,7 +83,7 @@ class BloomManager {
 
     // Try to find and return the entity from the cache. We must return it as
     // a resolved Promise to ensure type safety.
-    const cache: Cache = getEntityCache(entityName);
+    const cache: Cache = Cache.getEntityCache(entityName);
     const { cacheKey } = options ?? {};
 
     // If we grab the entity from the cache, we need to merge it to the current
@@ -112,7 +111,7 @@ class BloomManager {
     where: FilterQuery<T>,
     options?: BloomFindOptions<T, P>
   ): Promise<Loaded<T, P>[]> {
-    const cache: Cache = getEntityCache(entityName);
+    const cache: Cache = Cache.getEntityCache(entityName);
 
     // Try to find and return the entity from the cache. We must return it as
     // a resolved Promise to ensure type safety.
@@ -288,7 +287,7 @@ class BloomManager {
    * objects with the database.
    */
   async flush?(args?: FlushArgs) {
-    const { invalidateKeys, flushEvent } = args ?? {};
+    const { flushEvent } = args ?? {};
     const contextId = nanoid();
 
     try {
@@ -297,10 +296,6 @@ class BloomManager {
 
       // Runs the actual flush.
       await this.em.flush();
-
-      // Invalidate all of the cache keys based on any invalidateKeys provided.
-      const caches: Cache[] = getAllEntityCaches();
-      caches.forEach((cache: Cache) => cache.invalidateKeys(invalidateKeys));
 
       // Log the success in flushing the entities with AFTER_FLUSH.
       logger.log({ contextId, event: flushEvent, level: 'AFTER_FLUSH' });

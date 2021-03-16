@@ -20,7 +20,7 @@ export default class EventAttendee extends BaseEntity {
   async afterCreate() {
     await wrap(this.event).init();
 
-    EventAttendee.cache.invalidateKeys([
+    EventAttendee.cache.invalidate([
       `${QueryEvent.GET_EVENT_ATTENDEES}-${this.event.id}`,
       `${QueryEvent.GET_EVENT_ATTENDEES}-${this.member?.id}`,
       `${QueryEvent.GET_EVENT_ATTENDEES}-${this.supporter?.id}`,
