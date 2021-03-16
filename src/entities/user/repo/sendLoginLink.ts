@@ -5,7 +5,7 @@ import { emitEmailEvent } from '@system/eventBus';
 import { APP } from '@util/constants';
 import { ErrorType } from '@util/errors';
 import { EmailEvent } from '@util/events';
-import URLBuilder from '@util/URLBuilder';
+import { buildUrl } from '@util/util';
 import getLoginError from './getLoginError';
 import refreshToken from './refreshToken';
 
@@ -36,9 +36,9 @@ const sendLoginLink = async (args: SendLoginLinkArgs): Promise<void> => {
   // the login URL.
   const { accessToken: token } = await refreshToken({ email });
 
-  const loginUrl: string = new URLBuilder(
-    APP.CLIENT_URL + (pathname ?? '')
-  ).addParam('token', token).url;
+  const loginUrl: string = buildUrl(APP.CLIENT_URL + (pathname ?? ''), {
+    token
+  });
 
   emitEmailEvent(EmailEvent.LOGIN_LINK, {
     email,

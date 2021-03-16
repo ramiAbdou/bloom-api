@@ -1,34 +1,41 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
 import day from 'dayjs';
-import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 
 import { JWT } from '@util/constants';
+
+/**
+ * Returns the URL with the URL params.
+ *
+ * @param url - URL to start with.
+ * @param params - URL param object to build the URL.
+ */
+export const buildUrl = (
+  url: string,
+  params: Record<string, string>
+): string => {
+  return Object.entries(params).reduce(
+    (acc: string, [key, value]: [string, string], i: number) => {
+      const paramChar: string = i === 0 ? '?' : '&';
+      return `${acc}${paramChar}${key}=${value}`;
+    },
+    url
+  );
+};
 
 /**
  * Returns the decoded information stored inside the JWT token. We first
  * verify the token to ensure that it is not expired, then decode it.
  */
 export const decodeToken = (token: string): any => {
+  const isVerified: boolean = verifyToken(token);
+
   try {
-    return verifyToken(token) && jwt.decode(token);
+    return isVerified && jwt.decode(token);
   } catch {
     return null;
   }
-};
-
-/**
- * Loads the environment variables based on the APP_ENV. Uses dotenv.config().
- */
-export const loadEnvironment = (): void => {
-  let dotEnvName: string;
-
-  if (process.env.APP_ENV === 'dev') dotEnvName = '.env.dev';
-  else if (process.env.APP_ENV === 'stage') dotEnvName = '.env.stage';
-  else if (process.env.APP_ENV === 'prod') dotEnvName = '.env.prod';
-
-  dotenv.config({ path: dotEnvName });
 };
 
 /**
@@ -81,7 +88,7 @@ export const take = (arr: [any, any][]) => {
 
 /**
  * Returns true if the token is both a valid JWT token and if it has not yet
- * expired.
+ * expired. Returns false otherwise.
  */
 export const verifyToken = (token: string): boolean => {
   try {

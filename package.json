@@ -12,6 +12,7 @@
     "format:check": "prettier --ignore-path .gitignore --list-different \"**/*.+(js|ts|json|md)\"",
     "lint": "eslint --ignore-path .gitignore . --ext .ts",
     "lint:fix": "eslint --ignore-path .gitignore . --ext .ts --fix",
+    "seed:dev": "APP_ENV=dev ts-node -r tsconfig-paths/register scripts/seeder.ts",
     "test:dev": "APP_ENV=dev jest",
     "test:stage": "APP_ENV=stage jest",
     "test:prod": "APP_ENV=prod jest",

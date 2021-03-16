@@ -7,7 +7,7 @@ import Member from '@entities/member/Member';
 import { VerifiedToken } from '@entities/user/repo/verifyToken';
 import { APP, JWT } from '@util/constants';
 import { VerifyEvent } from '@util/events';
-import URLBuilder from '@util/URLBuilder';
+import { buildUrl } from '@util/util';
 import { EmailPayload } from '../emails.types';
 
 export interface EventReminderPayload {
@@ -41,9 +41,10 @@ const getEventReminderVars = async (
       JWT.SECRET
     );
 
-    const joinUrl: string = new URLBuilder(
-      `${APP.CLIENT_URL}/${event.community.urlName}/events/${eventId}`
-    ).addParam('token', token).url;
+    const joinUrl: string = buildUrl(
+      `${APP.CLIENT_URL}/${event.community.urlName}/events/${eventId}`,
+      { token }
+    );
 
     return {
       event: { startTime: event.startTime, title: event.title },

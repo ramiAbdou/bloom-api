@@ -61,5 +61,5 @@ export type GQLContext = {
 
 export interface TestObject {
   input: any;
-  output: any;
+  output?: any;
 }
