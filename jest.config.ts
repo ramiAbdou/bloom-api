@@ -22,7 +22,7 @@ const jestConfig: JestConfig.InitialOptions = {
     prefix: '<rootDir>/'
   }),
   preset: 'ts-jest',
-  setupFiles: ['./jest.setup.ts'],
+  setupFilesAfterEnv: ['jest-extended', './jest.setup.ts'],
   testEnvironment: 'node'
 };
 

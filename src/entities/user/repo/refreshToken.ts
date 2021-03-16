@@ -1,5 +1,4 @@
 import { Response } from 'express';
-import jwt from 'jsonwebtoken';
 import { FilterQuery } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
@@ -7,6 +6,7 @@ import createMemberRefresh from '@entities/member-refresh/repo/createMemberRefre
 import Member from '@entities/member/Member';
 import { AuthTokens, isDevelopment, JWT } from '@util/constants';
 import { FlushEvent } from '@util/constants.events';
+import { signToken } from '@util/util';
 import User from '../User';
 
 interface RefreshTokenArgs {
@@ -69,8 +69,8 @@ const refreshToken = async (args: RefreshTokenArgs): Promise<AuthTokens> => {
   };
 
   const tokens: AuthTokens = {
-    accessToken: jwt.sign(payload, JWT.SECRET, { expiresIn: JWT.EXPIRES_IN }),
-    refreshToken: jwt.sign(payload, JWT.SECRET)
+    accessToken: signToken({ payload }),
+    refreshToken: signToken({ expires: false, payload })
   };
 
   // If an Express Response object is passed in, set the HTTP only cookies.

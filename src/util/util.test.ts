@@ -3,13 +3,107 @@ import cases from 'jest-in-case';
 import jwt from 'jsonwebtoken';
 
 import { JWT, TestObject } from '@util/constants';
-import { now, take, verifyToken } from '@util/util';
+import {
+  buildUrl,
+  decodeToken,
+  now,
+  signToken,
+  splitArrayIntoChunks,
+  take,
+  verifyToken
+} from '@util/util';
 
-test('now() - Returns UTC timestamp.', () => {
+cases(
+  'buildUrl()',
+  ({ input, output }: TestObject) => expect(buildUrl(input)).toBeOneOf(output),
+  {
+    'Has multiple params.': {
+      input: { params: { code: 'xyz', token: 'abc' }, url: 'www.google.com' },
+      output: [
+        'www.google.com?token=abc&code=xyz',
+        'www.google.com?code=xyz&token=abc'
+      ]
+    },
+
+    'Has no params.': {
+      input: { params: {}, url: 'www.google.com' },
+      output: ['www.google.com']
+    },
+
+    'Has one param.': {
+      input: { params: { token: 'abc' }, url: 'www.google.com' },
+      output: ['www.google.com?token=abc']
+    }
+  }
+);
+
+cases(
+  'decodeToken() - Is valid token.',
+  ({ input, output }: TestObject) =>
+    expect(decodeToken(input)).toContainEntry(output),
+  {
+    'Is valid token and does not expire.': {
+      input: signToken({ expires: false, payload: { id: 1 } }),
+      output: ['id', 1]
+    },
+
+    'Is valid token and expires in 1 hour.': {
+      input: signToken({ payload: { id: 1 } }),
+      output: ['id', 1]
+    }
+  }
+);
+
+cases(
+  'decodeToken() - Is not a valid token.',
+  ({ input }: TestObject) => expect(decodeToken(input)).toBeNull(),
+  {
+    'Is JWT token, but signed with wrong signature.': {
+      input: jwt.sign({}, 'hello-world')
+    },
+
+    'Is not a JWT token.': { input: 'ramiAbdou' },
+
+    'Is signed JWT token, but expired.': {
+      input: jwt.sign({}, JWT.SECRET, { expiresIn: 0 })
+    }
+  }
+);
+
+test('now() - Returns current UTC timestamp.', () => {
   const result: string = now();
   expect(result).toBe(day.utc().format());
-  expect(day(result).isUTC()).toBe(true);
 });
+
+cases(
+  'splitArrayIntoChunks()',
+  ({ input, output }: TestObject) =>
+    expect(splitArrayIntoChunks(input)).toStrictEqual(output),
+  {
+    'Has chunk size of 1.': {
+      input: { arr: [1, 2, 3, 4, 5], maxChunkSize: 1 },
+      output: [[1], [2], [3], [4], [5]]
+    },
+
+    'Has less elements than max chunk size.': {
+      input: { arr: [1, 2, 3, 4, 5], maxChunkSize: 10 },
+      output: [[1, 2, 3, 4, 5]]
+    },
+
+    'Has more elements than max chunk size.': {
+      input: { arr: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], maxChunkSize: 5 },
+      output: [
+        [1, 2, 3, 4, 5],
+        [6, 7, 8, 9, 10]
+      ]
+    },
+
+    'Has no elements.': {
+      input: { arr: [], maxChunkSize: 10 },
+      output: [[]]
+    }
+  }
+);
 
 cases(
   'take(): Has truthy value.',
@@ -68,8 +162,12 @@ cases(
   `verifyToken(): Token is verified.`,
   ({ input }: TestObject) => expect(verifyToken(input)).toBe(true),
   {
-    'Is valid token': {
-      input: jwt.sign({}, JWT.SECRET, { expiresIn: JWT.EXPIRES_IN })
+    'Is valid token and does not expire.': {
+      input: signToken({ expires: false, payload: {} })
+    },
+
+    'Is valid token and expires.': {
+      input: signToken({ payload: {} })
     }
   }
 );

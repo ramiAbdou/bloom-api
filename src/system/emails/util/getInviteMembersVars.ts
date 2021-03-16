@@ -1,10 +1,8 @@
-import jwt from 'jsonwebtoken';
-
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import Member from '@entities/member/Member';
-import { APP, JWT } from '@util/constants';
-import { buildUrl } from '@util/util';
+import { APP } from '@util/constants';
+import { buildUrl, signToken } from '@util/util';
 import { EmailPayload } from '../emails.types';
 
 export interface InviteMembersPayload {
@@ -49,12 +47,15 @@ const getInviteMembersVars = async (
   ]);
 
   const variables: InviteMembersVars[] = members.map((member: Member) => {
-    const token: string = jwt.sign({ memberId: member.id }, JWT.SECRET);
+    const token: string = signToken({
+      expires: false,
+      payload: { memberId: member.id }
+    });
 
-    const invitationUrl: string = buildUrl(
-      `${APP.CLIENT_URL}/${community.urlName}`,
-      { token }
-    );
+    const invitationUrl: string = buildUrl({
+      params: { token },
+      url: `${APP.CLIENT_URL}/${community.urlName}`
+    });
 
     return {
       community: { name: community.name },

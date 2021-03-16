@@ -36,8 +36,9 @@ const sendLoginLink = async (args: SendLoginLinkArgs): Promise<void> => {
   // the login URL.
   const { accessToken: token } = await refreshToken({ email });
 
-  const loginUrl: string = buildUrl(APP.CLIENT_URL + (pathname ?? ''), {
-    token
+  const loginUrl: string = buildUrl({
+    params: { token },
+    url: APP.CLIENT_URL + (pathname ?? '')
   });
 
   emitEmailEvent(EmailEvent.LOGIN_LINK, {

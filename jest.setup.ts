@@ -1,4 +1,14 @@
+import 'jest-extended';
+
+import day from 'dayjs';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import dotenv from 'dotenv';
+
+day.extend(advancedFormat);
+day.extend(utc);
+day.extend(timezone);
 
 let dotEnvName: string;
 

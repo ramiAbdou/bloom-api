@@ -1,14 +1,12 @@
-import jwt from 'jsonwebtoken';
-
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import EventGuest from '@entities/event-guest/EventGuest';
 import Event from '@entities/event/Event';
 import Member from '@entities/member/Member';
 import { VerifiedToken } from '@entities/user/repo/verifyToken';
-import { APP, JWT } from '@util/constants';
+import { APP } from '@util/constants';
 import { VerifyEvent } from '@util/constants.events';
-import { buildUrl } from '@util/util';
+import { buildUrl, signToken } from '@util/util';
 import { EmailPayload } from '../emails.types';
 
 export interface EventRsvpPayload {
@@ -46,19 +44,19 @@ const getEventRsvpVars = async (
 
   if (!guest) throw new Error('Event guest no longer exists.');
 
-  const token: string = jwt.sign(
-    {
+  const token: string = signToken({
+    expires: false,
+    payload: {
       event: VerifyEvent.JOIN_EVENT,
       guestId,
       memberId: guest.member.id
-    } as VerifiedToken,
-    JWT.SECRET
-  );
+    } as VerifiedToken
+  });
 
-  const joinUrl: string = buildUrl(
-    `${APP.CLIENT_URL}/${community.urlName}/events/${eventId}`,
-    { token }
-  );
+  const joinUrl: string = buildUrl({
+    params: { token },
+    url: `${APP.CLIENT_URL}/${community.urlName}/events/${eventId}`
+  });
 
   const variables: EventRsvpVars[] = [
     {

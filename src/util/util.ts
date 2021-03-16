@@ -5,16 +5,20 @@ import jwt from 'jsonwebtoken';
 
 import { JWT } from '@util/constants';
 
+interface BuildUrlArgs {
+  params: Record<string, string>;
+  url: string;
+}
+
 /**
  * Returns the URL with the URL params.
  *
  * @param url - URL to start with.
  * @param params - URL param object to build the URL.
  */
-export const buildUrl = (
-  url: string,
-  params: Record<string, string>
-): string => {
+export const buildUrl = (args: BuildUrlArgs): string => {
+  const { params, url } = args;
+
   return Object.entries(params).reduce(
     (acc: string, [key, value]: [string, string], i: number) => {
       const paramChar: string = i === 0 ? '?' : '&';
@@ -30,12 +34,7 @@ export const buildUrl = (
  */
 export const decodeToken = (token: string): any => {
   const isVerified: boolean = verifyToken(token);
-
-  try {
-    return isVerified && jwt.decode(token);
-  } catch {
-    return null;
-  }
+  return isVerified ? jwt.decode(token) : null;
 };
 
 /**
@@ -45,17 +44,45 @@ export const decodeToken = (token: string): any => {
  */
 export const now = () => day.utc().format();
 
+interface SignTokenArgs {
+  expires?: boolean;
+  payload: Record<string, any>;
+}
+
+/**
+ * Returns the signed JWT token using the stored JWT secret and expiration.
+ *
+ * @param args.expires - Default is true, false if the token shouldn't expire.
+ * @param args.payload - Payload to encode in the token.
+ */
+export const signToken = (args: SignTokenArgs) => {
+  const { expires = true, payload } = args;
+
+  return jwt.sign(
+    payload,
+    JWT.SECRET,
+    expires ? { expiresIn: JWT.EXPIRES_IN } : {}
+  );
+};
+
+interface SplitArrayIntoChunksArgs {
+  arr: any[];
+  maxChunkSize: number;
+}
+
 /**
  * Returns the original array split into chunks with a maximum size of N. If
  * original array is less than size N, just returns original array.
  *
- * @param arr Original array to split.
- * @param maxChunkSize Maximum size of a chunk.
+ * @param args.arr Original array to split.
+ * @param args.maxChunkSize Maximum size of a chunk.
+ *  - Precondition: Must be >= 1.
  */
 export const splitArrayIntoChunks = (
-  arr: any[],
-  maxChunkSize: number
+  args: SplitArrayIntoChunksArgs
 ): any[][] => {
+  const { arr, maxChunkSize } = args;
+
   if (arr.length <= maxChunkSize) return [arr];
 
   return arr.reduce((acc: any[][], item: any, i: number) => {

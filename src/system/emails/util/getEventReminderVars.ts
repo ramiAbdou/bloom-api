@@ -1,13 +1,11 @@
-import jwt from 'jsonwebtoken';
-
 import BloomManager from '@core/db/BloomManager';
 import EventGuest from '@entities/event-guest/EventGuest';
 import Event from '@entities/event/Event';
 import Member from '@entities/member/Member';
 import { VerifiedToken } from '@entities/user/repo/verifyToken';
-import { APP, JWT } from '@util/constants';
+import { APP } from '@util/constants';
 import { VerifyEvent } from '@util/constants.events';
-import { buildUrl } from '@util/util';
+import { buildUrl, signToken } from '@util/util';
 import { EmailPayload } from '../emails.types';
 
 export interface EventReminderPayload {
@@ -32,19 +30,19 @@ const getEventReminderVars = async (
   const guests: EventGuest[] = event.guests.getItems();
 
   const variables: EventReminderVars[] = guests.map((guest: EventGuest) => {
-    const token: string = jwt.sign(
-      {
+    const token: string = signToken({
+      expires: false,
+      payload: {
         event: VerifyEvent.JOIN_EVENT,
         guestId: guest.id,
         memberId: guest.member.id
-      } as VerifiedToken,
-      JWT.SECRET
-    );
+      } as VerifiedToken
+    });
 
-    const joinUrl: string = buildUrl(
-      `${APP.CLIENT_URL}/${event.community.urlName}/events/${eventId}`,
-      { token }
-    );
+    const joinUrl: string = buildUrl({
+      params: { token },
+      url: `${APP.CLIENT_URL}/${event.community.urlName}/events/${eventId}`
+    });
 
     return {
       event: { startTime: event.startTime, title: event.title },

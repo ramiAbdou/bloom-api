@@ -131,7 +131,11 @@ const getPersonalizations = async (
   }
 
   const personalizations = formatPersonalizations(vars);
-  const chunkedPersonalizations = splitArrayIntoChunks(personalizations, 1000);
+
+  const chunkedPersonalizations: FormatPersonalizationData[][] = splitArrayIntoChunks(
+    { arr: personalizations, maxChunkSize: 1000 }
+  );
+
   return chunkedPersonalizations;
 };
 
