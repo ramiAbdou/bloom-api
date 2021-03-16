@@ -3,7 +3,7 @@ import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import EventGuest from '@entities/event-guest/EventGuest';
-import { ErrorType } from '@util/errors';
+import { ErrorType } from '@util/constants.errors';
 import createEventAttendee from './createEventAttendee';
 
 @ArgsType()

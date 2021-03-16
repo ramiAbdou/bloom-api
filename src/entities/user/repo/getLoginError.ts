@@ -1,7 +1,7 @@
 import BloomManager from '@core/db/BloomManager';
 import Member, { MemberStatus } from '@entities/member/Member';
 import acceptInvitations from '@entities/member/repo/acceptInvitations';
-import { ErrorType } from '@util/errors';
+import { ErrorType } from '@util/constants.errors';
 import User from '../User';
 
 interface GetLoginErrorArgs {

@@ -4,7 +4,7 @@ import { oauth2_v2 } from 'googleapis';
 import getLoginError from '@entities/user/repo/getLoginError';
 import refreshToken from '@entities/user/repo/refreshToken';
 import { APP } from '@util/constants';
-import { ErrorContext, ErrorType } from '@util/errors';
+import { ErrorContext, ErrorType } from '@util/constants.errors';
 import updatePictureUrl from '../../entities/member/repo/updatePictureUrl';
 import updateGoogleId from '../../entities/user/repo/updateGoogleId';
 import getGoogleProfileFromToken from './repo/getGoogleProfileFromToken';
