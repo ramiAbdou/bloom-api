@@ -1,5 +1,6 @@
-import googleConfig from 'google.json';
 import { google } from 'googleapis';
+
+import googleConfig from '../../../google.json';
 
 const SCOPES = ['https://www.googleapis.com/auth/calendar.events'];
 

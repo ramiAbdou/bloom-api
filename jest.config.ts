@@ -22,6 +22,7 @@ const jestConfig: JestConfig.InitialOptions = {
     prefix: '<rootDir>/'
   }),
   preset: 'ts-jest',
+  restoreMocks: true,
   setupFilesAfterEnv: ['jest-extended', './jest.setup.ts'],
   testEnvironment: 'node'
 };

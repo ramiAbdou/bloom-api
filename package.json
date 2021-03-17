@@ -18,7 +18,7 @@
     "test:prod": "APP_ENV=prod jest",
     "test:coverage": "APP_ENV=dev jest --coverage",
     "test:related": "APP_ENV=dev jest --findRelatedTests",
-    "test:watch": "APP_ENV=dev jest --watch",
+    "test:watch": "APP_ENV=dev jest --watch --runInBand",
     "validate": "npm-run-all --parallel format:check lint build:dev"
   },
   "husky": {

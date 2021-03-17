@@ -21,9 +21,9 @@ const refreshTokenIfExpired = async (
 ) => {
   const { accessToken, refreshToken } = req.cookies;
 
-  // If the accessToken has expired, but there is a valid refreshToken and
+  // If there is no accessToken, there is a valid refreshToken and
   // the request comes to the /graphql endpoint, we run the refresh flow.
-  if (refreshToken && req.url === '/graphql' && !verifyToken(accessToken)) {
+  if (!accessToken && verifyToken(refreshToken) && req.url === '/graphql') {
     const tokens = await refreshTokenFlow({ rToken: refreshToken, res });
 
     // We have to update the tokens on the request as well in order to ensure

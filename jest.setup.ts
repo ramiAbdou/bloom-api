@@ -1,4 +1,5 @@
 import 'jest-extended';
+import './google.json';
 
 import day from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';

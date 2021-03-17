@@ -60,7 +60,7 @@ export type GQLContext = {
   userId: string;
 };
 
-export interface TestObject {
-  input: any;
-  output?: any;
+export interface TestObject<T = any, S = any> {
+  input: T;
+  output?: S;
 }

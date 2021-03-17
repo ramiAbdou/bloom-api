@@ -33,6 +33,7 @@ cases(
 
     parseBody(req, res, next);
 
+    expect(next).not.toHaveBeenCalled();
     expect(mockedBodyParserJson).toHaveBeenCalled();
     mockedBodyParserJson.mockReset();
   },
