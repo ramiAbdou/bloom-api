@@ -28,11 +28,13 @@ cases(
     const res = {} as express.Response;
     const next = jest.fn() as express.NextFunction;
 
-    jest.spyOn(bodyParser, 'json');
+    const mockedBodyParserJson = jest.spyOn(bodyParser, 'json');
+    mockedBodyParserJson.mockImplementation(() => () => {});
+
     parseBody(req, res, next);
 
-    // expect(next).toHaveBeenCalled();
-    expect(bodyParser.json).toHaveBeenCalled();
+    expect(mockedBodyParserJson).toHaveBeenCalled();
+    mockedBodyParserJson.mockReset();
   },
   { 'Is GraphQL endpoint.': { input: '/graphql' } }
 );

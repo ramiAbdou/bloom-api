@@ -25,7 +25,7 @@ const parseBody = (
   if (isWebhookUrl) return next();
 
   // Standard case, which parses the body as JSON.
-  return bodyParser.json({ limit: '10mb' });
+  return bodyParser.json({ limit: '10mb' })(req, res, next);
 };
 
 export default parseBody;

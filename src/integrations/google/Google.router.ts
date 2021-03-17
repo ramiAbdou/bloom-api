@@ -22,7 +22,9 @@ router.get('/auth', async (req: Request, res: Response) => {
   // Query state will store the communityId and pathname in the case that
   // we want to check if the user is a part of a certain community, and we
   // need to redirect to someone pathname.
-  const { communityId, pathname } = JSON.parse((state ?? null) as string) ?? {};
+  // const { communityId, pathname } = JSON.parse((state ?? null) as string) ?? {};
+  const communityId = null;
+  const pathname = null;
 
   const {
     email,
