@@ -30,12 +30,12 @@ import Cache from './Cache';
 export const getEntityCache = (name: EntityName<any>): Cache => {
   if (name === Application) return Application.cache;
   if (name === Community) return Community.cache;
+  if (name === CommunityIntegrations) return CommunityIntegrations.cache;
   if (name === Event) return Event.cache;
   if (name === EventAttendee) return EventAttendee.cache;
   if (name === EventGuest) return EventGuest.cache;
   if (name === EventInvitee) return EventInvitee.cache;
   if (name === EventWatch) return EventWatch.cache;
-  if (name === CommunityIntegrations) return CommunityIntegrations.cache;
   if (name === Member) return Member.cache;
   if (name === MemberIntegrations) return MemberIntegrations.cache;
   if (name === MemberPlan) return MemberPlan.cache;

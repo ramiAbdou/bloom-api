@@ -78,7 +78,7 @@ test('now() - Returns current UTC timestamp.', () => {
 cases(
   'splitArrayIntoChunks()',
   ({ input, output }: TestObject) =>
-    expect(splitArrayIntoChunks(input)).toStrictEqual(output),
+    expect(splitArrayIntoChunks(input)).toEqual(output),
   {
     'Has chunk size of 1.': {
       input: { arr: [1, 2, 3, 4, 5], maxChunkSize: 1 },

@@ -13,7 +13,7 @@ export default class Cache extends LRUCache<string, any> {
    * @param keys - Array of keys in the cache.
    */
   invalidate(keys: string[]): void {
-    if (keys) keys.forEach((key: string) => this.del(key));
+    keys.forEach((key: string) => this.del(key));
   }
 
   /**
