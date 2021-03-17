@@ -1,14 +1,11 @@
 import bodyParser from 'body-parser';
 import express from 'express';
-import cases from 'jest-in-case';
 
-import { TestObject } from '@util/constants';
 import parseBody from './parseBody';
 
-cases(
-  'parseBody() - Is webhook URL.',
-  ({ input }: TestObject) => {
-    const req = { originalUrl: input } as express.Request;
+describe('parseBody()', () => {
+  test('Is Stripe webhook URL.', () => {
+    const req = { originalUrl: '/stripe/webhook' } as express.Request;
     const res = {} as express.Response;
     const next = jest.fn() as express.NextFunction;
 
@@ -17,14 +14,10 @@ cases(
 
     expect(next).toHaveBeenCalled();
     expect(bodyParser.json).not.toHaveBeenCalled();
-  },
-  { 'Is Stripe webhook URL.': { input: '/stripe/webhook' } }
-);
+  });
 
-cases(
-  'parseBody() - Is not a webhook URL.',
-  ({ input }: TestObject) => {
-    const req = { originalUrl: input } as express.Request;
+  test('Is not a webhook URL.', () => {
+    const req = { originalUrl: '/graphql' } as express.Request;
     const res = {} as express.Response;
     const next = jest.fn() as express.NextFunction;
 
@@ -35,7 +28,5 @@ cases(
 
     expect(next).not.toHaveBeenCalled();
     expect(mockedBodyParserJson).toHaveBeenCalled();
-    mockedBodyParserJson.mockReset();
-  },
-  { 'Is GraphQL endpoint.': { input: '/graphql' } }
-);
+  });
+});

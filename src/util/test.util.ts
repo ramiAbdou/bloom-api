@@ -1,7 +1,8 @@
 import faker from 'faker';
-import { MikroORM } from '@mikro-orm/core';
+import { EntityName, MikroORM } from '@mikro-orm/core';
 import { EntityManager, PostgreSqlDriver } from '@mikro-orm/postgresql';
 
+import { getEntityCache } from '@core/cache/Cache.util';
 import BloomManager from '@core/db/BloomManager';
 import db from '@core/db/db';
 import Application from '@entities/application/Application';
@@ -39,12 +40,76 @@ export const buildApplication = async () => {
   });
 };
 
+export const buildCommunity = async () => {
+  const bm = new BloomManager();
+
+  return bm.createAndFlush(Community, {
+    application: bm.create(Application, {
+      description: faker.lorem.sentences(3),
+      title: faker.random.words(3)
+    }),
+    name: faker.random.word(),
+    primaryColor: faker.commerce.color(),
+    urlName: faker.random.word()
+  });
+};
+
+/**
+ * Clears all of the entity caches.
+ *
+ * @param entityNames - List of EntityName(s) to clear caches for.
+ */
+export const clearAllEntityCaches = (entityNames?: EntityName<any>[]) => {
+  if (entityNames) {
+    entityNames.forEach(async (entityName: EntityName<any>) => {
+      const cache = getEntityCache(entityName);
+      if (cache) cache.reset();
+    });
+
+    return;
+  }
+
+  Application.cache.reset();
+  CommunityIntegrations.cache.reset();
+  Community.cache.reset();
+  EventAttendee.cache.reset();
+  EventGuest.cache.reset();
+  EventInvitee.cache.reset();
+  EventWatch.cache.reset();
+  Event.cache.reset();
+  MemberIntegrations.cache.reset();
+  MemberPlan.cache.reset();
+  MemberRefresh.cache.reset();
+  MemberSocials.cache.reset();
+  MemberValue.cache.reset();
+  Member.cache.reset();
+  Payment.cache.reset();
+  Question.cache.reset();
+  RankedQuestion.cache.reset();
+  Supporter.cache.reset();
+  Task.cache.reset();
+  User.cache.reset();
+};
+
 /**
  * Truncates all of the tables in the PostgreSQL database.
  *
  * @param em - Entity Manager.
+ * @param entityNames - List of EntityName(s) to truncate.
  */
-export const clearAllTableData = async (em: EntityManager): Promise<void> => {
+export const clearAllTableData = async (
+  em: EntityManager,
+  entityNames?: EntityName<any>[]
+): Promise<void> => {
+  if (entityNames) {
+    entityNames.map(async (entityName: EntityName<any>) => {
+      await em.createQueryBuilder(entityName).truncate().execute();
+    });
+
+    em.clear();
+    return;
+  }
+
   await em.createQueryBuilder(Application).truncate().execute();
   await em.createQueryBuilder(CommunityIntegrations).truncate().execute();
   await em.createQueryBuilder(Community).truncate().execute();
@@ -74,7 +139,9 @@ export const clearAllTableData = async (em: EntityManager): Promise<void> => {
  *
  * Handles database interactions.
  */
-export const initIntegrationTest = async (): Promise<void> => {
+export const initDatabaseIntegrationTest = async (
+  entityNames?: EntityName<any>[]
+): Promise<void> => {
   let orm: MikroORM<PostgreSqlDriver>;
 
   beforeAll(async () => {
@@ -83,7 +150,10 @@ export const initIntegrationTest = async (): Promise<void> => {
   });
 
   // Removes all of the table data.
-  beforeEach(async () => clearAllTableData(orm.em));
+  beforeEach(async () => {
+    clearAllEntityCaches();
+    await clearAllTableData(orm.em, entityNames);
+  });
 
   // Closes the database connection after the tests finish.
   afterAll(async () => orm.close(true));
