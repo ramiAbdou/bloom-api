@@ -1,6 +1,8 @@
+import faker from 'faker';
 import { MikroORM } from '@mikro-orm/core';
 import { EntityManager, PostgreSqlDriver } from '@mikro-orm/postgresql';
 
+import BloomManager from '@core/db/BloomManager';
 import db from '@core/db/db';
 import Application from '@entities/application/Application';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
@@ -22,6 +24,20 @@ import RankedQuestion from '@entities/ranked-question/RankedQuestion';
 import Supporter from '@entities/supporter/Supporter';
 import Task from '@entities/task/Task';
 import User from '@entities/user/User';
+
+export const buildApplication = async () => {
+  const bm = new BloomManager();
+
+  return bm.createAndFlush(Application, {
+    community: bm.create(Community, {
+      name: faker.random.word(),
+      primaryColor: faker.commerce.color(),
+      urlName: faker.random.word()
+    }),
+    description: faker.lorem.sentences(3),
+    title: faker.random.words(3)
+  });
+};
 
 /**
  * Truncates all of the tables in the PostgreSQL database.
@@ -52,13 +68,23 @@ export const clearAllTableData = async (em: EntityManager): Promise<void> => {
   em.clear();
 };
 
-export const initIntegrationTest = () => {
+/**
+ * Initializes an integration by calling the pre- and post- Jest hooks,
+ * including beforeAll, beforeEach and afterAll.
+ *
+ * Handles database interactions.
+ */
+export const initIntegrationTest = async (): Promise<void> => {
   let orm: MikroORM<PostgreSqlDriver>;
 
   beforeAll(async () => {
+    // Establishes the database connection.
     orm = await db.createConnection();
   });
 
+  // Removes all of the table data.
   beforeEach(async () => clearAllTableData(orm.em));
+
+  // Closes the database connection after the tests finish.
   afterAll(async () => orm.close(true));
 };

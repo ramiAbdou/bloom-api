@@ -319,9 +319,9 @@ class BloomManager {
     const entity = this.create(entityName, data);
     await this.flush(options);
 
-    if (options.populate) {
+    if (options?.populate) {
       this.em.merge(entity);
-      await this.em.populate(entity, options.populate, null, null, true);
+      await this.em.populate(entity, options?.populate, null, null, true);
     }
 
     return entity;
