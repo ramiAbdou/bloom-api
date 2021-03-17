@@ -1,5 +1,5 @@
 import { GraphQLSchema } from 'graphql';
-import { buildSchema } from 'type-graphql';
+import { buildSchema, ResolverData } from 'type-graphql';
 
 import ApplicationResolver from '@entities/application/Application.resolver';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations.resolver';
@@ -17,11 +17,14 @@ import PaymentResolver from '@entities/payment/Payment.resolver';
 import QuestionResolver from '@entities/question/Question.resolver';
 import RankedQuestionResolver from '@entities/ranked-question/RankedQuestion.resolver';
 import UserResolver from '@entities/user/User.resolver';
+import { GQLContext } from '@util/constants';
 import isAuthenticated from './isAuthenticated';
 
 const buildApolloSchema = async (): Promise<GraphQLSchema> => {
   const schema: GraphQLSchema = await buildSchema({
-    authChecker: isAuthenticated,
+    authChecker: (args: ResolverData<GQLContext>, roles: string[]) => {
+      return isAuthenticated({ context: args.context, roles });
+    },
     resolvers: [
       ApplicationResolver,
       CommunityResolver,

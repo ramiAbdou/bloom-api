@@ -4,6 +4,7 @@ import { Config as JestConfig } from '@jest/types';
 import { compilerOptions } from './tsconfig.json';
 
 const jestConfig: JestConfig.InitialOptions = {
+  clearMocks: true,
   collectCoverageFrom: ['**/src/**/*.ts'],
   coveragePathIgnorePatterns: ['.test.ts', '.types.ts', 'constants.*.ts'],
   coverageThreshold: {
@@ -22,6 +23,7 @@ const jestConfig: JestConfig.InitialOptions = {
     prefix: '<rootDir>/'
   }),
   preset: 'ts-jest',
+  resetMocks: true,
   restoreMocks: true,
   setupFilesAfterEnv: ['jest-extended', './jest.setup.ts'],
   testEnvironment: 'node'

@@ -1,4 +1,3 @@
-import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
@@ -12,17 +11,15 @@ import parseBody from './parseBody';
 import refreshTokenIfExpired from './refreshTokenIfExpired';
 
 /**
- * Initializes and export the Express server. Middleware includes
- * body parsing to JSON, security measures (Helmet), sessions and more.
- *
- * @see https://www.npmjs.com/package/helmet#how-it-works
+ * Returns the Express app after mounting all of the middleware on the
+ * application, including body parsing to JSON, security headers (Helmet),
+ * and requiring CORS credentials.
  */
 const initExpress = (): express.Express => {
   const app = express();
 
   // ## MIDDLEWARE
 
-  app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
   app.use(parseBody);
   app.use(cors({ credentials: true, origin: APP.CLIENT_URL }));
   app.use(cookieParser());

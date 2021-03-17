@@ -9,7 +9,7 @@ import refreshTokenIfExpired from './refreshTokenIfExpired';
 type RefreshTokenIfExpiredInput = Pick<express.Request, 'cookies' | 'url'>;
 
 cases(
-  `refreshTokenIfExpired() - Should refresh the token.`,
+  `refreshTokenIfExpired() - Should refresh the token and update req.`,
   async ({ input }: TestObject<RefreshTokenIfExpiredInput>) => {
     const req = { cookies: input.cookies, url: input.url } as express.Request;
     const res = {} as express.Response;
@@ -17,9 +17,7 @@ cases(
 
     const mockedRefreshTokenFlow = jest
       .spyOn(refreshTokenFlow, 'default')
-      .mockImplementation(async () => {
-        return { accessToken: 'abc', refreshToken: 'cde' };
-      });
+      .mockResolvedValue({ accessToken: 'abc', refreshToken: 'cde' });
 
     await refreshTokenIfExpired(req, res, next);
 
@@ -41,19 +39,20 @@ cases(
 
 cases(
   `refreshTokenIfExpired() - Should not refresh the token.`,
-  ({ input }: TestObject<RefreshTokenIfExpiredInput>) => {
+  async ({ input }: TestObject<RefreshTokenIfExpiredInput>) => {
     const req = { cookies: input.cookies, url: input.url } as express.Request;
     const res = {} as express.Response;
     const next = jest.fn() as express.NextFunction;
 
-    const mockedRefreshTokenFlow = jest.spyOn(refreshTokenFlow, 'default');
+    jest.spyOn(refreshTokenFlow, 'default').mockResolvedValue(null);
 
     // Call refreshTokenIfExpired().
-    refreshTokenIfExpired(req, res, next);
+    await refreshTokenIfExpired(req, res, next);
 
     // Expect statements.
     expect(next).toBeCalled();
-    expect(mockedRefreshTokenFlow).not.toBeCalled();
+    expect(req.cookies.accessToken).toBe(input.cookies.accessToken);
+    expect(req.cookies.refreshToken).toBe(input.cookies.refreshToken);
   },
   {
     'Access token is still present.': {
@@ -75,10 +74,13 @@ cases(
 
     'No refreshToken is present.': {
       input: { cookies: { refreshToken: null }, url: '/graphql' }
+    },
+
+    'Tried to refresh token, but no user found.': {
+      input: {
+        cookies: { refreshToken: signToken({ payload: {} }) },
+        url: '/graphql'
+      }
     }
   }
 );
-
-// mockedRefreshTokenFlow.mockImplementation(() => {
-//   return Promise.resolve({ accessToken: null, refreshToken: null });
-// });

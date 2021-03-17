@@ -38,11 +38,6 @@ class BloomManager {
     this.em = em || db.em?.fork();
   }
 
-  /**
-   * Returns a clean EntityManager.
-   */
-  fork = () => new BloomManager();
-
   async findOne<T, P>(
     entityName: EntityName<T>,
     where: FilterQuery<T>,

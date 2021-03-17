@@ -29,7 +29,7 @@ cases(
     const next = jest.fn() as express.NextFunction;
 
     const mockedBodyParserJson = jest.spyOn(bodyParser, 'json');
-    mockedBodyParserJson.mockImplementation(() => () => {});
+    mockedBodyParserJson.mockReturnValue(() => {});
 
     parseBody(req, res, next);
 

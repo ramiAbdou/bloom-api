@@ -1,6 +1,7 @@
 import express from 'express';
 
 import refreshTokenFlow from '@entities/user/repo/refreshToken';
+import { AuthTokens } from '@util/constants';
 import { verifyToken } from '@util/util';
 
 /**
@@ -24,7 +25,10 @@ const refreshTokenIfExpired = async (
   // If there is no accessToken, there is a valid refreshToken and
   // the request comes to the /graphql endpoint, we run the refresh flow.
   if (!accessToken && verifyToken(refreshToken) && req.url === '/graphql') {
-    const tokens = await refreshTokenFlow({ rToken: refreshToken, res });
+    const tokens: AuthTokens = await refreshTokenFlow({
+      rToken: refreshToken,
+      res
+    });
 
     // We have to update the tokens on the request as well in order to ensure
     // that GraphQL context can set the user ID properly.
