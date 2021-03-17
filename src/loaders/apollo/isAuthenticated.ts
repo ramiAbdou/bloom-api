@@ -14,7 +14,7 @@ export interface IsAuthenticatedArgs {
  */
 const isAuthenticated = async (args: IsAuthenticatedArgs): Promise<boolean> => {
   const { context, roles } = args;
-  const { memberId } = context ?? {};
+  const { memberId } = context;
 
   // If the User isn't logged in, there won't be any memberId stored.
   if (!memberId) return false;

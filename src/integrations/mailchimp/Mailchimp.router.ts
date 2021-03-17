@@ -1,14 +1,12 @@
-import { Request, Response, Router } from 'express';
+import express from 'express';
 
-import updateMailchimpAccessToken from '@entities/community-integrations/repo/updateMailchimpAccessToken';
-import { APP, AuthQueryArgs } from '@util/constants';
+import handleMailchimpAuth from './repo/handleMailchimpAuth';
 
-const router = Router();
+const router: express.Router = express.Router();
 
-router.get('/auth', async ({ query }: Request, res: Response) => {
-  const { code, state: urlName } = query as AuthQueryArgs;
-  await updateMailchimpAccessToken({ code, state: urlName });
-  res.redirect(`${APP.CLIENT_URL}/${urlName}/integrations?flow=mailchimp`);
-});
+/**
+ * GET: Mailchimp Login Authentication
+ */
+router.get('/auth', handleMailchimpAuth);
 
 export default router;
