@@ -74,4 +74,5 @@ test('getEntityCache()', () => {
   expect(getEntityCache(Supporter)).toEqual(Supporter.cache);
   expect(getEntityCache(Task)).toEqual(Task.cache);
   expect(getEntityCache(User)).toEqual(User.cache);
+  expect(getEntityCache(null)).toBe(null);
 });

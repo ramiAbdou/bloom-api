@@ -61,6 +61,7 @@ export type GQLContext = {
 };
 
 export interface TestObject<T = any, S = any> {
-  input: T;
+  before?: () => Promise<any>;
+  input?: T;
   output?: S;
 }

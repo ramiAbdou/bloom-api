@@ -314,14 +314,14 @@ class BloomManager {
   async createAndFlush<T extends AnyEntity<T>, P extends Populate<T> = any>(
     entityName: EntityName<T>,
     data: EntityData<T>,
-    { populate, ...options }: BloomCreateAndFlushArgs<P>
+    options?: BloomCreateAndFlushArgs<P>
   ): Promise<T> {
     const entity = this.create(entityName, data);
     await this.flush(options);
 
-    if (populate) {
+    if (options.populate) {
       this.em.merge(entity);
-      await this.em.populate(entity, populate, null, null, true);
+      await this.em.populate(entity, options.populate, null, null, true);
     }
 
     return entity;

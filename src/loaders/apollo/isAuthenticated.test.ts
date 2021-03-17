@@ -4,8 +4,6 @@ import BloomManager from '@core/db/BloomManager';
 import { TestObject } from '@util/constants';
 import isAuthenticated, { IsAuthenticatedArgs } from './isAuthenticated';
 
-jest.mock('@core/db/BloomManager');
-
 cases(
   `isAuthenticated() - Is authenticated.`,
   async ({ input }: TestObject<IsAuthenticatedArgs>) => {
@@ -21,7 +19,6 @@ cases(
     const actualOutput: boolean = await isAuthenticated(input);
 
     expect(actualOutput).toBe(true);
-    expect(BloomManager).toBeCalledTimes(1);
     expect(mockedFindOne).toBeCalledTimes(1);
   },
   {
@@ -58,11 +55,7 @@ cases(
     const actualOutput: boolean = await isAuthenticated(input);
 
     expect(actualOutput).toBe(false);
-
-    if (input.context.memberId) {
-      expect(BloomManager).toBeCalledTimes(1);
-      expect(mockedFindOne).toBeCalledTimes(1);
-    }
+    if (input.context.memberId) expect(mockedFindOne).toBeCalledTimes(1);
   },
   {
     'No memberId is present on the context.': {
