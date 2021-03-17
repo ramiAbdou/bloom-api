@@ -5,7 +5,7 @@ import handleGoogleAuth from './repo/handleGoogleAuth';
 const router: express.Router = express.Router();
 
 /**
- * GET: Google Login Authentication
+ * GET /google/auth - Handles the Google authentication.
  */
 router.get('/auth', handleGoogleAuth);
 

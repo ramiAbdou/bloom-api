@@ -5,7 +5,7 @@ import handleMailchimpAuth from './repo/handleMailchimpAuth';
 const router: express.Router = express.Router();
 
 /**
- * GET: Mailchimp Login Authentication
+ * GET /mailchimp/auth - Handles the Mailchimp authentication.
  */
 router.get('/auth', handleMailchimpAuth);
 
