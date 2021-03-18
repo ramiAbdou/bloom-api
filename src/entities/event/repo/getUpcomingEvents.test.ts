@@ -12,7 +12,7 @@ describe(`getUpcomingEvents()`, () => {
   initDatabaseIntegrationTest([Community, Event]);
 
   test('Should add the upcoming Event(s) to cache after query.', async () => {
-    const events: Event[] = await buildEvent({ count: 6 });
+    const events: Event[] = (await buildEvent({ count: 6 })) as Event[];
     const communityId: string = events[0].community.id;
     const cacheKey: string = `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`;
     const queriedEvents: Event[] = await getUpcomingEvents({ communityId });
@@ -22,7 +22,7 @@ describe(`getUpcomingEvents()`, () => {
   test('Should all be events that are upcoming.', async () => {
     const count = 6;
 
-    const events: Event[] = await buildEvent({
+    const events: Event[] = (await buildEvent({
       buildOverrides: (i: number) => {
         const subtractHour: number = faker.random.number(25);
         const endTimeDayObject = day.utc().subtract(subtractHour, 'hour');
@@ -36,7 +36,7 @@ describe(`getUpcomingEvents()`, () => {
           : {};
       },
       count
-    });
+    })) as Event[];
 
     const communityId: string = events[0].community.id;
     const queriedEvents: Event[] = await getUpcomingEvents({ communityId });
