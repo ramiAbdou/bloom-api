@@ -26,34 +26,6 @@ import Supporter from '@entities/supporter/Supporter';
 import Task from '@entities/task/Task';
 import User from '@entities/user/User';
 
-export const buildApplication = async () => {
-  const bm = new BloomManager();
-
-  return bm.createAndFlush(Application, {
-    community: bm.create(Community, {
-      name: faker.random.word(),
-      primaryColor: faker.commerce.color(),
-      urlName: faker.random.word()
-    }),
-    description: faker.lorem.sentences(3),
-    title: faker.random.words(3)
-  });
-};
-
-export const buildCommunity = async () => {
-  const bm = new BloomManager();
-
-  return bm.createAndFlush(Community, {
-    application: bm.create(Application, {
-      description: faker.lorem.sentences(3),
-      title: faker.random.words(3)
-    }),
-    name: faker.random.word(),
-    primaryColor: faker.commerce.color(),
-    urlName: faker.random.word()
-  });
-};
-
 /**
  * Clears all of the entity caches.
  *
@@ -157,4 +129,34 @@ export const initDatabaseIntegrationTest = async (
 
   // Closes the database connection after the tests finish.
   afterAll(async () => orm.close(true));
+};
+
+// ## BUILD TEST OBJETS
+
+export const buildApplication = async () => {
+  const bm = new BloomManager();
+
+  return bm.createAndFlush(Application, {
+    community: bm.create(Community, {
+      name: faker.random.word(),
+      primaryColor: faker.commerce.color(),
+      urlName: faker.random.word()
+    }),
+    description: faker.lorem.sentences(3),
+    title: faker.random.words(3)
+  });
+};
+
+export const buildCommunity = async () => {
+  const bm = new BloomManager();
+
+  return bm.createAndFlush(Community, {
+    application: bm.create(Application, {
+      description: faker.lorem.sentences(3),
+      title: faker.random.words(3)
+    }),
+    name: faker.random.word(),
+    primaryColor: faker.commerce.color(),
+    urlName: faker.random.word()
+  });
 };

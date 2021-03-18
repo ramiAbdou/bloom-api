@@ -1,5 +1,6 @@
 import 'jest-extended';
 import './google.json';
+import '@core/db/db';
 
 import day from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';

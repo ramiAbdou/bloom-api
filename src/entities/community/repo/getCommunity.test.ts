@@ -1,5 +1,3 @@
-import { NotFoundError } from 'mikro-orm';
-
 import BloomManager from '@core/db/BloomManager';
 import { QueryEvent } from '@util/constants.events';
 import { buildCommunity, initDatabaseIntegrationTest } from '@util/test.util';
@@ -7,14 +5,13 @@ import Community from '../Community';
 import getCommunity from './getCommunity';
 
 describe(`getCommunity()`, () => {
-  initDatabaseIntegrationTest();
+  initDatabaseIntegrationTest([Community]);
 
   test('Should add Community to cache after query.', async () => {
     const community: Community = await buildCommunity();
     const communityId: string = community.id;
     const cacheKey: string = `${QueryEvent.GET_COMMUNITIES}-${communityId}`;
 
-    expect(Community.cache.get(cacheKey)).toBeUndefined();
     const actualResult: Community = await getCommunity({}, { communityId });
     expect(actualResult).toEqual(Community.cache.get(cacheKey));
   });
@@ -24,8 +21,6 @@ describe(`getCommunity()`, () => {
     const communityId: string = community.id;
     const { urlName } = community;
     const cacheKey: string = `${QueryEvent.GET_COMMUNITIES}-${urlName}`;
-
-    expect(Community.cache.get(cacheKey)).toBeUndefined();
 
     const spyFindOneOrFail = jest.spyOn(
       BloomManager.prototype,
@@ -38,7 +33,6 @@ describe(`getCommunity()`, () => {
     );
 
     const whereArg = spyFindOneOrFail.mock.calls[0][1];
-
     expect(whereArg).toEqual({ urlName });
     expect(actualResult).toEqual(Community.cache.get(cacheKey));
   });
@@ -46,8 +40,6 @@ describe(`getCommunity()`, () => {
   test('If args.urlName is NOT supplied, should use ctx.communityId that to query the Community.', async () => {
     const community: Community = await buildCommunity();
     const cacheKey: string = `${QueryEvent.GET_COMMUNITIES}-${community.id}`;
-
-    expect(Community.cache.get(cacheKey)).toBeUndefined();
 
     const spyFindOneOrFail = jest.spyOn(
       BloomManager.prototype,
@@ -69,9 +61,9 @@ describe(`getCommunity()`, () => {
     expect.assertions(1);
 
     try {
-      await getCommunity({}, { communityId: 'abc' });
+      await getCommunity({}, { communityId: null });
     } catch (e) {
-      expect(e).toBeInstanceOf(NotFoundError);
+      expect(e).toBeInstanceOf(Error);
     }
   });
 });

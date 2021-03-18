@@ -11,13 +11,8 @@ class Db {
    * Establishes a database connection and sets the connection's EntityManager
    * and returns the ORM.
    */
-  async createConnection(
-    clientUrl?: string
-  ): Promise<MikroORM<PostgreSqlDriver>> {
-    const orm = (await MikroORM.init(
-      clientUrl ? { ...dbConfig, clientUrl } : { ...dbConfig }
-    )) as MikroORM<PostgreSqlDriver>;
-
+  async createConnection(): Promise<MikroORM<PostgreSqlDriver>> {
+    const orm = (await MikroORM.init(dbConfig)) as MikroORM<PostgreSqlDriver>;
     this.em = orm.em;
     return orm;
   }
