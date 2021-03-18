@@ -15,7 +15,9 @@ import {
 
 cases(
   'buildUrl()',
-  ({ input, output }: TestObject) => expect(buildUrl(input)).toBeOneOf(output),
+  ({ input, output }: TestObject) => {
+    expect(output.includes(buildUrl(input))).toBe(true);
+  },
   {
     'Has multiple params.': {
       input: { params: { code: 'xyz', token: 'abc' }, url: 'www.google.com' },
@@ -39,17 +41,18 @@ cases(
 
 cases(
   'decodeToken() - Is valid token.',
-  ({ input, output }: TestObject) =>
-    expect(decodeToken(input)).toContainEntry(output),
+  ({ input, output }: TestObject) => {
+    expect(decodeToken(input)).toHaveProperty('id', output);
+  },
   {
     'Is valid token and does not expire.': {
       input: signToken({ expires: false, payload: { id: 1 } }),
-      output: ['id', 1]
+      output: 1
     },
 
     'Is valid token and expires in 1 hour.': {
       input: signToken({ payload: { id: 1 } }),
-      output: ['id', 1]
+      output: 1
     }
   }
 );

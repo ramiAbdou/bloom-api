@@ -52,11 +52,11 @@ describe('updateStripeAccountId()', () => {
       urlName: integrations.community.urlName
     });
 
-    expect(spyEmitEmailEvent).toBeCalledTimes(1);
-
-    expect(spyEmitEmailEvent).toBeCalledWith(EmailEvent.CONNECT_INTEGRATIONS, {
-      brand: IntegrationsBrand.STRIPE,
-      urlName: integrations.community.urlName
-    });
+    expect(spyEmitEmailEvent)
+      .toBeCalledTimes(1)
+      .toBeCalledWith(EmailEvent.CONNECT_INTEGRATIONS, {
+        brand: IntegrationsBrand.STRIPE,
+        urlName: integrations.community.urlName
+      });
   });
 });

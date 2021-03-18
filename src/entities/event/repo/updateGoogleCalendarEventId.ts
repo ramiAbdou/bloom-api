@@ -10,6 +10,8 @@ export interface UpdateGoogleCalendarEventIdArgs {
 /**
  * Returns the updated Event.
  *
+ * Precondition: Should only be called for an upcoming Event.
+ *
  * @param args.eventId - ID of the Event.
  * @param args.googleCalendarEventId - ID of the Google Calendar event.
  */

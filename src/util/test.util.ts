@@ -216,5 +216,5 @@ export const buildEvent = async (
 
   await bm.flush();
 
-  return count >= 2 ? events : events[0];
+  return count >= 2 ? (events as Event[]) : (events[0] as Event);
 };

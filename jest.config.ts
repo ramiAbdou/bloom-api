@@ -27,7 +27,7 @@ const jestConfig: JestConfig.InitialOptions = {
   preset: 'ts-jest',
   resetMocks: true,
   restoreMocks: true,
-  setupFilesAfterEnv: ['jest-extended', './jest.setup.ts'],
+  setupFilesAfterEnv: ['jest-chain', './jest.setup.ts'],
   testEnvironment: 'node'
 };
 

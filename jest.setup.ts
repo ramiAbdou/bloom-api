@@ -1,4 +1,4 @@
-import 'jest-extended';
+import 'jest-chain';
 import './google.json';
 import '@core/db/db';
 

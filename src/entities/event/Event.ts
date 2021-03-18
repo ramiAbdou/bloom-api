@@ -114,9 +114,11 @@ export default class Event extends BaseEntity {
 
   @AfterUpdate()
   afterUpdate() {
+    const isPast: boolean = day.utc().isAfter(day.utc(this.endTime));
+
     Event.cache.invalidate([
       `${QueryEvent.GET_EVENT}-${this.id}`,
-      ...(day.utc().isAfter(day.utc(this.endTime))
+      ...(isPast
         ? [`${QueryEvent.GET_PAST_EVENTS}-${this.community.id}`]
         : [`${QueryEvent.GET_UPCOMING_EVENTS}-${this.community.id}`])
     ]);

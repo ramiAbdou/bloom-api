@@ -15,13 +15,13 @@ describe(`getPastEvents()`, () => {
     const endTimeDayObject = day.utc().subtract(24, 'hour');
     const startTimeDayObject = day.utc().subtract(22, 'hour');
 
-    const events: Event[] = await buildEvent({
+    const events: Event[] = (await buildEvent({
       count: 6,
       overrides: {
         endTime: endTimeDayObject.format(),
         startTime: startTimeDayObject.format()
       }
-    });
+    })) as Event[];
 
     const communityId: string = events[0].community.id;
     const cacheKey: string = `${QueryEvent.GET_PAST_EVENTS}-${communityId}`;
@@ -33,7 +33,7 @@ describe(`getPastEvents()`, () => {
   test('Should all be events in the past.', async () => {
     const count = 6;
 
-    const events: Event[] = await buildEvent({
+    const events: Event[] = (await buildEvent({
       buildOverrides: (i: number) => {
         const subtractHour: number = faker.random.number(25);
         const endTimeDayObject = day.utc().subtract(subtractHour, 'hour');
@@ -47,7 +47,7 @@ describe(`getPastEvents()`, () => {
           : {};
       },
       count
-    });
+    })) as Event[];
 
     const communityId: string = events[0].community.id;
     const queriedEvents: Event[] = await getPastEvents({ communityId });
