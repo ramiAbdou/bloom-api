@@ -59,7 +59,9 @@ cases(
 
 cases(
   'decodeToken() - Is not a valid token.',
-  ({ input }: TestObject) => expect(decodeToken(input)).toBeNull(),
+  ({ input }: TestObject) => {
+    expect(decodeToken(input)).toBeNull();
+  },
   {
     'Is JWT token, but signed with wrong signature.': {
       input: jwt.sign({}, 'hello-world')
@@ -80,8 +82,9 @@ test('now() - Returns current UTC timestamp.', () => {
 
 cases(
   'splitArrayIntoChunks()',
-  ({ input, output }: TestObject) =>
-    expect(splitArrayIntoChunks(input)).toEqual(output),
+  ({ input, output }: TestObject) => {
+    expect(splitArrayIntoChunks(input)).toEqual(output);
+  },
   {
     'Has chunk size of 1.': {
       input: { arr: [1, 2, 3, 4, 5], maxChunkSize: 1 },
@@ -110,7 +113,9 @@ cases(
 
 cases(
   'take(): Has truthy value.',
-  ({ input, output }: TestObject) => expect(take(input)).toBe(output),
+  ({ input, output }: TestObject) => {
+    expect(take(input)).toBe(output);
+  },
   {
     'Has multiple truthy values.': {
       input: [
@@ -143,7 +148,9 @@ cases(
 
 cases(
   `take(): Doesn't have truthy value.`,
-  ({ input, output }: TestObject) => expect(take(input)).toBe(output),
+  ({ input, output }: TestObject) => {
+    expect(take(input)).toBe(output);
+  },
   {
     'Has all falsy values.': {
       input: [
@@ -163,7 +170,9 @@ cases(
 
 cases(
   `verifyToken(): Token is verified.`,
-  ({ input }: TestObject) => expect(verifyToken(input)).toBe(true),
+  ({ input }: TestObject) => {
+    expect(verifyToken(input)).toBe(true);
+  },
   {
     'Is valid token and does not expire.': {
       input: signToken({ expires: false, payload: {} })
@@ -177,7 +186,9 @@ cases(
 
 cases(
   `verifyToken(): Token is not verified.`,
-  ({ input }: TestObject) => expect(verifyToken(input)).toBe(false),
+  ({ input }: TestObject) => {
+    expect(verifyToken(input)).toBe(false);
+  },
   {
     'Is JWT token, but signed with wrong signature.': {
       input: jwt.sign({}, 'hello-world', { expiresIn: JWT.EXPIRES_IN })

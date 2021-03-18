@@ -51,3 +51,50 @@ export const getEntityCache = (name: EntityName<any>): Cache => {
 
   return null;
 };
+
+/**
+ * Returns all the entity Cache(s) that correspond with the appropriate entity.
+ */
+export const getAllEntityCaches = (): Cache[] => {
+  return [
+    Application.cache,
+    Community.cache,
+    CommunityIntegrations.cache,
+    Event.cache,
+    EventAttendee.cache,
+    EventGuest.cache,
+    EventInvitee.cache,
+    EventWatch.cache,
+    Member.cache,
+    MemberIntegrations.cache,
+    MemberPlan.cache,
+    MemberRefresh.cache,
+    MemberSocials.cache,
+    MemberValue.cache,
+    Payment.cache,
+    Question.cache,
+    RankedQuestion.cache,
+    Supporter.cache,
+    Task.cache,
+    User.cache
+  ];
+};
+
+/**
+ * Clears the entity caches. If no entityName(s) are supplied, will clear every
+ * entity cache.
+ *
+ * @param entityNames - List of EntityName(s) to clear caches for.
+ */
+export const clearEntityCaches = (entityNames?: EntityName<any>[]) => {
+  if (entityNames) {
+    entityNames.forEach(async (entityName: EntityName<any>) => {
+      const cache = getEntityCache(entityName);
+      if (cache) cache.reset();
+    });
+
+    return;
+  }
+
+  getAllEntityCaches().forEach((cache) => cache.reset());
+};

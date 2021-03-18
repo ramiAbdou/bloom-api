@@ -3,7 +3,7 @@ import faker from 'faker';
 import { EntityData, EntityName, MikroORM } from '@mikro-orm/core';
 import { EntityManager, PostgreSqlDriver } from '@mikro-orm/postgresql';
 
-import { getEntityCache } from '@core/cache/Cache.util';
+import { clearEntityCaches } from '@core/cache/Cache.util';
 import BloomManager from '@core/db/BloomManager';
 import db from '@core/db/db';
 import Application from '@entities/application/Application';
@@ -26,43 +26,6 @@ import RankedQuestion from '@entities/ranked-question/RankedQuestion';
 import Supporter from '@entities/supporter/Supporter';
 import Task from '@entities/task/Task';
 import User from '@entities/user/User';
-
-/**
- * Clears all of the entity caches.
- *
- * @param entityNames - List of EntityName(s) to clear caches for.
- */
-export const clearAllEntityCaches = (entityNames?: EntityName<any>[]) => {
-  if (entityNames) {
-    entityNames.forEach(async (entityName: EntityName<any>) => {
-      const cache = getEntityCache(entityName);
-      if (cache) cache.reset();
-    });
-
-    return;
-  }
-
-  Application.cache.reset();
-  CommunityIntegrations.cache.reset();
-  Community.cache.reset();
-  EventAttendee.cache.reset();
-  EventGuest.cache.reset();
-  EventInvitee.cache.reset();
-  EventWatch.cache.reset();
-  Event.cache.reset();
-  MemberIntegrations.cache.reset();
-  MemberPlan.cache.reset();
-  MemberRefresh.cache.reset();
-  MemberSocials.cache.reset();
-  MemberValue.cache.reset();
-  Member.cache.reset();
-  Payment.cache.reset();
-  Question.cache.reset();
-  RankedQuestion.cache.reset();
-  Supporter.cache.reset();
-  Task.cache.reset();
-  User.cache.reset();
-};
 
 /**
  * Truncates all of the tables in the PostgreSQL database.
@@ -124,7 +87,7 @@ export const initDatabaseIntegrationTest = async (
 
   // Removes all of the table data.
   beforeEach(async () => {
-    clearAllEntityCaches();
+    clearEntityCaches();
     await clearAllTableData(orm.em, entityNames);
   });
 
