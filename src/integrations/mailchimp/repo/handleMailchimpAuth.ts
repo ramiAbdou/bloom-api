@@ -2,6 +2,8 @@ import express from 'express';
 
 import updateMailchimpAccessToken from '@entities/community-integrations/repo/updateMailchimpAccessToken';
 import { APP, AuthQueryArgs } from '@util/constants';
+import { buildUrl } from '@util/util';
+import getMailchimpAccessToken from './getMailchimpAccessToken';
 
 /**
  * Redirects back to the React app after updating the CommunityIntegration's
@@ -15,10 +17,16 @@ const handleMailchimpAuth = async (
   res: express.Response
 ): Promise<void> => {
   const { code, state: urlName } = req.query as AuthQueryArgs;
-  await updateMailchimpAccessToken({ code, state: urlName });
-  return res.redirect(
-    `${APP.CLIENT_URL}/${urlName}/integrations?flow=mailchimp`
-  );
+
+  const mailchimpAccessToken: string = await getMailchimpAccessToken({ code });
+  await updateMailchimpAccessToken({ mailchimpAccessToken, urlName });
+
+  const redirectUrl: string = buildUrl({
+    params: { flow: 'mailchimp' },
+    url: `${APP.CLIENT_URL}/${urlName}/integrations`
+  });
+
+  return res.redirect(redirectUrl);
 };
 
 export default handleMailchimpAuth;

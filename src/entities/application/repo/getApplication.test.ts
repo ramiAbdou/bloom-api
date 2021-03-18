@@ -20,7 +20,6 @@ describe(`getApplication()`, () => {
   test('Should use args.communityId to query the Application.', async () => {
     const application: Application = await buildApplication();
     const communityId: string = application.community.id;
-    const cacheKey: string = `${QueryEvent.GET_APPLICATION}-${communityId}`;
 
     const spyFindOneOrFail = jest.spyOn(
       BloomManager.prototype,
@@ -30,6 +29,7 @@ describe(`getApplication()`, () => {
     const actualResult: Application = await getApplication({ communityId });
 
     const whereArg = spyFindOneOrFail.mock.calls[0][1];
+    const cacheKey: string = `${QueryEvent.GET_APPLICATION}-${communityId}`;
 
     expect(whereArg).toEqual({ community: communityId });
     expect(actualResult.id).toBe(application.id);

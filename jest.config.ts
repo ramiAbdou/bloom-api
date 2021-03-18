@@ -18,6 +18,8 @@ const jestConfig: JestConfig.InitialOptions = {
     // TODO: When tests are added everywhere, uncomment this line.
     // global: { branches: 80, functions: 80, lines: 80, statements: 80 }
   },
+  maxConcurrency: 1,
+  maxWorkers: 1,
   moduleFileExtensions: ['js', 'ts'],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/'
