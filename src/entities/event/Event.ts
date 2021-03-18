@@ -61,7 +61,7 @@ export default class Event extends BaseEntity {
   @Field({ nullable: true })
   @Property({ nullable: true })
   @IsUrl()
-  recordingUrl: string;
+  recordingUrl?: string;
 
   @Field()
   @Property()
@@ -69,7 +69,7 @@ export default class Event extends BaseEntity {
 
   @Field({ nullable: true })
   @Property({ nullable: true })
-  summary: string;
+  summary?: string;
 
   @Field()
   @Property()

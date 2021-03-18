@@ -1,5 +1,6 @@
+import day from 'dayjs';
 import faker from 'faker';
-import { EntityName, MikroORM } from '@mikro-orm/core';
+import { EntityData, EntityName, MikroORM } from '@mikro-orm/core';
 import { EntityManager, PostgreSqlDriver } from '@mikro-orm/postgresql';
 
 import { getEntityCache } from '@core/cache/Cache.util';
@@ -131,7 +132,19 @@ export const initDatabaseIntegrationTest = async (
   afterAll(async () => orm.close(true));
 };
 
-// ## BUILD TEST OBJETS
+// ## BUILD TEST OBJECTS
+
+interface BuildTestObjectArgs<T = any> {
+  // Allows there to be overrides for each test object as opposed to the same
+  // overrides for every test object.
+  buildOverrides?: (index: number) => EntityData<T>;
+
+  // Defaults to 1, if more then will return an array of random test object.s
+  count?: number;
+
+  // Overrides that applies to every test object.
+  overrides?: EntityData<T>;
+}
 
 export const buildApplication = async (): Promise<Application> => {
   const bm = new BloomManager();
@@ -171,4 +184,37 @@ export const buildCommunityIntegrations = async (): Promise<CommunityIntegration
       urlName: faker.random.word()
     })
   });
+};
+
+export const buildEvent = async (
+  args?: BuildTestObjectArgs<Event>
+): Promise<Event | Event[]> => {
+  const { buildOverrides = () => null, count = 1, overrides = {} } = args ?? {};
+
+  const bm = new BloomManager();
+
+  const community: Community = bm.create(Community, {
+    name: faker.random.word(),
+    primaryColor: faker.commerce.color(),
+    urlName: faker.random.word()
+  });
+
+  const events: Event[] = Array.from(Array(count).keys()).map(
+    (_, i: number) => {
+      return bm.create(Event, {
+        community,
+        description: faker.lorem.paragraph(),
+        endTime: day.utc().add(26, 'hour'),
+        startTime: day.utc().add(25, 'hour'),
+        title: faker.lorem.words(5),
+        videoUrl: faker.internet.url(),
+        ...overrides,
+        ...buildOverrides(i)
+      });
+    }
+  );
+
+  await bm.flush();
+
+  return count >= 2 ? events : events[0];
 };
