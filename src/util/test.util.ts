@@ -133,7 +133,7 @@ export const initDatabaseIntegrationTest = async (
 
 // ## BUILD TEST OBJETS
 
-export const buildApplication = async () => {
+export const buildApplication = async (): Promise<Application> => {
   const bm = new BloomManager();
 
   return bm.createAndFlush(Application, {
@@ -147,7 +147,7 @@ export const buildApplication = async () => {
   });
 };
 
-export const buildCommunity = async () => {
+export const buildCommunity = async (): Promise<Community> => {
   const bm = new BloomManager();
 
   return bm.createAndFlush(Community, {
@@ -158,5 +158,17 @@ export const buildCommunity = async () => {
     name: faker.random.word(),
     primaryColor: faker.commerce.color(),
     urlName: faker.random.word()
+  });
+};
+
+export const buildCommunityIntegrations = async (): Promise<CommunityIntegrations> => {
+  const bm = new BloomManager();
+
+  return bm.createAndFlush(CommunityIntegrations, {
+    community: bm.create(Community, {
+      name: faker.random.word(),
+      primaryColor: faker.commerce.color(),
+      urlName: faker.random.word()
+    })
   });
 };
