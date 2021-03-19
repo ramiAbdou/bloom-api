@@ -60,6 +60,8 @@ Now that you have a user name and password to access your DB with, be sure to up
 
 You can download Azure Data Studio here: https://docs.microsoft.com/en-us/sql/azure-data-studio/download-azure-data-studio?view=sql-server-ver15.
 
+You will need to download the PostgreSQL extension for Azure Data Studio, which you can follow here: https://docs.microsoft.com/en-us/sql/azure-data-studio/extensions/postgres-extension?view=sql-server-ver15.
+
 Once you're in, you can create a connection to your PostgreSQL database by setting the following connection details:
 
 - Connection Type: `PostgreSQL`
