@@ -18,6 +18,8 @@ import refreshTokenIfExpired from './refreshTokenIfExpired';
 const initExpress = (): express.Express => {
   const app = express();
 
+  app.get('/test', (_, res) => res.json({ status: 'Up and running!' }));
+
   // ## MIDDLEWARE
 
   app.use(parseBody);

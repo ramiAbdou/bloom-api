@@ -47,6 +47,7 @@ const startServer = async () => {
   });
 
   app.listen(process.env.PORT || 8080, () => {
+    console.log(`Running on port ${process.env.PORT || 8080}.`);
     logger.log({ event: LoggerEvent.START_SERVER, level: 'INFO' });
   });
 };
