@@ -20,6 +20,10 @@ To get PostgreSQL up and running on your local computer, you'll need to do the f
 
 ### Step 1: Installing PostgreSQL 12
 
+If you don't have Homebrew installed, download Homebrew by running:
+
+- `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
+
 Open up your terminal and running the following commands:
 
 - `brew update`
