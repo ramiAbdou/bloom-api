@@ -46,7 +46,7 @@ const startServer = async () => {
     path: '/graphql'
   });
 
-  app.listen(APP.PORT, () => {
+  app.listen(process.env.PORT || 8080, () => {
     logger.log({ event: LoggerEvent.START_SERVER, level: 'INFO' });
   });
 };

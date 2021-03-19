@@ -24,13 +24,12 @@ import RankedQuestion from '@entities/ranked-question/RankedQuestion';
 import Supporter from '@entities/supporter/Supporter';
 import Task from '@entities/task/Task';
 import User from '@entities/user/User';
-import { APP } from '@util/constants';
 
 /**
  * Exports all of the database connection and initialization information.
  */
 const dbConfig: Options<IDatabaseDriver<Connection>> = {
-  clientUrl: APP.DB_URL,
+  dbName: process.env.DB_NAME,
   // This option disallows the usage of entitiesDirs and caching, which we set
   // to true b/c we need since BaseEntity is in a different folder than the
   // rest of the entities.
@@ -60,9 +59,13 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
     User
   ],
   filters: { notDeleted: { args: false, cond: { deletedAt: null } } },
+  host: process.env.DB_HOST,
   namingStrategy: NamingStrategy,
+  password: process.env.DB_PASSWORD,
+  port: Number(process.env.DB_PORT),
   subscribers: [new BloomManagerSubscriber(), new MemberSubscriber()],
-  type: 'postgresql'
+  type: 'postgresql',
+  user: process.env.DB_USER
 };
 
 export default dbConfig;

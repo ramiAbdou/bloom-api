@@ -20,8 +20,6 @@ sg.setApiKey(process.env.SENDGRID_API_KEY);
 export const APP = {
   CACHE_TTL: 60 * 60 * 1000, // 1 hour, represented as ms.
   CLIENT_URL: process.env.APP_CLIENT_URL,
-  DB_URL: process.env.DB_URL,
-  PORT: process.env.PORT || 8080,
   SERVER_URL: process.env.APP_SERVER_URL
 };
 
