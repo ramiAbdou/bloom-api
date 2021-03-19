@@ -73,3 +73,15 @@ Once you're in, you can create a connection to your PostgreSQL database by setti
 You should see a live connection with the database on the left panel! 🤪
 
 ### Step 4: Initialize Your Tables
+
+Now, it's time to get some tables into the database. We can get a "dump" of SQL code that will help us initialize our tables based on our entity definitions. Then, we'll take that "SQL code dump" and run it in a SQL query using the Azure Data Studio interface. To get this "SQL dump", run:
+
+- `npm run dump:dev`
+
+Go ahead an copy all of the SQL code that was dumped.
+
+Now, go into Azure Data Studio, and right click on the `defaultdb` and click `New Query`.
+
+- `Expand Bloom Dev DB` -> `Databases` -> `defaultdb` -> `New Query`
+
+Paste the SQL code into the query and run it. If you refresh the `defaultdb`, you should now have some tables in your database. YAAAAYYYYY 🎉
