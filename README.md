@@ -27,7 +27,7 @@ If you don't have Homebrew installed, download Homebrew by running:
 Open up your terminal and running the following commands:
 
 - `brew update`
-- `brew install postgresql`
+- `brew install postgresql@12`
 
 Double check that your PostgreSQL version is 12.
 

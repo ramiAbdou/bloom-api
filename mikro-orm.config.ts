@@ -29,7 +29,7 @@ import User from '@entities/user/User';
  * Exports all of the database connection and initialization information.
  */
 const dbConfig: Options<IDatabaseDriver<Connection>> = {
-  dbName: process.env.DB_NAME,
+  dbName: process.env.NODE_ENV === 'test' ? 'testdb' : process.env.DB_NAME,
   // This option disallows the usage of entitiesDirs and caching, which we set
   // to true b/c we need since BaseEntity is in a different folder than the
   // rest of the entities.
