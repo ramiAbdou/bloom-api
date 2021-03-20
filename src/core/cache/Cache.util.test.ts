@@ -1,3 +1,7 @@
+/**
+ * @group integration
+ */
+
 import Application from '@entities/application/Application';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';

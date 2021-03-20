@@ -1,3 +1,7 @@
+/**
+ * @group integration
+ */
+
 import BloomManager from '@core/db/BloomManager';
 import { QueryEvent } from '@util/constants.events';
 import { buildCommunity, initDatabaseIntegrationTest } from '@util/test.util';

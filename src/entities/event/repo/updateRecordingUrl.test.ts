@@ -1,3 +1,7 @@
+/**
+ * @group integration
+ */
+
 import day from 'dayjs';
 import faker from 'faker';
 

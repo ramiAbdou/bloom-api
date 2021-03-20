@@ -1,3 +1,7 @@
+/**
+ * @group integration
+ */
+
 import faker from 'faker';
 
 import Community from '@entities/community/Community';

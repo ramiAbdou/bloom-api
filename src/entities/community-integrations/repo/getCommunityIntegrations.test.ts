@@ -1,3 +1,7 @@
+/**
+ * @group integration
+ */
+
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import { QueryEvent } from '@util/constants.events';

@@ -1,3 +1,7 @@
+/**
+ * @group unit
+ */
+
 import bodyParser from 'body-parser';
 import express from 'express';
 

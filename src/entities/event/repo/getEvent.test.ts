@@ -1,3 +1,7 @@
+/**
+ * @group integration
+ */
+
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import Event from '@entities/event/Event';
@@ -10,7 +14,7 @@ describe(`getEvent()`, () => {
   initDatabaseIntegrationTest([Community, Event]);
 
   test('Should add Event to cache after query.', async () => {
-    const event: Event = await buildEvent();
+    const event: Event = (await buildEvent()) as Event;
     const eventId: string = event.id;
     const cacheKey: string = `${QueryEvent.GET_EVENT}-${eventId}`;
     const actualResult: Event = await getEvent({ eventId });
@@ -18,7 +22,7 @@ describe(`getEvent()`, () => {
   });
 
   test('Should use args.eventId to query the Event.', async () => {
-    const event: Event = await buildEvent();
+    const event: Event = (await buildEvent()) as Event;
     const eventId: string = event.id;
     const cacheKey: string = `${QueryEvent.GET_EVENT}-${eventId}`;
 
@@ -31,7 +35,7 @@ describe(`getEvent()`, () => {
   });
 
   test('Event URL should be constructed from community URL name.', async () => {
-    const event: Event = await buildEvent();
+    const event: Event = (await buildEvent()) as Event;
     const eventId: string = event.id;
     const actualResult: Event = await getEvent({ eventId });
 

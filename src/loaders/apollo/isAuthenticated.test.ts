@@ -1,3 +1,7 @@
+/**
+ * @group unit
+ */
+
 import cases from 'jest-in-case';
 
 import BloomManager from '@core/db/BloomManager';

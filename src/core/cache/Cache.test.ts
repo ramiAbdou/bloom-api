@@ -1,3 +1,7 @@
+/**
+ * @group unit
+ */
+
 import Cache from './Cache';
 
 const cache: Cache = new Cache();

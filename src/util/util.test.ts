@@ -1,3 +1,7 @@
+/**
+ * @group unit
+ */
+
 import day from 'dayjs';
 import cases from 'jest-in-case';
 import jwt from 'jsonwebtoken';

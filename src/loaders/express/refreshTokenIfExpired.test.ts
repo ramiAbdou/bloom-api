@@ -1,3 +1,7 @@
+/**
+ * @group unit
+ */
+
 import express from 'express';
 import cases from 'jest-in-case';
 
