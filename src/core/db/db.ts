@@ -32,10 +32,6 @@ class Db {
   async close(): Promise<void> {
     await this.em?.getConnection()?.close();
   }
-
-  // async truncateTables(): Promise<void> {
-
-  // }
 }
 
 export default new Db();
