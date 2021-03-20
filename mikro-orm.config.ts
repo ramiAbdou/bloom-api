@@ -1,4 +1,9 @@
-import { Connection, IDatabaseDriver, Options } from '@mikro-orm/core';
+import {
+  Connection,
+  IDatabaseDriver,
+  MigrationsOptions,
+  Options
+} from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
 import BloomManagerSubscriber from '@core/db/BloomManager.subscriber';
@@ -24,6 +29,17 @@ import RankedQuestion from '@entities/ranked-question/RankedQuestion';
 import Supporter from '@entities/supporter/Supporter';
 import Task from '@entities/task/Task';
 import User from '@entities/user/User';
+
+const migrationsOptions: MigrationsOptions = {
+  allOrNothing: true,
+  disableForeignKeys: true,
+  dropTables: true,
+  emit: 'ts',
+  path: './migrations',
+  safe: false,
+  tableName: 'migrations',
+  transactional: true
+};
 
 /**
  * Exports all of the database connection and initialization information.
@@ -60,6 +76,7 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
   ],
   filters: { notDeleted: { args: false, cond: { deletedAt: null } } },
   host: process.env.DB_HOST,
+  migrations: migrationsOptions,
   namingStrategy: NamingStrategy,
   password: process.env.DB_PASSWORD,
   port: Number(process.env.DB_PORT),
