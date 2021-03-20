@@ -27,7 +27,6 @@ services:
   bloom-api:
     ## Uses the dev environment variables.
     env_file: .env.dev
-    command: nodemon -L
     build:
       context: .
       dockerfile: Dockerfile

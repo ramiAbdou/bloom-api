@@ -10,7 +10,7 @@ services:
       ## Targetting the test stage of the Dockerfile.
       target: test
     command: dockerize
-      -wait tcp://db:${DB_PORT} -wait tcp://bloom-api:8080 -timeout 30s
+      -wait tcp://db:${DB_PORT} -wait tcp://bloom-api:8080 -timeout 45s
       npx jest --group=integration
     container_name: bloom-api-test
     depends_on:

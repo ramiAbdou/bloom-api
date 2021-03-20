@@ -26,11 +26,14 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 ## TARGET: DEV
 FROM build as dev
 RUN npm install -g nodemon
+CMD ["nodemon", "-L"]
 
 ## TARGET: STAGE
 FROM build as stage
 RUN npm run build:stage
+CMD ["npm", "run", "start:stage"]
 
 ## TARGET: PROD
 FROM build as prod
 RUN npm run build:prod
+CMD ["npm", "run", "start:prod"]
