@@ -3,8 +3,8 @@ import day from 'dayjs';
 import BloomManager from '@core/db/BloomManager';
 import Member, { MemberStatus } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
-import { QueryEvent } from '@util/events';
-import { TimeSeriesData } from '@util/gql';
+import { QueryEvent } from '@util/constants.events';
+import { TimeSeriesData } from '@util/constants.gql';
 
 /**
  * Returns the total growth of the accepted members within the community,

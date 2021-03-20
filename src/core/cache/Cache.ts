@@ -8,22 +8,25 @@ export default class Cache extends LRUCache<string, any> {
   }
 
   /**
-   * Invalidates all of the cache entries that have the given entity ID as a
-   * dependency.
+   * Invalidates all of the keys in the cache.
    *
-   * Precondition: value must be populated with some values.
+   * @param keys - Array of keys in the cache.
    */
-  invalidateKeys = (cacheKeys: string[]) => {
-    if (cacheKeys?.length) {
-      cacheKeys.forEach((key: string) => this.del(key));
-    }
-  };
+  invalidate(keys: string[]): void {
+    keys.forEach((key: string) => this.del(key));
+  }
 
-  del = (key: string) => super.del(key);
-
-  set = (key: string, value: any) => {
-    if (key === undefined) return false;
+  /**
+   * Returns true if successfully storing the key in the cache. Returns false,
+   * otherwise. If the key is null or undefined, it doesn't store it in the
+   * cache.
+   *
+   * @param key - Key to store in the cache.
+   * @param value - Value to associate with the key.
+   */
+  set(key: string, value: any): boolean {
+    if (key === null || key === undefined) return false;
     super.set(key, value);
     return true;
-  };
+  }
 }

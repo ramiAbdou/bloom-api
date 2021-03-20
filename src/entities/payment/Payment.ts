@@ -5,7 +5,7 @@ import { AfterCreate, Entity, ManyToOne, Property } from '@mikro-orm/core';
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Community from '@entities/community/Community';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import MemberPlan from '../member-plan/MemberPlan';
 import Member from '../member/Member';
 
@@ -41,7 +41,7 @@ export default class Payment extends BaseEntity {
 
   @AfterCreate()
   afterCreate() {
-    Payment.cache.invalidateKeys([
+    Payment.cache.invalidate([
       // Need to make sure that the 'isDuesActive' is updated.
       `${QueryEvent.GET_MEMBERS}-${this.member.id}`,
       `${QueryEvent.GET_MEMBERS}-${this.community.id}`,

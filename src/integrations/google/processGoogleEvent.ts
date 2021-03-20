@@ -5,7 +5,7 @@ import updateGoogleCalendarEventId from '@entities/event/repo/updateGoogleCalend
 import deleteGoogleCalendarEvent from '@integrations/google/repo/deleteGoogleCalendarEvent';
 import deleteGoogleCalendarEventAttendee from '@integrations/google/repo/deleteGoogleCalendarEventAttendee';
 import updateGoogleCalendarEvent from '@integrations/google/repo/updateGoogleCalendarEvent';
-import { GoogleEvent } from '@util/events';
+import { GoogleEvent } from '@util/constants.events';
 import addGoogleCalendarEventAttendee from './repo/addGoogleCalendarEventAttendee';
 import createGoogleCalendarEvent from './repo/createGoogleCalendarEvent';
 

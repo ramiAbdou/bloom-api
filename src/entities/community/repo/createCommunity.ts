@@ -4,10 +4,12 @@ import BloomManager from '@core/db/BloomManager';
 import Application from '@entities/application/Application';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
-import { FlushEvent } from '@util/events';
+import { FlushEvent } from '@util/constants.events';
 
 /**
- * Creates a new community when Bloom has a new customer. Omits the addition
+ * Returns the new Community.
+ *
+ * Typically called when Bloom has a new customer. Omits the addition
  * of a logo. For now, the community should send Bloom a square logo that
  * we will manually add to the Digital Ocean space.
  */

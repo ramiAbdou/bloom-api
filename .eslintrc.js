@@ -1,9 +1,12 @@
+/**
+ * @see https://github.com/toshi-toma/eslint-config-airbnb-typescript-prettier/blob/master/index.js
+ * for the default options of airbnb-typescript-prettier.
+ */
+
 module.exports = {
-  env: {
-    mocha: true
-  }, // Keywords like "describe" and "it" won't throw errors.
+  env: { jest: true },
   extends: ['airbnb-typescript-prettier'],
-  plugins: ['simple-import-sort', 'sort-keys-fix'],
+  plugins: ['jest', 'simple-import-sort', 'sort-keys-fix'],
   overrides: [
     // For the GraphQL resolver files, we don't need to use this because
     // the type-graphql package doesn't encourage it.
@@ -73,7 +76,7 @@ module.exports = {
   },
   settings: {
     'import/resolver': {
-      typescript: { directory: './tsconfig.json' }
+      typescript: { project: './tsconfig.json' }
     },
     react: { version: '999.999.999' }
   }

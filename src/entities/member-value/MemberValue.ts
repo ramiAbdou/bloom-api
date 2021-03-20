@@ -10,7 +10,7 @@ import {
 
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import Member from '../member/Member';
 import Question from '../question/Question';
 
@@ -34,7 +34,7 @@ export default class MemberValue extends BaseEntity {
   async afterCreate() {
     await wrap(this.member).init();
 
-    MemberValue.cache.invalidateKeys([
+    MemberValue.cache.invalidate([
       `${QueryEvent.GET_MEMBER_VALUES}-${this.member.id}`,
       `${QueryEvent.GET_MEMBER_VALUES}-${this.member.community.id}`
     ]);
@@ -44,7 +44,7 @@ export default class MemberValue extends BaseEntity {
   async afterUpdate() {
     await wrap(this.member).init();
 
-    MemberValue.cache.invalidateKeys([
+    MemberValue.cache.invalidate([
       `${QueryEvent.GET_MEMBER_VALUES}-${this.member.id}`,
       `${QueryEvent.GET_MEMBER_VALUES}-${this.member.community.id}`
     ]);

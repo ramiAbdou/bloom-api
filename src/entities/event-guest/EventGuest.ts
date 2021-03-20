@@ -11,7 +11,7 @@ import {
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Supporter from '@entities/supporter/Supporter';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import Event from '../event/Event';
 import Member from '../member/Member';
 
@@ -27,7 +27,7 @@ export default class EventGuest extends BaseEntity {
   async afterCreate() {
     await wrap(this.event).init();
 
-    EventGuest.cache.invalidateKeys([
+    EventGuest.cache.invalidate([
       `${QueryEvent.GET_EVENT_GUESTS}-${this.event.id}`,
       `${QueryEvent.GET_EVENT_GUESTS}-${this.member?.id}`,
       `${QueryEvent.GET_EVENT_GUESTS}-${this.supporter?.id}`,
@@ -40,7 +40,7 @@ export default class EventGuest extends BaseEntity {
   async afterDelete() {
     await wrap(this.event).init();
 
-    EventGuest.cache.invalidateKeys([
+    EventGuest.cache.invalidate([
       `${QueryEvent.GET_EVENT_GUESTS}-${this.event.id}`,
       `${QueryEvent.GET_EVENT_GUESTS}-${this.member?.id}`,
       `${QueryEvent.GET_EVENT_GUESTS}-${this.supporter?.id}`,

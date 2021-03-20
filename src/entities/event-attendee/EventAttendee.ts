@@ -4,7 +4,7 @@ import { AfterCreate, Entity, ManyToOne, Unique, wrap } from '@mikro-orm/core';
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Supporter from '@entities/supporter/Supporter';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import Event from '../event/Event';
 import Member from '../member/Member';
 
@@ -20,7 +20,7 @@ export default class EventAttendee extends BaseEntity {
   async afterCreate() {
     await wrap(this.event).init();
 
-    EventAttendee.cache.invalidateKeys([
+    EventAttendee.cache.invalidate([
       `${QueryEvent.GET_EVENT_ATTENDEES}-${this.event.id}`,
       `${QueryEvent.GET_EVENT_ATTENDEES}-${this.member?.id}`,
       `${QueryEvent.GET_EVENT_ATTENDEES}-${this.supporter?.id}`,

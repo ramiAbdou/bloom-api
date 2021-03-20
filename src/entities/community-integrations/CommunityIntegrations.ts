@@ -5,7 +5,7 @@ import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import getMailchimpAudienceName from '@integrations/mailchimp/repo/getMailchimpAudienceName';
 import getMailchimpAudiences from '@integrations/mailchimp/repo/getMailchimpAudiences';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import Community from '../community/Community';
 import { MailchimpList } from './CommunityIntegrations.types';
 
@@ -56,7 +56,7 @@ export default class CommunityIntegrations extends BaseEntity {
 
   @AfterUpdate()
   afterUpdate() {
-    CommunityIntegrations.cache.invalidateKeys([
+    CommunityIntegrations.cache.invalidate([
       `${QueryEvent.GET_COMMUNITY_INTEGRATIONS}-${this.community.id}`
     ]);
   }

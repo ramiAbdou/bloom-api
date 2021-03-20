@@ -1,7 +1,7 @@
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Member from '@entities/member/Member';
-import { MailchimpEvent } from '@util/events';
+import { MailchimpEvent } from '@util/constants.events';
 import addToMailchimpAudience from './repo/addToMailchimpAudience';
 
 export interface MailchimpEventArgs {

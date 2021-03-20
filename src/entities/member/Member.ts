@@ -21,7 +21,7 @@ import {
 
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import { now } from '@util/util';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
@@ -168,7 +168,7 @@ export default class Member extends BaseEntity {
 
   @AfterCreate()
   afterCreate() {
-    Member.cache.invalidateKeys(
+    Member.cache.invalidate(
       this.status === MemberStatus.PENDING
         ? [`${QueryEvent.GET_APPLICANTS}-${this.community.id}`]
         : [`${QueryEvent.GET_MEMBERS}-${this.community.id}`]
@@ -177,7 +177,7 @@ export default class Member extends BaseEntity {
 
   @AfterUpdate()
   afterUpdate() {
-    Member.cache.invalidateKeys([
+    Member.cache.invalidate([
       `${QueryEvent.GET_MEMBERS}-${this.id}`,
       `${QueryEvent.GET_MEMBERS}-${this.community.id}`
     ]);

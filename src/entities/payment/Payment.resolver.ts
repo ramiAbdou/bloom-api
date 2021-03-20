@@ -2,7 +2,7 @@ import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { MemberRole } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
-import { TimeSeriesData } from '@util/gql';
+import { TimeSeriesData } from '@util/constants.gql';
 import Payment from './Payment';
 import createLifetimePayment, {
   CreateLifetimePaymentArgs

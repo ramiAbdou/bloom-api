@@ -1,8 +1,11 @@
 import BloomManager from '@core/db/BloomManager';
-import getMailchimpAccessToken from '@integrations/mailchimp/repo/getMailchimpAccessToken';
-import { AuthQueryArgs } from '@util/constants';
-import { FlushEvent } from '@util/events';
+import { FlushEvent } from '@util/constants.events';
 import CommunityIntegrations from '../CommunityIntegrations';
+
+interface UpdateMailchimpAccessTokenArgs {
+  mailchimpAccessToken: string;
+  urlName: string;
+}
 
 /**
  * Returns the updated CommunityIntegrations.
@@ -10,10 +13,9 @@ import CommunityIntegrations from '../CommunityIntegrations';
  * @param args.code - Code to exchange for token from Mailchimp API.
  */
 const updateMailchimpAccessToken = async (
-  args: AuthQueryArgs
+  args: UpdateMailchimpAccessTokenArgs
 ): Promise<CommunityIntegrations> => {
-  const { code, state: urlName } = args;
-  const mailchimpAccessToken = await getMailchimpAccessToken({ code });
+  const { mailchimpAccessToken, urlName } = args;
 
   const communityIntegrations = await new BloomManager().findOneAndUpdate(
     CommunityIntegrations,

@@ -2,7 +2,7 @@ import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import { emitGoogleEvent } from '@system/eventBus';
-import { FlushEvent, GoogleEvent } from '@util/events';
+import { FlushEvent, GoogleEvent } from '@util/constants.events';
 import Event, { EventPrivacy } from '../Event';
 
 @ArgsType()
@@ -32,8 +32,15 @@ export class UpdateEventArgs {
 /**
  * Returns the updated Event.
  *
- * @param args.eventId - ID of the Event.
- * @param args - Event data (eg: description, endTime, startTime).
+ * Precondition: Should only be called for an upcoming Event.
+ *
+ * @param args.description - Description of the Event to update.
+ * @param args.eventId - ID of the Event to update.
+ * @param args.imageUrl - Image URL of the Event to update.
+ * @param args.privacy - Privacy of the Event to update.
+ * @param args.summary - Summary of the Event to update.
+ * @param args.title - Title of the Event to update.
+ * @param args.videoUrl - Video URL of the Event to update.
  */
 const updateEvent = async (args: UpdateEventArgs): Promise<Event> => {
   const { eventId, ...eventData } = args;

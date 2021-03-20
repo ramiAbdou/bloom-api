@@ -1,6 +1,6 @@
 import BloomManager from '@core/db/BloomManager';
 import User from '@entities/user/User';
-import { FlushEvent } from '@util/events';
+import { FlushEvent } from '@util/constants.events';
 
 interface UpdateGoogleIdArgs {
   email: string;

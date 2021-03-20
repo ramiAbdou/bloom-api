@@ -4,7 +4,7 @@ import { AfterUpdate, Entity, OneToOne, Property, wrap } from '@mikro-orm/core';
 
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import Member from '../member/Member';
 
 @ObjectType()
@@ -45,7 +45,7 @@ export default class MemberSocials extends BaseEntity {
   async afterUpdate() {
     await wrap(this.member).init();
 
-    MemberSocials.cache.invalidateKeys([
+    MemberSocials.cache.invalidate([
       `${QueryEvent.GET_MEMBER_SOCIALS}-${this.member.id}`,
       `${QueryEvent.GET_MEMBER_SOCIALS}-${this.member.community.id}`
     ]);

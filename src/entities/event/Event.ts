@@ -18,7 +18,7 @@ import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import getGoogleCalendarEvent from '@integrations/google/repo/getGoogleCalendarEvent';
 import { APP } from '@util/constants';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
@@ -61,7 +61,7 @@ export default class Event extends BaseEntity {
   @Field({ nullable: true })
   @Property({ nullable: true })
   @IsUrl()
-  recordingUrl: string;
+  recordingUrl?: string;
 
   @Field()
   @Property()
@@ -69,7 +69,7 @@ export default class Event extends BaseEntity {
 
   @Field({ nullable: true })
   @Property({ nullable: true })
-  summary: string;
+  summary?: string;
 
   @Field()
   @Property()
@@ -107,16 +107,18 @@ export default class Event extends BaseEntity {
 
   @AfterCreate()
   afterCreate() {
-    Event.cache.invalidateKeys([
+    Event.cache.invalidate([
       `${QueryEvent.GET_UPCOMING_EVENTS}-${this.community.id}`
     ]);
   }
 
   @AfterUpdate()
   afterUpdate() {
-    Event.cache.invalidateKeys([
+    const isPast: boolean = day.utc().isAfter(day.utc(this.endTime));
+
+    Event.cache.invalidate([
       `${QueryEvent.GET_EVENT}-${this.id}`,
-      ...(day.utc().isAfter(day.utc(this.endTime))
+      ...(isPast
         ? [`${QueryEvent.GET_PAST_EVENTS}-${this.community.id}`]
         : [`${QueryEvent.GET_UPCOMING_EVENTS}-${this.community.id}`])
     ]);

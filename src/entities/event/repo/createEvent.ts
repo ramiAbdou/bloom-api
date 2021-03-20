@@ -7,7 +7,12 @@ import {
   scheduleTask
 } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent, GoogleEvent, TaskEvent } from '@util/events';
+import {
+  EmailEvent,
+  FlushEvent,
+  GoogleEvent,
+  TaskEvent
+} from '@util/constants.events';
 import createEventInvitees from '../../event-invitee/repo/createEventInvitees';
 import Event, { EventPrivacy } from '../Event';
 

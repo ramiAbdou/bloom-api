@@ -12,12 +12,12 @@ import { MikroORM } from '@mikro-orm/core';
 import { APP } from '@util/constants';
 import { Express } from 'express';
 import db from '@core/db/db';
-import { LoggerEvent } from '@util/events';
+import { LoggerEvent } from '@util/constants.events';
 import logger from '@system/logger/logger';
-import loadApollo from './apollo';
-import loadExpress from './express';
+import initApollo from './loaders/apollo/initApollo';
+import initExpress from './loaders/express/initExpress';
 
-import './misc';
+import './loaders/misc';
 
 day.extend(advancedFormat);
 day.extend(utc);
@@ -38,7 +38,7 @@ const startServer = async () => {
     Express,
     ApolloServer,
     MikroORM
-  ] = await Promise.all([loadExpress(), loadApollo(), db.createConnection()]);
+  ] = await Promise.all([initExpress(), initApollo(), db.createConnection()]);
 
   apolloServer.applyMiddleware({
     app,
@@ -46,7 +46,8 @@ const startServer = async () => {
     path: '/graphql'
   });
 
-  app.listen(APP.PORT, () => {
+  app.listen(process.env.PORT || 8080, () => {
+    console.log(`Running on port ${process.env.PORT || 8080}.`);
     logger.log({ event: LoggerEvent.START_SERVER, level: 'INFO' });
   });
 };

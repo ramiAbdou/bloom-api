@@ -1,4 +1,4 @@
-import { EmailEvent } from '@util/events';
+import { EmailEvent } from '@util/constants.events';
 import {
   AcceptedIntoCommunityPayload,
   AcceptedIntoCommunityVars

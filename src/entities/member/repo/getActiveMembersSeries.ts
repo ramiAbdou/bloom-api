@@ -4,8 +4,8 @@ import { QueryOrder } from '@mikro-orm/core';
 import BloomManager from '@core/db/BloomManager';
 import Member from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
-import { QueryEvent } from '@util/events';
-import { TimeSeriesData } from '@util/gql';
+import { QueryEvent } from '@util/constants.events';
+import { TimeSeriesData } from '@util/constants.gql';
 
 /**
  * Returns the TimeSeriesData points of the # of active Members.

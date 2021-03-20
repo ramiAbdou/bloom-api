@@ -1,5 +1,5 @@
 import logger from '@system/logger/logger';
-import { GoogleEvent } from '@util/events';
+import { GoogleEvent } from '@util/constants.events';
 import { eventsCalendar } from '../Google.util';
 
 /**

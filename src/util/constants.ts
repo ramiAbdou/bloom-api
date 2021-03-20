@@ -20,8 +20,6 @@ sg.setApiKey(process.env.SENDGRID_API_KEY);
 export const APP = {
   CACHE_TTL: 60 * 60 * 1000, // 1 hour, represented as ms.
   CLIENT_URL: process.env.APP_CLIENT_URL,
-  DB_URL: process.env.DB_URL,
-  PORT: process.env.PORT || 8080,
   SERVER_URL: process.env.APP_SERVER_URL
 };
 
@@ -40,6 +38,7 @@ export const TEST_EMAILS = ['ra494@cornell.edu', 'rami@onbloom.co'];
  */
 
 export type AuthQueryArgs = { code: string; state?: string };
+
 export type AuthTokens = { accessToken: string; refreshToken: string };
 
 export enum IntegrationsBrand {
@@ -58,3 +57,9 @@ export type GQLContext = {
   res: Response;
   userId: string;
 };
+
+export interface TestObject<T = any, S = any> {
+  before?: () => Promise<any>;
+  input?: T;
+  output?: S;
+}

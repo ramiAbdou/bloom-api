@@ -5,8 +5,7 @@ import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import MemberPlan, { RecurrenceType } from '@entities/member-plan/MemberPlan';
 import { stripe } from '@integrations/stripe/Stripe.util';
-import { GQLContext } from '@util/constants';
-import { FlushEvent } from '@util/events';
+import { FlushEvent } from '@util/constants.events';
 
 interface CreateStripeProductArgs {
   stripeAccountId: string;
@@ -57,12 +56,16 @@ const attachStripeProduct = async (
   return plan;
 };
 
+interface CreateStripeProductsArgs {
+  urlName: string;
+}
+
 /**
  * Creates the corresponding Stripe products and prices for every MemberPlan
  * that isn't free. Updates the MemberPlan entity as well.
  */
-const createStripeProducts = async (ctx: Pick<GQLContext, 'communityId'>) => {
-  const { communityId } = ctx;
+const createStripeProducts = async (args: CreateStripeProductsArgs) => {
+  const { urlName } = args;
 
   const bm = new BloomManager();
 
@@ -70,8 +73,8 @@ const createStripeProducts = async (ctx: Pick<GQLContext, 'communityId'>) => {
     CommunityIntegrations,
     MemberPlan[]
   ] = await Promise.all([
-    bm.findOne(CommunityIntegrations, { community: communityId }),
-    bm.find(MemberPlan, { community: communityId })
+    bm.findOne(CommunityIntegrations, { community: { urlName } }),
+    bm.find(MemberPlan, { community: { urlName } })
   ]);
 
   const updatedTypes: MemberPlan[] = await Promise.all(

@@ -4,7 +4,7 @@ import { EntityData } from '@mikro-orm/core';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import Event from '@entities/event/Event';
-import { FlushEvent, TaskEvent } from '@util/events';
+import { FlushEvent, TaskEvent } from '@util/constants.events';
 import Task from '../Task';
 
 /**

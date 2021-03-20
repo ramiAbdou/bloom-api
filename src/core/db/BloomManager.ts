@@ -14,7 +14,7 @@ import {
 import Cache from '@core/cache/Cache';
 import logger from '@system/logger/logger';
 import { now } from '@util/util';
-import { getAllEntityCaches, getEntityCache } from '../cache/Cache.util';
+import { getEntityCache } from '../cache/Cache.util';
 import {
   BloomCreateAndFlushArgs,
   BloomFindAndDeleteOptions,
@@ -37,11 +37,6 @@ class BloomManager {
   constructor(em?: EntityManager) {
     this.em = em || db.em?.fork();
   }
-
-  /**
-   * Returns a clean EntityManager.
-   */
-  fork = () => new BloomManager();
 
   async findOne<T, P>(
     entityName: EntityName<T>,
@@ -80,8 +75,6 @@ class BloomManager {
     where: FilterQuery<T>,
     options?: BloomFindOneOptions<T, P>
   ): Promise<Loaded<T, P>> {
-    if (!where) return null;
-
     // Try to find and return the entity from the cache. We must return it as
     // a resolved Promise to ensure type safety.
     const cache: Cache = getEntityCache(entityName);
@@ -288,7 +281,7 @@ class BloomManager {
    * objects with the database.
    */
   async flush?(args?: FlushArgs) {
-    const { invalidateKeys, flushEvent } = args ?? {};
+    const { flushEvent } = args ?? {};
     const contextId = nanoid();
 
     try {
@@ -297,10 +290,6 @@ class BloomManager {
 
       // Runs the actual flush.
       await this.em.flush();
-
-      // Invalidate all of the cache keys based on any invalidateKeys provided.
-      const caches: Cache[] = getAllEntityCaches();
-      caches.forEach((cache: Cache) => cache.invalidateKeys(invalidateKeys));
 
       // Log the success in flushing the entities with AFTER_FLUSH.
       logger.log({ contextId, event: flushEvent, level: 'AFTER_FLUSH' });
@@ -323,14 +312,14 @@ class BloomManager {
   async createAndFlush<T extends AnyEntity<T>, P extends Populate<T> = any>(
     entityName: EntityName<T>,
     data: EntityData<T>,
-    { populate, ...options }: BloomCreateAndFlushArgs<P>
+    options?: BloomCreateAndFlushArgs<P>
   ): Promise<T> {
     const entity = this.create(entityName, data);
     await this.flush(options);
 
-    if (populate) {
+    if (options?.populate) {
       this.em.merge(entity);
-      await this.em.populate(entity, populate, null, null, true);
+      await this.em.populate(entity, options?.populate, null, null, true);
     }
 
     return entity;

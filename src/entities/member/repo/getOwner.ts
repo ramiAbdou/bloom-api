@@ -2,7 +2,7 @@ import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import Member, { MemberRole } from '@entities/member/Member';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 
 @ArgsType()
 export class GetOwnerArgs {

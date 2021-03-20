@@ -3,7 +3,7 @@ import { AfterCreate, Entity, ManyToOne, Unique, wrap } from '@mikro-orm/core';
 
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import Event from '../event/Event';
 import Member from '../member/Member';
 
@@ -19,7 +19,7 @@ export default class EventWatch extends BaseEntity {
   async afterCreate() {
     await wrap(this.event).init();
 
-    EventWatch.cache.invalidateKeys([
+    EventWatch.cache.invalidate([
       `${QueryEvent.GET_EVENT_WATCHES}-${this.event.id}`,
       `${QueryEvent.GET_EVENT_WATCHES}-${this.member.id}`,
       `${QueryEvent.GET_EVENT_WATCHES}-${this.event.community.id}`

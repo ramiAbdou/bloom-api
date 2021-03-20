@@ -1,36 +1,41 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
 import day from 'dayjs';
-import { Response } from 'express';
 import jwt from 'jsonwebtoken';
 
-import { AuthTokens, isDevelopment, JWT } from '@util/constants';
+import { JWT } from '@util/constants';
+
+interface BuildUrlArgs {
+  params: Record<string, string>;
+  url: string;
+}
+
+/**
+ * Returns the URL with the URL params.
+ *
+ * @param url - URL to start with.
+ * @param params - URL param object to build the URL.
+ */
+export const buildUrl = (args: BuildUrlArgs): string => {
+  const { params, url } = args;
+
+  return Object.entries(params).reduce(
+    (acc: string, [key, value]: [string, string], i: number) => {
+      const paramChar: string = i === 0 ? '?' : '&';
+      return `${acc}${paramChar}${key}=${value}`;
+    },
+    url
+  );
+};
 
 /**
  * Returns the decoded information stored inside the JWT token. We first
  * verify the token to ensure that it is not expired, then decode it.
  */
 export const decodeToken = (token: string): any => {
-  try {
-    return verifyToken(token) && jwt.decode(token);
-  } catch {
-    return null;
-  }
+  const isVerified: boolean = verifyToken(token);
+  return isVerified ? jwt.decode(token) : null;
 };
-
-/**
- * Returns true if the entity has and of the keys in the given entity, even
- * if the value of the key is null.
- *
- * @param entity Object with keys. Could be empty, but not null.
- * @param keys List of keys in the object.
- *
- * @example hasKeys({ firstName: 'Rami', age: 21 }, ['firstName']) => true
- * @example hasKeys({ firstName: 'Rami', age: 21 }, ['lastName']) => false
- */
-export function hasKeys<T>(entity: T, keys: (keyof T)[]) {
-  return keys.some((key: keyof T) => key in entity);
-}
 
 /**
  * Returns the current UTC timestamp as a string to the millisecond.
@@ -39,46 +44,45 @@ export function hasKeys<T>(entity: T, keys: (keyof T)[]) {
  */
 export const now = () => day.utc().format();
 
-/**
- * Returns true if the token is both a valid JWT token and if it has not yet
- * expired.
- */
-export const verifyToken = (token: string): boolean => {
-  try {
-    return !!jwt.verify(token, JWT.SECRET);
-  } catch {
-    return false;
-  }
-};
+interface SignTokenArgs {
+  expires?: boolean;
+  payload: Record<string, any>;
+}
 
 /**
- * Sets the appropriate refreshToken and accessToken httpOnly cookies on the
- * Express Response object with the token values passed in.
+ * Returns the signed JWT token using the stored JWT secret and expiration.
+ *
+ * @param args.expires - Default is true, false if the token shouldn't expire.
+ * @param args.payload - Payload to encode in the token.
  */
-export const setHttpOnlyTokens = (
-  res: Response,
-  { accessToken, refreshToken }: AuthTokens
-) => {
-  const options = { httpOnly: true, secure: !isDevelopment };
-  res.cookie('refreshToken', refreshToken, options);
+export const signToken = (args: SignTokenArgs) => {
+  const { expires = true, payload } = args;
 
-  res.cookie('accessToken', accessToken, {
-    ...options,
-    maxAge: JWT.EXPIRES_IN * 1000 // x1000 because represented as milliseconds.
-  });
+  return jwt.sign(
+    payload,
+    JWT.SECRET,
+    expires ? { expiresIn: JWT.EXPIRES_IN } : {}
+  );
 };
+
+interface SplitArrayIntoChunksArgs {
+  arr: any[];
+  maxChunkSize: number;
+}
 
 /**
  * Returns the original array split into chunks with a maximum size of N. If
  * original array is less than size N, just returns original array.
  *
- * @param arr Original array to split.
- * @param maxChunkSize Maximum size of a chunk.
+ * @param args.arr Original array to split.
+ * @param args.maxChunkSize Maximum size of a chunk.
+ *  - Precondition: Must be >= 1.
  */
 export const splitArrayIntoChunks = (
-  arr: any[],
-  maxChunkSize: number
+  args: SplitArrayIntoChunksArgs
 ): any[][] => {
+  const { arr, maxChunkSize } = args;
+
   if (arr.length <= maxChunkSize) return [arr];
 
   return arr.reduce((acc: any[][], item: any, i: number) => {
@@ -95,14 +99,28 @@ export const splitArrayIntoChunks = (
 };
 
 /**
- * Returns the first value in which the condition is true.
+ * Returns the second value of the 2-tuple who's first value returns true.
+ *
+ * @param arr - Array of 2-tuples in which the first value gets evaluated to a
+ * boolean.
  */
-export const take = (arr: ([boolean, any] | any)[]) => {
+export const take = (arr: [any, any][]) => {
   for (let i = 0; i < arr.length; i++) {
-    const element = arr[i];
-    if (!Array.isArray(element) && !!element) return element;
+    const element: [any, any] = arr[i];
     if (element[0]) return element[1];
   }
 
   return null;
+};
+
+/**
+ * Returns true if the token is both a valid JWT token and if it has not yet
+ * expired. Returns false otherwise.
+ */
+export const verifyToken = (token: string): boolean => {
+  try {
+    return !!jwt.verify(token, JWT.SECRET);
+  } catch {
+    return false;
+  }
 };

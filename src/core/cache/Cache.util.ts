@@ -23,47 +23,48 @@ import User from '@entities/user/User';
 import Cache from './Cache';
 
 /**
- * Returns the Cache that corresponds with the appropriate entity.
+ * Returns the entity Cache that corresponds with the appropriate entity.
  *
- * @param entityName - Name of the Entity.
+ * @param name - Name of the MikroORM Entity.
  */
-export const getEntityCache = (entityName: EntityName<any>): Cache => {
-  if (entityName === Application) return Application.cache;
-  if (entityName === Community) return Community.cache;
-  if (entityName === Event) return Event.cache;
-  if (entityName === EventAttendee) return EventAttendee.cache;
-  if (entityName === EventGuest) return EventGuest.cache;
-  if (entityName === EventInvitee) return EventInvitee.cache;
-  if (entityName === EventWatch) return EventWatch.cache;
-  if (entityName === CommunityIntegrations) return CommunityIntegrations.cache;
-  if (entityName === Member) return Member.cache;
-  if (entityName === MemberIntegrations) return MemberIntegrations.cache;
-  if (entityName === MemberPlan) return MemberPlan.cache;
-  if (entityName === MemberRefresh) return MemberRefresh.cache;
-  if (entityName === MemberSocials) return MemberSocials.cache;
-  if (entityName === MemberValue) return MemberValue.cache;
-  if (entityName === Payment) return Payment.cache;
-  if (entityName === Question) return Question.cache;
-  if (entityName === RankedQuestion) return RankedQuestion.cache;
-  if (entityName === Supporter) return Supporter.cache;
-  if (entityName === Task) return Task.cache;
-  if (entityName === User) return User.cache;
+export const getEntityCache = (name: EntityName<any>): Cache => {
+  if (name === Application) return Application.cache;
+  if (name === Community) return Community.cache;
+  if (name === CommunityIntegrations) return CommunityIntegrations.cache;
+  if (name === Event) return Event.cache;
+  if (name === EventAttendee) return EventAttendee.cache;
+  if (name === EventGuest) return EventGuest.cache;
+  if (name === EventInvitee) return EventInvitee.cache;
+  if (name === EventWatch) return EventWatch.cache;
+  if (name === Member) return Member.cache;
+  if (name === MemberIntegrations) return MemberIntegrations.cache;
+  if (name === MemberPlan) return MemberPlan.cache;
+  if (name === MemberRefresh) return MemberRefresh.cache;
+  if (name === MemberSocials) return MemberSocials.cache;
+  if (name === MemberValue) return MemberValue.cache;
+  if (name === Payment) return Payment.cache;
+  if (name === Question) return Question.cache;
+  if (name === RankedQuestion) return RankedQuestion.cache;
+  if (name === Supporter) return Supporter.cache;
+  if (name === Task) return Task.cache;
+  if (name === User) return User.cache;
+
   return null;
 };
 
 /**
- * Returns all entity Caches.
+ * Returns all the entity Cache(s) that correspond with the appropriate entity.
  */
 export const getAllEntityCaches = (): Cache[] => {
   return [
     Application.cache,
     Community.cache,
+    CommunityIntegrations.cache,
     Event.cache,
     EventAttendee.cache,
     EventGuest.cache,
     EventInvitee.cache,
     EventWatch.cache,
-    CommunityIntegrations.cache,
     Member.cache,
     MemberIntegrations.cache,
     MemberPlan.cache,
@@ -77,4 +78,23 @@ export const getAllEntityCaches = (): Cache[] => {
     Task.cache,
     User.cache
   ];
+};
+
+/**
+ * Clears the entity caches. If no entityName(s) are supplied, will clear every
+ * entity cache.
+ *
+ * @param entityNames - List of EntityName(s) to clear caches for.
+ */
+export const clearEntityCaches = (entityNames?: EntityName<any>[]) => {
+  if (entityNames) {
+    entityNames.forEach(async (entityName: EntityName<any>) => {
+      const cache = getEntityCache(entityName);
+      if (cache) cache.reset();
+    });
+
+    return;
+  }
+
+  getAllEntityCaches().forEach((cache) => cache.reset());
 };

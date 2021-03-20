@@ -14,7 +14,7 @@ import {
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Supporter from '@entities/supporter/Supporter';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import Application from '../application/Application';
 import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
 import Event from '../event/Event';
@@ -80,7 +80,7 @@ export default class Community extends BaseEntity {
   async afterUpdate() {
     const members: Member[] = await this.members.loadItems();
 
-    Community.cache.invalidateKeys([
+    Community.cache.invalidate([
       `${QueryEvent.GET_COMMUNITY}-${this.id}`,
       `${QueryEvent.GET_COMMUNITY}-${this.urlName}`,
       ...members.map((member: Member) => {

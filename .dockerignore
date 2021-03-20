@@ -1,0 +1,6 @@
+coverage
+dist
+logs
+membership-csv
+node_modules
+scripts

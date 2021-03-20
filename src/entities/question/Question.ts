@@ -13,7 +13,7 @@ import {
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Community from '@entities/community/Community';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 
 export enum QuestionCategory {
   BIO = 'BIO',
@@ -165,14 +165,14 @@ export default class Question extends BaseEntity {
 
   @AfterCreate()
   afterCreate() {
-    Question.cache.invalidateKeys([
+    Question.cache.invalidate([
       `${QueryEvent.GET_QUESTIONS}-${this.community.id}`
     ]);
   }
 
   @AfterUpdate()
   afterUpdate() {
-    Question.cache.invalidateKeys([
+    Question.cache.invalidate([
       `${QueryEvent.GET_QUESTIONS}-${this.community.id}`
     ]);
   }

@@ -1,7 +1,7 @@
 import { Args, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@util/constants';
-import { TokenArgs } from '@util/gql';
+import { TokenArgs } from '@util/constants.gql';
 import getTokens, { GetTokensArgs, GetTokensResult } from './repo/getTokens';
 import getUser, { GetUserArgs } from './repo/getUser';
 import logout from './repo/logout';

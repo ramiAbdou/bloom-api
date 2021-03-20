@@ -3,9 +3,9 @@ import { ArgsType, Field } from 'type-graphql';
 import { LoginLinkEmailPayload } from '@system/emails/util/getLoginLinkVars';
 import { emitEmailEvent } from '@system/eventBus';
 import { APP } from '@util/constants';
-import { ErrorType } from '@util/errors';
-import { EmailEvent } from '@util/events';
-import URLBuilder from '@util/URLBuilder';
+import { ErrorType } from '@util/constants.errors';
+import { EmailEvent } from '@util/constants.events';
+import { buildUrl } from '@util/util';
 import getLoginError from './getLoginError';
 import refreshToken from './refreshToken';
 
@@ -36,9 +36,10 @@ const sendLoginLink = async (args: SendLoginLinkArgs): Promise<void> => {
   // the login URL.
   const { accessToken: token } = await refreshToken({ email });
 
-  const loginUrl: string = new URLBuilder(
-    APP.CLIENT_URL + (pathname ?? '')
-  ).addParam('token', token).url;
+  const loginUrl: string = buildUrl({
+    params: { token },
+    url: APP.CLIENT_URL + (pathname ?? '')
+  });
 
   emitEmailEvent(EmailEvent.LOGIN_LINK, {
     email,

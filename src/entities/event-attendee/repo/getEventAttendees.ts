@@ -1,9 +1,8 @@
 import { ArgsType, Field } from 'type-graphql';
-import { FilterQuery } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
 import { GQLContext } from '@util/constants';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import { take } from '@util/util';
 import EventAttendee from '../EventAttendee';
 
@@ -30,7 +29,7 @@ const getEventAttendees = async (
   const { eventId, memberId } = args;
   const { communityId } = ctx;
 
-  const queryArgs: FilterQuery<EventAttendee> = take([
+  const queryArgs = take([
     [eventId, { event: eventId }],
     [memberId, { member: memberId }],
     [communityId, { event: { community: communityId } }]

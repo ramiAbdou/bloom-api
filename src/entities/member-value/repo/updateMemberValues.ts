@@ -2,7 +2,7 @@ import { ArgsType, Field, InputType } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import { GQLContext } from '@util/constants';
-import { FlushEvent } from '@util/events';
+import { FlushEvent } from '@util/constants.events';
 import MemberValue from '../MemberValue';
 
 @InputType()

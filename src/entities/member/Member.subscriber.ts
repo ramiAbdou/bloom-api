@@ -3,7 +3,7 @@ import { EntityName, EventArgs, EventSubscriber } from '@mikro-orm/core';
 import BloomManager from '@core/db/BloomManager';
 import MemberValue from '@entities/member-value/MemberValue';
 import Question, { QuestionCategory } from '@entities/question/Question';
-import { QueryEvent } from '@util/events';
+import { QueryEvent } from '@util/constants.events';
 import Member, { MemberStatus } from './Member';
 
 export default class MemberSubscriber implements EventSubscriber<Member> {
@@ -12,7 +12,7 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
   }
 
   async afterUpdate({ changeSet, entity: member }: EventArgs<Member>) {
-    Member.cache.invalidateKeys([`${QueryEvent.GET_MEMBERS}-${member.id}`]);
+    Member.cache.invalidate([`${QueryEvent.GET_MEMBERS}-${member.id}`]);
 
     const { originalEntity } = changeSet;
 
@@ -20,7 +20,7 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
       originalEntity?.status === MemberStatus.PENDING &&
       member?.status !== MemberStatus.PENDING
     ) {
-      Member.cache.invalidateKeys([
+      Member.cache.invalidate([
         `${QueryEvent.GET_APPLICANTS}-${member.community.id}`
       ]);
     }

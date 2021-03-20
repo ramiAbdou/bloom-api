@@ -3,7 +3,7 @@ import { ArgsType, Field } from 'type-graphql';
 import BloomManager from '@core/db/BloomManager';
 import { emitEmailEvent, emitGoogleEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent, GoogleEvent } from '@util/events';
+import { EmailEvent, FlushEvent, GoogleEvent } from '@util/constants.events';
 import Event from '../Event';
 
 @ArgsType()
