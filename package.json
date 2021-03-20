@@ -18,11 +18,11 @@
     "start:dev": "docker-compose -f docker-compose.dev.yml --env-file .env.dev up",
     "start:stage": "APP_ENV=stage node dist/index.js",
     "start:prod": "APP_ENV=prod nodemon node dist/index.js",
-    "test": "APP_ENV=dev jest",
-    "test:coverage": "APP_ENV=dev jest --coverage",
-    "test:integration": "APP_ENV=dev jest --group=integration",
-    "test:unit": "APP_ENV=dev jest --group=unit",
-    "test:watch": "APP_ENV=dev jest --watch",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:integration": "jest --group=integration",
+    "test:unit": "jest --group=unit",
+    "test:watch": "jest --watch",
     "validate": "npm-run-all --parallel format:check lint build:dev"
   },
   "engines": {
