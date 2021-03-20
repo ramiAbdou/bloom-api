@@ -1,0 +1,47 @@
+version: '3.7'
+
+services:
+  ## Spins up a PostgreSQL service within the Docker container. This service
+  ## shouldn't be used in production because we want the PostgreSQL db to be
+  ## hosted via its OWN server. Digital Ocean helps us do just that.
+  db:
+    image: postgres:12
+    restart: always
+    ports:
+      - '${DB_PORT}:${DB_PORT}'
+    volumes:
+      ## Important to have the same data upon starting a PostgreSQL container.
+      - ./postgresql/data:/var/lib/postgresql/data
+      ## If the DB isn't being persisted from the previous spinning up, then
+      ## it will use this .sql file to "initialize" the schema and data of
+      ## the DB.
+      - ./001_data.sql:/docker-entrypoint-initdb.d/001_data.sql
+    environment:
+      ## These are pre-configured environment variables that the Docker
+      ## PostgreSQL service needs. We already have some of those variables
+      ## in our .env file, so just "inject" those here.
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+
+  bloom-api:
+    ## Uses the dev environment variables.
+    env_file: .env.dev
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+      ## Targetting the build stage of the Dockerfile.
+      target: dev
+    container_name: bloom-api
+    volumes:
+      - ./src:/usr/app/src
+      ## Extremely important to enable hot reloading thru Docker container.
+      - ./nodemon.json:/usr/app/nodemon.json
+    ports:
+      - '8080:8080'
+    depends_on:
+      ## Tells Docker compose to start PostgreSQL before starting this app,
+      ## BUT it doesn't guarantee that PostgreSQL will be ready for connections
+      ## when our app starts.
+      - db
