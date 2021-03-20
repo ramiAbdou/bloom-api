@@ -4,10 +4,12 @@ services:
   postgres:
     env_file: .env.dev
     image: postgres:12
+    restart: always
     ports:
       - '${DB_PORT}:${DB_PORT}'
     volumes:
       - ./postgresql/data:/var/lib/postgresql/data
+      - ./001_data.sql:/docker-entrypoint-initdb.d/001_data.sql
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
