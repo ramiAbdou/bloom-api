@@ -46,6 +46,7 @@ const migrationsOptions: MigrationsOptions = {
  */
 const dbConfig: Options<IDatabaseDriver<Connection>> = {
   dbName: process.env.DB_NAME,
+  debug: process.env.APP_ENV === 'dev',
   // This option disallows the usage of entitiesDirs and caching, which we set
   // to true b/c we need since BaseEntity is in a different folder than the
   // rest of the entities.

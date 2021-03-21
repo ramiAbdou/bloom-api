@@ -5,7 +5,7 @@ import BloomManager from '@core/db/BloomManager';
 import createMemberRefresh from '@entities/member-refresh/repo/createMemberRefresh';
 import Member from '@entities/member/Member';
 import { AuthTokens, isDevelopment, JWT } from '@util/constants';
-import { FlushEvent } from '@util/constants.events';
+import { FlushEvent, VerifyEvent } from '@util/constants.events';
 import { signToken } from '@util/util';
 import User from '../User';
 
@@ -65,7 +65,8 @@ const refreshToken = async (args: RefreshTokenArgs): Promise<AuthTokens> => {
   const payload = {
     communityId: member.community.id,
     memberId: member.id,
-    userId: user.id
+    userId: user.id,
+    ...(email ? { event: VerifyEvent.LOG_IN } : {})
   };
 
   const tokens: AuthTokens = {
