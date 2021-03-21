@@ -1,4 +1,9 @@
-import { Connection, IDatabaseDriver, Options } from '@mikro-orm/core';
+import {
+  Connection,
+  IDatabaseDriver,
+  MigrationsOptions,
+  Options
+} from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
 import BloomManagerSubscriber from '@core/db/BloomManager.subscriber';
@@ -25,11 +30,26 @@ import Supporter from '@entities/supporter/Supporter';
 import Task from '@entities/task/Task';
 import User from '@entities/user/User';
 
+const migrationsOptions: MigrationsOptions = {
+  allOrNothing: true,
+  disableForeignKeys: false,
+  dropTables: true,
+  emit: 'ts',
+  path: './migrations',
+  safe: false,
+  tableName: 'migrations',
+  transactional: true
+};
+
 /**
  * Exports all of the database connection and initialization information.
  */
 const dbConfig: Options<IDatabaseDriver<Connection>> = {
-  dbName: process.env.DB_NAME,
+  dbName:
+    process.env.NODE_ENV === 'test'
+      ? `${process.env.DB_NAME}-test`
+      : process.env.DB_NAME,
+  debug: process.env.APP_ENV === 'dev' && process.env.NODE_ENV !== 'test',
   // This option disallows the usage of entitiesDirs and caching, which we set
   // to true b/c we need since BaseEntity is in a different folder than the
   // rest of the entities.
@@ -60,6 +80,7 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
   ],
   filters: { notDeleted: { args: false, cond: { deletedAt: null } } },
   host: process.env.DB_HOST,
+  migrations: migrationsOptions,
   namingStrategy: NamingStrategy,
   password: process.env.DB_PASSWORD,
   port: Number(process.env.DB_PORT),

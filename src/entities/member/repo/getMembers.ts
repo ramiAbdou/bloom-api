@@ -42,8 +42,7 @@ const getMembers = async (args: GetMembersArgs): Promise<Member[]> => {
       cacheKey: communityId
         ? `${QueryEvent.GET_MEMBERS}-${communityId}`
         : `${QueryEvent.GET_MEMBERS}-${userId}`,
-      orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC },
-      populate: userId ? ['community'] : []
+      orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC }
     }
   );
 

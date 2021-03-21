@@ -101,6 +101,11 @@ const processRow = async ({
         return;
       }
 
+      if (key === QuestionCategory.TWITTER_URL) {
+        socials.twitterUrl = value;
+        return;
+      }
+
       if (key === QuestionCategory.JOINED_AT) {
         const dayObject = day.utc(value);
 

@@ -15,7 +15,7 @@ module.exports = {
       rules: { 'class-methods-use-this': 0 }
     },
     {
-      files: ['index.ts'],
+      files: ['index.ts', 'Migration*.ts'],
       rules: { 'import/prefer-default-export': 0 }
     },
     { files: ['*.router.ts'], rules: { 'class-methods-use-this': 0 } },

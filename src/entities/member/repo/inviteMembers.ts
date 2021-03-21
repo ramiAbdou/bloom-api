@@ -80,18 +80,17 @@ const inviteMembers = async (
 
   const bm = new BloomManager();
 
-  const community = await bm.findOne(Community, { id: communityId });
+  const community = await bm.findOne(Community, communityId);
 
   const members: Member[] = await Promise.all(
     inputs.map(async ({ isAdmin, email, firstName, lastName }) => {
-      const [user] = await bm.findOneOrCreate(
-        User,
-        { email },
-        { email, firstName, lastName }
-      );
+      const [user] = await bm.findOneOrCreate(User, { email }, { email });
 
       return bm.create(Member, {
         community,
+        email,
+        firstName,
+        lastName,
         memberIntegrations: bm.create(MemberIntegrations, {}),
         plan: community.defaultType.id,
         role: isAdmin ? MemberRole.ADMIN : null,

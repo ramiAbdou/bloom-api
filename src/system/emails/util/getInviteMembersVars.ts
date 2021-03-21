@@ -2,6 +2,7 @@ import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import Member from '@entities/member/Member';
 import { APP } from '@util/constants';
+import { VerifyEvent } from '@util/constants.events';
 import { buildUrl, signToken } from '@util/util';
 import { EmailPayload } from '../emails.types';
 
@@ -49,7 +50,7 @@ const getInviteMembersVars = async (
   const variables: InviteMembersVars[] = members.map((member: Member) => {
     const token: string = signToken({
       expires: false,
-      payload: { memberId: member.id }
+      payload: { event: VerifyEvent.LOG_IN, memberId: member.id }
     });
 
     const invitationUrl: string = buildUrl({
