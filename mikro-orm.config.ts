@@ -32,7 +32,7 @@ import User from '@entities/user/User';
 
 const migrationsOptions: MigrationsOptions = {
   allOrNothing: true,
-  disableForeignKeys: true,
+  disableForeignKeys: false,
   dropTables: true,
   emit: 'ts',
   path: './migrations',

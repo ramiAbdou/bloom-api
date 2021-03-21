@@ -11,9 +11,9 @@ export const isTest = process.env.APP_ENV === 'test';
 
 // Environment configuration must happen before loading the constants file
 // because the constants depend on the environment being configured.
-if (process.env.APP_ENV === 'dev') {
-  dotenv.config({ path: path.join(__dirname, '../../.env.dev') });
-}
+dotenv.config({
+  path: path.join(__dirname, `../../.env.${process.env.APP_ENV}`)
+});
 
 sg.setApiKey(process.env.SENDGRID_API_KEY);
 

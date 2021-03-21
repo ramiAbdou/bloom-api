@@ -11,6 +11,32 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
     return [Member];
   }
 
+  async afterCreate({ changeSet, entity: member }: EventArgs<Member>) {
+    Member.cache.invalidate([`${QueryEvent.GET_MEMBERS}-${member.id}`]);
+
+    // ## SYNC MEMBER VALUES
+
+    const { plan } = changeSet.payload ?? {};
+
+    const bm = new BloomManager();
+
+    if (plan) {
+      const question: Question = await bm.findOne(Question, {
+        category: QuestionCategory.MEMBER_PLAN,
+        community: member.community.id
+      });
+
+      await bm.findOneOrCreate(
+        MemberValue,
+        { member: member.id, question: question.id },
+        { member: member.id, question: question.id, value: plan.name },
+        { update: true }
+      );
+    }
+
+    await bm.flush();
+  }
+
   async afterUpdate({ changeSet, entity: member }: EventArgs<Member>) {
     Member.cache.invalidate([`${QueryEvent.GET_MEMBERS}-${member.id}`]);
 
