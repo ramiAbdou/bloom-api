@@ -45,8 +45,11 @@ const migrationsOptions: MigrationsOptions = {
  * Exports all of the database connection and initialization information.
  */
 const dbConfig: Options<IDatabaseDriver<Connection>> = {
-  dbName: process.env.DB_NAME,
-  debug: process.env.APP_ENV === 'dev',
+  dbName:
+    process.env.NODE_ENV === 'test'
+      ? `${process.env.DB_NAME}-test`
+      : process.env.DB_NAME,
+  debug: process.env.APP_ENV === 'dev' && process.env.NODE_ENV !== 'test',
   // This option disallows the usage of entitiesDirs and caching, which we set
   // to true b/c we need since BaseEntity is in a different folder than the
   // rest of the entities.

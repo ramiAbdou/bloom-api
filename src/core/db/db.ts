@@ -12,6 +12,11 @@ class Db {
    */
   async createConnection(): Promise<MikroORM<PostgreSqlDriver>> {
     const orm = (await MikroORM.init(dbConfig)) as MikroORM<PostgreSqlDriver>;
+
+    if (process.env.NODE_ENV === 'test') {
+      await orm.getSchemaGenerator().updateSchema();
+    }
+
     this.em = orm.em;
     return orm;
   }
