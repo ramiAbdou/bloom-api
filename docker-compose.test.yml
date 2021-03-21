@@ -15,4 +15,4 @@ services:
     container_name: bloom-api-test
     depends_on:
       - db
-      - bloom-api
+      - bloom-api-dev

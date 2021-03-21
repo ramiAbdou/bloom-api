@@ -24,7 +24,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_USER: ${DB_USER}
 
-  bloom-api:
+  bloom-api-dev:
     ## Uses the dev environment variables.
     env_file: .env.dev
     build:
@@ -32,7 +32,7 @@ services:
       dockerfile: Dockerfile
       ## Targetting the build stage of the Dockerfile.
       target: dev
-    container_name: bloom-api
+    container_name: bloom-api-dev
     volumes:
       - ./src:/usr/app/src
       ## Extremely important to enable hot reloading thru Docker container.
