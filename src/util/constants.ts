@@ -4,11 +4,6 @@ import path from 'path'; // Before constants.
 
 import sg from '@sendgrid/mail';
 
-export const isDevelopment = process.env.APP_ENV === 'dev';
-export const isProduction = process.env.APP_ENV === 'prod';
-export const isStage = process.env.APP_ENV === 'stage';
-export const isTest = process.env.APP_ENV === 'test';
-
 // Environment configuration must happen before loading the constants file
 // because the constants depend on the environment being configured.
 dotenv.config({

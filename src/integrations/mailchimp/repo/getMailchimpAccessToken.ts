@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { URLSearchParams } from 'url';
 
-import { APP, AuthQueryArgs, isDevelopment } from '@util/constants';
+import { APP, AuthQueryArgs } from '@util/constants';
 
 /**
  * Returns the Mailchimp access token.
@@ -16,9 +16,10 @@ const getMailchimpAccessToken = async (
   // All the other redirect URIs use localhost when in development, but
   // Mailchimp forces us to use 127.0.0.1 instead, so we can't use the
   // APP.SERVER_URL local URL.
-  const BASE_URI: string = !isDevelopment
-    ? APP.SERVER_URL
-    : 'http://127.0.0.1:8080';
+  const BASE_URI: string =
+    process.env.APP_ENV === 'stage' || process.env.APP_ENV === 'prod'
+      ? APP.SERVER_URL
+      : 'http://127.0.0.1:8080';
 
   const options: AxiosRequestConfig = {
     data: new URLSearchParams({

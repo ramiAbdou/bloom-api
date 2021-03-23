@@ -10,7 +10,7 @@ import MemberValue from '@entities/member-value/MemberValue';
 import Member, { MemberRole, MemberStatus } from '@entities/member/Member';
 import Question, { QuestionCategory } from '@entities/question/Question';
 import User from '@entities/user/User';
-import { isProduction, TEST_EMAILS } from '@util/constants';
+import { TEST_EMAILS } from '@util/constants';
 import { FlushEvent } from '@util/constants.events';
 import Community from '../Community';
 
@@ -52,7 +52,9 @@ const processRow = async ({
   const { EMAIL: dirtyEmail, FIRST_NAME: firstName, LAST_NAME: lastName } = row;
 
   const email: string =
-    isProduction || TEST_EMAILS.includes(dirtyEmail)
+    process.env.APP_ENV === 'stage' ||
+    process.env.APP_ENV === 'prod' ||
+    TEST_EMAILS.includes(dirtyEmail)
       ? dirtyEmail?.toLowerCase()
       : internet.email();
 
