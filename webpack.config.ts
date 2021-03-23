@@ -4,7 +4,7 @@ import DuplicatePackageCheckerPlugin from 'duplicate-package-checker-webpack-plu
 import knexPackage from 'knex/package.json';
 import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
-import { EnvironmentPlugin, IgnorePlugin } from 'webpack';
+import { Configuration, EnvironmentPlugin, IgnorePlugin } from 'webpack';
 import mikroOrmPackage from '@mikro-orm/core/package.json';
 
 let dotEnvName: string;
@@ -21,7 +21,7 @@ const optionalModules = new Set([
   ...Object.keys(mikroOrmPackage.peerDependencies)
 ]);
 
-export default {
+const webpackConfig: Configuration = {
   entry: path.join(__dirname, '/src/index.ts'),
 
   // Automatically sets the NODE_ENV to production as well.
@@ -54,6 +54,7 @@ export default {
     ]
   },
 
+  // Outputs the file to dist/index.js.
   output: { filename: 'index.js', path: path.join(__dirname, '/dist') },
 
   plugins: [
@@ -95,8 +96,14 @@ export default {
       graphql$: path.resolve('./node_modules/graphql/index.js')
     },
     extensions: ['.ts', '.js', '.json'],
-    plugins: [new TsConfigPathsPlugin()]
+    plugins: [
+      // Reads the tsconfig.json file and automatically imports all of the
+      // aliases that we've defined there.
+      new TsConfigPathsPlugin()
+    ]
   },
 
   target: 'node'
 };
+
+export default webpackConfig;
