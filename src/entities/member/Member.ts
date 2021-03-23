@@ -155,6 +155,7 @@ export default class Member extends BaseEntity {
     // Every community should've assigned one default member.
     if (!this.plan) this.plan = this.community.defaultType;
 
+    this.email = this.email.toLowerCase();
     this.firstName = this.firstName.trim();
     this.lastName = this.lastName.trim();
   }
