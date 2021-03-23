@@ -67,7 +67,7 @@ export class Migration20210320232407 extends Migration {
     );
 
     this.addSql(
-      'create table "member_plans" ("id" varchar(255) not null, "created_at" varchar(255) not null, "deleted_at" varchar(255) null, "updated_at" varchar(255) not null, "amount" decimal not null, "name" varchar(255) not null, "recurrence" text check ("recurrence" in (\'Monthly\', \'Yearly\')) not null, "stripe_price_id" varchar(255) null, "stripe_product_id" varchar(255) null, "community_id" varchar(255) not null);'
+      'create table "member_plans" ("id" varchar(255) not null, "created_at" varchar(255) not null, "deleted_at" varchar(255) null, "updated_at" varchar(255) not null, "amount" decimal not null, "name" varchar(255) not null, "recurrence" text check ("recurrence" in (\'Lifetime\', \'Monthly\', \'Yearly\')) not null, "stripe_price_id" varchar(255) null, "stripe_product_id" varchar(255) null, "community_id" varchar(255) not null);'
     );
 
     this.addSql(

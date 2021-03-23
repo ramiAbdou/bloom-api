@@ -1,22 +1,25 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@util/constants';
-import { CreateSubsciptionArgs } from '../payment/repo/createSubscription';
 import MemberIntegrations from './MemberIntegrations';
 import getChangePreview, {
+  GetChangePreviewArgs,
   GetChangePreviewResult
 } from './repo/getChangePreview';
 import getMemberIntegrations from './repo/getMemberIntegrations';
 import updateStripePaymentMethodId, {
   UpdateStripePaymentMethodIdArgs
 } from './repo/updateStripePaymentMethodId';
+import updateStripeSubscriptionId, {
+  UpdateStripeSubscriptionIdArgs
+} from './repo/updateStripeSubscriptionId';
 
 @Resolver()
 export default class MemberIntegrationsResolver {
   @Authorized()
   @Query(() => GetChangePreviewResult, { nullable: true })
   async getChangePreview(
-    @Args() args: CreateSubsciptionArgs,
+    @Args() args: GetChangePreviewArgs,
     @Ctx() ctx: GQLContext
   ): Promise<GetChangePreviewResult> {
     return getChangePreview(args, ctx);
@@ -37,5 +40,14 @@ export default class MemberIntegrationsResolver {
     @Ctx() ctx: GQLContext
   ): Promise<MemberIntegrations> {
     return updateStripePaymentMethodId(args, ctx);
+  }
+
+  @Authorized()
+  @Mutation(() => MemberIntegrations, { nullable: true })
+  async updateStripeSubscriptionId(
+    @Args() args: UpdateStripeSubscriptionIdArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<MemberIntegrations> {
+    return updateStripeSubscriptionId(args, ctx);
   }
 }

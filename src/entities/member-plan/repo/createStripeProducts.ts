@@ -1,9 +1,10 @@
 import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
+import { assign } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
-import MemberPlan from '@entities/member-plan/MemberPlan';
+import MemberPlan, { RecurrenceType } from '@entities/member-plan/MemberPlan';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { FlushEvent } from '@util/constants.events';
 
@@ -21,29 +22,31 @@ const attachStripeProduct = async (
   args: CreateStripeProductArgs
 ): Promise<MemberPlan> => {
   const { stripeAccountId, plan } = args;
-  const { amount, id, name } = plan;
+  const { amount, id, name, recurrence } = plan;
 
   const product: Stripe.Product = await stripe.products.create(
     { id, name },
     { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
-  const recurring: Partial<Stripe.PriceCreateParams> = {};
-
   const price: Stripe.Price = await stripe.prices.create(
     {
-      ...recurring,
       currency: 'usd',
       product: product.id,
+      recurring: {
+        interval: recurrence === RecurrenceType.MONTHLY ? 'month' : 'year'
+      },
       unit_amount: amount * 100
     },
     { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
-  plan.stripePriceId = price.id;
-  plan.stripeProductId = product.id;
+  const updatedPlan: MemberPlan = assign(plan, {
+    stripePriceId: price.id,
+    stripeProductId: product.id
+  });
 
-  return plan;
+  return updatedPlan;
 };
 
 interface CreateStripeProductsArgs {

@@ -10,7 +10,6 @@ import updateStripePaymentMethodId from '@entities/member-integrations/repo/upda
 import MemberPlan, { RecurrenceType } from '@entities/member-plan/MemberPlan';
 import MemberSocials from '@entities/member-socials/MemberSocials';
 import MemberValue from '@entities/member-value/MemberValue';
-import createSubscription from '@entities/payment/repo/createSubscription';
 import Question, {
   QuestionCategory,
   QuestionType
@@ -19,6 +18,7 @@ import User from '@entities/user/User';
 import { emitEmailEvent } from '@system/eventBus';
 import { GQLContext } from '@util/constants';
 import { EmailEvent, FlushEvent } from '@util/constants.events';
+import updateStripeSubscriptionId from '../../member-integrations/repo/updateStripeSubscriptionId';
 import Member from '../Member';
 
 @InputType()
@@ -77,7 +77,7 @@ const createApplicationPayment = async (
 
   try {
     await updateStripePaymentMethodId({ paymentMethodId }, ctx);
-    await createSubscription({ memberPlanId }, ctx);
+    await updateStripeSubscriptionId({ memberPlanId }, ctx);
   } catch (e) {
     await new BloomManager().findOneAndDelete(Member, { id: ctx.memberId });
     throw new Error(`There was a problem processing your payment.`);

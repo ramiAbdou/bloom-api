@@ -1,13 +1,21 @@
 import Stripe from 'stripe';
-import { Field, ObjectType } from 'type-graphql';
+import { ArgsType, Field, ObjectType } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
-import Community from '@entities/community/Community';
+import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import MemberPlan from '@entities/member-plan/MemberPlan';
-import { CreateSubsciptionArgs } from '@entities/payment/repo/createSubscription';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
 import MemberIntegrations from '../MemberIntegrations';
+
+@ArgsType()
+export class GetChangePreviewArgs {
+  @Field()
+  memberPlanId: string;
+
+  @Field(() => Number, { nullable: true })
+  prorationDate?: number;
+}
 
 @ObjectType()
 export class GetChangePreviewResult {
@@ -27,7 +35,7 @@ export class GetChangePreviewResult {
  * @param ctx.memberId - ID of the Member (authenticated).
  */
 const getChangePreview = async (
-  args: Pick<CreateSubsciptionArgs, 'memberPlanId'>,
+  args: Pick<GetChangePreviewArgs, 'memberPlanId'>,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<GetChangePreviewResult> => {
   const { memberPlanId } = args;
@@ -35,12 +43,12 @@ const getChangePreview = async (
 
   const bm: BloomManager = new BloomManager();
 
-  const [community, memberIntegrations, plan]: [
-    Community,
+  const [communityIntegrations, memberIntegrations, memberPlan]: [
+    CommunityIntegrations,
     MemberIntegrations,
     MemberPlan
   ] = await Promise.all([
-    bm.findOne(Community, communityId, { populate: ['communityIntegrations'] }),
+    bm.findOne(CommunityIntegrations, { community: communityId }),
     bm.findOne(MemberIntegrations, { member: memberId }),
     bm.findOne(MemberPlan, memberPlanId)
   ]);
@@ -51,22 +59,25 @@ const getChangePreview = async (
 
   const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(
     stripeSubscriptionId,
-    { stripeAccount: community.communityIntegrations.stripeAccountId }
+    { stripeAccount: communityIntegrations.stripeAccountId }
   );
 
   const prorationDate: number = Math.floor(Date.now() / 1000);
+
+  const subscriptionItems = [
+    // Switch to new price to see what the next invoice would look like.
+    { id: subscription.items.data[0].id, price: memberPlan.stripePriceId }
+  ] as Stripe.InvoiceRetrieveUpcomingParams.SubscriptionItem[];
 
   const invoice: Stripe.Invoice = await stripe.invoices.retrieveUpcoming(
     {
       customer: stripeCustomerId,
       subscription: stripeSubscriptionId,
-      subscription_items: [
-        { id: subscription.items.data[0].id, price: plan.stripePriceId }
-      ],
+      subscription_items: subscriptionItems,
       subscription_proration_behavior: 'always_invoice',
       subscription_proration_date: prorationDate
     },
-    { stripeAccount: community.communityIntegrations.stripeAccountId }
+    { stripeAccount: communityIntegrations.stripeAccountId }
   );
 
   const dollarAmount = invoice.amount_due / 100;

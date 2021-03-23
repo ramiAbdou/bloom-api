@@ -34,6 +34,8 @@ const updateStripeCustomerId = async (
   // customer.
   if (memberIntegrations.stripeCustomerId) return memberIntegrations;
 
+  // Otherwise, create the Stripe Customer and attach the ID to the
+  // MemberIntegrations instance.
   const stripeCustomer: Stripe.Customer = await createStripeCustomer({
     email: member.email,
     fullName: member.fullName,
