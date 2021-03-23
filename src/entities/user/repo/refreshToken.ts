@@ -42,7 +42,7 @@ const refreshToken = async (args: RefreshTokenArgs): Promise<AuthTokens> => {
   else if (rToken) queryArgs = { refreshToken: rToken };
   else if (memberId) queryArgs = { members: { id: memberId } };
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const user: User = await bm.findOne(User, queryArgs);
 

@@ -39,9 +39,9 @@ const updateStripeSubscriptionId = async (
   const { memberPlanId, prorationDate } = args;
   const { communityId, memberId } = ctx;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
-  const [communityIntegrations, memberIntegrations, type]: [
+  const [communityIntegrations, memberIntegrations, plan]: [
     CommunityIntegrations,
     MemberIntegrations,
     MemberPlan
@@ -54,13 +54,13 @@ const updateStripeSubscriptionId = async (
   const createSubscriptionArgs: CreateStripeSubscriptionArgs = {
     stripeAccountId: communityIntegrations.stripeAccountId,
     stripeCustomerId: memberIntegrations.stripeCustomerId,
-    stripePriceId: type.stripePriceId
+    stripePriceId: plan.stripePriceId
   };
 
   const updateSubscriptionArgs: UpdateStripeSubscriptionArgs = {
     prorationDate,
     stripeAccountId: communityIntegrations.stripeAccountId,
-    stripePriceId: type.stripePriceId,
+    stripePriceId: plan.stripePriceId,
     stripeSubscriptionId: memberIntegrations.stripeSubscriptionId
   };
 

@@ -38,7 +38,7 @@ const createSubscription = async (
   await updateStripeCustomerId(ctx);
   await updateStripeSubscriptionId(args, ctx);
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [communityIntegrations, memberIntegrations]: [
     CommunityIntegrations,

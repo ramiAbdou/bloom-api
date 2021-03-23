@@ -38,7 +38,7 @@ const createPayment = async (
 
   assertCreatePayment(args);
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const member: Member = await bm.findOne(Member, memberId, {
     populate: ['memberIntegrations']

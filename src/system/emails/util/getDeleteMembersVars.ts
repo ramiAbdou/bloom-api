@@ -25,7 +25,7 @@ const getDeleteMembersVars = async (
 ): Promise<DeleteMembersVars[]> => {
   const { communityId, memberIds } = context as DeleteMembersPayload;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [community, owner, members]: [
     Community,

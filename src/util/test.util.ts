@@ -110,7 +110,7 @@ interface BuildTestObjectArgs<T = any> {
 }
 
 export const buildApplication = async (): Promise<Application> => {
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   return bm.createAndFlush(Application, {
     community: bm.create(Community, {
@@ -124,7 +124,7 @@ export const buildApplication = async (): Promise<Application> => {
 };
 
 export const buildCommunity = async (): Promise<Community> => {
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   return bm.createAndFlush(Community, {
     application: bm.create(Application, {
@@ -138,7 +138,7 @@ export const buildCommunity = async (): Promise<Community> => {
 };
 
 export const buildCommunityIntegrations = async (): Promise<CommunityIntegrations> => {
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   return bm.createAndFlush(CommunityIntegrations, {
     community: bm.create(Community, {
@@ -154,7 +154,7 @@ export const buildEvent = async (
 ): Promise<Event | Event[]> => {
   const { buildOverrides = () => null, count = 1, overrides = {} } = args ?? {};
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const community: Community = bm.create(Community, {
     name: faker.random.word(),

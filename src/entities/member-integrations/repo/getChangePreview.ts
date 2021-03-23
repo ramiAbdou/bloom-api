@@ -33,7 +33,7 @@ const getChangePreview = async (
   const { memberPlanId } = args;
   const { communityId, memberId } = ctx;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [community, memberIntegrations, plan]: [
     Community,

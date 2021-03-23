@@ -21,7 +21,7 @@ const getDeleteEventGuestsVars = async (
 ): Promise<DeleteEventGuestsVars[]> => {
   const { communityId, eventId } = context as DeleteEventGuestsPayload;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [community, event, guests]: [
     Community,

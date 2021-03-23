@@ -26,7 +26,7 @@ const getEventRsvpVars = async (
 ): Promise<EventRsvpVars[]> => {
   const { communityId, eventId, guestId } = context as EventRsvpPayload;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [community, event, guest]: [
     Community,

@@ -24,7 +24,7 @@ const createEventWatch = async (
   const { eventId } = args;
   const { memberId } = ctx;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [watch, wasFound]: [EventWatch, boolean] = await bm.findOneOrCreate(
     EventWatch,

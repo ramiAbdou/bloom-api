@@ -4,9 +4,6 @@ import { MemberRole } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import { TimeSeriesData } from '@util/constants.gql';
 import Payment from './Payment';
-import createLifetimePayment, {
-  CreateLifetimePaymentArgs
-} from './repo/createLifetimePayment';
 import createSubscription, {
   CreateSubsciptionArgs
 } from './repo/createSubscription';
@@ -15,15 +12,6 @@ import getPaymentsSeries from './repo/getPaymentsSeries';
 
 @Resolver()
 export default class PaymentResolver {
-  @Authorized()
-  @Mutation(() => Payment, { nullable: true })
-  async createLifetimePayment(
-    @Args() args: CreateLifetimePaymentArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<Payment> {
-    return createLifetimePayment(args, ctx);
-  }
-
   @Authorized()
   @Mutation(() => Payment, { nullable: true })
   async createSubscription(

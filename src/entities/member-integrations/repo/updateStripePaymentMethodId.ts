@@ -29,7 +29,7 @@ const updateStripePaymentMethodId = async (
   const { paymentMethodId } = args;
   const { communityId, memberId } = ctx;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [communityIntegrations, memberIntegrations]: [
     CommunityIntegrations,

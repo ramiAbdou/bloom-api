@@ -142,7 +142,7 @@ const processRow = async ({
  * adds a Member based on the current users in our DB.
  */
 const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [community, responses]: [
     Community,

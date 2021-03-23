@@ -20,7 +20,7 @@ const handleInvoicePaid = async (event: Stripe.Event) => {
   const stripeAccountId: string = event.account;
   const invoice = event.data.object as Stripe.Invoice;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [community, member, payment]: [
     Community,

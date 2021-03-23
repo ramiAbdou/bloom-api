@@ -18,7 +18,7 @@ const updateStripeCustomerId = async (
 ): Promise<MemberIntegrations> => {
   const { communityId, memberId } = ctx;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [communityIntegrations, member, memberIntegrations]: [
     CommunityIntegrations,

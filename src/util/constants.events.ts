@@ -52,7 +52,6 @@ export enum MutationEvent {
   CREATE_EVENT_ATTENDEE = 'createEventAttendee',
   CREATE_EVENT_GUEST = 'createEventGuest',
   CREATE_EVENT_WATCH = 'createEventWatch',
-  CREATE_LIFETIME_PAYMENT = 'createLifetimePayment',
   CREATE_MEMBER_PLANS = 'createMemberPlans',
   CREATE_SUBSCRIPTION = 'createSubscription',
   DELETE_EVENT = 'deleteEvent',

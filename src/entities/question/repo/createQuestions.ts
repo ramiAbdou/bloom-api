@@ -30,7 +30,7 @@ const createQuestions = async (
   const { highlightedQuestionTitle, questions: initialQuestions } = args;
   const { communityId } = ctx;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
   const community: Community = await bm.findOne(Community, communityId);
 
   let highlightedQuestion: Question;

@@ -25,7 +25,7 @@ const getActiveMembersGrowth = async (
   const startOf30DaysAgo = day.utc().subtract(30, 'day').startOf('d').format();
   const startOf60DaysAgo = day.utc().subtract(60, 'day').startOf('d').format();
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const refreshesLastMonth: number = await bm.em.count(Member, {
     community: communityId,

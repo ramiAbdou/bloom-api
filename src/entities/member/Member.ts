@@ -123,9 +123,6 @@ export default class Member extends BaseEntity {
     const { createdAt } = lastDuesPayment;
     const { recurrence } = this.plan;
 
-    // If it's a LIFETIME payment, then they are active!
-    if (recurrence === RecurrenceType.LIFETIME) return true;
-
     if (recurrence === RecurrenceType.MONTHLY) {
       const oneMonthAgo: day.Dayjs = day.utc().subtract(1, 'month');
       return day.utc(createdAt)?.isAfter(oneMonthAgo);

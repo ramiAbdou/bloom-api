@@ -3,7 +3,7 @@ import Stripe from 'stripe';
 
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
-import MemberPlan, { RecurrenceType } from '@entities/member-plan/MemberPlan';
+import MemberPlan from '@entities/member-plan/MemberPlan';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { FlushEvent } from '@util/constants.events';
 
@@ -21,24 +21,14 @@ const attachStripeProduct = async (
   args: CreateStripeProductArgs
 ): Promise<MemberPlan> => {
   const { stripeAccountId, plan } = args;
-  const { amount, id, name, recurrence } = plan;
+  const { amount, id, name } = plan;
 
-  // Create the subscription even if the product is LIFETIME fulfilled
-  // subscription.
   const product: Stripe.Product = await stripe.products.create(
     { id, name },
     { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
-  let recurring: Partial<Stripe.PriceCreateParams> = {};
-
-  if (recurrence !== RecurrenceType.LIFETIME) {
-    recurring = {
-      recurring: {
-        interval: recurrence === RecurrenceType.MONTHLY ? 'month' : 'year'
-      }
-    };
-  }
+  const recurring: Partial<Stripe.PriceCreateParams> = {};
 
   const price: Stripe.Price = await stripe.prices.create(
     {
@@ -67,7 +57,7 @@ interface CreateStripeProductsArgs {
 const createStripeProducts = async (args: CreateStripeProductsArgs) => {
   const { urlName } = args;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [communityIntegrations, plans]: [
     CommunityIntegrations,
