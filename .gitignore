@@ -1,7 +1,6 @@
 .env.dev
 .env.stage
 .env.prod
-.vscode
 *_data.sql
 coverage
 dist
@@ -11,4 +10,3 @@ node_modules
 package-lock.json
 membership-csv
 postgresql
-scripts

@@ -10,7 +10,6 @@ import MemberValue from '@entities/member-value/MemberValue';
 import Member, { MemberRole, MemberStatus } from '@entities/member/Member';
 import Question, { QuestionCategory } from '@entities/question/Question';
 import User from '@entities/user/User';
-import { TEST_EMAILS } from '@util/constants';
 import { FlushEvent } from '@util/constants.events';
 import Community from '../Community';
 
@@ -54,7 +53,7 @@ const processRow = async ({
   const email: string =
     process.env.APP_ENV === 'stage' ||
     process.env.APP_ENV === 'prod' ||
-    TEST_EMAILS.includes(dirtyEmail)
+    dirtyEmail === process.env.USER_EMAIL
       ? dirtyEmail?.toLowerCase()
       : internet.email();
 
@@ -149,7 +148,7 @@ const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
     Record<string, any>[]
   ] = await Promise.all([
     bm.findOne(Community, { urlName }, { populate: ['questions', 'plans'] }),
-    csv().fromFile(`./membership-csv/${urlName}.csv`)
+    csv().fromFile(`./seeders/${urlName}.csv`)
   ]);
 
   const questions = community.questions.getItems();

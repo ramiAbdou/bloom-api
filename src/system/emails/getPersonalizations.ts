@@ -1,5 +1,4 @@
 import logger from '@system/logger/logger';
-import { TEST_EMAILS } from '@util/constants';
 import { EmailEvent } from '@util/constants.events';
 import { splitArrayIntoChunks } from '@util/util';
 import { EmailArgs, EmailVars } from './emails.types';
@@ -29,7 +28,7 @@ export interface FormatPersonalizationData {
  * Returns the formatted personalizations for a SendGrid email.
  *
  * If development environment, filters all personalizations out that aren't
- * going to TEST_EMAILS.
+ * going to process.env.USER_EMAIL.
  *
  * @param variables - Variables for an email template.
  */
@@ -41,7 +40,7 @@ const formatPersonalizations = (
       return (
         process.env.APP_ENV === 'stage' ||
         process.env.APP_ENV === 'prod' ||
-        TEST_EMAILS.includes(vars.member.email)
+        vars.member.email === process.env.USER_EMAIL
       );
     })
     .map((vars: EmailVars) => {
