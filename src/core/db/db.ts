@@ -21,6 +21,18 @@ class Db {
     return orm;
   }
 
+  /**
+   * Removes all records in the database. Helps in unit testing not to have
+   * polluted data. Anywhere this is used, don't forget to close the connection!
+   */
+  async cleanForTesting(): Promise<void> {
+    if (process.env.APP_ENV !== 'dev') return;
+
+    const orm = await this.createConnection();
+    await orm.getSchemaGenerator().dropSchema();
+    await orm.getSchemaGenerator().createSchema();
+  }
+
   async close(): Promise<void> {
     await this.em?.getConnection()?.close();
   }

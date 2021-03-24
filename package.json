@@ -14,7 +14,8 @@
     "format:check": "prettier --ignore-path .gitignore --list-different \"**/*.+(js|ts|json)\"",
     "lint": "eslint --ignore-path .gitignore . --ext .ts",
     "lint:fix": "eslint --ignore-path .gitignore . --ext .ts --fix",
-    "seed:dev": "APP_ENV=dev ts-node -r tsconfig-paths/register scripts/seeder.ts",
+    "migrate:up:dev": "APP_ENV=dev npx mikro-orm migration:up",
+    "seed:dev": "APP_ENV=dev ts-node -r tsconfig-paths/register seeders/seeder.ts",
     "start:dev": "APP_ENV=dev nodemon -L",
     "start:stage": "APP_ENV=stage node dist/index.js",
     "start:prod": "APP_ENV=prod node dist/index.js",
@@ -23,7 +24,8 @@
     "test:integration": "APP_ENV=dev jest --group=integration",
     "test:unit": "APP_ENV=dev jest --group=unit",
     "test:watch": "APP_ENV=dev jest --watch",
-    "validate": "npm-run-all --parallel format:check lint"
+    "validate": "npm-run-all --parallel format:check lint",
+    "wipe:dev": "APP_ENV=dev ts-node -r tsconfig-paths/register seeders/wipe.ts"
   },
   "engines": {
     "node": "12.16.3",

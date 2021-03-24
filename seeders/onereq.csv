@@ -1,0 +1,200 @@
+FIRST_NAME,LAST_NAME,EMAIL,GENDER,MEMBERSHIP_TYPE,JOINED_AT,Company,Title/Role,LINKEDIN_URL,Focus Area,Other Focus Area(s)
+Rami,Abdou,rami@onbloom.co,Male,General Member,9/25/2020 6:44:00,Robinhood,Head of Recruiting,www.linkedin.com,Recruiting Leadership,"Employer Branding, University Recruiting"
+Kimberly,Crevecoeur,krcrevec@iu.edu,Female,General Member,9/25/2020 6:44:00,Google,Recruiting Manager,www.linkedin.com,Employer Branding,Recruiting Vendor
+Calvin,Green,cjg60256@gmail.com,Male,General Member,9/25/2020 3:11:00,Microsoft,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,Executive Recruiting
+Lucas,Onwuchekwa,lucaso@iastate.edu,Male,General Member,9/25/2020 1:34:00,Cisco,Sr. Recruiter,www.linkedin.com,University Recruiting,"Technical Recruiting, Employer Branding"
+Lleon,Swanston,lswanston1@pride.hofstra.edu,Male,General Member,9/24/2020 22:02:00,Adobe,Recruiting Manager,www.linkedin.com,Technical Recruiting,"Employer Branding, University Recruiting"
+Allan,Raposo,Araposo1@jhu.edu,Male,General Member,9/24/2020 20:33:00,MongoDB,Associate Recruiter,www.linkedin.com,Executive Recruiting,Recruiting Vendor
+Shavonna,Jackson,shavonnaejackson@gmail.com,Female,General Member,9/24/2020 16:26:00,Facebook,Sr. Recruiter,www.linkedin.com,Product Recruiting,Executive Recruiting
+Amadou,Tounkara,tuh10510@temple.edu,Male,General Member,9/24/2020 16:15:00,Twitter,Associate Recruiter,www.linkedin.com,G&A Recruiting,"Technical Recruiting, Employer Branding"
+Austen,Roberson,ajrober@mit.edu,Male,General Member,9/24/2020 13:14:00,Google,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)","Employer Branding, University Recruiting"
+Felipe,Oliveira,felipehlvo@minerva.lgi.edu,Male,General Member,9/24/2020 7:18:00,Microsoft,Associate Recruiter,www.linkedin.com,Recruiting Vendor,Recruiting Vendor
+Daniel,Kalu,daniel@minerva.kgi.edu,Male,General Member,9/24/2020 2:29:00,Cisco,Head of Recruiting,www.linkedin.com,Recruiting Leadership,Executive Recruiting
+Charles,Marshall,charles123430@gmail.com,Male,General Member,9/23/2020 20:12:00,Adobe,Recruiting Manager,www.linkedin.com,Employer Branding,"Technical Recruiting, Employer Branding"
+Hope,Smith,hopesmithstudent@gmail.com,Female,General Member,9/22/2020 20:05:00,MongoDB,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,"Employer Branding, University Recruiting"
+Rashad,Landrum,rland7596@gmail.com,Male,General Member,9/22/2020 19:51:00,Facebook,Sr. Recruiter,www.linkedin.com,University Recruiting,Recruiting Vendor
+Dasha,Castillo,dashac@mit.edu,Non-Binary,General Member,9/22/2020 16:54:00,Twitter,Recruiting Manager,www.linkedin.com,Technical Recruiting,Executive Recruiting
+David,Akinyemi,dakinyem@bates.edu,Male,General Member,9/22/2020 16:48:00,Google,Associate Recruiter,www.linkedin.com,Executive Recruiting,"Technical Recruiting, Employer Branding"
+Harold,Cotacallapa,haroldcotacallapa@upeu.edu.pe,Male,General Member,9/22/2020 15:56:00,Microsoft,Sr. Recruiter,www.linkedin.com,Product Recruiting,"Employer Branding, University Recruiting"
+Elvis,Dyette,ndyette@mit.edu,Male,General Member,9/22/2020 15:10:00,Cisco,Associate Recruiter,www.linkedin.com,G&A Recruiting,Recruiting Vendor
+Chloe,Mack,chloe.mack@stonybrook.edu,Female,General Member,9/22/2020 14:05:00,Adobe,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)",Executive Recruiting
+Kondi,Phiri,kphiri1@jhu.edu,Male,General Member,9/22/2020 11:03:00,MongoDB,Associate Recruiter,www.linkedin.com,Recruiting Vendor,"Technical Recruiting, Employer Branding"
+Elliot,Bearden,olli.bearden@gmail.com,Non-Binary,General Member,9/21/2020 19:19:00,Facebook,Head of Recruiting,www.linkedin.com,Recruiting Leadership,"Employer Branding, University Recruiting"
+Oomi,Pammit,oomip@mit.edu,Female,General Member,9/21/2020 16:22:00,Google,Recruiting Manager,www.linkedin.com,Employer Branding,Recruiting Vendor
+Chad,Smith,smithc194@gator.uhd.edu,Male,General Member,9/21/2020 12:22:00,Microsoft,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,Executive Recruiting
+kouadio,kouadio,kouadio.kouadio@mail.citytech.cuny.edu,Male,General Member,9/21/2020 3:25:00,Cisco,Sr. Recruiter,www.linkedin.com,University Recruiting,"Technical Recruiting, Employer Branding"
+Bryan,Coronel,bryancoronel@wustl.edu,Male,General Member,9/20/2020 18:38:00,Adobe,Recruiting Manager,www.linkedin.com,Technical Recruiting,"Employer Branding, University Recruiting"
+Zahra,Al-Awadi,zalawadi@purdue.edu,Female,General Member,9/20/2020 18:11:00,MongoDB,Associate Recruiter,www.linkedin.com,Executive Recruiting,Recruiting Vendor
+Ryan,Widgeon,widgeon1996@gmail.com,Male,General Member,9/20/2020 16:22:00,Google,Sr. Recruiter,www.linkedin.com,Product Recruiting,Executive Recruiting
+Erick,Espinoza,wesleyespinoza1021@gmail.com,Male,General Member,9/20/2020 16:14:00,Microsoft,Associate Recruiter,www.linkedin.com,G&A Recruiting,"Technical Recruiting, Employer Branding"
+Iris,Beckham,iris.beckham@wustl.edu,Female,General Member,9/20/2020 13:47:00,Cisco,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)","Employer Branding, University Recruiting"
+Rogelio,Mendoza,rogeliojmendoza@utexas.edu,Male,General Member,9/20/2020 13:25:00,Adobe,Associate Recruiter,www.linkedin.com,Recruiting Vendor,Recruiting Vendor
+Hermilo,Dominguez,hermilodominguez19@gmail.com,Male,General Member,9/20/2020 12:53:00,Google,Head of Recruiting,www.linkedin.com,Recruiting Leadership,Executive Recruiting
+Hermilo,Dominguez,hermilodominguez19@gmail.com,Male,General Member,9/20/2020 12:36:00,Microsoft,Recruiting Manager,www.linkedin.com,Employer Branding,"Technical Recruiting, Employer Branding"
+Paden,Gayle,padengayle@gmail.com,Male,General Member,9/19/2020 22:20:00,Adobe,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,"Employer Branding, University Recruiting"
+Anthony,Peters,ap24698@georgiasouthern.edu,Male,General Member,9/19/2020 17:55:00,Google,Sr. Recruiter,www.linkedin.com,University Recruiting,Recruiting Vendor
+Briarre,Johnson,briarrej@umich.edu,Female,General Member,9/19/2020 17:02:00,Microsoft,Recruiting Manager,www.linkedin.com,Technical Recruiting,Executive Recruiting
+Michael,Sutton,micosu@mit.edu,Male,General Member,9/18/2020 22:14:00,Robinhood,Associate Recruiter,www.linkedin.com,Executive Recruiting,"Technical Recruiting, Employer Branding"
+Alexis,Rojas-Westall,abr5718@psu.edu,Female,General Member,9/18/2020 19:11:00,Google,Sr. Recruiter,www.linkedin.com,Product Recruiting,"Employer Branding, University Recruiting"
+Ian,Ochola,iao6@cornell.edu,Male,General Member,9/18/2020 18:57:00,Microsoft,Associate Recruiter,www.linkedin.com,G&A Recruiting,Recruiting Vendor
+Stephanie,Cherubin,stephanie.cherubin@students.makeschool.com,Female,General Member,9/18/2020 17:21:00,Cisco,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)",Executive Recruiting
+Nia,Davis,nd59616n@pace.edu,Female,General Member,9/18/2020 4:50:00,Adobe,Associate Recruiter,www.linkedin.com,Recruiting Vendor,"Technical Recruiting, Employer Branding"
+Jason,Peterson,jasonroy@seas.upenn.edu,Male,General Member,9/17/2020 22:48:00,MongoDB,Head of Recruiting,www.linkedin.com,Recruiting Leadership,"Employer Branding, University Recruiting"
+Rosa,Herrera,rherre001@citymail.cuny.edu,Female,General Member,9/17/2020 19:58:00,Facebook,Recruiting Manager,www.linkedin.com,Employer Branding,Recruiting Vendor
+Andy,Nunez,anunez.tech@gmail.com,Male,General Member,9/17/2020 19:58:00,Twitter,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,Executive Recruiting
+Anuoluwapo,oyetibo,aoyetibo@gmail.com,Male,General Member,9/17/2020 19:55:00,Google,Sr. Recruiter,www.linkedin.com,University Recruiting,"Technical Recruiting, Employer Branding"
+Noah,Williams,WilliamsNoah1720@gmail.com,Male,General Member,9/17/2020 19:16:00,Microsoft,Recruiting Manager,www.linkedin.com,Technical Recruiting,"Employer Branding, University Recruiting"
+Anita,Bangali,anita.bangali@students.makeschool.com,Female,General Member,9/17/2020 18:57:00,Cisco,Associate Recruiter,www.linkedin.com,Executive Recruiting,Recruiting Vendor
+Eric,Leiva-Ochoa,eric.leiva@knights.ucf.edu,Male,General Member,9/17/2020 17:02:00,Adobe,Sr. Recruiter,www.linkedin.com,Product Recruiting,Executive Recruiting
+Liya,Tilahun,liya.tilahun@students.makeschool.com,Female,General Member,9/17/2020 16:15:00,MongoDB,Associate Recruiter,www.linkedin.com,G&A Recruiting,"Technical Recruiting, Employer Branding"
+Rediet,Gesesse,rediet.gesesse@students.dominican.edu,Female,General Member,9/17/2020 16:09:00,Facebook,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)","Employer Branding, University Recruiting"
+David,Guerrero,davedogg323@gmail.com,Male,General Member,9/17/2020 16:07:00,Twitter,Associate Recruiter,www.linkedin.com,Recruiting Vendor,Recruiting Vendor
+Jocelyn,Reyes,reyesroj@dickinson.edu,Female,General Member,9/17/2020 16:02:00,Google,Head of Recruiting,www.linkedin.com,Recruiting Leadership,Executive Recruiting
+Christopher,Mullins,chris.mullins@students.makeschool.com,Male,General Member,9/17/2020 15:55:00,Microsoft,Recruiting Manager,www.linkedin.com,Employer Branding,"Technical Recruiting, Employer Branding"
+Jarquevious,Nelson,jarquevious.nelson@students.makeschool.com,Male,General Member,9/17/2020 15:53:00,Cisco,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,"Employer Branding, University Recruiting"
+Rediet,Gesesse,rediet.abere@students.makeschool.com,Female,General Member,9/17/2020 15:53:00,Adobe,Sr. Recruiter,www.linkedin.com,University Recruiting,Recruiting Vendor
+Emmanuel,Klutse,eklutse@tougaloo.edu,Male,General Member,9/17/2020 13:30:00,MongoDB,Recruiting Manager,www.linkedin.com,Technical Recruiting,Executive Recruiting
+Tyler,Anatole,tyanatole@gmail.com,Female,General Member,9/17/2020 9:28:00,Facebook,Associate Recruiter,www.linkedin.com,Executive Recruiting,"Technical Recruiting, Employer Branding"
+KeHara,Morris,keharamo@gmail.com,Female,General Member,9/17/2020 8:58:00,Google,Sr. Recruiter,www.linkedin.com,Product Recruiting,"Employer Branding, University Recruiting"
+Nicolas,Suter,nsuter@mit.edu,Male,General Member,9/16/2020 21:39:00,Microsoft,Associate Recruiter,www.linkedin.com,G&A Recruiting,Recruiting Vendor
+Marianna,Tejeda,mteje016@fiu.edu,Female,General Member,9/16/2020 19:38:00,Cisco,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)",Executive Recruiting
+Christian,Ortiz,clo42@georgetown.edu,Male,General Member,9/16/2020 18:12:00,Adobe,Associate Recruiter,www.linkedin.com,Recruiting Vendor,"Technical Recruiting, Employer Branding"
+Harouna,Zoundi,harounazoundi1@gmail.com,Male,General Member,9/16/2020 15:45:00,MongoDB,Head of Recruiting,www.linkedin.com,Recruiting Leadership,"Employer Branding, University Recruiting"
+Brandi,Cotton,bdcotton52@gmail.com,Female,General Member,9/15/2020 18:04:00,Google,Recruiting Manager,www.linkedin.com,Employer Branding,Recruiting Vendor
+Diego,Arenas,dmarenas@mit.edu,Male,General Member,9/15/2020 16:13:00,Microsoft,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,Executive Recruiting
+Wilmer,Zuna Largo,wilmer23@stanford.edu,Male,General Member,9/15/2020 16:10:00,Cisco,Sr. Recruiter,www.linkedin.com,University Recruiting,"Technical Recruiting, Employer Branding"
+Richard,Aguilar,Richard.Aguilar79@myhunter.cuny.edu,Male,General Member,9/15/2020 2:52:00,Adobe,Recruiting Manager,www.linkedin.com,Technical Recruiting,"Employer Branding, University Recruiting"
+Jazmin Aurora,De Luna Huerta,jdeluna@berkeley.edu,Female,General Member,9/15/2020 1:05:00,Google,Associate Recruiter,www.linkedin.com,Executive Recruiting,Recruiting Vendor
+Calvin,Mark,calvinrmark@gmail.com,Male,General Member,9/14/2020 23:15:00,Microsoft,Sr. Recruiter,www.linkedin.com,Product Recruiting,Executive Recruiting
+Jhoana kacheva,Joseph,kacheva97@gmail.com,Female,General Member,9/14/2020 22:56:00,Adobe,Associate Recruiter,www.linkedin.com,G&A Recruiting,"Technical Recruiting, Employer Branding"
+Banele,Ndlovu,banelendlovu732@gmail.com,Female,General Member,9/14/2020 20:45:00,Google,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)","Employer Branding, University Recruiting"
+Antonio,Razo,razoantonio361@gmail.com,Male,General Member,9/14/2020 19:45:00,Microsoft,Associate Recruiter,www.linkedin.com,Recruiting Vendor,Recruiting Vendor
+Robinson,Burrell,rb685@cornell.edu,Male,General Member,9/14/2020 18:47:00,Robinhood,Head of Recruiting,www.linkedin.com,Recruiting Leadership,Executive Recruiting
+Lamar,Morgan,matthew.l.morgan@vanderbilt.edu,Male,General Member,9/14/2020 15:37:00,Google,Recruiting Manager,www.linkedin.com,Employer Branding,"Technical Recruiting, Employer Branding"
+Ekow,Thompson,ekowt2000@gmail.com,Male,General Member,9/14/2020 14:37:00,Microsoft,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,"Employer Branding, University Recruiting"
+Kevin,Scroggins Jr.,kevinCScroggins@gmail.com,Male,General Member,9/14/2020 14:33:00,Cisco,Sr. Recruiter,www.linkedin.com,University Recruiting,Recruiting Vendor
+Flampeyeiry,Diaz,flampeyeiri12@gmail.com,Male,General Member,9/13/2020 18:34:00,Adobe,Recruiting Manager,www.linkedin.com,Technical Recruiting,Executive Recruiting
+Nur,Hersi,hersi.19@osu.edu,Male,General Member,9/13/2020 16:25:00,MongoDB,Associate Recruiter,www.linkedin.com,Executive Recruiting,"Technical Recruiting, Employer Branding"
+Eliana,Lopez,elianal@uchicago.edu,Female,General Member,9/13/2020 16:04:00,Facebook,Sr. Recruiter,www.linkedin.com,Product Recruiting,"Employer Branding, University Recruiting"
+Elvis,Marcelo,em662@cornell.edu,Male,General Member,9/13/2020 15:19:00,Twitter,Associate Recruiter,www.linkedin.com,G&A Recruiting,Recruiting Vendor
+Ayana,Boyd,ayanib@umich.edu,Female,General Member,9/13/2020 12:09:00,Google,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)",Executive Recruiting
+Faith,Spencer,fspencer@purdue.edu,Female,General Member,9/12/2020 16:56:00,Microsoft,Associate Recruiter,www.linkedin.com,Recruiting Vendor,"Technical Recruiting, Employer Branding"
+Naomy,Noguez,nnoguez@mail.valenciacollege.edu,Female,General Member,9/12/2020 16:07:00,Cisco,Head of Recruiting,www.linkedin.com,Recruiting Leadership,"Employer Branding, University Recruiting"
+Cecilia,Mendoza,ceciliam@andrew.cmu.edu,Female,General Member,9/12/2020 15:18:00,Adobe,Recruiting Manager,www.linkedin.com,Employer Branding,Recruiting Vendor
+Brian,Kirotich,brian.kirotich@mail.mcgill.ca,Male,General Member,9/12/2020 14:21:00,MongoDB,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,Executive Recruiting
+Emily,Tumbaco,s1167106@monmouth.edu,Female,General Member,9/12/2020 10:48:00,Facebook,Sr. Recruiter,www.linkedin.com,University Recruiting,"Technical Recruiting, Employer Branding"
+Michael,Odusanya,modusanya12@gmail.com,Male,General Member,9/11/2020 15:40:00,Twitter,Recruiting Manager,www.linkedin.com,Technical Recruiting,"Employer Branding, University Recruiting"
+Simon,Ressom,sr863@cornell.edu,Male,General Member,9/11/2020 13:42:00,Google,Associate Recruiter,www.linkedin.com,Executive Recruiting,Recruiting Vendor
+Vanessa,Myron,vim18@my.fsu.edu,Female,General Member,9/11/2020 12:03:00,Microsoft,Sr. Recruiter,www.linkedin.com,Product Recruiting,Executive Recruiting
+Edith,Llontop,edithllontop@berkeley.edu,Female,General Member,9/10/2020 23:28:00,Cisco,Associate Recruiter,www.linkedin.com,G&A Recruiting,"Technical Recruiting, Employer Branding"
+Noe,Trejo Cruz,noetrejocruz@berkeley.edu,Male,General Member,9/10/2020 23:23:00,Adobe,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)","Employer Branding, University Recruiting"
+Nandipa,Siluma,nandisiluma2023@u.northwestern.edu,Female,General Member,9/10/2020 18:28:00,MongoDB,Associate Recruiter,www.linkedin.com,Recruiting Vendor,Recruiting Vendor
+Mariana,Matias,mariana@gatech.edu,Female,General Member,9/10/2020 17:44:00,Facebook,Head of Recruiting,www.linkedin.com,Recruiting Leadership,Executive Recruiting
+Marco,Acea,macea@andrew.cmu.edu,Male,General Member,9/10/2020 15:29:00,Google,Recruiting Manager,www.linkedin.com,Employer Branding,"Technical Recruiting, Employer Branding"
+Krystell,Ewing,kae016@bucknell.edu,Female,General Member,9/10/2020 14:42:00,Microsoft,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,"Employer Branding, University Recruiting"
+Grissel,Lopez,Lopez.Grissel18@gmail.com,Female,General Member,9/10/2020 13:34:00,Cisco,Sr. Recruiter,www.linkedin.com,University Recruiting,Recruiting Vendor
+Leroy,Hutchinson,l.hutchinsonj@gmail.com,Male,General Member,9/10/2020 10:02:00,Adobe,Recruiting Manager,www.linkedin.com,Technical Recruiting,Executive Recruiting
+Prince,Ndhlovu,pndhlovu@smu.edu,Male,General Member,9/9/2020 19:34:00,MongoDB,Associate Recruiter,www.linkedin.com,Executive Recruiting,"Technical Recruiting, Employer Branding"
+Adan,Lopez Calderon,adanl@berkeley.edu,Male,General Member,9/9/2020 17:48:00,Google,Sr. Recruiter,www.linkedin.com,Product Recruiting,"Employer Branding, University Recruiting"
+Esuvat,Bomani,ekb72@cornell.edu,Female,General Member,9/9/2020 15:46:00,Microsoft,Associate Recruiter,www.linkedin.com,G&A Recruiting,Recruiting Vendor
+Nathan,Antwi,nantwiseeds@gmail.com,Male,General Member,9/9/2020 9:00:00,Cisco,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)",Executive Recruiting
+Eri-Ife,Adepoju,eri.ifeadepoju@gmail.com,Female,General Member,9/9/2020 7:37:00,Adobe,Associate Recruiter,www.linkedin.com,Recruiting Vendor,"Technical Recruiting, Employer Branding"
+Jonathan,Canales,andriodjonathan1@gmail.com,Male,General Member,9/8/2020 23:52:00,Google,Head of Recruiting,www.linkedin.com,Recruiting Leadership,"Employer Branding, University Recruiting"
+Crystal,ColÛn,CCOLON2@ND.EDU,Female,General Member,9/8/2020 23:47:00,Microsoft,Recruiting Manager,www.linkedin.com,Employer Branding,Recruiting Vendor
+Zee,Salman,fawziyas@andrew.cmu.edu,Female,General Member,9/8/2020 23:37:00,Adobe,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,Executive Recruiting
+Godbless,Chille,gchille@u.rochester.edu,Male,General Member,9/8/2020 22:38:00,Google,Sr. Recruiter,www.linkedin.com,University Recruiting,"Technical Recruiting, Employer Branding"
+Issa,Ouedraogo,issaouedraogo13@gmail.com,Male,General Member,9/8/2020 21:54:00,Microsoft,Recruiting Manager,www.linkedin.com,Technical Recruiting,"Employer Branding, University Recruiting"
+Andrea,Ramirez,andrearamirez1623@gmail.com,Female,General Member,9/8/2020 20:47:00,Robinhood,Associate Recruiter,www.linkedin.com,Executive Recruiting,Recruiting Vendor
+Imani,Gosserand,ijg2112@columbia.edu,Female,General Member,9/8/2020 16:56:00,Google,Sr. Recruiter,www.linkedin.com,Product Recruiting,Executive Recruiting
+Alexis,Figueroa,alexis.figueroa@cix.csi.cuny.edu,Female,General Member,9/8/2020 16:47:00,Microsoft,Associate Recruiter,www.linkedin.com,G&A Recruiting,"Technical Recruiting, Employer Branding"
+Richard,Cota,rccota@cpp.edu,Male,General Member,9/8/2020 15:35:00,Cisco,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)","Employer Branding, University Recruiting"
+Christian,Jose,cjose1@ufl.edu,Male,General Member,9/8/2020 14:41:00,Adobe,Associate Recruiter,www.linkedin.com,Recruiting Vendor,Recruiting Vendor
+Delilah,Beverly,delilahbeverly343@gmail.com,Female,General Member,9/8/2020 13:40:00,MongoDB,Head of Recruiting,www.linkedin.com,Recruiting Leadership,Executive Recruiting
+Irene,Wu,irenewu@college.harvard.edu,Female,General Member,9/8/2020 11:13:00,Facebook,Recruiting Manager,www.linkedin.com,Employer Branding,"Technical Recruiting, Employer Branding"
+Jacob,Parra,jacobp@utexas.edu,Male,General Member,9/8/2020 11:04:00,Twitter,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,"Employer Branding, University Recruiting"
+Lesly,Serrano,leslyserrano@berkeley.edu,Female,General Member,9/8/2020 4:18:00,Google,Sr. Recruiter,www.linkedin.com,University Recruiting,Recruiting Vendor
+Kevin,Villanueva,villanueva.kj99@gmail.com,Male,General Member,9/8/2020 1:51:00,Microsoft,Recruiting Manager,www.linkedin.com,Technical Recruiting,Executive Recruiting
+Ivan,Martinez Morales,imarti15@asu.edu,Male,General Member,9/8/2020 1:07:00,Cisco,Associate Recruiter,www.linkedin.com,Executive Recruiting,"Technical Recruiting, Employer Branding"
+Pryce,Yebesi,prycey@wustl.edu,Male,General Member,9/8/2020 0:18:00,Adobe,Sr. Recruiter,www.linkedin.com,Product Recruiting,"Employer Branding, University Recruiting"
+Jake,Gutierrez,gutierr8@southwestern.edu,Male,General Member,9/7/2020 23:26:00,MongoDB,Associate Recruiter,www.linkedin.com,G&A Recruiting,Recruiting Vendor
+Janill,Lema,jl4817@columbia.edu,Female,General Member,9/7/2020 22:34:00,Facebook,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)",Executive Recruiting
+Alejandro,Colina-Valeri,Alejandro.colina_valeri@tufts.edu,Male,General Member,9/7/2020 22:03:00,Twitter,Associate Recruiter,www.linkedin.com,Recruiting Vendor,"Technical Recruiting, Employer Branding"
+Tobechi,Maduchukwu,tmaduchukwu22@gmail.com,Male,General Member,9/7/2020 20:49:00,Google,Head of Recruiting,www.linkedin.com,Recruiting Leadership,"Employer Branding, University Recruiting"
+Katherine,Kwan,katherine_kwan@brown.edu,Female,General Member,9/7/2020 20:26:00,Microsoft,Recruiting Manager,www.linkedin.com,Employer Branding,Recruiting Vendor
+Sourish,Vaghulade,svaghulade@cs.umass.edu,Male,General Member,9/7/2020 20:22:00,Cisco,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,Executive Recruiting
+Robin,Romero,romero.rbna@gmail.com,Male,General Member,9/7/2020 19:50:00,Adobe,Sr. Recruiter,www.linkedin.com,University Recruiting,"Technical Recruiting, Employer Branding"
+Nadia,Garcia,ngarciaorozco@outlook.com,Female,General Member,9/7/2020 19:37:00,MongoDB,Recruiting Manager,www.linkedin.com,Technical Recruiting,"Employer Branding, University Recruiting"
+Sheyla,Perez,sheylavperez@gmail.com,Female,General Member,9/7/2020 19:00:00,Facebook,Associate Recruiter,www.linkedin.com,Executive Recruiting,Recruiting Vendor
+Cindy,Ramirez,ramir262@mail.chapman.edu,Female,General Member,9/7/2020 18:24:00,Google,Sr. Recruiter,www.linkedin.com,Product Recruiting,Executive Recruiting
+Ime,Essien,imess2@morgan.edu,Male,General Member,9/7/2020 17:54:00,Microsoft,Associate Recruiter,www.linkedin.com,G&A Recruiting,"Technical Recruiting, Employer Branding"
+Cristian,Villanueva,crvillanueva29@gmail.com,Male,General Member,9/7/2020 17:28:00,Cisco,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)","Employer Branding, University Recruiting"
+Pamela,Lozano de la Garza,a01176970@itesm.mx,Female,General Member,9/7/2020 16:44:00,Adobe,Associate Recruiter,www.linkedin.com,Recruiting Vendor,Recruiting Vendor
+Dru,Agard,andrew.agard@my.uwi.edu,Male,General Member,9/7/2020 16:13:00,MongoDB,Head of Recruiting,www.linkedin.com,Recruiting Leadership,Executive Recruiting
+Catherine,De Mesa,raegirl12@gmail.com,Female,General Member,9/7/2020 16:03:00,Google,Recruiting Manager,www.linkedin.com,Employer Branding,"Technical Recruiting, Employer Branding"
+Andres,Arizala,arizala13@gmail.com,Male,General Member,9/7/2020 15:42:00,Microsoft,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,"Employer Branding, University Recruiting"
+Reynerio,Sarmiento,sarmientoreynerio@gmail.com,Male,General Member,9/7/2020 15:33:00,Cisco,Sr. Recruiter,www.linkedin.com,University Recruiting,Recruiting Vendor
+Proud,Mpala,pmpala@stanford.edu,Male,General Member,9/7/2020 14:46:00,Adobe,Recruiting Manager,www.linkedin.com,Technical Recruiting,Executive Recruiting
+Endrick,Lafosse,elafosse@outlook.com,Male,General Member,9/6/2020 23:19:00,Google,Associate Recruiter,www.linkedin.com,Executive Recruiting,"Technical Recruiting, Employer Branding"
+Brittany,Lloy,britloy91@gmail.com,Female,General Member,9/6/2020 18:03:00,Microsoft,Sr. Recruiter,www.linkedin.com,Product Recruiting,"Employer Branding, University Recruiting"
+Ruben,Cuevas,ruben.cuevas@stanford.edu,Male,General Member,9/5/2020 23:17:00,Adobe,Associate Recruiter,www.linkedin.com,G&A Recruiting,Recruiting Vendor
+Fabrizio,Casanova,fec24@cornell.edu,Male,General Member,9/5/2020 19:49:00,Google,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)",Executive Recruiting
+Pietro,Giacomin,p_giacominsanou@coloradocollege.edu,Male,General Member,9/5/2020 18:01:00,Microsoft,Associate Recruiter,www.linkedin.com,Recruiting Vendor,"Technical Recruiting, Employer Branding"
+Justice,Jacobs,jjacobs42@gatech.edu,Male,General Member,9/5/2020 15:37:00,Robinhood,Head of Recruiting,www.linkedin.com,Recruiting Leadership,"Employer Branding, University Recruiting"
+Phumuzile,Moyo,Phumuzilemoyo18@gmail.com,Female,General Member,9/5/2020 3:08:00,Google,Recruiting Manager,www.linkedin.com,Employer Branding,Recruiting Vendor
+Robert,Mukuchura,mukuchurart@gmail.com,Male,General Member,9/5/2020 1:01:00,Microsoft,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,Executive Recruiting
+Mayowa,Oluwasanmi,olumayowa.oluwasanmi@dal.ca,Female,General Member,9/5/2020 0:23:00,Cisco,Sr. Recruiter,www.linkedin.com,University Recruiting,"Technical Recruiting, Employer Branding"
+Taslim,Dosunmu,tjdosunmu@gmail.com,Male,General Member,9/4/2020 22:42:00,Adobe,Recruiting Manager,www.linkedin.com,Technical Recruiting,"Employer Branding, University Recruiting"
+Leah,Bimpong,tun66090@temple.edu,Female,General Member,9/4/2020 10:34:00,MongoDB,Associate Recruiter,www.linkedin.com,Executive Recruiting,Recruiting Vendor
+Jaelyn,Bates,batesjaelyn@gmail.com,Female,General Member,9/3/2020 22:52:00,Facebook,Sr. Recruiter,www.linkedin.com,Product Recruiting,Executive Recruiting
+MacPaul,Obiniyi,mobiniyi@umd.edu,Male,General Member,9/3/2020 21:57:00,Twitter,Associate Recruiter,www.linkedin.com,G&A Recruiting,"Technical Recruiting, Employer Branding"
+Rebecca,Gio,rmgio@cpp.edu,Female,General Member,9/3/2020 20:42:00,Google,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)","Employer Branding, University Recruiting"
+Doneen,Hesse,donhesse@umich.edu,Female,General Member,9/3/2020 20:41:00,Microsoft,Associate Recruiter,www.linkedin.com,Recruiting Vendor,Recruiting Vendor
+Jazmin,Mendoza,jazmink.mendoza@gmail.com,Female,General Member,9/3/2020 19:24:00,Cisco,Head of Recruiting,www.linkedin.com,Recruiting Leadership,Executive Recruiting
+Natasha,Kabasa,natashakabasa19@gmail.com,Female,General Member,9/3/2020 17:21:00,Adobe,Recruiting Manager,www.linkedin.com,Employer Branding,"Technical Recruiting, Employer Branding"
+Adonay,Bereket,adonaybereke@umass.edu,Male,General Member,9/3/2020 17:12:00,MongoDB,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,"Employer Branding, University Recruiting"
+Selihom,Gobeze,gobezes22@wlu.edu,Male,General Member,9/3/2020 9:03:00,Facebook,Sr. Recruiter,www.linkedin.com,University Recruiting,Recruiting Vendor
+Tawfiq,Aliu,TAWFIQALIU@GMAIL.COM,Male,General Member,9/3/2020 8:51:00,Twitter,Recruiting Manager,www.linkedin.com,Technical Recruiting,Executive Recruiting
+Ali,Ibrahim,ai9sk@virginia.edu,Male,General Member,9/3/2020 1:01:00,Google,Associate Recruiter,www.linkedin.com,Executive Recruiting,"Technical Recruiting, Employer Branding"
+Samantha,Stewart,samantha.stewart1@udc.edu,Female,General Member,9/2/2020 21:40:00,Microsoft,Sr. Recruiter,www.linkedin.com,Product Recruiting,"Employer Branding, University Recruiting"
+Methembe,Moyo,mmoyo414@loc.edu,Male,General Member,9/2/2020 21:11:00,Cisco,Associate Recruiter,www.linkedin.com,G&A Recruiting,Recruiting Vendor
+Azeezah,Muhammad,azeezah.muhammad@bison.howard.edu,Female,General Member,9/2/2020 19:19:00,Adobe,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)",Executive Recruiting
+Marco,Espinosa,espiordo@gmail.com,Male,General Member,9/2/2020 18:19:00,MongoDB,Associate Recruiter,www.linkedin.com,Recruiting Vendor,"Technical Recruiting, Employer Branding"
+Kevin,Scroggins Jr.,kevincscroggins@gmail.com,Male,General Member,9/2/2020 14:49:00,Facebook,Head of Recruiting,www.linkedin.com,Recruiting Leadership,"Employer Branding, University Recruiting"
+Joshua,Mollison,joshmoll@umich.edu,Male,General Member,9/2/2020 12:11:00,Google,Recruiting Manager,www.linkedin.com,Employer Branding,Recruiting Vendor
+Anna,San Bartolome,annasbv@umich.edu,Female,General Member,9/2/2020 12:07:00,Microsoft,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,Executive Recruiting
+Similoluwa,Sotimehin,simisoti@umich.edu,Female,General Member,9/1/2020 12:01:00,Cisco,Sr. Recruiter,www.linkedin.com,University Recruiting,"Technical Recruiting, Employer Branding"
+Ravynne,Jenkins,ravyjenk@umich.edu,Female,General Member,9/1/2020 11:57:00,Adobe,Recruiting Manager,www.linkedin.com,Technical Recruiting,"Employer Branding, University Recruiting"
+Maryam,Sharif,sharifma@umich.edu,Female,General Member,9/1/2020 10:59:00,MongoDB,Associate Recruiter,www.linkedin.com,Executive Recruiting,Recruiting Vendor
+Ayoub,Nur,ayoubhn@outlook.com,Male,General Member,8/31/2020 20:32:00,Google,Sr. Recruiter,www.linkedin.com,Product Recruiting,Executive Recruiting
+Adrienne,Llanes,amariell@umich.edu,Female,General Member,8/31/2020 19:39:00,Microsoft,Associate Recruiter,www.linkedin.com,G&A Recruiting,"Technical Recruiting, Employer Branding"
+Sena,Dzirasa,sena.dzirasa@rutgers.edu,Female,General Member,8/31/2020 9:31:00,Cisco,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)","Employer Branding, University Recruiting"
+Khensu-Ra,Love El,kle280@nyu.edu,Male,General Member,8/31/2020 3:23:00,Adobe,Associate Recruiter,www.linkedin.com,Recruiting Vendor,Recruiting Vendor
+Aini-Alem,Robertson,ainialem@umich.edu,Female,General Member,8/30/2020 11:34:00,Google,Head of Recruiting,www.linkedin.com,Recruiting Leadership,Executive Recruiting
+Juan,Sanchez,jusa@umich.edu,Male,General Member,8/29/2020 20:17:00,Microsoft,Recruiting Manager,www.linkedin.com,Employer Branding,"Technical Recruiting, Employer Branding"
+Erick,Chavez,chaveze@ufl.edu,Male,General Member,8/29/2020 16:40:00,Adobe,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,"Employer Branding, University Recruiting"
+Isaiah,Murray,idm22@cornell.edu,Male,General Member,8/29/2020 16:20:00,Google,Sr. Recruiter,www.linkedin.com,University Recruiting,Recruiting Vendor
+Michael,Strohmeier,Michael.P.Strohmeier@gmail.com,Male,General Member,8/29/2020 12:40:00,Microsoft,Recruiting Manager,www.linkedin.com,Technical Recruiting,Executive Recruiting
+Alexis,Tait,apparker@umich.edu,Female,General Member,8/28/2020 17:25:00,Robinhood,Associate Recruiter,www.linkedin.com,Executive Recruiting,"Technical Recruiting, Employer Branding"
+Derek J.,Russell,djamesr23@gmail.com,Male,General Member,8/28/2020 16:43:00,Google,Sr. Recruiter,www.linkedin.com,Product Recruiting,"Employer Branding, University Recruiting"
+Estifanos,Alene,alene006@umn.edu,Male,General Member,8/28/2020 16:04:00,Microsoft,Associate Recruiter,www.linkedin.com,G&A Recruiting,Recruiting Vendor
+Virgil,Watkins,virgiljw@umich.edu,Male,General Member,8/28/2020 12:04:00,Cisco,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)",Executive Recruiting
+Daisy,Ogholo,ogholod@gmail.com,Female,General Member,8/28/2020 0:23:00,Adobe,Associate Recruiter,www.linkedin.com,Recruiting Vendor,"Technical Recruiting, Employer Branding"
+Christian,Lopez,Cglopez911@gmail.com,Male,General Member,8/27/2020 23:33:00,MongoDB,Head of Recruiting,www.linkedin.com,Recruiting Leadership,"Employer Branding, University Recruiting"
+Jefferson,Akesseh,jefferson.w.akesseh.23@dartmouth.edu,Male,General Member,8/27/2020 22:05:00,Facebook,Recruiting Manager,www.linkedin.com,Employer Branding,Recruiting Vendor
+Marie,Phillips,mariejp@umich.edu,Female,General Member,8/27/2020 18:29:00,Twitter,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,Executive Recruiting
+Kenthia,Roberts,kenthia.roberts@bison.howard.edu,Female,General Member,8/27/2020 17:03:00,Google,Sr. Recruiter,www.linkedin.com,University Recruiting,"Technical Recruiting, Employer Branding"
+Jason,Holloway,jasonholloway1914@gmail.com,Male,General Member,8/27/2020 14:58:00,Microsoft,Recruiting Manager,www.linkedin.com,Technical Recruiting,"Employer Branding, University Recruiting"
+John Paul,ONeill,oneilljp@umich.edu,Male,General Member,8/27/2020 13:09:00,Cisco,Associate Recruiter,www.linkedin.com,Executive Recruiting,Recruiting Vendor
+Elizabeth,Mota,motae@umich.edu,Female,General Member,8/27/2020 11:32:00,Adobe,Sr. Recruiter,www.linkedin.com,Product Recruiting,Executive Recruiting
+Ayana,Boyd,ayanib@umich.edu,Female,General Member,8/27/2020 11:14:00,MongoDB,Associate Recruiter,www.linkedin.com,G&A Recruiting,"Technical Recruiting, Employer Branding"
+Nia,Gray,ndjgray@umich.edu,Female,General Member,8/27/2020 11:07:00,Facebook,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)","Employer Branding, University Recruiting"
+Cora,Scott,corascot@umich.edu,Female,General Member,8/27/2020 11:06:00,Twitter,Associate Recruiter,www.linkedin.com,Recruiting Vendor,Recruiting Vendor
+Avish,Parmar,avish.parmar@stonybrook.edu,Male,General Member,8/27/2020 10:23:00,Google,Head of Recruiting,www.linkedin.com,Recruiting Leadership,Executive Recruiting
+Jason,Gonzalez,jasongonzalez@ucsb.edu,Male,General Member,8/26/2020 15:21:00,Microsoft,Recruiting Manager,www.linkedin.com,Employer Branding,"Technical Recruiting, Employer Branding"
+Piero,Orderique,porderiq@mit.edu,Male,General Member,8/26/2020 14:55:00,Cisco,Associate Recruiter,www.linkedin.com,Recruiting Operations & Programs,"Employer Branding, University Recruiting"
+Bryan,Cuevas,bcuevas8@csu.fullerton.edu,Male,General Member,8/25/2020 15:07:00,Adobe,Sr. Recruiter,www.linkedin.com,University Recruiting,Recruiting Vendor
+Elizabeth,Aguirre,eaguirr3@jhu.edu,Female,General Member,8/25/2020 2:57:00,MongoDB,Recruiting Manager,www.linkedin.com,Technical Recruiting,Executive Recruiting
+Olasubomi,Olawepo,oolawepo@bulldogs.aamu.edu,Male,General Member,8/25/2020 2:55:00,Facebook,Associate Recruiter,www.linkedin.com,Executive Recruiting,"Technical Recruiting, Employer Branding"
+Angelica,Castillejos,angcast@mit.edu,Female,General Member,8/25/2020 1:33:00,Google,Sr. Recruiter,www.linkedin.com,Product Recruiting,"Employer Branding, University Recruiting"
+Mohammed,Hussien,mah445@cornell.edu,Male,General Member,8/24/2020 23:58:00,Microsoft,Associate Recruiter,www.linkedin.com,G&A Recruiting,Recruiting Vendor
+Daniel,Munoz Huerta,dmunoz2@u.rochester.edu,Male,General Member,8/24/2020 23:26:00,Cisco,Sr. Recruiter,www.linkedin.com,"Recruiting Partner (University, Bootcamp)",Executive Recruiting

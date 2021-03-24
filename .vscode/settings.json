@@ -1,0 +1,31 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "editor.formatOnSave": true,
+  "editor.suggestSelection": "recentlyUsed",
+  "editor.rulers": [80],
+  "editor.tabSize": 2,
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "files.insertFinalNewline": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "javascript.format.insertSpaceBeforeAndAfterBinaryOperators": true,
+  "javascript.validate.enable": false,
+  "javascript.format.enable": false,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "git.ignoreMissingGitWarning": true,
+  "mjml.beautify": {
+    "indent_size": 2,
+    "wrap_attributes_indent_size": 2
+  },
+  "diffEditor.ignoreTrimWhitespace": false,
+  "[markdown|typescript]": {
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 80,
+  },
+  "[typescript]": {
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 80,
+  }
+}
