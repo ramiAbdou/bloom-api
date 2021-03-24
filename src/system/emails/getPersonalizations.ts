@@ -1,5 +1,5 @@
 import logger from '@system/logger/logger';
-import { isDevelopment, TEST_EMAILS } from '@util/constants';
+import { isDevelopment } from '@util/constants';
 import { EmailEvent } from '@util/constants.events';
 import { splitArrayIntoChunks } from '@util/util';
 import { EmailArgs, EmailVars } from './emails.types';
@@ -29,7 +29,7 @@ export interface FormatPersonalizationData {
  * Returns the formatted personalizations for a SendGrid email.
  *
  * If development environment, filters all personalizations out that aren't
- * going to TEST_EMAILS.
+ * going to process.env.USER_EMAIL.
  *
  * @param variables - Variables for an email template.
  */
@@ -38,7 +38,7 @@ const formatPersonalizations = (
 ): FormatPersonalizationData[] => {
   return variables
     .filter((vars: EmailVars) => {
-      return !isDevelopment || TEST_EMAILS.includes(vars.member.email);
+      return !isDevelopment || vars.member.email === process.env.USER_EMAIL;
     })
     .map((vars: EmailVars) => {
       return { dynamicTemplateData: vars, to: { email: vars.member.email } };
