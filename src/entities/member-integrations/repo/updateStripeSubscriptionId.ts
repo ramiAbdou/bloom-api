@@ -25,7 +25,8 @@ export class UpdateStripeSubscriptionIdArgs {
 
 /**
  * Returns the updated MemberIntegrations with the Stripe.Subscription ID
- * attached.
+ * attached. If the stripeSubscriptionId already exists, then we just want
+ * to update the Stripe.Subscription.
  *
  * Precondition: MemberIntegrations associated with memberId must already
  * have a stripeCustomerId.

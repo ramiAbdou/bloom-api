@@ -17,6 +17,8 @@ export interface UpdateStripeSubscriptionArgs {
  * @param args.stripeAccountId - ID of the Stripe.Account.
  * @param args.stripePriceId - ID of the Stripe.Price.
  * @param args.stripeSubscriptionId - ID of the Stripe.Subscription
+ *
+ * @see https://stripe.com/docs/billing/subscriptions/upgrade-downgrade
  */
 const updateStripeSubscription = async (
   args: UpdateStripeSubscriptionArgs
@@ -33,11 +35,17 @@ const updateStripeSubscription = async (
     { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
+  // We want to update the current Stripe.Subsciption item that we've already
+  // subscribed to, to the new stripePriceId, as opposed to creating an
+  // entirely different subscription.
+  const subscriptionItems: Stripe.SubscriptionUpdateParams.Item[] = [
+    { id: subscription.items.data[0].id, price: stripePriceId }
+  ];
+
   const updatedSubscription: Stripe.Subscription = await stripe.subscriptions.update(
     stripeSubscriptionId,
     {
-      expand: ['latest_invoice.payment_intent'],
-      items: [{ id: subscription.items.data[0].id, price: stripePriceId }],
+      items: subscriptionItems,
       proration_behavior: 'always_invoice',
       proration_date: prorationDate
     },

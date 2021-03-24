@@ -75,9 +75,9 @@ export const clearAllTableData = async (
  *
  * Handles database interactions.
  */
-export const initDatabaseIntegrationTest = async (
+export const initDatabaseIntegrationTest = (
   entityNames?: EntityName<any>[]
-): Promise<void> => {
+): void => {
   let orm: MikroORM<PostgreSqlDriver>;
 
   beforeAll(async () => {
@@ -123,7 +123,11 @@ export const buildApplication = async (): Promise<Application> => {
   });
 };
 
-export const buildCommunity = async (): Promise<Community> => {
+export const buildCommunity = async (
+  args?: BuildTestObjectArgs<Community>
+): Promise<Community> => {
+  const { overrides = {} } = args ?? {};
+
   const bm: BloomManager = new BloomManager();
 
   return bm.createAndFlush(Community, {
@@ -131,13 +135,19 @@ export const buildCommunity = async (): Promise<Community> => {
       description: faker.lorem.sentences(3),
       title: faker.random.words(3)
     }),
+    communityIntegrations: bm.create(CommunityIntegrations, {}),
     name: faker.random.word(),
     primaryColor: faker.commerce.color(),
-    urlName: faker.random.word()
+    urlName: faker.random.word(),
+    ...overrides
   });
 };
 
-export const buildCommunityIntegrations = async (): Promise<CommunityIntegrations> => {
+export const buildCommunityIntegrations = async (
+  args?: BuildTestObjectArgs<CommunityIntegrations>
+): Promise<CommunityIntegrations> => {
+  const { overrides = {} } = args ?? {};
+
   const bm: BloomManager = new BloomManager();
 
   return bm.createAndFlush(CommunityIntegrations, {
@@ -145,7 +155,8 @@ export const buildCommunityIntegrations = async (): Promise<CommunityIntegration
       name: faker.random.word(),
       primaryColor: faker.commerce.color(),
       urlName: faker.random.word()
-    })
+    }),
+    ...overrides
   });
 };
 
@@ -180,4 +191,46 @@ export const buildEvent = async (
   await bm.flush();
 
   return count >= 2 ? (events as Event[]) : (events[0] as Event);
+};
+
+export const buildMember = async (
+  args?: BuildTestObjectArgs<Member>
+): Promise<Member> => {
+  const { overrides = {} } = args ?? {};
+
+  const bm: BloomManager = new BloomManager();
+
+  return bm.createAndFlush(Member, {
+    ...overrides,
+    email: faker.internet.email(),
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
+    memberIntegrations: bm.create(MemberIntegrations, {}),
+    user: bm.create(User, { email: faker.internet.email() })
+  });
+};
+
+export const buildMemberPlan = async (
+  args?: BuildTestObjectArgs<MemberPlan>
+): Promise<MemberPlan | MemberPlan[]> => {
+  const { buildOverrides = () => null, count = 1, overrides = {} } = args ?? {};
+
+  const bm: BloomManager = new BloomManager();
+
+  const memberPlans: MemberPlan[] = Array.from(Array(count).keys()).map(
+    (_, i: number) => {
+      return bm.create(MemberPlan, {
+        amount: i * 5,
+        name: faker.name.title(),
+        ...overrides,
+        ...buildOverrides(i)
+      });
+    }
+  );
+
+  await bm.flush();
+
+  return count >= 2
+    ? (memberPlans as MemberPlan[])
+    : (memberPlans[0] as MemberPlan);
 };

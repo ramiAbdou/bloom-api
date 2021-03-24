@@ -94,6 +94,8 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
         community: member.community.id
       });
 
+      if (!question) return;
+
       await bm.findOneOrCreate(
         MemberValue,
         { member: member.id, question: question.id },
