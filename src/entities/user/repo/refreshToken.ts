@@ -4,7 +4,7 @@ import { FilterQuery } from '@mikro-orm/core';
 import BloomManager from '@core/db/BloomManager';
 import createMemberRefresh from '@entities/member-refresh/repo/createMemberRefresh';
 import Member from '@entities/member/Member';
-import { AuthTokens, isDevelopment, JWT } from '@util/constants';
+import { AuthTokens, JWT } from '@util/constants';
 import { FlushEvent, VerifyEvent } from '@util/constants.events';
 import { signToken } from '@util/util';
 import User from '../User';
@@ -42,7 +42,7 @@ const refreshToken = async (args: RefreshTokenArgs): Promise<AuthTokens> => {
   else if (rToken) queryArgs = { refreshToken: rToken };
   else if (memberId) queryArgs = { members: { id: memberId } };
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const user: User = await bm.findOne(User, queryArgs);
 
@@ -76,7 +76,10 @@ const refreshToken = async (args: RefreshTokenArgs): Promise<AuthTokens> => {
 
   // If an Express Response object is passed in, set the HTTP only cookies.
   if (res) {
-    const options = { httpOnly: true, secure: !isDevelopment };
+    const options = {
+      httpOnly: true,
+      secure: process.env.APP_ENV === 'stage' || process.env.APP_ENV === 'prod'
+    };
 
     res.cookie('accessToken', tokens.accessToken, {
       ...options,

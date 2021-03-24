@@ -26,7 +26,7 @@ const getConnectIntegrationsVars = async (
 ): Promise<ConnectIntegrationsVars[]> => {
   const { brand, communityId, urlName } = context as ConnectIntegrationsPayload;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const communityArgs: FilterQuery<Community> = communityId
     ? { id: communityId }

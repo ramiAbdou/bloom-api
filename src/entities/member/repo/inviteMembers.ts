@@ -45,7 +45,7 @@ const assertInviteMembers = async (
   const { members: inputs } = args;
   const { communityId } = ctx;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const existingMembers: Member[] = await bm.find(Member, {
     community: communityId,
@@ -78,7 +78,7 @@ const inviteMembers = async (
   const { members: inputs } = args;
   const { communityId, memberId } = ctx;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const community = await bm.findOne(Community, communityId);
 

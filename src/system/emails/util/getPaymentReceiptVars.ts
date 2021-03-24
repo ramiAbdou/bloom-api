@@ -24,7 +24,7 @@ const getPaymentReceiptVars = async (
 ): Promise<PaymentReceiptVars[]> => {
   const { card, paymentId, stripeAccountId } = context as PaymentReceiptPayload;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [community, payment]: [Community, Payment] = await Promise.all([
     bm.findOne(Community, { communityIntegrations: { stripeAccountId } }),

@@ -1,7 +1,6 @@
 import Stripe from 'stripe';
 
 import BloomManager from '@core/db/BloomManager';
-import Member from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import Payment, { PaymentType } from '../Payment';
 
@@ -11,12 +10,10 @@ interface CreatePaymentArgs {
 }
 
 /**
- * Throws an error if the Stripe.Invoice was not paid or no money was paid.
+ * Throws an error if the Stripe.Invoice was not paid. Does nothing, otherwise.
  */
 const assertCreatePayment = (args: CreatePaymentArgs) => {
-  const { invoice } = args;
-
-  if (invoice.status !== 'paid' || !invoice.amount_paid) {
+  if (args.invoice.status !== 'paid') {
     throw new Error(`Stripe invoice was not paid.`);
   }
 };
@@ -38,25 +35,15 @@ const createPayment = async (
 
   assertCreatePayment(args);
 
-  const bm = new BloomManager();
-
-  const member: Member = await bm.findOne(Member, memberId, {
-    populate: ['memberIntegrations']
-  });
-
-  member.plan.id = planId;
-
-  const payment: Payment = bm.create(Payment, {
+  const payment: Payment = await new BloomManager().createAndFlush(Payment, {
     amount: invoice.amount_paid / 100,
     community: communityId,
-    member,
+    member: memberId,
     plan: planId,
     stripeInvoiceId: invoice.id,
     stripeInvoiceUrl: invoice.hosted_invoice_url,
     type: PaymentType.DUES
   });
-
-  await bm.flush();
 
   return payment;
 };

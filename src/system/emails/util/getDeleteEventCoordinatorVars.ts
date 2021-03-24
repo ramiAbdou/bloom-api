@@ -32,7 +32,7 @@ const getDeleteEventCoordinatorVars = async (
     eventId
   } = context as DeleteEventCoordinatorPayload;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [community, event, member]: [
     Community,

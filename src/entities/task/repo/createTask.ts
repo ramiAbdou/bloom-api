@@ -16,7 +16,7 @@ const calculateExecuteAt = async (args: EntityData<Task>): Promise<string> => {
   const { event: taskEvent, payload } = args;
   const { communityId, eventId } = payload;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [_, event]: [Community, Event] = await Promise.all([
     bm.findOne(Community, communityId),

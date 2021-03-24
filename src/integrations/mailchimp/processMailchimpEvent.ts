@@ -22,7 +22,7 @@ const processMailchimpEvent = async (
 ): Promise<void> => {
   const { communityId, memberId, mailchimpEvent } = args;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [communityIntegrations, member]: [
     CommunityIntegrations,

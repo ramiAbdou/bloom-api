@@ -1,5 +1,4 @@
 import logger from '@system/logger/logger';
-import { isDevelopment } from '@util/constants';
 import { EmailEvent } from '@util/constants.events';
 import { splitArrayIntoChunks } from '@util/util';
 import { EmailArgs, EmailVars } from './emails.types';
@@ -38,7 +37,11 @@ const formatPersonalizations = (
 ): FormatPersonalizationData[] => {
   return variables
     .filter((vars: EmailVars) => {
-      return !isDevelopment || vars.member.email === process.env.USER_EMAIL;
+      return (
+        process.env.APP_ENV === 'stage' ||
+        process.env.APP_ENV === 'prod' ||
+        vars.member.email === process.env.USER_EMAIL
+      );
     })
     .map((vars: EmailVars) => {
       return { dynamicTemplateData: vars, to: { email: vars.member.email } };

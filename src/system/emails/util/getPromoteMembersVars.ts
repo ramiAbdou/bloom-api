@@ -25,7 +25,7 @@ const getPromoteMembersVars = async (
 ): Promise<PromoteMembersVars[]> => {
   const { communityId, memberIds } = context as PromoteMembersPayload;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [community, owner, members]: [
     Community,
