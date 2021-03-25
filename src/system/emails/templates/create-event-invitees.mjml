@@ -1,7 +1,7 @@
 <mjml>
   <mj-head>
     <mj-include path="./attributes.mjml" />
-    <mj-preview>{{ community.name }} is inviting you to {{ event.title }} happening on {{ formatDate event.startTime "MMMM D" "-0800" }}</mj-preview>
+    <mj-preview>{{ community.name }} is inviting you to {{ event.title }} happening on {{ event.startTime }}</mj-preview>
   </mj-head>
   <mj-body background-color="#FFFFFF">
     <mj-include path="./header.mjml" />
@@ -10,7 +10,7 @@
         <mj-include path="./hi.mjml" />
         <mj-text padding-bottom="16px">{{ community.name }} is inviting you to {{ event.title }}! Please see the event details below.</mj-text>
         <mj-text padding-bottom="4px">Title: {{ event.title }}</mj-text>
-        <mj-text padding-bottom="4px">When: {{ formatDate event.startTime "MMM D, YYYY @ h:mm A" "-0800" }} - {{ formatDate event.endTime "MMM D, YYYY @ h:mm A" "-0800" }}</mj-text>
+        <mj-text padding-bottom="4px">When: {{ event.startTime }} - {{ event.endTime }}</mj-text>
         <mj-raw>{{#if event.summary}}</mj-raw>
         <mj-text padding-bottom="4px">Summary: {{ event.summary }}</mj-text>
         <mj-raw>{{/if}}</mj-raw>

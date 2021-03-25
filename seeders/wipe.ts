@@ -5,7 +5,9 @@ import db from '@core/db/db';
 
 day.extend(utc);
 
-(async () => {
+const wipeDatabase = async () => {
   await db.cleanForTesting();
   await db.close();
-})();
+};
+
+wipeDatabase();

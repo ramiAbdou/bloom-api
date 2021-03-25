@@ -1,3 +1,5 @@
+import day from 'dayjs';
+
 import { EmailEvent } from '@util/constants.events';
 import { splitArrayIntoChunks } from '@util/util';
 import { EmailArgs, EmailVars } from './emails.types';
@@ -176,4 +178,23 @@ export const getPersonalizations = async (
   );
 
   return chunkedPersonalizations;
+};
+
+/**
+ * Returns the timestamp in the Pacific Timezone. This can either be PDT
+ * (-7:00) or PST (-8:00). It should include the 3-letter abbreviation of the
+ * timezone in the string for context.
+ *
+ * Precondition: @param timestamp must be a valid UTC timestring.
+ *
+ * @param timestamp - UTC timestamp to convert.
+ *
+ * @example
+ * // Returns 'March 25, 2021 at 4:00 PM PDT'.
+ * stringifyEmailTimestamp('2021-03-25T23:00:00Z')
+ */
+export const stringifyEmailTimestamp = (timestamp: string): string => {
+  return day(timestamp)
+    .tz('America/Los_Angeles')
+    .format('MMMM D, YYYY @ h:mm A z');
 };

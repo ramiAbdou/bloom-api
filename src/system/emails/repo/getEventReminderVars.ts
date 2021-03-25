@@ -7,6 +7,7 @@ import { APP } from '@util/constants';
 import { VerifyEvent } from '@util/constants.events';
 import { buildUrl, signToken } from '@util/util';
 import { EmailPayload } from '../emails.types';
+import { stringifyEmailTimestamp } from '../emails.util';
 
 export interface EventReminderPayload {
   eventId: string;
@@ -45,7 +46,10 @@ const getEventReminderVars = async (
     });
 
     return {
-      event: { startTime: event.startTime, title: event.title },
+      event: {
+        startTime: stringifyEmailTimestamp(event.startTime),
+        title: event.title
+      },
       joinUrl,
       member: {
         email: guest.member?.email ?? guest.supporter?.email,

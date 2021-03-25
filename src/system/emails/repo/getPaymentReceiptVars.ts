@@ -5,6 +5,7 @@ import Community from '@entities/community/Community';
 import Member from '@entities/member/Member';
 import Payment from '@entities/payment/Payment';
 import { EmailPayload } from '../emails.types';
+import { stringifyEmailTimestamp } from '../emails.util';
 
 export interface PaymentReceiptPayload {
   card: Stripe.PaymentMethod.Card;
@@ -15,7 +16,10 @@ export interface PaymentReceiptPayload {
 export interface PaymentReceiptVars {
   card: Stripe.PaymentMethod.Card;
   community: Community;
-  payment: Payment;
+  payment: Pick<
+    Payment,
+    'amount' | 'createdAt' | 'stripeInvoiceId' | 'stripeInvoiceUrl'
+  >;
   member: Pick<Member, 'email' | 'firstName'>;
 }
 
@@ -40,7 +44,10 @@ const getPaymentReceiptVars = async (
       card,
       community,
       member: { email: member.email, firstName: member.firstName },
-      payment
+      payment: {
+        ...payment,
+        createdAt: stringifyEmailTimestamp(payment.createdAt)
+      }
     }
   ];
 

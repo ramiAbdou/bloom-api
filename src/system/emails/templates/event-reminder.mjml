@@ -8,7 +8,7 @@
       <mj-column background-color="#FFFFFF" border-radius="8px" padding="8px 8px 16px 8px">
         <mj-include path="./hi.mjml" />
         <mj-text padding-bottom="16px">Just a reminder that {{ event.title }} is happening soon:</mj-text>
-        <mj-text padding-bottom="16px">Start Time: {{ formatDate event.startTime "MMM D, YYYY @ h:mm A" "-0800" }}</mj-text>
+        <mj-text padding-bottom="16px">Start Time: {{ event.startTime }}</mj-text>
         <mj-text>You will be able to join the event up to 10 minutes before the event.</mj-text>
         <mj-button href="{{ joinUrl }}" padding-top="16px">Join Event</mj-button>
       </mj-column>
