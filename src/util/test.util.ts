@@ -58,13 +58,19 @@ export const clearAllTableData = async (em: EntityManager): Promise<void> => {
   em.clear();
 };
 
+interface InitDatabaseIntegrationTestArgs {
+  beforeEach?: Function;
+}
+
 /**
  * Initializes an integration by calling the pre- and post- Jest hooks,
  * including beforeAll, beforeEach and afterAll.
  *
  * Handles database interactions.
  */
-export const initDatabaseIntegrationTest = (): void => {
+export const initDatabaseIntegrationTest = (
+  args?: InitDatabaseIntegrationTestArgs
+): void => {
   let orm: MikroORM<PostgreSqlDriver>;
 
   beforeAll(async () => {
@@ -72,10 +78,11 @@ export const initDatabaseIntegrationTest = (): void => {
     orm = await db.createConnection();
   });
 
-  // Removes all of the table data.
+  // Removes all of the table data and clears the caches.
   beforeEach(async () => {
     clearEntityCaches();
     await clearAllTableData(orm.em);
+    if (args?.beforeEach) await args.beforeEach();
   });
 
   // Closes the database connection after the tests finish.
@@ -96,38 +103,41 @@ interface BuildTestObjectArgs<T = any> {
   overrides?: EntityData<T>;
 }
 
-export const buildApplication = async (): Promise<Application> => {
-  const bm: BloomManager = new BloomManager();
+export const buildApplications = (
+  args?: BuildTestObjectArgs<Application>
+): EntityData<Application>[] => {
+  const { buildOverrides = () => null, count = 1, overrides = {} } = args ?? {};
 
-  return bm.createAndFlush(Application, {
-    community: bm.create(Community, {
-      name: faker.random.word(),
-      primaryColor: faker.commerce.color(),
-      urlName: faker.random.word()
-    }),
-    description: faker.lorem.sentences(3),
-    title: faker.random.words(3)
+  const applications = Array.from(Array(count).keys()).map((_, i: number) => {
+    return {
+      description: faker.lorem.sentences(3),
+      id: faker.random.uuid(),
+      title: faker.random.words(3),
+      ...overrides,
+      ...buildOverrides(i)
+    };
   });
+
+  return applications;
 };
 
-export const buildCommunity = async (
+export const buildCommunities = (
   args?: BuildTestObjectArgs<Community>
-): Promise<Community> => {
-  const { overrides = {} } = args ?? {};
+): EntityData<Community>[] => {
+  const { buildOverrides = () => null, count = 1, overrides = {} } = args ?? {};
 
-  const bm: BloomManager = new BloomManager();
-
-  return bm.createAndFlush(Community, {
-    application: bm.create(Application, {
-      description: faker.lorem.sentences(3),
-      title: faker.random.words(3)
-    }),
-    communityIntegrations: bm.create(CommunityIntegrations, {}),
-    name: faker.random.word(),
-    primaryColor: faker.commerce.color(),
-    urlName: faker.random.word(),
-    ...overrides
+  const communities = Array.from(Array(count).keys()).map((_, i: number) => {
+    return {
+      id: faker.random.uuid(),
+      name: faker.random.word(),
+      primaryColor: faker.commerce.color(),
+      urlName: faker.random.word(),
+      ...overrides,
+      ...buildOverrides(i)
+    };
   });
+
+  return communities;
 };
 
 export const buildCommunityIntegrations = async (
