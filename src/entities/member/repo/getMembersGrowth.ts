@@ -11,8 +11,9 @@ import { QueryEvent } from '@util/constants.events';
  * percentage.
  *
  * @param ctx.communityId - ID of the Community (authenticated).
- * @example getTotalGrowth() => [528, 173.1]
- * @example getTotalGrowth() => [1, 100]
+ * @example
+ * // Returns [528, 173.1]
+ * getTotalGrowth()
  */
 const getMembersGrowth = async (
   ctx: Pick<GQLContext, 'communityId'>

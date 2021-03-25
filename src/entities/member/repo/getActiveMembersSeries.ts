@@ -10,11 +10,13 @@ import { TimeSeriesData } from '@util/constants.gql';
 /**
  * Returns the TimeSeriesData points of the # of active Members.
  *
- * @example getMembersSeries() => [
- *  { name: '2021-01-16T00:00:00Z', value: 100 },
- *  { name: '2021-01-17T00:00:00Z', value: 150 },
- *  { name: '2021-01-18T00:00:00Z', value: 200 },
- * ]
+ * @example
+ * // Returns [
+ * // { name: '2021-01-16T00:00:00Z', value: 100 },
+ * // { name: '2021-01-17T00:00:00Z', value: 150 },
+ * // { name: '2021-01-18T00:00:00Z', value: 200 },
+ * // ]
+ * getMembersSeries()
  */
 const getActiveMembersSeries = async (
   ctx: Pick<GQLContext, 'communityId'>

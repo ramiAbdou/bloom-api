@@ -11,11 +11,13 @@ import { TimeSeriesData } from '@util/constants.gql';
  * including the current total number of members as well as the growth
  * percentage.
  *
- * @example getMembersSeries() => [
- *  { name: '2021-01-16T00:00:00Z', value: 100 },
- *  { name: '2021-01-17T00:00:00Z', value: 150 },
- *  { name: '2021-01-18T00:00:00Z', value: 200 },
- * ]
+ * @example
+ * // Returns [
+ * // { name: '2021-01-16T00:00:00Z', value: 100 },
+ * // { name: '2021-01-17T00:00:00Z', value: 150 },
+ * // { name: '2021-01-18T00:00:00Z', value: 200 },
+ * // ]
+ * getMembersSeries()
  */
 const getMembersSeries = async (
   ctx: Pick<GQLContext, 'communityId'>
