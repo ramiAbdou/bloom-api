@@ -1,3 +1,5 @@
+import day from 'dayjs';
+
 import { EmailEvent } from '@util/constants.events';
 import { splitArrayIntoChunks } from '@util/util';
 import { EmailArgs, EmailVars } from './emails.types';
@@ -176,4 +178,19 @@ export const getPersonalizations = async (
   );
 
   return chunkedPersonalizations;
+};
+
+/**
+ * Returns the timestamp in relation to where the server lives. Currently,
+ * the server lives in San Francisco, so will either be PDT (-7:00) or PST
+ * (-8:00).
+ *
+ * @param timestamp - UTC timestamp to convert.
+ *
+ * @example
+ * // Returns 'March 25, 2021 at 4:00 PM PDT'.
+ * stringifyEmailTimestamp('2021-03-25T23:00:00Z')
+ */
+export const stringifyEmailTimestamp = (timestamp: string): string => {
+  return day(timestamp).format('MMMM D, YYYY @ h:mm A z');
 };

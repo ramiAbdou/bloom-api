@@ -10,7 +10,7 @@
         <mj-include path="./hi.mjml" />
         <mj-text padding-bottom="16px">You created {{ event.title }} in {{ community.name }}. Please see the event details below.</mj-text>
         <mj-text padding-bottom="4px">Title: {{ event.title }}</mj-text>
-        <mj-text padding-bottom="4px">When: {{ formatDate event.startTime "MMM D, YYYY @ h:mm A" "-0800" }} - {{ formatDate event.endTime "MMM D, YYYY @ h:mm A" "-0800" }}</mj-text>
+        <mj-text padding-bottom="4px">When: {{ event.startTime }} - {{ event.endTime }}</mj-text>
         <mj-text padding-bottom="4px">Privacy: {{ event.privacy }}</mj-text>
         <mj-raw>{{#if event.summary}}</mj-raw>
         <mj-text padding-bottom="4px">Summary: {{ event.summary }}</mj-text>

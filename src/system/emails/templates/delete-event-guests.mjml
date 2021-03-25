@@ -10,7 +10,7 @@
         <mj-include path="./hi.mjml" />
         <mj-text padding-bottom="16px">Unfortunately, the following event that you had RSVP'd to was deleted from {{ community.name }}.</mj-text>
         <mj-text>Title: {{ event.title }}</mj-text>
-        <mj-text>Date of Event: {{ formatDate event.startTime "dddd, MMMM D, YYYY" "-0800" }}</mj-text>
+        <mj-text>Date of Event: {{ event.startTime }}</mj-text>
         <mj-text></mj-text>
       </mj-column>
     </mj-section>

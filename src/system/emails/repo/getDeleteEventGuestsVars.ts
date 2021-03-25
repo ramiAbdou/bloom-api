@@ -4,6 +4,7 @@ import EventGuest from '@entities/event-guest/EventGuest';
 import Event from '@entities/event/Event';
 import Member from '@entities/member/Member';
 import { EmailPayload } from '../emails.types';
+import { stringifyEmailTimestamp } from '../emails.util';
 
 export interface DeleteEventGuestsPayload {
   communityId: string;
@@ -40,7 +41,7 @@ const getDeleteEventGuestsVars = async (
   const partialCommunity: Pick<Community, 'name'> = { name: community.name };
 
   const partialEvent: Pick<Event, 'startTime' | 'title'> = {
-    startTime: event.startTime,
+    startTime: stringifyEmailTimestamp(event.startTime),
     title: event.title
   };
 

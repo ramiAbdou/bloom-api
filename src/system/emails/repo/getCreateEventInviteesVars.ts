@@ -3,6 +3,7 @@ import Community from '@entities/community/Community';
 import Event from '@entities/event/Event';
 import Member from '@entities/member/Member';
 import { EmailPayload } from '../emails.types';
+import { stringifyEmailTimestamp } from '../emails.util';
 
 export interface CreateEventInviteesPayload {
   communityId: string;
@@ -46,11 +47,11 @@ const getCreateEventInviteesVars = async (
     Event,
     'endTime' | 'eventUrl' | 'privacy' | 'startTime' | 'summary' | 'title'
   > = {
-    endTime: event.endTime,
+    endTime: stringifyEmailTimestamp(event.endTime),
     // @ts-ignore b/c we need to await the call.
     eventUrl: await event.eventUrl(),
     privacy: event.privacy,
-    startTime: event.startTime,
+    startTime: stringifyEmailTimestamp(event.startTime),
     summary: event.summary,
     title: event.title
   };
