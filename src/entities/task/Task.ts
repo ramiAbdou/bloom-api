@@ -2,7 +2,7 @@ import { Entity, Enum, Property } from '@mikro-orm/core';
 
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
-import { EventReminderPayload } from '@system/emails/util/getEventReminderVars';
+import { EventReminderPayload } from '@system/emails/repo/getEventReminderVars';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { EmailEvent, TaskEvent } from '@util/constants.events';
 

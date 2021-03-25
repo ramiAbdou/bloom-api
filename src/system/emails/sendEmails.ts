@@ -2,17 +2,18 @@ import sg, { MailDataRequired } from '@sendgrid/mail';
 import logger from '@system/logger/logger';
 import { isDevelopment } from '@util/constants';
 import { EmailArgs } from './emails.types';
-import getPersonalizations, {
-  FormatPersonalizationData
-} from './getPersonalizations';
-import getTemplateId from './getTemplateId';
+import {
+  FormatPersonalizationData,
+  getPersonalizations,
+  getSendGridTemplateId
+} from './emails.util';
 
 interface SendEmailsBatch extends EmailArgs {
   personalizations: FormatPersonalizationData[];
 }
 
 const sendEmailsBatch = async (args: SendEmailsBatch) => {
-  const templateId: string = getTemplateId(args.emailEvent);
+  const templateId: string = getSendGridTemplateId(args.emailEvent);
 
   const options: MailDataRequired = {
     from: { email: 'team@onbloom.co', name: 'Bloom' },

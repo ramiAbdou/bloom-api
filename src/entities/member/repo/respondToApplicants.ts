@@ -1,7 +1,7 @@
-import { AcceptedIntoCommunityPayload } from 'src/system/emails/util/getAcceptedIntoCommunityVars';
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
+import { AcceptedIntoCommunityPayload } from '@system/emails/repo/getAcceptedIntoCommunityVars';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import emitMailchimpEvent from '@system/events/repo/emitMailchimpEvent';
 import { GQLContext } from '@util/constants';
