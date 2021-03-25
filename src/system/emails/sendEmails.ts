@@ -1,6 +1,5 @@
 import sg, { MailDataRequired } from '@sendgrid/mail';
 import logger from '@system/logger/logger';
-import { isDevelopment } from '@util/constants';
 import { EmailArgs } from './emails.types';
 import {
   FormatPersonalizationData,
@@ -41,7 +40,7 @@ const sendEmailsBatch = async (args: SendEmailsBatch) => {
 const sendEmails = async (args: EmailArgs) => {
   // Shouldn't send any emails in development. If needed, comment this line
   // out manually each time.
-  if (isDevelopment) return;
+  if (process.env.APP_ENV === 'dev') return;
 
   const chunkedPersonalizations = await getPersonalizations(args);
 

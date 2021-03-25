@@ -25,7 +25,7 @@ const getDemoteMembersVars = async (
 ): Promise<DemoteMembersVars[]> => {
   const { communityId, memberIds } = context as DemoteMembersPayload;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [community, owner, users]: [
     Community,

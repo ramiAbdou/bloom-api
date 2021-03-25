@@ -28,7 +28,7 @@ const getCreateEventCoordinatorVars = async (
     eventId
   } = context as CreateEventCoordinatorPayload;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [community, event, member]: [
     Community,

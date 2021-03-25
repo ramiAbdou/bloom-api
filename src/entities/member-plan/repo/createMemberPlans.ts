@@ -35,7 +35,7 @@ const createMemberPlans = async (
   const { defaultPlanName, plans: initialPlans } = args;
   const { communityId } = ctx;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
   const community: Community = await bm.findOne(Community, communityId);
 
   let defaultType: MemberPlan;

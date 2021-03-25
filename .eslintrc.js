@@ -8,10 +8,10 @@ module.exports = {
   extends: ['airbnb-typescript-prettier'],
   plugins: ['jest', 'simple-import-sort', 'sort-keys-fix'],
   overrides: [
-    // For the GraphQL resolver files, we don't need to use this because
-    // the type-graphql package doesn't encourage it.
     {
-      files: ['*.resolver.ts', '*.repo.ts', '*.subscriber.ts'],
+      // Type GraphQL resolvers and MikroORM subscribers don't ever need to use
+      // "this" in the classes for anything.
+      files: ['*.resolver.ts', '*.subscriber.ts'],
       rules: { 'class-methods-use-this': 0 }
     },
     {
@@ -22,7 +22,8 @@ module.exports = {
     {
       files: ['*.args.ts', '*.types.ts', '*.util.ts'],
       rules: { 'import/prefer-default-export': 0 }
-    }
+    },
+    { files: ['src/**/*.ts'] }
   ],
   rules: {
     '@typescript-eslint/ban-ts-ignore': 0, // Allow @ts-ignore to be used.

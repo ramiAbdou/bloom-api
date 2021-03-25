@@ -41,7 +41,7 @@ const createEventGuest = async (
   const { email, eventId, firstName, lastName } = args;
   const { communityId, memberId } = ctx;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [member, supporter]: [Member, Supporter] = await Promise.all([
     bm.findOne(Member, { id: memberId }),

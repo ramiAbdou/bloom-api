@@ -25,7 +25,7 @@ const createEventInvitees = async (
 
   if (!memberIds.length) return [];
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const invitees: EventInvitee[] = memberIds.map((memberId: string) => {
     return bm.create(EventInvitee, { event: eventId, member: memberId });

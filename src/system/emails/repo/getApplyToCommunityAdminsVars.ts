@@ -27,7 +27,7 @@ const getApplyToCommunityAdminsVars = async (
 ): Promise<ApplyToCommunityAdminsVars[]> => {
   const { applicantId, communityId } = context as ApplyToCommunityAdminsPayload;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [community, admins, applicant]: [
     Community,

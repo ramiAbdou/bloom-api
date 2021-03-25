@@ -35,7 +35,7 @@ const getInviteMembersVars = async (
     memberIds
   } = context as InviteMembersPayload;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [community, coordinator, members]: [
     Community,

@@ -30,13 +30,13 @@ const populateRandomEvents = async (community: Community) => {
     `,
     endTime: nowJs.subtract(3, 'week').startOf('hour').add(1, 'hour').format(),
     private: true,
-    startTime: day.utc().subtract(3, 'week').startOf('hour').format(),
+    startTime: nowJs.subtract(3, 'week').startOf('hour').format(),
     summary: `
       Know how brands like Discord, OneDay, Public.com & SalesLoft are laying
       out their marketing plan for 2021
     `,
     title: 'Community Kickback',
-    updatedAt: day.utc().subtract(4, 'week').format(),
+    updatedAt: nowJs.subtract(4, 'week').format(),
     videoUrl:
       'https://zoom.us/j/5962989444?pwd=dWZiazFKOVpxa0FJVThBS3pHSHlIZz09'
   });
@@ -136,8 +136,7 @@ const populateRandomEvents = async (community: Community) => {
 
     if (i % 2 === 0) {
       bm.create(EventGuest, {
-        createdAt: day
-          .utc()
+        createdAt: nowJs
           .subtract(2, 'week')
           .add(Math.floor(randomAddition / 2), 'day')
           .format(),
@@ -151,7 +150,7 @@ const populateRandomEvents = async (community: Community) => {
 
     if (i % 3 === 0) {
       bm.create(EventGuest, {
-        createdAt: day.utc().subtract(1, 'hour').format(),
+        createdAt: nowJs.subtract(1, 'hour').format(),
         email: member.email,
         event: event3,
         firstName: member.firstName,

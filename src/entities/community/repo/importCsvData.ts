@@ -10,7 +10,6 @@ import MemberValue from '@entities/member-value/MemberValue';
 import Member, { MemberRole, MemberStatus } from '@entities/member/Member';
 import Question, { QuestionCategory } from '@entities/question/Question';
 import User from '@entities/user/User';
-import { isProduction } from '@util/constants';
 import { FlushEvent } from '@util/constants.events';
 import Community from '../Community';
 
@@ -52,7 +51,9 @@ const processRow = async ({
   const { EMAIL: dirtyEmail, FIRST_NAME: firstName, LAST_NAME: lastName } = row;
 
   const email: string =
-    isProduction || dirtyEmail === process.env.USER_EMAIL
+    process.env.APP_ENV === 'stage' ||
+    process.env.APP_ENV === 'prod' ||
+    dirtyEmail === process.env.USER_EMAIL
       ? dirtyEmail?.toLowerCase()
       : internet.email();
 
@@ -140,7 +141,7 @@ const processRow = async ({
  * adds a Member based on the current users in our DB.
  */
 const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [community, responses]: [
     Community,

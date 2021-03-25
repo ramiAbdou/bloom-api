@@ -30,7 +30,7 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
     const { bio, firstName, joinedAt, lastName, plan } =
       changeSet.payload ?? {};
 
-    const bm = new BloomManager();
+    const bm: BloomManager = new BloomManager();
 
     if (bio) {
       const question: Question = await bm.findOne(Question, {
@@ -93,6 +93,8 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
         category: QuestionCategory.MEMBER_PLAN,
         community: member.community.id
       });
+
+      if (!question) return;
 
       await bm.findOneOrCreate(
         MemberValue,

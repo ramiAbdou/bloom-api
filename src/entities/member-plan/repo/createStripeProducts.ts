@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 import Stripe from 'stripe';
+import { assign } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
@@ -23,37 +24,29 @@ const attachStripeProduct = async (
   const { stripeAccountId, plan } = args;
   const { amount, id, name, recurrence } = plan;
 
-  // Create the subscription even if the product is LIFETIME fulfilled
-  // subscription.
   const product: Stripe.Product = await stripe.products.create(
     { id, name },
     { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
-  let recurring: Partial<Stripe.PriceCreateParams> = {};
-
-  if (recurrence !== RecurrenceType.LIFETIME) {
-    recurring = {
-      recurring: {
-        interval: recurrence === RecurrenceType.MONTHLY ? 'month' : 'year'
-      }
-    };
-  }
-
   const price: Stripe.Price = await stripe.prices.create(
     {
-      ...recurring,
       currency: 'usd',
       product: product.id,
+      recurring: {
+        interval: recurrence === RecurrenceType.MONTHLY ? 'month' : 'year'
+      },
       unit_amount: amount * 100
     },
     { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
-  plan.stripePriceId = price.id;
-  plan.stripeProductId = product.id;
+  const updatedPlan: MemberPlan = assign(plan, {
+    stripePriceId: price.id,
+    stripeProductId: product.id
+  });
 
-  return plan;
+  return updatedPlan;
 };
 
 interface CreateStripeProductsArgs {
@@ -67,7 +60,7 @@ interface CreateStripeProductsArgs {
 const createStripeProducts = async (args: CreateStripeProductsArgs) => {
   const { urlName } = args;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [communityIntegrations, plans]: [
     CommunityIntegrations,

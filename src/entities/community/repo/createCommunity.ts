@@ -18,7 +18,7 @@ const createCommunity = async (
 ): Promise<Community> => {
   const { application, ...data } = args;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const community: Community = await bm.createAndFlush(
     Community,

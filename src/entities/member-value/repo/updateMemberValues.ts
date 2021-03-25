@@ -38,7 +38,7 @@ const updateMemberValues = async (
   // Need to find all of the Question(s) with these ID's.
   const questionIds: string[] = items.map(({ questionId }) => questionId);
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const values: MemberValue[] = await bm.find(MemberValue, {
     member: memberId,

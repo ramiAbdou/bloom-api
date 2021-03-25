@@ -17,7 +17,6 @@ import Member from '@entities/member/Member';
 import { QueryEvent } from '@util/constants.events';
 
 export enum RecurrenceType {
-  LIFETIME = 'Lifetime',
   MONTHLY = 'Monthly',
   YEARLY = 'Yearly'
 }

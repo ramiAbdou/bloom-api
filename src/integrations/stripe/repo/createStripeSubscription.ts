@@ -21,12 +21,13 @@ const createStripeSubscription = async (
 ): Promise<Stripe.Subscription> => {
   const { stripeAccountId, stripeCustomerId, stripePriceId } = args;
 
+  // We want to subscribe to the "item" with the given stripePriceId.
+  const subscriptionItems: Stripe.SubscriptionCreateParams.Item[] = [
+    { price: stripePriceId }
+  ];
+
   const subscription: Stripe.Subscription = await stripe.subscriptions.create(
-    {
-      customer: stripeCustomerId,
-      expand: ['latest_invoice.payment_intent'],
-      items: [{ price: stripePriceId }]
-    },
+    { customer: stripeCustomerId, items: subscriptionItems },
     { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 

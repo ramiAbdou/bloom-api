@@ -1,5 +1,5 @@
 import { IsUrl } from 'class-validator';
-import day from 'dayjs';
+import Stripe from 'stripe';
 import { Field, ObjectType } from 'type-graphql';
 import {
   AfterCreate,
@@ -21,6 +21,7 @@ import {
 
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
+import { stripe } from '@integrations/stripe/Stripe.util';
 import { QueryEvent } from '@util/constants.events';
 import { now } from '@util/util';
 import Community from '../community/Community';
@@ -29,11 +30,11 @@ import EventGuest from '../event-guest/EventGuest';
 import EventInvitee from '../event-invitee/EventInvitee';
 import EventWatch from '../event-watch/EventWatch';
 import MemberIntegrations from '../member-integrations/MemberIntegrations';
-import MemberPlan, { RecurrenceType } from '../member-plan/MemberPlan';
+import MemberPlan from '../member-plan/MemberPlan';
 import MemberRefresh from '../member-refresh/MemberRefresh';
 import MemberSocials from '../member-socials/MemberSocials';
 import MemberValue from '../member-value/MemberValue';
-import Payment, { PaymentType } from '../payment/Payment';
+import Payment from '../payment/Payment';
 import User from '../user/User';
 
 export enum MemberRole {
@@ -110,33 +111,20 @@ export default class Member extends BaseEntity {
    */
   @Field(() => Boolean)
   async isDuesActive(): Promise<boolean> {
-    await wrap(this.plan).init();
+    await wrap(this.community).init(true, ['communityIntegrations']);
+    await wrap(this.memberIntegrations).init();
 
-    const payments: Payment[] = await this.payments.loadItems();
+    // If there is no Stripe.Subscription associated with the Member, not
+    // dues active.
+    if (!this.memberIntegrations.stripeSubscriptionId) return false;
 
-    const lastDuesPayment: Payment = payments.find((payment: Payment) => {
-      return payment.type === PaymentType.DUES;
-    });
+    const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(
+      this.memberIntegrations.stripeSubscriptionId,
+      { stripeAccount: this.community.communityIntegrations.stripeAccountId }
+    );
 
-    if (!lastDuesPayment) return false;
-
-    const { createdAt } = lastDuesPayment;
-    const { recurrence } = this.plan;
-
-    // If it's a LIFETIME payment, then they are active!
-    if (recurrence === RecurrenceType.LIFETIME) return true;
-
-    if (recurrence === RecurrenceType.MONTHLY) {
-      const oneMonthAgo: day.Dayjs = day.utc().subtract(1, 'month');
-      return day.utc(createdAt)?.isAfter(oneMonthAgo);
-    }
-
-    if (recurrence === RecurrenceType.YEARLY) {
-      const oneYearAgo: day.Dayjs = day.utc().subtract(1, 'year');
-      return day.utc(createdAt)?.isAfter(oneYearAgo);
-    }
-
-    return false;
+    const { status } = subscription;
+    return status === 'active' || status === 'trialing';
   }
 
   // ## LIFECYCLE HOOKS

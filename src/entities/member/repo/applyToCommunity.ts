@@ -8,8 +8,6 @@ import updateStripePaymentMethodId from '@entities/member-integrations/repo/upda
 import MemberPlan, { RecurrenceType } from '@entities/member-plan/MemberPlan';
 import MemberSocials from '@entities/member-socials/MemberSocials';
 import MemberValue from '@entities/member-value/MemberValue';
-import createLifetimePayment from '@entities/payment/repo/createLifetimePayment';
-import createSubscription from '@entities/payment/repo/createSubscription';
 import Question, {
   QuestionCategory,
   QuestionType
@@ -20,6 +18,7 @@ import { ApplyToCommunityPayload } from '@system/emails/repo/getApplyToCommunity
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { GQLContext } from '@util/constants';
 import { EmailEvent, FlushEvent } from '@util/constants.events';
+import updateStripeSubscriptionId from '../../member-integrations/repo/updateStripeSubscriptionId';
 import Member from '../Member';
 
 @InputType()
@@ -60,8 +59,7 @@ interface CreateApplicationPaymentArgs {
 
 /**
  * Creates the application payment for the incoming member. If no payment
- * method ID is provided, nothing happens. If the recurrence is LIFETIME,
- * creates a one-time payment, and otherwise creates a subscription.
+ * method ID is provided, nothing happens. Creates a subscription.
  *
  * @param args.memberPlanId Type ID to apply for.
  * @param args.paymentMethodId ID of the Stripe Payment Method.
@@ -73,19 +71,13 @@ const createApplicationPayment = async (
   args: CreateApplicationPaymentArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<Member> => {
-  const { memberPlanId, paymentMethodId, recurrence } = args;
+  const { memberPlanId, paymentMethodId } = args;
 
   if (!paymentMethodId) return;
 
   try {
     await updateStripePaymentMethodId({ paymentMethodId }, ctx);
-
-    if (recurrence === RecurrenceType.LIFETIME) {
-      await createLifetimePayment({ memberPlanId }, ctx);
-      return;
-    }
-
-    await createSubscription({ memberPlanId }, ctx);
+    await updateStripeSubscriptionId({ memberPlanId }, ctx);
   } catch (e) {
     await new BloomManager().findOneAndDelete(Member, { id: ctx.memberId });
     throw new Error(`There was a problem processing your payment.`);
@@ -102,7 +94,7 @@ const applyToCommunity = async (
 ): Promise<Member> => {
   const { data, email, memberPlanId, paymentMethodId, urlName } = args;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const queryArgs: FilterQuery<MemberPlan> = memberPlanId || {
     community: { urlName }

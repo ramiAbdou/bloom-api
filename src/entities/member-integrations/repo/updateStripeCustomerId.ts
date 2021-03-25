@@ -18,7 +18,7 @@ const updateStripeCustomerId = async (
 ): Promise<MemberIntegrations> => {
   const { communityId, memberId } = ctx;
 
-  const bm = new BloomManager();
+  const bm: BloomManager = new BloomManager();
 
   const [communityIntegrations, member, memberIntegrations]: [
     CommunityIntegrations,
@@ -34,6 +34,8 @@ const updateStripeCustomerId = async (
   // customer.
   if (memberIntegrations.stripeCustomerId) return memberIntegrations;
 
+  // Otherwise, create the Stripe Customer and attach the ID to the
+  // MemberIntegrations instance.
   const stripeCustomer: Stripe.Customer = await createStripeCustomer({
     email: member.email,
     fullName: member.fullName,

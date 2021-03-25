@@ -1,11 +1,21 @@
 import { IsUrl } from 'class-validator';
+import { PaymentReceiptPayload } from 'src/system/emails/repo/getPaymentReceiptVars';
+import Stripe from 'stripe';
 import { Field, Float, ObjectType } from 'type-graphql';
-import { AfterCreate, Entity, ManyToOne, Property } from '@mikro-orm/core';
+import {
+  AfterCreate,
+  Entity,
+  ManyToOne,
+  Property,
+  wrap
+} from '@mikro-orm/core';
 
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Community from '@entities/community/Community';
-import { QueryEvent } from '@util/constants.events';
+import { stripe } from '@integrations/stripe/Stripe.util';
+import emitEmailEvent from '@system/events/repo/emitEmailEvent';
+import { EmailEvent, QueryEvent } from '@util/constants.events';
 import MemberPlan from '../member-plan/MemberPlan';
 import Member from '../member/Member';
 
@@ -40,7 +50,7 @@ export default class Payment extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @AfterCreate()
-  afterCreate() {
+  async afterCreate() {
     Payment.cache.invalidate([
       // Need to make sure that the 'isDuesActive' is updated.
       `${QueryEvent.GET_MEMBERS}-${this.member.id}`,
@@ -49,6 +59,27 @@ export default class Payment extends BaseEntity {
       `${QueryEvent.GET_PAYMENTS}-${this.member.id}`,
       `${QueryEvent.GET_PAYMENTS_SERIES}-${this.community.id}`
     ]);
+
+    // Time to send an email confirmation for the Payment.
+    await Promise.all([
+      wrap(this.community).init(true, ['communityIntegrations']),
+      wrap(this.member).init(true, ['memberIntegrations'])
+    ]);
+
+    const { stripeAccountId } = this.community.communityIntegrations;
+    const { stripePaymentMethodId } = this.member.memberIntegrations;
+
+    const method: Stripe.PaymentMethod = await stripe.paymentMethods.retrieve(
+      stripePaymentMethodId,
+      { stripeAccount: stripeAccountId }
+    );
+
+    // Blast off email!
+    emitEmailEvent(EmailEvent.PAYMENT_RECEIPT, {
+      card: method.card,
+      paymentId: this.id,
+      stripeAccountId
+    } as PaymentReceiptPayload);
   }
 
   // ## RELATIONSHIPS
