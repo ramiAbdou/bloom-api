@@ -4,7 +4,7 @@ export enum BusEvent {
   EMAIL_EVENT = 'EMAIL_EVENT',
   GOOGLE_EVENT = 'GOOGLE_EVENT',
   MAILCHIMP_EVENT = 'MAILCHIMP_EVENT',
-  SCHEDULE_TASK = 'SCHEDULE_TASK'
+  TASK_EVENT = 'TASK_EVENT'
 }
 
 export enum EmailEvent {

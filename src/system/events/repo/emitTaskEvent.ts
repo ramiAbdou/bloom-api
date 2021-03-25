@@ -9,7 +9,7 @@ import eventBus from '../eventBus';
  * @param payload
  */
 const emitTaskEvent = (event: TaskEvent, payload: TaskPayload) => {
-  eventBus.emit(BusEvent.SCHEDULE_TASK, { event, payload });
+  eventBus.emit(BusEvent.TASK_EVENT, { event, payload });
 };
 
 export default emitTaskEvent;

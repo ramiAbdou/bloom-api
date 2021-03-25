@@ -14,6 +14,6 @@ const eventBus: EventEmitter = new EventEmitter()
   .on(BusEvent.EMAIL_EVENT, sendEmails)
   .on(BusEvent.GOOGLE_EVENT, processGoogleEvent)
   .on(BusEvent.MAILCHIMP_EVENT, processMailchimpEvent)
-  .on(BusEvent.SCHEDULE_TASK, createTask);
+  .on(BusEvent.TASK_EVENT, createTask);
 
 export default eventBus;
