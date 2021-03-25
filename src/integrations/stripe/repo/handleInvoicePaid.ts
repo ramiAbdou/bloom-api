@@ -6,7 +6,7 @@ import Community from '@entities/community/Community';
 import Member from '@entities/member/Member';
 import Payment from '@entities/payment/Payment';
 import createPayment from '@entities/payment/repo/createPayment';
-import { emitEmailEvent } from '@system/eventBus';
+import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { EmailEvent } from '@util/constants.events';
 import { stripe } from '../Stripe.util';
 

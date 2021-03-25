@@ -5,7 +5,7 @@
 import faker from 'faker';
 
 import Community from '@entities/community/Community';
-import * as eventBus from '@system/eventBus';
+import * as emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { IntegrationsBrand } from '@util/constants';
 import { EmailEvent, QueryEvent } from '@util/constants.events';
 import {
@@ -51,7 +51,7 @@ describe('updateMailchimpListId()', () => {
     const mailchimpListId: string = faker.random.uuid();
 
     const spyEmitEmailEvent = jest
-      .spyOn(eventBus, 'emitEmailEvent')
+      .spyOn(emitEmailEvent, 'default')
       .mockImplementation();
 
     await updateMailchimpListId(

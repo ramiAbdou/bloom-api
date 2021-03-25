@@ -22,10 +22,10 @@
   "diffEditor.ignoreTrimWhitespace": false,
   "[markdown|typescript]": {
     "editor.wordWrap": "wordWrapColumn",
-    "editor.wordWrapColumn": 80,
+    "editor.wordWrapColumn": 80
   },
   "[typescript]": {
     "editor.wordWrap": "wordWrapColumn",
-    "editor.wordWrapColumn": 80,
+    "editor.wordWrapColumn": 80
   }
 }

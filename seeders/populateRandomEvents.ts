@@ -1,4 +1,4 @@
-import day from 'dayjs';
+import day, { Dayjs } from 'dayjs';
 
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
@@ -10,9 +10,11 @@ import Member from '../src/entities/member/Member';
 const populateRandomEvents = async (community: Community) => {
   const bm: BloomManager = new BloomManager();
 
+  const nowJs: Dayjs = day.utc();
+
   const event1: Event = bm.create(Event, {
     community,
-    createdAt: day.utc().subtract(4, 'week').format(),
+    createdAt: nowJs.subtract(4, 'week').format(),
     description: `
       R provides a wide range of statistical (linear and nonlinear modelling,
       classical statistical tests, time-series analysis, classification and
@@ -26,12 +28,7 @@ const populateRandomEvents = async (community: Community) => {
       trend will continue to rise. Data analytics is one of the important
       aspects of the research.
     `,
-    endTime: day
-      .utc()
-      .subtract(3, 'week')
-      .startOf('hour')
-      .add(1, 'hour')
-      .format(),
+    endTime: nowJs.subtract(3, 'week').startOf('hour').add(1, 'hour').format(),
     private: true,
     startTime: day.utc().subtract(3, 'week').startOf('hour').format(),
     summary: `
@@ -46,7 +43,7 @@ const populateRandomEvents = async (community: Community) => {
 
   const event2 = bm.create(Event, {
     community,
-    createdAt: day.utc().subtract(2, 'week').format(),
+    createdAt: nowJs.subtract(2, 'week').format(),
     description: `
       R provides a wide range of statistical (linear and nonlinear modelling,
       classical statistical tests, time-series analysis, classification and
@@ -60,22 +57,22 @@ const populateRandomEvents = async (community: Community) => {
       trend will continue to rise. Data analytics is one of the important
       aspects of the research.
     `,
-    endTime: day.utc().add(2, 'hour').startOf('hour').format(),
+    endTime: nowJs.add(2, 'hour').startOf('hour').format(),
     private: true,
-    startTime: day.utc().subtract(1, 'hour').startOf('hour').format(),
+    startTime: nowJs.subtract(1, 'hour').startOf('hour').format(),
     summary: `
       Know how brands like Discord, OneDay, Public.com & SalesLoft are laying
       out their marketing plan for 2021
     `,
     title: 'Introduction to Software Engineering',
-    updatedAt: day.utc().subtract(2, 'week').format(),
+    updatedAt: nowJs.subtract(2, 'week').format(),
     videoUrl:
       'https://zoom.us/j/5962989444?pwd=dWZiazFKOVpxa0FJVThBS3pHSHlIZz09'
   });
 
   const event3 = bm.create(Event, {
     community,
-    createdAt: day.utc().subtract(3, 'hour').format(),
+    createdAt: nowJs.subtract(3, 'hour').format(),
     description: `
       The Mainstage Virtual Summit 2021 Is our biggest event this year, this
       time we present our stage to global speakers to talk on different aspects
@@ -85,15 +82,15 @@ const populateRandomEvents = async (community: Community) => {
       Startups" back in February last year was a huge success. This year we are
       going even bigger. Don't miss it!
     `,
-    endTime: day.utc().add(2, 'week').add(1, 'hour').startOf('hour').format(),
+    endTime: nowJs.add(2, 'week').add(1, 'hour').startOf('hour').format(),
     private: true,
-    startTime: day.utc().add(2, 'week').startOf('hour').format(),
+    startTime: nowJs.add(2, 'week').startOf('hour').format(),
     summary: `
       The Mainstage Virtual Summit 2021 Is our biggest event this year, this
       time we present our stage to global speakers to talk on different Topics.
     `,
     title: 'Fellowship Kickoff',
-    updatedAt: day.utc().subtract(3, 'hour').format(),
+    updatedAt: nowJs.subtract(3, 'hour').format(),
     videoUrl:
       'https://zoom.us/j/5962989444?pwd=dWZiazFKOVpxa0FJVThBS3pHSHlIZz09'
   });

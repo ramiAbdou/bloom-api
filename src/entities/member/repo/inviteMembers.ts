@@ -6,7 +6,7 @@ import Community from '@entities/community/Community';
 import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
 import MemberSocials from '@entities/member-socials/MemberSocials';
 import User from '@entities/user/User';
-import { emitEmailEvent } from '@system/eventBus';
+import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { GQLContext } from '@util/constants';
 import { EmailEvent, FlushEvent } from '@util/constants.events';
 import Member, { MemberRole, MemberStatus } from '../Member';

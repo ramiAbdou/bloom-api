@@ -17,7 +17,7 @@ import Question, {
   QuestionType
 } from '@entities/question/Question';
 import User from '@entities/user/User';
-import { emitEmailEvent } from '@system/eventBus';
+import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { GQLContext } from '@util/constants';
 import { EmailEvent, FlushEvent } from '@util/constants.events';
 import Member from '../Member';
