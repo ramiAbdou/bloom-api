@@ -1,4 +1,4 @@
-import day from 'dayjs';
+import day, { Dayjs } from 'dayjs';
 
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
@@ -10,7 +10,7 @@ import Member from '../src/entities/member/Member';
 const populateRandomEvents = async (community: Community) => {
   const bm: BloomManager = new BloomManager();
 
-  const nowJs = day.utc();
+  const nowJs: Dayjs = day.utc();
 
   const event1: Event = bm.create(Event, {
     community,
@@ -28,11 +28,7 @@ const populateRandomEvents = async (community: Community) => {
       trend will continue to rise. Data analytics is one of the important
       aspects of the research.
     `,
-    endTime: nowJs
-      .subtract(3, 'week')
-      .startOf('hour')
-      .add(1, 'hour')
-      .format(),
+    endTime: nowJs.subtract(3, 'week').startOf('hour').add(1, 'hour').format(),
     private: true,
     startTime: nowJs.subtract(3, 'week').startOf('hour').format(),
     summary: `

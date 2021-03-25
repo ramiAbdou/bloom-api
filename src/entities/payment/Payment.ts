@@ -1,5 +1,5 @@
 import { IsUrl } from 'class-validator';
-import { PaymentReceiptPayload } from 'src/system/emails/util/getPaymentReceiptVars';
+import { PaymentReceiptPayload } from 'src/system/emails/repo/getPaymentReceiptVars';
 import Stripe from 'stripe';
 import { Field, Float, ObjectType } from 'type-graphql';
 import {
@@ -14,7 +14,7 @@ import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Community from '@entities/community/Community';
 import { stripe } from '@integrations/stripe/Stripe.util';
-import { emitEmailEvent } from '@system/eventBus';
+import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { EmailEvent, QueryEvent } from '@util/constants.events';
 import MemberPlan from '../member-plan/MemberPlan';
 import Member from '../member/Member';

@@ -5,7 +5,7 @@
 import faker from 'faker';
 
 import Community from '@entities/community/Community';
-import * as eventBus from '@system/eventBus';
+import * as emitGoogleEvent from '@system/events/repo/emitGoogleEvent';
 import { GoogleEvent, QueryEvent } from '@util/constants.events';
 import { buildEvent, initDatabaseIntegrationTest } from '@util/test.util';
 import Event, { EventPrivacy } from '../Event';
@@ -28,6 +28,7 @@ describe('updateEvent()', () => {
       videoUrl: faker.internet.url()
     };
 
+    jest.spyOn(emitGoogleEvent, 'default').mockImplementation();
     const updatedEvent: Event = await updateEvent(updateArgs);
 
     expect(updatedEvent)
@@ -45,7 +46,7 @@ describe('updateEvent()', () => {
     const eventId: string = event.id;
 
     const spyEmitGoogleEvent = jest
-      .spyOn(eventBus, 'emitGoogleEvent')
+      .spyOn(emitGoogleEvent, 'default')
       .mockImplementation();
 
     await updateEvent({ eventId });
@@ -60,6 +61,8 @@ describe('updateEvent()', () => {
     const eventId: string = event.id;
     const cacheKey: string = `${QueryEvent.GET_EVENT}-${eventId}`;
 
+    jest.spyOn(emitGoogleEvent, 'default').mockImplementation();
+
     await updateEvent({ eventId });
 
     expect(Event.cache.has(cacheKey)).toBe(false);
@@ -70,6 +73,7 @@ describe('updateEvent()', () => {
     const eventId: string = event.id;
     const communityId: string = event.community.id;
     const cacheKey: string = `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`;
+    jest.spyOn(emitGoogleEvent, 'default').mockImplementation();
 
     await getUpcomingEvents({ communityId });
     expect(Event.cache.has(cacheKey)).toBe(true);

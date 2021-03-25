@@ -1,13 +1,14 @@
 import day from 'dayjs';
-import cron from 'node-cron';
 
 import BloomManager from '@core/db/BloomManager';
-import Task from '../entities/task/Task';
+import Task from '@entities/task/Task';
 
-// Runs every 5 minutes.
-
-cron.schedule('*/5 * * * *', async () => {
-  const bm: BloomManager = new BloomManager();
+/**
+ * Executes all of the pending Task(s) stored in the DB, then removes them
+ * after execution.
+ */
+const handlePendingTasks = async (): Promise<void> => {
+  const bm = new BloomManager();
 
   // Get all the Tasks with executeAt time that is before the current time
   // and that haven't finished.
@@ -21,4 +22,6 @@ cron.schedule('*/5 * * * *', async () => {
   });
 
   await bm.flush();
-});
+};
+
+export default handlePendingTasks;

@@ -2,61 +2,61 @@ import { EmailEvent } from '@util/constants.events';
 import {
   AcceptedIntoCommunityPayload,
   AcceptedIntoCommunityVars
-} from './util/getAcceptedIntoCommunityVars';
+} from './repo/getAcceptedIntoCommunityVars';
 import {
   ApplyToCommunityAdminsPayload,
   ApplyToCommunityAdminsVars
-} from './util/getApplyToCommunityAdminsVars';
+} from './repo/getApplyToCommunityAdminsVars';
 import {
   ApplyToCommunityPayload,
   ApplyToCommunityVars
-} from './util/getApplyToCommunityVars';
+} from './repo/getApplyToCommunityVars';
 import {
   ConnectIntegrationsPayload,
   ConnectIntegrationsVars
-} from './util/getConnectIntegrationsVars';
+} from './repo/getConnectIntegrationsVars';
 import {
   CreateEventCoordinatorPayload,
   CreateEventCoordinatorVars
-} from './util/getCreateEventCoordinatorVars';
-import { CreateEventInviteesPayload } from './util/getCreateEventInviteesVars';
+} from './repo/getCreateEventCoordinatorVars';
+import { CreateEventInviteesPayload } from './repo/getCreateEventInviteesVars';
 import {
   DeleteEventCoordinatorPayload,
   DeleteEventCoordinatorVars
-} from './util/getDeleteEventCoordinatorVars';
+} from './repo/getDeleteEventCoordinatorVars';
 import {
   DeleteEventGuestsPayload,
   DeleteEventGuestsVars
-} from './util/getDeleteEventGuestsVars';
+} from './repo/getDeleteEventGuestsVars';
 import {
   DeleteMembersPayload,
   DeleteMembersVars
-} from './util/getDeleteMembersVars';
+} from './repo/getDeleteMembersVars';
 import {
   DemoteMembersPayload,
   DemoteMembersVars
-} from './util/getDemoteMembersVars';
+} from './repo/getDemoteMembersVars';
 import {
   EventReminderPayload,
   EventReminderVars
-} from './util/getEventReminderVars';
-import { EventRsvpPayload, EventRsvpVars } from './util/getEventRsvpVars';
+} from './repo/getEventReminderVars';
+import { EventRsvpPayload, EventRsvpVars } from './repo/getEventRsvpVars';
 import {
   InviteMembersPayload,
   InviteMembersVars
-} from './util/getInviteMembersVars';
+} from './repo/getInviteMembersVars';
 import {
   LoginLinkEmailPayload,
   LoginLinkEmailVars
-} from './util/getLoginLinkVars';
+} from './repo/getLoginLinkVars';
 import {
   PaymentReceiptPayload,
   PaymentReceiptVars
-} from './util/getPaymentReceiptVars';
+} from './repo/getPaymentReceiptVars';
 import {
   PromoteMembersPayload,
   PromoteMembersVars
-} from './util/getPromoteMembersVars';
+} from './repo/getPromoteMembersVars';
 
 export interface FormatPersonalizationData {
   dynamicTemplateData?: Record<string, any>;

@@ -1,5 +1,3 @@
-import { ApplyToCommunityAdminsPayload } from 'src/system/emails/util/getApplyToCommunityAdminsVars';
-import { ApplyToCommunityPayload } from 'src/system/emails/util/getApplyToCommunityVars';
 import { ArgsType, Field, InputType } from 'type-graphql';
 import { FilterQuery } from '@mikro-orm/core';
 
@@ -15,7 +13,9 @@ import Question, {
   QuestionType
 } from '@entities/question/Question';
 import User from '@entities/user/User';
-import { emitEmailEvent } from '@system/eventBus';
+import { ApplyToCommunityAdminsPayload } from '@system/emails/repo/getApplyToCommunityAdminsVars';
+import { ApplyToCommunityPayload } from '@system/emails/repo/getApplyToCommunityVars';
+import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { GQLContext } from '@util/constants';
 import { EmailEvent, FlushEvent } from '@util/constants.events';
 import updateStripeSubscriptionId from '../../member-integrations/repo/updateStripeSubscriptionId';

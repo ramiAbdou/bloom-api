@@ -1,11 +1,9 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
-import {
-  emitEmailEvent,
-  emitGoogleEvent,
-  scheduleTask
-} from '@system/eventBus';
+import emitEmailEvent from '@system/events/repo/emitEmailEvent';
+import emitGoogleEvent from '@system/events/repo/emitGoogleEvent';
+import emitTaskEvent from '@system/events/repo/emitTaskEvent';
 import { GQLContext } from '@util/constants';
 import {
   EmailEvent,
@@ -80,8 +78,8 @@ const createEvent = async (
   });
 
   emitGoogleEvent(GoogleEvent.CREATE_CALENDAR_EVENT, { eventId });
-  scheduleTask(TaskEvent.EVENT_REMINDER_1_DAY, { communityId, eventId });
-  scheduleTask(TaskEvent.EVENT_REMINDER_1_HOUR, { communityId, eventId });
+  emitTaskEvent(TaskEvent.EVENT_REMINDER_1_DAY, { eventId });
+  emitTaskEvent(TaskEvent.EVENT_REMINDER_1_HOUR, { eventId });
 
   return event;
 };

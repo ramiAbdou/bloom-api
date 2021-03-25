@@ -1,7 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
 
-import { LoginLinkEmailPayload } from '@system/emails/util/getLoginLinkVars';
-import { emitEmailEvent } from '@system/eventBus';
+import { LoginLinkEmailPayload } from '@system/emails/repo/getLoginLinkVars';
+import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { APP } from '@util/constants';
 import { ErrorType } from '@util/constants.errors';
 import { EmailEvent } from '@util/constants.events';
