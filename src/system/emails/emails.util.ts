@@ -185,6 +185,8 @@ export const getPersonalizations = async (
  * the server lives in San Francisco, so will either be PDT (-7:00) or PST
  * (-8:00).
  *
+ * Precondition: @param timestamp must be a valid UTC timestring.
+ *
  * @param timestamp - UTC timestamp to convert.
  *
  * @example
