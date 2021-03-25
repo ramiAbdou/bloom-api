@@ -1,6 +1,6 @@
 import day from 'dayjs';
 import faker from 'faker';
-import { EntityData, EntityName, MikroORM } from '@mikro-orm/core';
+import { EntityData, MikroORM } from '@mikro-orm/core';
 import { EntityManager, PostgreSqlDriver } from '@mikro-orm/postgresql';
 
 import { clearEntityCaches } from '@core/cache/Cache.util';
@@ -33,19 +33,7 @@ import User from '@entities/user/User';
  * @param em - Entity Manager.
  * @param entityNames - List of EntityName(s) to truncate.
  */
-export const clearAllTableData = async (
-  em: EntityManager,
-  entityNames?: EntityName<any>[]
-): Promise<void> => {
-  if (entityNames) {
-    entityNames.map(async (entityName: EntityName<any>) => {
-      await em.createQueryBuilder(entityName).truncate().execute();
-    });
-
-    em.clear();
-    return;
-  }
-
+export const clearAllTableData = async (em: EntityManager): Promise<void> => {
   await em.createQueryBuilder(Application).truncate().execute();
   await em.createQueryBuilder(CommunityIntegrations).truncate().execute();
   await em.createQueryBuilder(Community).truncate().execute();
@@ -66,6 +54,7 @@ export const clearAllTableData = async (
   await em.createQueryBuilder(Supporter).truncate().execute();
   await em.createQueryBuilder(Task).truncate().execute();
   await em.createQueryBuilder(User).truncate().execute();
+
   em.clear();
 };
 
@@ -75,9 +64,7 @@ export const clearAllTableData = async (
  *
  * Handles database interactions.
  */
-export const initDatabaseIntegrationTest = (
-  entityNames?: EntityName<any>[]
-): void => {
+export const initDatabaseIntegrationTest = (): void => {
   let orm: MikroORM<PostgreSqlDriver>;
 
   beforeAll(async () => {
@@ -88,7 +75,7 @@ export const initDatabaseIntegrationTest = (
   // Removes all of the table data.
   beforeEach(async () => {
     clearEntityCaches();
-    await clearAllTableData(orm.em, entityNames);
+    await clearAllTableData(orm.em);
   });
 
   // Closes the database connection after the tests finish.

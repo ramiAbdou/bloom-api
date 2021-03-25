@@ -3,14 +3,13 @@
  */
 
 import BloomManager from '@core/db/BloomManager';
-import Community from '@entities/community/Community';
 import { QueryEvent } from '@util/constants.events';
 import { buildApplication, initDatabaseIntegrationTest } from '@util/test.util';
 import Application from '../Application';
 import getApplication from './getApplication';
 
 describe(`getApplication()`, () => {
-  initDatabaseIntegrationTest([Application, Community]);
+  initDatabaseIntegrationTest();
 
   test('Should add Application to cache after query.', async () => {
     const application: Application = await buildApplication();

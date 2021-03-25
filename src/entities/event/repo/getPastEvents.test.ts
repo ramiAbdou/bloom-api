@@ -5,7 +5,6 @@
 import day from 'dayjs';
 import faker from 'faker';
 
-import Community from '@entities/community/Community';
 import Event from '@entities/event/Event';
 import { QueryEvent } from '@util/constants.events';
 import { buildEvent, initDatabaseIntegrationTest } from '@util/test.util';
@@ -13,7 +12,7 @@ import { now } from '@util/util';
 import getPastEvents from './getPastEvents';
 
 describe(`getPastEvents()`, () => {
-  initDatabaseIntegrationTest([Community, Event]);
+  initDatabaseIntegrationTest();
 
   test('Should add the past Event(s) to cache after query.', async () => {
     const endTimeDayObject = day.utc().subtract(24, 'hour');

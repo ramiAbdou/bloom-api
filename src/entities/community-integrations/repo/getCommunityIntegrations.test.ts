@@ -3,7 +3,6 @@
  */
 
 import BloomManager from '@core/db/BloomManager';
-import Community from '@entities/community/Community';
 import { QueryEvent } from '@util/constants.events';
 import {
   buildCommunityIntegrations,
@@ -13,7 +12,7 @@ import CommunityIntegrations from '../CommunityIntegrations';
 import getCommunityIntegrations from './getCommunityIntegrations';
 
 describe(`getCommunityIntegrations()`, () => {
-  initDatabaseIntegrationTest([Community, CommunityIntegrations]);
+  initDatabaseIntegrationTest();
 
   test('Should add CommunityIntegrations to cache after query.', async () => {
     const integrations = await buildCommunityIntegrations();

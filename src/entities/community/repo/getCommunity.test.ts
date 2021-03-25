@@ -9,7 +9,7 @@ import Community from '../Community';
 import getCommunity from './getCommunity';
 
 describe(`getCommunity()`, () => {
-  initDatabaseIntegrationTest([Community]);
+  initDatabaseIntegrationTest();
 
   test('Should add Community to cache after query.', async () => {
     const community: Community = await buildCommunity();

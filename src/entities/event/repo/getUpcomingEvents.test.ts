@@ -5,7 +5,6 @@
 import day from 'dayjs';
 import faker from 'faker';
 
-import Community from '@entities/community/Community';
 import Event from '@entities/event/Event';
 import { QueryEvent } from '@util/constants.events';
 import { buildEvent, initDatabaseIntegrationTest } from '@util/test.util';
@@ -13,7 +12,7 @@ import { now } from '@util/util';
 import getUpcomingEvents from './getUpcomingEvents';
 
 describe(`getUpcomingEvents()`, () => {
-  initDatabaseIntegrationTest([Community, Event]);
+  initDatabaseIntegrationTest();
 
   test('Should add the upcoming Event(s) to cache after query.', async () => {
     const events: Event[] = (await buildEvent({ count: 6 })) as Event[];

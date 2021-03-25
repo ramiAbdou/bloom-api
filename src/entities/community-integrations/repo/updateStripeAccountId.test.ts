@@ -4,7 +4,6 @@
 
 import faker from 'faker';
 
-import Community from '@entities/community/Community';
 import * as emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { IntegrationsBrand } from '@util/constants';
 import { EmailEvent, QueryEvent } from '@util/constants.events';
@@ -16,7 +15,7 @@ import CommunityIntegrations from '../CommunityIntegrations';
 import updateStripeAccountId from './updateStripeAccountId';
 
 describe('updateStripeAccountId()', () => {
-  initDatabaseIntegrationTest([Community, CommunityIntegrations]);
+  initDatabaseIntegrationTest();
 
   test('Should update the CommunityIntegrations with the stripeAccountId.', async () => {
     const integrations = await buildCommunityIntegrations();

@@ -4,7 +4,6 @@
 
 import faker from 'faker';
 
-import Community from '@entities/community/Community';
 import { buildEvent, initDatabaseIntegrationTest } from '@util/test.util';
 import Event from '../Event';
 import updateGoogleCalendarEventId, {
@@ -12,7 +11,7 @@ import updateGoogleCalendarEventId, {
 } from './updateGoogleCalendarEventId';
 
 describe('updateGoogleCalendarEventId()', () => {
-  initDatabaseIntegrationTest([Community, Event]);
+  initDatabaseIntegrationTest();
 
   test('Should update the Event with the googleCalendarEventId.', async () => {
     const event: Event = (await buildEvent()) as Event;

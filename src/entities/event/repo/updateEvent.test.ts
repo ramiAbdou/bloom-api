@@ -4,7 +4,6 @@
 
 import faker from 'faker';
 
-import Community from '@entities/community/Community';
 import * as emitGoogleEvent from '@system/events/repo/emitGoogleEvent';
 import { GoogleEvent, QueryEvent } from '@util/constants.events';
 import { buildEvent, initDatabaseIntegrationTest } from '@util/test.util';
@@ -13,7 +12,7 @@ import getUpcomingEvents from './getUpcomingEvents';
 import updateEvent, { UpdateEventArgs } from './updateEvent';
 
 describe('updateEvent()', () => {
-  initDatabaseIntegrationTest([Community, Event]);
+  initDatabaseIntegrationTest();
 
   test('Should update the Event with the updated data.', async () => {
     const event: Event = (await buildEvent()) as Event;

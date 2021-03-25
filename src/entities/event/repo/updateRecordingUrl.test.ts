@@ -5,7 +5,6 @@
 import day from 'dayjs';
 import faker from 'faker';
 
-import Community from '@entities/community/Community';
 import { QueryEvent } from '@util/constants.events';
 import { buildEvent, initDatabaseIntegrationTest } from '@util/test.util';
 import Event from '../Event';
@@ -15,7 +14,7 @@ import updateRecordingUrl, {
 } from './updateRecordingUrl';
 
 describe('updateRecordingUrl()', () => {
-  initDatabaseIntegrationTest([Community, Event]);
+  initDatabaseIntegrationTest();
 
   test('Should update the Event with the recordingUrl.', async () => {
     const event: Event = (await buildEvent({

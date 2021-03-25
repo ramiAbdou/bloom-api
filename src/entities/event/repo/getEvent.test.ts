@@ -3,7 +3,6 @@
  */
 
 import BloomManager from '@core/db/BloomManager';
-import Community from '@entities/community/Community';
 import Event from '@entities/event/Event';
 import { APP } from '@util/constants';
 import { QueryEvent } from '@util/constants.events';
@@ -11,7 +10,7 @@ import { buildEvent, initDatabaseIntegrationTest } from '@util/test.util';
 import getEvent from './getEvent';
 
 describe(`getEvent()`, () => {
-  initDatabaseIntegrationTest([Community, Event]);
+  initDatabaseIntegrationTest();
 
   test('Should add Event to cache after query.', async () => {
     const event: Event = (await buildEvent()) as Event;

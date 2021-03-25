@@ -4,7 +4,6 @@
 
 import faker from 'faker';
 
-import Community from '@entities/community/Community';
 import { QueryEvent } from '@util/constants.events';
 import {
   buildCommunityIntegrations,
@@ -14,7 +13,7 @@ import CommunityIntegrations from '../CommunityIntegrations';
 import updateMailchimpAccessToken from './updateMailchimpAccessToken';
 
 describe('updateMailchimpAccessToken()', () => {
-  initDatabaseIntegrationTest([Community, CommunityIntegrations]);
+  initDatabaseIntegrationTest();
 
   test('Should update the CommunityIntegrations with the mailchimpAccessToken.', async () => {
     const integrations = await buildCommunityIntegrations();
