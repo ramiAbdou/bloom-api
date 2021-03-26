@@ -1,11 +1,10 @@
 import day from 'dayjs';
 import * as Factory from 'factory.ts';
 import faker from 'faker';
-import { EntityData, MikroORM } from '@mikro-orm/core';
+import { MikroORM } from '@mikro-orm/core';
 import { EntityManager, PostgreSqlDriver } from '@mikro-orm/postgresql';
 
 import { clearEntityCaches } from '@core/cache/Cache.util';
-import BloomManager from '@core/db/BloomManager';
 import db from '@core/db/db';
 import Application from '@entities/application/Application';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
@@ -90,40 +89,38 @@ export const initDatabaseIntegrationTest = (
   afterAll(async () => orm.close(true));
 };
 
-// ## BUILD TEST OBJECTS
-
-interface BuildTestObjectArgs<T = any> {
-  // Allows there to be overrides for each test object as opposed to the same
-  // overrides for every test object.
-  buildOverrides?: (index: number) => EntityData<T>;
-
-  // Defaults to 1, if more then will return an array of random test object.s
-  count?: number;
-
-  // Overrides that applies to every test object.
-  overrides?: EntityData<T>;
-}
-
 export const applicationFactory = Factory.Sync.makeFactory<
-  EntityData<Application>
+  Partial<Application>
 >({
   description: faker.lorem.sentences(3),
   title: faker.random.words(3)
 });
 
-export const communityFactory = Factory.Sync.makeFactory<EntityData<Community>>(
-  {
-    name: faker.random.word(),
-    primaryColor: faker.commerce.color(),
-    urlName: faker.random.word()
-  }
-);
+export const communityFactory = Factory.Sync.makeFactory<Partial<Community>>({
+  name: faker.random.word(),
+  primaryColor: faker.commerce.color(),
+  urlName: faker.random.word()
+});
 
 export const communityIntegrationsFactory = Factory.Sync.makeFactory<
   Partial<CommunityIntegrations>
 >({});
 
-export const memberFactory = Factory.Sync.makeFactory<EntityData<Member>>({
+export const eventFactory = Factory.Sync.makeFactory<Partial<Event>>({
+  description: faker.lorem.paragraph(),
+  endTime: Factory.each((i: number) => {
+    if (i % 2 === 0) return day.utc().add(26, 'hour').format();
+    return day.utc().subtract(25, 'hour').format();
+  }),
+  startTime: Factory.each((i: number) => {
+    if (i % 2 === 0) return day.utc().add(25, 'hour').format();
+    return day.utc().subtract(26, 'hour').format();
+  }),
+  title: faker.lorem.words(5),
+  videoUrl: faker.internet.url()
+});
+
+export const memberFactory = Factory.Sync.makeFactory<Partial<Member>>({
   email: faker.internet.email(),
   firstName: faker.name.firstName(),
   lastName: faker.name.lastName()
@@ -133,46 +130,11 @@ export const memberIntegrationsFactory = Factory.Sync.makeFactory<
   Partial<MemberIntegrations>
 >({});
 
-export const memberPlanFactory = Factory.Sync.makeFactory<
-  EntityData<MemberPlan>
->({
+export const memberPlanFactory = Factory.Sync.makeFactory<Partial<MemberPlan>>({
   amount: Factory.each((i: number) => i * 5),
   name: faker.name.title()
 });
 
-export const userFactory = Factory.Sync.makeFactory<EntityData<User>>({
+export const userFactory = Factory.Sync.makeFactory<Partial<User>>({
   email: faker.internet.email()
 });
-
-export const buildEvent = async (
-  args?: BuildTestObjectArgs<Event>
-): Promise<Event | Event[]> => {
-  const { buildOverrides = () => null, count = 1, overrides = {} } = args ?? {};
-
-  const bm: BloomManager = new BloomManager();
-
-  const community: Community = bm.create(Community, {
-    name: faker.random.word(),
-    primaryColor: faker.commerce.color(),
-    urlName: faker.random.word()
-  });
-
-  const events: Event[] = Array.from(Array(count).keys()).map(
-    (_, i: number) => {
-      return bm.create(Event, {
-        community,
-        description: faker.lorem.paragraph(),
-        endTime: day.utc().add(26, 'hour'),
-        startTime: day.utc().add(25, 'hour'),
-        title: faker.lorem.words(5),
-        videoUrl: faker.internet.url(),
-        ...overrides,
-        ...buildOverrides(i)
-      });
-    }
-  );
-
-  await bm.flush();
-
-  return count >= 2 ? (events as Event[]) : (events[0] as Event);
-};
