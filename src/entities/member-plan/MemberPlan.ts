@@ -57,14 +57,14 @@ export default class MemberPlan extends BaseEntity {
   @AfterCreate()
   afterCreate() {
     MemberPlan.cache.invalidate([
-      `${QueryEvent.GET_MEMBER_PLANS}-${this.community.id}`
+      `${QueryEvent.LIST_MEMBER_PLANS}-${this.community.id}`
     ]);
   }
 
   @AfterUpdate()
   afterUpdate() {
     MemberPlan.cache.invalidate([
-      `${QueryEvent.GET_MEMBER_PLANS}-${this.community.id}`
+      `${QueryEvent.LIST_MEMBER_PLANS}-${this.community.id}`
     ]);
   }
 
