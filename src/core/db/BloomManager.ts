@@ -5,6 +5,7 @@ import {
   EntityManager,
   EntityName,
   FilterQuery,
+  FindOneOptions,
   Loaded,
   New,
   Populate,
@@ -16,7 +17,6 @@ import logger from '@system/logger/logger';
 import { getEntityCache } from '../cache/Cache.util';
 import {
   BloomCreateAndFlushArgs,
-  BloomFindAndDeleteOptions,
   BloomFindAndUpdateOptions,
   BloomFindOneAndUpdateOptions,
   BloomFindOneOptions,
@@ -179,17 +179,11 @@ class BloomManager {
   async findOneAndDelete<T, P>(
     entityName: EntityName<T>,
     where: FilterQuery<T>,
-    options?: BloomFindAndDeleteOptions<T, P>
+    options?: FindOneOptions<T, P>
   ): Promise<T> {
     // If not found, get it from the DB.
     const result = await this.findOne<T, P>(entityName, where, { ...options });
-
-    if (!options?.soft) {
-      this.em.remove(result);
-    }
-
-    await this.flush();
-
+    await this.em.removeAndFlush(result);
     return result;
   }
 

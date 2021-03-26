@@ -15,8 +15,3 @@ export interface BloomCreateAndFlushArgs<P> {
 
 export type BloomFindOneAndUpdateOptions<T, P> = BloomFindOneOptions<T, P>;
 export type BloomFindAndUpdateOptions<T, P> = BloomFindOptions<T, P>;
-
-export interface BloomFindAndDeleteOptions<T, P>
-  extends BloomFindOptions<T, P> {
-  soft?: boolean;
-}
