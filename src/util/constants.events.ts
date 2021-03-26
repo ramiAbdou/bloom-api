@@ -85,7 +85,6 @@ export enum QueryEvent {
   GET_COMMUNITY_INTEGRATIONS = 'getCommunityIntegrations',
   GET_EVENT = 'getEvent',
   GET_EVENT_ATTENDEES_SERIES = 'getEventAttendeesSeries',
-  GET_EVENT_WATCHES = 'getEventWatches',
   GET_MEMBER_INTEGRATIONS = 'getMemberIntegrations',
   GET_MEMBER_PLANS = 'getMemberPlans',
   GET_MEMBER_SOCIALS = 'getMemberSocials',
@@ -105,6 +104,7 @@ export enum QueryEvent {
   LIST_COMMUNITIES = 'listCommunities',
   LIST_EVENT_ATTENDEES = 'listEventAttendees',
   LIST_EVENT_GUESTS = 'listEventGuests',
+  LIST_EVENT_WATCHES = 'listEventWatches',
   LIST_PAST_EVENTS = 'listPastEvents',
   LIST_UPCOMING_EVENT_GUESTS = 'listUpcomingEventGuests',
   LIST_UPCOMING_EVENTS = 'listUpcomingEvents'

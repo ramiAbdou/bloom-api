@@ -6,7 +6,7 @@ import { take } from '@util/util';
 import EventWatch from '../EventWatch';
 
 @ArgsType()
-export class GetEventWatchesArgs {
+export class ListEventWatchesArgs {
   @Field({ nullable: true })
   communityId?: string;
 
@@ -24,8 +24,8 @@ export class GetEventWatchesArgs {
  * @param args.eventId - ID of the Event.
  * @param args.memberId - ID of the Member.
  */
-const getEventWatches = async (
-  args: GetEventWatchesArgs
+const listEventWatches = async (
+  args: ListEventWatchesArgs
 ): Promise<EventWatch[]> => {
   const { communityId, eventId, memberId } = args;
 
@@ -40,9 +40,9 @@ const getEventWatches = async (
     queryArgs,
     {
       cacheKey: take([
-        [communityId, `${QueryEvent.GET_EVENT_WATCHES}-${communityId}`],
-        [eventId, `${QueryEvent.GET_EVENT_WATCHES}-${eventId}`],
-        [memberId, `${QueryEvent.GET_EVENT_WATCHES}-${memberId}`]
+        [communityId, `${QueryEvent.LIST_EVENT_WATCHES}-${communityId}`],
+        [eventId, `${QueryEvent.LIST_EVENT_WATCHES}-${eventId}`],
+        [memberId, `${QueryEvent.LIST_EVENT_WATCHES}-${memberId}`]
       ]),
       populate: ['event', 'member']
     }
@@ -51,4 +51,4 @@ const getEventWatches = async (
   return watches;
 };
 
-export default getEventWatches;
+export default listEventWatches;

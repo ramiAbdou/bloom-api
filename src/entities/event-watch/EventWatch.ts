@@ -20,9 +20,9 @@ export default class EventWatch extends BaseEntity {
     await wrap(this.event).init();
 
     EventWatch.cache.invalidate([
-      `${QueryEvent.GET_EVENT_WATCHES}-${this.event.id}`,
-      `${QueryEvent.GET_EVENT_WATCHES}-${this.member.id}`,
-      `${QueryEvent.GET_EVENT_WATCHES}-${this.event.community.id}`
+      `${QueryEvent.LIST_EVENT_WATCHES}-${this.event.id}`,
+      `${QueryEvent.LIST_EVENT_WATCHES}-${this.member.id}`,
+      `${QueryEvent.LIST_EVENT_WATCHES}-${this.event.community.id}`
     ]);
   }
 
