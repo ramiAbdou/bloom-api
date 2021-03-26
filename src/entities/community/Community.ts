@@ -84,7 +84,7 @@ export default class Community extends BaseEntity {
       `${QueryEvent.GET_COMMUNITY}-${this.id}`,
       `${QueryEvent.GET_COMMUNITY}-${this.urlName}`,
       ...members.map((member: Member) => {
-        return `${QueryEvent.GET_COMMUNITIES}-${member.user.id}`;
+        return `${QueryEvent.LIST_COMMUNITIES}-${member.user.id}`;
       })
     ]);
   }

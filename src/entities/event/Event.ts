@@ -108,7 +108,7 @@ export default class Event extends BaseEntity {
   @AfterCreate()
   afterCreate() {
     Event.cache.invalidate([
-      `${QueryEvent.GET_UPCOMING_EVENTS}-${this.community.id}`
+      `${QueryEvent.LIST_UPCOMING_EVENTS}-${this.community.id}`
     ]);
   }
 
@@ -120,7 +120,7 @@ export default class Event extends BaseEntity {
       `${QueryEvent.GET_EVENT}-${this.id}`,
       ...(isPast
         ? [`${QueryEvent.LIST_PAST_EVENTS}-${this.community.id}`]
-        : [`${QueryEvent.GET_UPCOMING_EVENTS}-${this.community.id}`])
+        : [`${QueryEvent.LIST_UPCOMING_EVENTS}-${this.community.id}`])
     ]);
   }
 

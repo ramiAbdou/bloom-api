@@ -19,7 +19,7 @@ export class UpdateEventArgs {
   @Field({ nullable: true })
   imageUrl?: string;
 
-  @Field(() => String, { defaultValue: EventPrivacy.MEMBERS_ONLY })
+  @Field(() => String, { nullable: true })
   privacy?: EventPrivacy;
 
   @Field({ nullable: true })

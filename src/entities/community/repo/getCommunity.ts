@@ -31,7 +31,7 @@ const getCommunity = async (
   const community: Community = await new BloomManager().findOneOrFail(
     Community,
     queryArgs,
-    { cacheKey: `${QueryEvent.GET_COMMUNITIES}-${key}` }
+    { cacheKey: `${QueryEvent.GET_COMMUNITY}-${key}` }
   );
 
   return community;
