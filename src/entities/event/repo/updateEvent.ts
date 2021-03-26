@@ -13,11 +13,17 @@ export class UpdateEventArgs {
   @Field()
   eventId: string;
 
+  // Not a GraphQL Field, b/c we only call this internally.
+  googleCalendarEventId?: string;
+
   @Field({ nullable: true })
   imageUrl?: string;
 
   @Field(() => String, { defaultValue: EventPrivacy.MEMBERS_ONLY })
   privacy?: EventPrivacy;
+
+  @Field({ nullable: true })
+  recordingUrl?: string;
 
   @Field({ nullable: true })
   summary?: string;
@@ -36,8 +42,10 @@ export class UpdateEventArgs {
  *
  * @param args.description - Description of the Event to update.
  * @param args.eventId - ID of the Event to update.
+ * @param args.googleCalendarEventId - ID of the Google Calendar event.
  * @param args.imageUrl - Image URL of the Event to update.
  * @param args.privacy - Privacy of the Event to update.
+ * @param args.recordingUrl - Recording URL of the Event.
  * @param args.summary - Summary of the Event to update.
  * @param args.title - Title of the Event to update.
  * @param args.videoUrl - Video URL of the Event to update.

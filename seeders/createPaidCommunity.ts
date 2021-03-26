@@ -91,14 +91,13 @@ const oneReqQuestions: EntityData<Question>[] = [
     type: QuestionType.LONG_TEXT
   },
   { category: QuestionCategory.JOINED_AT, rank: 1400 },
-  { category: QuestionCategory.CLUBHOUSE_URL, rank: 1500 },
-  { category: QuestionCategory.FACEBOOK_URL, rank: 1600 },
+  { category: QuestionCategory.FACEBOOK_URL, rank: 1500 },
   {
     category: QuestionCategory.LINKED_IN_URL,
     description: 'Ex: www.linkedin.com/in/name',
-    rank: 1700
+    rank: 1600
   },
-  { category: QuestionCategory.TWITTER_URL, rank: 1800 }
+  { category: QuestionCategory.TWITTER_URL, rank: 1700 }
 ];
 
 const oneReqRankedQuestionRank = {

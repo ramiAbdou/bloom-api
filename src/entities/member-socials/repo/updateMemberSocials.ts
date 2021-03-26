@@ -7,9 +7,6 @@ import MemberSocials from '../MemberSocials';
 @ArgsType()
 export class UpdateMemberSocialsArgs {
   @Field({ nullable: true })
-  clubhouseUrl?: string;
-
-  @Field({ nullable: true })
   facebookUrl?: string;
 
   @Field({ nullable: true })
@@ -25,7 +22,6 @@ export class UpdateMemberSocialsArgs {
 /**
  * Returns the updated MemberSocials.
  *
- * @param args.clubhouseUrl Clubhouse URL of the Member.
  * @param args.facebookUrl Facebook URL of the Member.
  * @param args.instagramUrl Instagram URL of the Member.
  * @param args.linkedInUrl LinkedIn URL of the Member.

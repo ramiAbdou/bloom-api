@@ -17,7 +17,6 @@ import { QueryEvent } from '@util/constants.events';
 
 export enum QuestionCategory {
   BIO = 'BIO',
-  CLUBHOUSE_URL = 'CLUBHOUSE_URL',
   DUES_STATUS = 'DUES_STATUS',
   EMAIL = 'EMAIL',
   EVENTS_ATTENDED = 'EVENTS_ATTENDED',
@@ -89,11 +88,6 @@ export default class Question extends BaseEntity {
     if (this.category === QuestionCategory.BIO) {
       if (!this.title) this.title = 'Bio';
       this.type = QuestionType.LONG_TEXT;
-    }
-
-    if (this.category === QuestionCategory.CLUBHOUSE_URL) {
-      if (!this.title) this.title = 'Clubhouse URL';
-      this.type = QuestionType.SHORT_TEXT;
     }
 
     if (this.category === QuestionCategory.DUES_STATUS) {
