@@ -111,6 +111,8 @@ export default class Member extends BaseEntity {
    */
   @Field(() => Boolean)
   async isDuesActive(): Promise<boolean> {
+    if (process.env.APP_ENV !== 'prod') return true;
+
     await wrap(this.community).init(true, ['communityIntegrations']);
     await wrap(this.memberIntegrations).init();
 
