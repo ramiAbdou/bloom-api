@@ -12,7 +12,7 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
   }
 
   async afterUpdate({ changeSet, entity: member }: EventArgs<Member>) {
-    Member.cache.invalidate([`${QueryEvent.GET_MEMBERS}-${member.id}`]);
+    Member.cache.invalidate([`${QueryEvent.LIST_MEMBERS}-${member.id}`]);
 
     const { originalEntity } = changeSet;
 
@@ -21,7 +21,7 @@ export default class MemberSubscriber implements EventSubscriber<Member> {
       member?.status !== MemberStatus.PENDING
     ) {
       Member.cache.invalidate([
-        `${QueryEvent.GET_APPLICANTS}-${member.community.id}`
+        `${QueryEvent.LIST_APPLICANTS}-${member.community.id}`
       ]);
     }
 

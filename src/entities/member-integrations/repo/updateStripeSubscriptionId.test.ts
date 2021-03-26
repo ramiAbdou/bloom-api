@@ -130,7 +130,7 @@ describe('updateStripeSubscriptionId()', () => {
       .toHaveProperty('member.plan.id', newMemberPlanId);
   });
 
-  test('Should invalidate the QueryEvent.GET_MEMBERS key within the Member.cache key by triggering the @AfterUpdate lifecycle hook.', async () => {
+  test('Should invalidate the QueryEvent.LIST_MEMBERS key within the Member.cache key by triggering the @AfterUpdate lifecycle hook.', async () => {
     const newMemberPlanId: string = memberPlans[1].id;
 
     await new BloomManager().findOneAndUpdate(

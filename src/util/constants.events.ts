@@ -78,7 +78,6 @@ export enum MutationEvent {
 export enum QueryEvent {
   GET_ACTIVE_MEMBERS_GROWTH = 'getActiveMembersGrowth',
   GET_ACTIVE_MEMBERS_SERIES = 'getActiveMembersSeries',
-  GET_APPLICANTS = 'getApplicants',
   GET_APPLICATION = 'getApplication',
   GET_CHANGE_PREVIEW = 'getChangePreview',
   GET_COMMUNITY = 'getCommunity',
@@ -90,7 +89,6 @@ export enum QueryEvent {
   GET_MEMBER_SOCIALS = 'getMemberSocials',
   GET_MEMBER_VALUES = 'getMemberValues',
   GET_MEMBER = 'getMember',
-  GET_MEMBERS = 'getMembers',
   GET_MEMBERS_GROWTH = 'getMembersGrowth',
   GET_MEMBERS_SERIES = 'getMembersSeries',
   GET_OWNER = 'getOwner',
@@ -101,10 +99,12 @@ export enum QueryEvent {
   GET_TOKENS = 'getTokens',
   GET_USER = 'getUser',
   IS_EMAIL_TAKEN = 'isEmailTaken',
+  LIST_APPLICANTS = 'listApplicants',
   LIST_COMMUNITIES = 'listCommunities',
   LIST_EVENT_ATTENDEES = 'listEventAttendees',
   LIST_EVENT_GUESTS = 'listEventGuests',
   LIST_EVENT_WATCHES = 'listEventWatches',
+  LIST_MEMBERS = 'listMembers',
   LIST_PAST_EVENTS = 'listPastEvents',
   LIST_UPCOMING_EVENT_GUESTS = 'listUpcomingEventGuests',
   LIST_UPCOMING_EVENTS = 'listUpcomingEvents'

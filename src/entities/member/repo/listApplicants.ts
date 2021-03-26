@@ -10,7 +10,7 @@ import Member, { MemberStatus } from '../Member';
  *
  * @param ctx.communityId - ID of the Community (authenticated).
  */
-const getApplicants = async (
+const listApplicants = async (
   ctx: Pick<GQLContext, 'communityId'>
 ): Promise<Member[]> => {
   const { communityId } = ctx;
@@ -19,7 +19,7 @@ const getApplicants = async (
     Member,
     { community: communityId, status: MemberStatus.PENDING },
     {
-      cacheKey: `${QueryEvent.GET_APPLICANTS}-${communityId}`,
+      cacheKey: `${QueryEvent.LIST_APPLICANTS}-${communityId}`,
       orderBy: { createdAt: QueryOrder.DESC },
       populate: ['values']
     }
@@ -28,4 +28,4 @@ const getApplicants = async (
   return members;
 };
 
-export default getApplicants;
+export default listApplicants;

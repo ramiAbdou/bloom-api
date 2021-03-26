@@ -53,8 +53,8 @@ export default class Payment extends BaseEntity {
   async afterCreate() {
     Payment.cache.invalidate([
       // Need to make sure that the 'isDuesActive' is updated.
-      `${QueryEvent.GET_MEMBERS}-${this.member.id}`,
-      `${QueryEvent.GET_MEMBERS}-${this.community.id}`,
+      `${QueryEvent.LIST_MEMBERS}-${this.member.id}`,
+      `${QueryEvent.LIST_MEMBERS}-${this.community.id}`,
       `${QueryEvent.GET_PAYMENTS}-${this.community.id}`,
       `${QueryEvent.GET_PAYMENTS}-${this.member.id}`,
       `${QueryEvent.GET_PAYMENTS_SERIES}-${this.community.id}`
