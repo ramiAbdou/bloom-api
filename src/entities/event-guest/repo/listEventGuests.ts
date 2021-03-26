@@ -8,7 +8,7 @@ import { take } from '@util/util';
 import EventGuest from '../EventGuest';
 
 @ArgsType()
-export class GetEventGuestsArgs {
+export class ListEventGuestsArgs {
   @Field({ nullable: true })
   eventId?: string;
 
@@ -23,8 +23,8 @@ export class GetEventGuestsArgs {
  * @param args.memberId - ID of the Member.
  * @param ctx.communityId - ID of the Community (authenticated).
  */
-const getEventGuests = async (
-  args: GetEventGuestsArgs,
+const listEventGuests = async (
+  args: ListEventGuestsArgs,
   ctx: Pick<GQLContext, 'communityId'>
 ): Promise<EventGuest[]> => {
   const { eventId, memberId } = args;
@@ -41,9 +41,9 @@ const getEventGuests = async (
     queryArgs,
     {
       cacheKey: take([
-        [eventId, `${QueryEvent.GET_EVENT_GUESTS}-${eventId}`],
-        [memberId, `${QueryEvent.GET_EVENT_GUESTS}-${memberId}`],
-        [communityId, `${QueryEvent.GET_EVENT_GUESTS}-${communityId}`]
+        [eventId, `${QueryEvent.LIST_EVENT_GUESTS}-${eventId}`],
+        [memberId, `${QueryEvent.LIST_EVENT_GUESTS}-${memberId}`],
+        [communityId, `${QueryEvent.LIST_EVENT_GUESTS}-${communityId}`]
       ]),
       filters: false,
       populate: ['event', 'member', 'supporter']
@@ -53,4 +53,4 @@ const getEventGuests = async (
   return guests;
 };
 
-export default getEventGuests;
+export default listEventGuests;

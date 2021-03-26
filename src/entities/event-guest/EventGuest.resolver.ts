@@ -8,8 +8,8 @@ import createEventGuest, {
 import deleteEventGuest, {
   DeleteEventGuestArgs
 } from './repo/deleteEventGuest';
-import getEventGuests, { GetEventGuestsArgs } from './repo/getEventGuests';
-import getUpcomingEventGuests from './repo/getUpcomingEventGuests';
+import listEventGuests, { ListEventGuestsArgs } from './repo/listEventGuests';
+import listUpcomingEventGuests from './repo/listUpcomingEventGuests';
 
 @Resolver()
 export default class EventGuestResolver {
@@ -31,15 +31,15 @@ export default class EventGuestResolver {
   }
 
   @Query(() => [EventGuest])
-  async getEventGuests(
-    @Args() args: GetEventGuestsArgs,
+  async listEventGuests(
+    @Args() args: ListEventGuestsArgs,
     @Ctx() ctx: GQLContext
   ): Promise<EventGuest[]> {
-    return getEventGuests(args, ctx);
+    return listEventGuests(args, ctx);
   }
 
   @Query(() => [EventGuest])
-  async getUpcomingEventGuests(@Ctx() ctx: GQLContext): Promise<EventGuest[]> {
-    return getUpcomingEventGuests(ctx);
+  async listUpcomingEventGuests(@Ctx() ctx: GQLContext): Promise<EventGuest[]> {
+    return listUpcomingEventGuests(ctx);
   }
 }

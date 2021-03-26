@@ -9,7 +9,7 @@ import EventGuest from '../EventGuest';
  *
  * @param ctx.communityId - ID of the Community.
  */
-const getUpcomingEventGuests = async (
+const listUpcomingEventGuests = async (
   ctx: Pick<GQLContext, 'communityId'>
 ): Promise<EventGuest[]> => {
   const { communityId } = ctx;
@@ -18,7 +18,7 @@ const getUpcomingEventGuests = async (
     EventGuest,
     { event: { community: communityId, endTime: { $gt: now() } } },
     {
-      cacheKey: `${QueryEvent.GET_UPCOMING_EVENT_GUESTS}-${communityId}`,
+      cacheKey: `${QueryEvent.LIST_UPCOMING_EVENT_GUESTS}-${communityId}`,
       filters: false,
       populate: ['member', 'supporter']
     }
@@ -27,4 +27,4 @@ const getUpcomingEventGuests = async (
   return guests;
 };
 
-export default getUpcomingEventGuests;
+export default listUpcomingEventGuests;

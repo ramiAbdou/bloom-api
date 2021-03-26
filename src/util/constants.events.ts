@@ -85,7 +85,6 @@ export enum QueryEvent {
   GET_COMMUNITY_INTEGRATIONS = 'getCommunityIntegrations',
   GET_EVENT = 'getEvent',
   GET_EVENT_ATTENDEES_SERIES = 'getEventAttendeesSeries',
-  GET_EVENT_GUESTS = 'getEventGuests',
   GET_EVENT_WATCHES = 'getEventWatches',
   GET_MEMBER_INTEGRATIONS = 'getMemberIntegrations',
   GET_MEMBER_PLANS = 'getMemberPlans',
@@ -101,12 +100,13 @@ export enum QueryEvent {
   GET_RANKED_QUESTIONS = 'getRankedQuestions',
   GET_QUESTIONS = 'getQuestions',
   GET_TOKENS = 'getTokens',
-  GET_UPCOMING_EVENT_GUESTS = 'getUpcomingEventGuests',
   GET_USER = 'getUser',
   IS_EMAIL_TAKEN = 'isEmailTaken',
   LIST_COMMUNITIES = 'listCommunities',
   LIST_EVENT_ATTENDEES = 'listEventAttendees',
+  LIST_EVENT_GUESTS = 'listEventGuests',
   LIST_PAST_EVENTS = 'listPastEvents',
+  LIST_UPCOMING_EVENT_GUESTS = 'listUpcomingEventGuests',
   LIST_UPCOMING_EVENTS = 'listUpcomingEvents'
 }
 
