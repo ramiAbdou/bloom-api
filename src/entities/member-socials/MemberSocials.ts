@@ -42,7 +42,7 @@ export default class MemberSocials extends BaseEntity {
 
     MemberSocials.cache.invalidate([
       `${QueryEvent.GET_MEMBER_SOCIALS}-${this.member.id}`,
-      `${QueryEvent.GET_MEMBER_SOCIALS}-${this.member.community.id}`
+      `${QueryEvent.LIST_MEMBER_SOCIALS}-${this.member.community.id}`
     ]);
   }
 

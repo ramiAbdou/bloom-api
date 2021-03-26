@@ -35,8 +35,8 @@ export default class MemberValue extends BaseEntity {
     await wrap(this.member).init();
 
     MemberValue.cache.invalidate([
-      `${QueryEvent.GET_MEMBER_VALUES}-${this.member.id}`,
-      `${QueryEvent.GET_MEMBER_VALUES}-${this.member.community.id}`
+      `${QueryEvent.LIST_MEMBER_VALUES}-${this.member.id}`,
+      `${QueryEvent.LIST_MEMBER_VALUES}-${this.member.community.id}`
     ]);
   }
 
@@ -45,8 +45,8 @@ export default class MemberValue extends BaseEntity {
     await wrap(this.member).init();
 
     MemberValue.cache.invalidate([
-      `${QueryEvent.GET_MEMBER_VALUES}-${this.member.id}`,
-      `${QueryEvent.GET_MEMBER_VALUES}-${this.member.community.id}`
+      `${QueryEvent.LIST_MEMBER_VALUES}-${this.member.id}`,
+      `${QueryEvent.LIST_MEMBER_VALUES}-${this.member.community.id}`
     ]);
   }
 

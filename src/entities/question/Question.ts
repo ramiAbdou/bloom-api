@@ -160,14 +160,14 @@ export default class Question extends BaseEntity {
   @AfterCreate()
   afterCreate() {
     Question.cache.invalidate([
-      `${QueryEvent.GET_QUESTIONS}-${this.community.id}`
+      `${QueryEvent.LIST_QUESTIONS}-${this.community.id}`
     ]);
   }
 
   @AfterUpdate()
   afterUpdate() {
     Question.cache.invalidate([
-      `${QueryEvent.GET_QUESTIONS}-${this.community.id}`
+      `${QueryEvent.LIST_QUESTIONS}-${this.community.id}`
     ]);
   }
 

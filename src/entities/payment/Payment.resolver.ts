@@ -4,20 +4,20 @@ import { MemberRole } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import { TimeSeriesData } from '@util/constants.gql';
 import Payment from './Payment';
-import getPayments, { GetPaymentsArgs } from './repo/getPayments';
 import getPaymentsSeries from './repo/getPaymentsSeries';
+import listPayments, { ListPaymentsArgs } from './repo/listPayments';
 
 @Resolver()
 export default class PaymentResolver {
-  @Authorized()
-  @Query(() => [Payment])
-  async getPayments(@Args() args: GetPaymentsArgs): Promise<Payment[]> {
-    return getPayments(args);
-  }
-
   @Authorized(MemberRole.ADMIN)
   @Query(() => [TimeSeriesData])
   async getPaymentsSeries(@Ctx() ctx: GQLContext): Promise<TimeSeriesData[]> {
     return getPaymentsSeries(ctx);
+  }
+
+  @Authorized()
+  @Query(() => [Payment])
+  async listPayments(@Args() args: ListPaymentsArgs): Promise<Payment[]> {
+    return listPayments(args);
   }
 }

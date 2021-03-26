@@ -6,7 +6,7 @@ import { QueryEvent } from '@util/constants.events';
 import Payment from '../Payment';
 
 @ArgsType()
-export class GetPaymentsArgs {
+export class ListPaymentsArgs {
   @Field({ nullable: true })
   communityId?: string;
 
@@ -20,7 +20,7 @@ export class GetPaymentsArgs {
  * @param args.communityId - ID of the Community.
  * @param args.memberId - ID of the Member.
  */
-const getPayments = async (args: GetPaymentsArgs): Promise<Payment[]> => {
+const listPayments = async (args: ListPaymentsArgs): Promise<Payment[]> => {
   const { communityId, memberId } = args;
 
   const queryArgs: FilterQuery<Payment> = communityId
@@ -32,8 +32,8 @@ const getPayments = async (args: GetPaymentsArgs): Promise<Payment[]> => {
     { ...queryArgs },
     {
       cacheKey: communityId
-        ? `${QueryEvent.GET_PAYMENTS}-${communityId}`
-        : `${QueryEvent.GET_PAYMENTS}-${memberId}`,
+        ? `${QueryEvent.LIST_PAYMENTS}-${communityId}`
+        : `${QueryEvent.LIST_PAYMENTS}-${memberId}`,
       orderBy: { createdAt: QueryOrder.DESC }
     }
   );
@@ -41,4 +41,4 @@ const getPayments = async (args: GetPaymentsArgs): Promise<Payment[]> => {
   return payments;
 };
 
-export default getPayments;
+export default listPayments;

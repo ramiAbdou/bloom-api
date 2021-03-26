@@ -6,7 +6,7 @@ import MemberValue from '@entities/member-value/MemberValue';
 import { QueryEvent } from '@util/constants.events';
 
 @ArgsType()
-export class GetMemberValueArgs {
+export class ListMemberValuesArgs {
   @Field({ nullable: true })
   communityId?: string;
 
@@ -20,8 +20,8 @@ export class GetMemberValueArgs {
  * @param args.communityId - ID of the Community.
  * @param args.memberId - ID of the Member.
  */
-const getMemberValues = async (
-  args: GetMemberValueArgs
+const listMemberValues = async (
+  args: ListMemberValuesArgs
 ): Promise<MemberValue[]> => {
   const { communityId, memberId } = args;
 
@@ -34,12 +34,12 @@ const getMemberValues = async (
     { ...queryArgs },
     {
       cacheKey: communityId
-        ? `${QueryEvent.GET_MEMBER_VALUES}-${communityId}`
-        : `${QueryEvent.GET_MEMBER_VALUES}-${memberId}`
+        ? `${QueryEvent.LIST_MEMBER_VALUES}-${communityId}`
+        : `${QueryEvent.LIST_MEMBER_VALUES}-${memberId}`
     }
   );
 
   return values;
 };
 
-export default getMemberValues;
+export default listMemberValues;

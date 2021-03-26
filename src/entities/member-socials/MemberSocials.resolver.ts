@@ -5,17 +5,27 @@ import MemberSocials from './MemberSocials';
 import getMemberSocials, {
   GetMemberSocialsArgs
 } from './repo/getMemberSocials';
+import listMemberSocials, {
+  ListMemberSocialsArgs
+} from './repo/listMemberSocials';
 import updateMemberSocials, {
   UpdateMemberSocialsArgs
 } from './repo/updateMemberSocials';
 
 @Resolver()
 export default class MemberSocialsResolver {
-  @Query(() => [MemberSocials])
+  @Query(() => MemberSocials)
   async getMemberSocials(
     @Args() args: GetMemberSocialsArgs
-  ): Promise<MemberSocials[]> {
+  ): Promise<MemberSocials> {
     return getMemberSocials(args);
+  }
+
+  @Query(() => [MemberSocials])
+  async listMemberSocials(
+    @Args() args: ListMemberSocialsArgs
+  ): Promise<MemberSocials[]> {
+    return listMemberSocials(args);
   }
 
   @Mutation(() => MemberSocials)

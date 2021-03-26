@@ -7,7 +7,7 @@ import { QueryEvent } from '@util/constants.events';
 import RankedQuestion from '../RankedQuestion';
 
 @ArgsType()
-export class GetRankedQuestionsArgs {
+export class ListRankedQuestionsArgs {
   @Field({ nullable: true })
   communityId?: string;
 }
@@ -18,8 +18,8 @@ export class GetRankedQuestionsArgs {
  * @param args.communityId - ID of the Community.
  * @param ctx.communityId - ID of the Community (authenticated).
  */
-const getRankedQuestions = async (
-  args: GetRankedQuestionsArgs,
+const listRankedQuestions = async (
+  args: ListRankedQuestionsArgs,
   ctx: Pick<GQLContext, 'communityId'>
 ): Promise<RankedQuestion[]> => {
   const communityId: string = args.communityId ?? ctx.communityId;
@@ -28,7 +28,7 @@ const getRankedQuestions = async (
     RankedQuestion,
     { application: { community: communityId } },
     {
-      cacheKey: `${QueryEvent.GET_RANKED_QUESTIONS}-${communityId}`,
+      cacheKey: `${QueryEvent.LIST_RANKED_QUESTIONS}-${communityId}`,
       orderBy: { createdAt: QueryOrder.ASC },
       populate: ['question']
     }
@@ -37,4 +37,4 @@ const getRankedQuestions = async (
   return rankedQuestions;
 };
 
-export default getRankedQuestions;
+export default listRankedQuestions;
