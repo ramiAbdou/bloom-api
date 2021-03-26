@@ -13,10 +13,8 @@ export interface CreateEventCoordinatorPayload {
 
 export interface CreateEventCoordinatorVars {
   community: Pick<Community, 'name'>;
-  event: Pick<
-    Event,
-    'endTime' | 'eventUrl' | 'privacy' | 'startTime' | 'summary' | 'title'
-  >;
+  event: Pick<Event, 'endTime' | 'privacy' | 'startTime' | 'summary' | 'title'>;
+  eventUrl: string;
   member: Pick<Member, 'email' | 'firstName'>;
 }
 
@@ -53,10 +51,9 @@ const getCreateEventCoordinatorVars = async (
 
   const partialEvent: Pick<
     Event,
-    'endTime' | 'eventUrl' | 'privacy' | 'startTime' | 'summary' | 'title'
+    'endTime' | 'privacy' | 'startTime' | 'summary' | 'title'
   > = {
     endTime: stringifyEmailTimestamp(event.endTime),
-    eventUrl: await event.eventUrl(),
     privacy: event.privacy,
     startTime: stringifyEmailTimestamp(event.startTime),
     summary: event.summary,
@@ -64,7 +61,12 @@ const getCreateEventCoordinatorVars = async (
   };
 
   const variables: CreateEventCoordinatorVars[] = [
-    { community: partialCommunity, event: partialEvent, member }
+    {
+      community: partialCommunity,
+      event: partialEvent,
+      eventUrl: await event.eventUrl(),
+      member
+    }
   ];
 
   return variables;

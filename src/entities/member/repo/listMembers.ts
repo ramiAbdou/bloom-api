@@ -1,5 +1,5 @@
 import { ArgsType, Field } from 'type-graphql';
-import { FilterQuery, QueryOrder } from '@mikro-orm/core';
+import { QueryOrder } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
 import { QueryEvent } from '@util/constants.events';
@@ -28,7 +28,7 @@ export class ListMembersArgs {
 const listMembers = async (args: ListMembersArgs): Promise<Member[]> => {
   const { communityId, memberId, userId } = args;
 
-  const queryArgs: FilterQuery<Member> = take([
+  const queryArgs = take([
     [communityId, { community: communityId }],
     [memberId, { id: memberId }],
     [userId, { user: userId }]
