@@ -2,7 +2,6 @@ import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import { GQLContext } from '@util/constants';
-import { FlushEvent } from '@util/constants.events';
 import MemberSocials from '../MemberSocials';
 
 @ArgsType()
@@ -41,8 +40,7 @@ const updateMemberSocials = async (
   const socials: MemberSocials = await new BloomManager().findOneAndUpdate(
     MemberSocials,
     { member: memberId },
-    { ...args },
-    { flushEvent: FlushEvent.UPDATE_MEMBER_SOCIALS }
+    { ...args }
   );
 
   return socials;

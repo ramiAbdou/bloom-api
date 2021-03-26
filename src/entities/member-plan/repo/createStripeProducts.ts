@@ -6,7 +6,6 @@ import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import MemberPlan, { RecurrenceType } from '@entities/member-plan/MemberPlan';
 import { stripe } from '@integrations/stripe/Stripe.util';
-import { FlushEvent } from '@util/constants.events';
 
 interface CreateStripeProductArgs {
   stripeAccountId: string;
@@ -79,7 +78,7 @@ const createStripeProducts = async (args: CreateStripeProductsArgs) => {
     })
   );
 
-  await bm.flush({ flushEvent: FlushEvent.CREATE_STRIPE_PRODUCTS });
+  await bm.flush();
   return updatedTypes;
 };
 

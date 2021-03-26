@@ -21,8 +21,7 @@ import {
   BloomFindAndUpdateOptions,
   BloomFindOneAndUpdateOptions,
   BloomFindOneOptions,
-  BloomFindOptions,
-  FlushArgs
+  BloomFindOptions
 } from './BloomManager.types';
 import db from './db';
 
@@ -151,7 +150,7 @@ class BloomManager {
 
     wrap(result).assign(data);
 
-    await this.flush(options);
+    await this.flush();
     return result;
   }
 
@@ -168,7 +167,7 @@ class BloomManager {
       wrap(entity).assign(data);
     });
 
-    await this.flush(options);
+    await this.flush();
     return result;
   }
 
@@ -192,7 +191,7 @@ class BloomManager {
       entity.deletedAt = null;
     });
 
-    await this.flush(options);
+    await this.flush();
     return result;
   }
 
@@ -218,7 +217,7 @@ class BloomManager {
 
     if (!options?.soft) this.em.remove(result);
 
-    await this.flush(options);
+    await this.flush();
     return updatedResult;
   }
 
@@ -240,7 +239,7 @@ class BloomManager {
     result.deletedAt = now();
     if (!options?.soft) this.em.remove(result);
 
-    await this.flush(options);
+    await this.flush();
     return result;
   }
 
@@ -258,7 +257,7 @@ class BloomManager {
     // @ts-ignore b/c deletedAt isn't detected.
     result.deletedAt = null;
 
-    await this.flush(options);
+    await this.flush();
     return result;
   }
 
@@ -280,27 +279,21 @@ class BloomManager {
    * database. This effectively synchronizes the in-memory state of managed
    * objects with the database.
    */
-  async flush?(args?: FlushArgs) {
-    const { flushEvent } = args ?? {};
+  async flush() {
     const contextId = nanoid();
 
     try {
       // Log the intent to flush the entities with BEFORE_FLUSH.
-      logger.log({ contextId, event: flushEvent, level: 'BEFORE_FLUSH' });
+      logger.log({ contextId, level: 'BEFORE_FLUSH' });
 
       // Runs the actual flush.
       await this.em.flush();
 
       // Log the success in flushing the entities with AFTER_FLUSH.
-      logger.log({ contextId, event: flushEvent, level: 'AFTER_FLUSH' });
+      logger.log({ contextId, level: 'AFTER_FLUSH' });
     } catch (e) {
       // Log the error with FLUSH_ERROR.
-      logger.log({
-        contextId,
-        error: e.stack,
-        event: flushEvent,
-        level: 'FLUSH_ERROR'
-      });
+      logger.log({ contextId, error: e.stack, level: 'FLUSH_ERROR' });
 
       throw e;
     }
@@ -315,7 +308,7 @@ class BloomManager {
     options?: BloomCreateAndFlushArgs<P>
   ): Promise<T> {
     const entity = this.create(entityName, data);
-    await this.flush(options);
+    await this.flush();
 
     if (options?.populate) {
       this.em.merge(entity);

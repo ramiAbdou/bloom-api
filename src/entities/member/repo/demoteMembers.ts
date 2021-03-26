@@ -4,7 +4,7 @@ import BloomManager from '@core/db/BloomManager';
 import { DemoteMembersPayload } from '@system/emails/repo/getDemoteMembersVars';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent } from '@util/constants.events';
+import { EmailEvent } from '@util/constants.events';
 import Member from '../Member';
 
 @ArgsType()
@@ -29,8 +29,7 @@ const demoteMembers = async (
   const members: Member[] = await new BloomManager().findAndUpdate(
     Member,
     { id: memberIds },
-    { role: null },
-    { flushEvent: FlushEvent.DEMOTE_MEMBERS }
+    { role: null }
   );
 
   emitEmailEvent(EmailEvent.DEMOTE_MEMBERS, {

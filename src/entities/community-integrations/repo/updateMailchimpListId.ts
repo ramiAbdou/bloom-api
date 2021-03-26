@@ -3,7 +3,7 @@ import { ArgsType, Field } from 'type-graphql';
 import BloomManager from '@core/db/BloomManager';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { GQLContext, IntegrationsBrand } from '@util/constants';
-import { EmailEvent, FlushEvent } from '@util/constants.events';
+import { EmailEvent } from '@util/constants.events';
 import CommunityIntegrations from '../CommunityIntegrations';
 
 @ArgsType()
@@ -28,8 +28,7 @@ const updateMailchimpListId = async (
   const communityIntegrations = await new BloomManager().findOneAndUpdate(
     CommunityIntegrations,
     { community: communityId },
-    { mailchimpListId },
-    { flushEvent: FlushEvent.UPDATE_MAILCHIMP_LIST_ID }
+    { mailchimpListId }
   );
 
   emitEmailEvent(EmailEvent.CONNECT_INTEGRATIONS, {

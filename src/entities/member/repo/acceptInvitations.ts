@@ -3,7 +3,7 @@ import { FilterQuery } from '@mikro-orm/core';
 import BloomManager from '@core/db/BloomManager';
 import { AcceptedIntoCommunityPayload } from '@system/emails/repo/getAcceptedIntoCommunityVars';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
-import { EmailEvent, FlushEvent } from '@util/constants.events';
+import { EmailEvent } from '@util/constants.events';
 import Member, { MemberStatus } from '../Member';
 
 interface AcceptInvitationsArgs {
@@ -28,8 +28,7 @@ const acceptInvitations = async (
   const members: Member[] = await new BloomManager().findAndUpdate(
     Member,
     { ...queryArgs, status: MemberStatus.INVITED },
-    { status: MemberStatus.ACCEPTED },
-    { flushEvent: FlushEvent.ACCEPT_INVITATIONS }
+    { status: MemberStatus.ACCEPTED }
   );
 
   members.forEach((member: Member) => {

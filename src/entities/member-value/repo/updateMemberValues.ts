@@ -2,7 +2,6 @@ import { ArgsType, Field, InputType } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import { GQLContext } from '@util/constants';
-import { FlushEvent } from '@util/constants.events';
 import MemberValue from '../MemberValue';
 
 @InputType()
@@ -70,7 +69,7 @@ const updateMemberValues = async (
     values
   );
 
-  await bm.flush({ flushEvent: FlushEvent.UPDATE_MEMBER_VALUES });
+  await bm.flush();
 
   return updatedValues;
 };

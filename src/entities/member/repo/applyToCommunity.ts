@@ -17,7 +17,7 @@ import { ApplyToCommunityAdminsPayload } from '@system/emails/repo/getApplyToCom
 import { ApplyToCommunityPayload } from '@system/emails/repo/getApplyToCommunityVars';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent } from '@util/constants.events';
+import { EmailEvent } from '@util/constants.events';
 import updateStripeSubscriptionId from '../../member-integrations/repo/updateStripeSubscriptionId';
 import Member from '../Member';
 
@@ -162,7 +162,7 @@ const applyToCommunity = async (
     } else bm.create(MemberValue, { member, question, value });
   });
 
-  await bm.flush({ flushEvent: FlushEvent.APPLY_TO_COMMUNITY });
+  await bm.flush();
 
   emitEmailEvent(EmailEvent.APPLY_TO_COMMUNITY, {
     communityId: community.id,

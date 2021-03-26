@@ -4,7 +4,7 @@ import { EntityData } from '@mikro-orm/core';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import Event from '@entities/event/Event';
-import { FlushEvent, TaskEvent } from '@util/constants.events';
+import { TaskEvent } from '@util/constants.events';
 import Task from '../Task';
 
 /**
@@ -41,11 +41,10 @@ const calculateExecuteAt = async (args: EntityData<Task>): Promise<string> => {
  * @param args.payload - Ex: { eventId: "1", userId: "2" }
  */
 const createTask = async (args: EntityData<Task>): Promise<Task> => {
-  const task: Task = await new BloomManager().createAndFlush(
-    Task,
-    { ...args, executeAt: args.executeAt ?? (await calculateExecuteAt(args)) },
-    { flushEvent: FlushEvent.CREATE_TASK }
-  );
+  const task: Task = await new BloomManager().createAndFlush(Task, {
+    ...args,
+    executeAt: args.executeAt ?? (await calculateExecuteAt(args))
+  });
 
   return task;
 };

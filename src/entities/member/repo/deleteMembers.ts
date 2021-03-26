@@ -4,7 +4,7 @@ import BloomManager from '@core/db/BloomManager';
 import { DeleteMembersPayload } from '@system/emails/repo/getDeleteMembersVars';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent } from '@util/constants.events';
+import { EmailEvent } from '@util/constants.events';
 import Member from '../Member';
 
 @ArgsType()
@@ -26,11 +26,9 @@ const deleteMembers = async (
   const { memberIds } = args;
   const { communityId } = ctx;
 
-  const members: Member[] = await new BloomManager().findAndDelete(
-    Member,
-    { id: memberIds },
-    { flushEvent: FlushEvent.DELETE_MEMBERS, soft: true }
-  );
+  const members: Member[] = await new BloomManager().findAndDelete(Member, {
+    id: memberIds
+  });
 
   emitEmailEvent(
     EmailEvent.DELETE_MEMBERS,

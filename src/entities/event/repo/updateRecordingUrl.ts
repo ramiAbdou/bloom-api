@@ -1,7 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
-import { FlushEvent } from '@util/constants.events';
 import Event from '../Event';
 
 @ArgsType()
@@ -27,8 +26,7 @@ const updateRecordingUrl = async (
   const event: Event = await new BloomManager().findOneAndUpdate(
     Event,
     eventId,
-    { recordingUrl },
-    { flushEvent: FlushEvent.UPDATE_RECORDING_URL }
+    { recordingUrl }
   );
 
   return event;

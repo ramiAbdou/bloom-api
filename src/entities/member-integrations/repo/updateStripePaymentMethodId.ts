@@ -4,7 +4,6 @@ import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import attachStripePaymentMethod from '@integrations/stripe/repo/attachStripePaymentMethod';
 import { GQLContext } from '@util/constants';
-import { FlushEvent } from '@util/constants.events';
 import MemberIntegrations from '../MemberIntegrations';
 import updateStripeCustomerId from './updateStripeCustomerId';
 
@@ -53,7 +52,7 @@ const updateStripePaymentMethodId = async (
   });
 
   memberIntegrations.stripePaymentMethodId = paymentMethodId;
-  await bm.flush({ flushEvent: FlushEvent.UPDATE_STRIPE_PAYMENT_METHOD_ID });
+  await bm.flush();
 
   return memberIntegrations;
 };

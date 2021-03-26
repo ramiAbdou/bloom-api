@@ -1,5 +1,4 @@
 import BloomManager from '@core/db/BloomManager';
-import { FlushEvent } from '@util/constants.events';
 import CommunityIntegrations from '../CommunityIntegrations';
 
 interface UpdateMailchimpAccessTokenArgs {
@@ -20,8 +19,7 @@ const updateMailchimpAccessToken = async (
   const communityIntegrations = await new BloomManager().findOneAndUpdate(
     CommunityIntegrations,
     { community: { urlName } },
-    { mailchimpAccessToken },
-    { flushEvent: FlushEvent.UPDATE_MAILCHIMP_ACCESS_TOKEN }
+    { mailchimpAccessToken }
   );
 
   return communityIntegrations;

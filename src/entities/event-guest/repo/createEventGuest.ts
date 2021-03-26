@@ -7,7 +7,7 @@ import Supporter from '@entities/supporter/Supporter';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import emitGoogleEvent from '@system/events/repo/emitGoogleEvent';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent, GoogleEvent } from '@util/constants.events';
+import { EmailEvent, GoogleEvent } from '@util/constants.events';
 import EventGuest from '../EventGuest';
 
 @ArgsType()
@@ -70,10 +70,7 @@ const createEventGuest = async (
   const guest: EventGuest = await bm.createAndFlush(
     EventGuest,
     { ...guestArgs, event: eventId },
-    {
-      flushEvent: FlushEvent.CREATE_EVENT_GUEST,
-      populate: ['member', 'supporter']
-    }
+    { populate: ['member', 'supporter'] }
   );
 
   emitEmailEvent(

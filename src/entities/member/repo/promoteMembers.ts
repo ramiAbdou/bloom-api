@@ -4,7 +4,7 @@ import BloomManager from '@core/db/BloomManager';
 import { PromoteMembersPayload } from '@system/emails/repo/getPromoteMembersVars';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent } from '@util/constants.events';
+import { EmailEvent } from '@util/constants.events';
 import Member, { MemberRole } from '../Member';
 
 @ArgsType()
@@ -29,8 +29,7 @@ const promoteMembers = async (
   const members: Member[] = await new BloomManager().findAndUpdate(
     Member,
     memberIds,
-    { role: MemberRole.ADMIN },
-    { flushEvent: FlushEvent.PROMOTE_MEMBERS }
+    { role: MemberRole.ADMIN }
   );
 
   emitEmailEvent(EmailEvent.PROMOTE_MEMBERS, {
