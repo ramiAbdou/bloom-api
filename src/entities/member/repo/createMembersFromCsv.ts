@@ -10,23 +10,23 @@ import MemberValue from '@entities/member-value/MemberValue';
 import Member, { MemberRole, MemberStatus } from '@entities/member/Member';
 import Question, { QuestionCategory } from '@entities/question/Question';
 import User from '@entities/user/User';
-import Community from '../Community';
+import Community from '../../community/Community';
 
-type CsvRowData = Record<string | QuestionCategory, any>;
+type CsvRowData = Record<string | QuestionCategory, string>;
 
-interface ProcessRowArgs {
+interface CreateMemberFromCsvRowArgs {
   bm: BloomManager;
   community: Community;
   ownerEmail: string;
+  plans: MemberPlan[];
   questions: Question[];
   row: CsvRowData;
-  plans: MemberPlan[];
   uniqueEmails: Set<string>;
 }
 
-interface ImportCsvDataArgs {
-  urlName: string;
+interface CreateMembersFromCsvArgs {
   ownerEmail: string;
+  urlName: string;
 }
 
 /**
@@ -37,15 +37,17 @@ interface ImportCsvDataArgs {
  * Stores basic information on the User/Member entity, and everything else is
  * stored as MemberData.
  */
-const processRow = async ({
-  bm,
-  community,
-  questions,
-  ownerEmail,
-  row,
-  plans,
-  uniqueEmails
-}: ProcessRowArgs) => {
+const createMemberFromCsvRow = async (args: CreateMemberFromCsvRowArgs) => {
+  const {
+    bm,
+    community,
+    questions,
+    ownerEmail,
+    row,
+    plans,
+    uniqueEmails
+  } = args;
+
   // Precondition: Every row (JSON) should have a field called EMAIL.
   const { EMAIL: dirtyEmail, FIRST_NAME: firstName, LAST_NAME: lastName } = row;
 
@@ -91,21 +93,6 @@ const processRow = async ({
       // was already processed.
       if (!value) return;
 
-      if (key === QuestionCategory.MEMBER_PLAN) {
-        member.plan = plans.find(({ name }) => value === name);
-        return;
-      }
-
-      if (key === QuestionCategory.LINKED_IN_URL) {
-        socials.linkedInUrl = value;
-        return;
-      }
-
-      if (key === QuestionCategory.TWITTER_URL) {
-        socials.twitterUrl = value;
-        return;
-      }
-
       if (key === QuestionCategory.JOINED_AT) {
         const dayObject = day.utc(value);
 
@@ -116,6 +103,21 @@ const processRow = async ({
 
         member.createdAt = createdAt;
         member.joinedAt = createdAt;
+        return;
+      }
+
+      if (key === QuestionCategory.LINKED_IN_URL) {
+        socials.linkedInUrl = value;
+        return;
+      }
+
+      if (key === QuestionCategory.MEMBER_PLAN) {
+        member.plan = plans.find((plan: MemberPlan) => value === plan.name);
+        return;
+      }
+
+      if (key === QuestionCategory.TWITTER_URL) {
+        socials.twitterUrl = value;
         return;
       }
 
@@ -139,7 +141,9 @@ const processRow = async ({
  * NEW users if the email is not found in the DB based on the CSV row, or
  * adds a Member based on the current users in our DB.
  */
-const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
+const createMembersFromCsv = async (args: CreateMembersFromCsvArgs) => {
+  const { urlName, ownerEmail } = args;
+
   const bm: BloomManager = new BloomManager();
 
   const [community, responses]: [
@@ -150,8 +154,8 @@ const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
     csv().fromFile(`./seeders/${urlName}.csv`)
   ]);
 
-  const questions = community.questions.getItems();
-  const plans = community.plans.getItems();
+  const questions: Question[] = community.questions.getItems();
+  const plans: MemberPlan[] = community.plans.getItems();
 
   // Adds protection against any emails that are duplicates in the CSV file,
   // INCLUDING case-insensitive duplicates.
@@ -159,7 +163,7 @@ const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
 
   await Promise.all(
     responses.map(async (row: CsvRowData) => {
-      await processRow({
+      await createMemberFromCsvRow({
         bm,
         community,
         ownerEmail,
@@ -175,4 +179,4 @@ const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
   return community;
 };
 
-export default importCsvData;
+export default createMembersFromCsv;

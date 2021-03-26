@@ -6,7 +6,7 @@ import { EntityData } from '@mikro-orm/core';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import createCommunity from '@entities/community/repo/createCommunity';
-import importCsvData from '@entities/community/repo/importCsvData';
+import createMembersFromCsv from '@entities/member/repo/createMembersFromCsv';
 import Question, {
   QuestionCategory,
   QuestionType
@@ -157,7 +157,7 @@ const createFreeCommunity = async () => {
 
   await bm.flush();
 
-  await importCsvData({
+  await createMembersFromCsv({
     ownerEmail: process.env.USER_EMAIL,
     urlName: URL_NAME
   });
