@@ -4,21 +4,39 @@
 
 import faker from 'faker';
 
+import BloomManager from '@core/db/BloomManager';
+import Community from '@entities/community/Community';
 import * as emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { IntegrationsBrand } from '@util/constants';
 import { EmailEvent, QueryEvent } from '@util/constants.events';
 import {
-  buildCommunityIntegrations,
+  communityFactory,
+  communityIntegrationsFactory,
   initDatabaseIntegrationTest
 } from '@util/test.util';
 import CommunityIntegrations from '../CommunityIntegrations';
 import updateStripeAccountId from './updateStripeAccountId';
 
 describe('updateStripeAccountId()', () => {
-  initDatabaseIntegrationTest();
+  let integrations: CommunityIntegrations;
+  let communityId: string;
+  let cacheKey: string;
+
+  initDatabaseIntegrationTest({
+    beforeEach: async () => {
+      const bm: BloomManager = new BloomManager();
+
+      integrations = await bm.createAndFlush(CommunityIntegrations, {
+        ...communityIntegrationsFactory.build(),
+        community: bm.create(Community, communityFactory.build())
+      });
+
+      communityId = integrations.community.id;
+      cacheKey = `${QueryEvent.GET_COMMUNITY_INTEGRATIONS}-${communityId}`;
+    }
+  });
 
   test('Should update the CommunityIntegrations with the stripeAccountId.', async () => {
-    const integrations = await buildCommunityIntegrations();
     const stripeAccountId: string = faker.random.uuid();
 
     const actualResult: CommunityIntegrations = await updateStripeAccountId({
@@ -30,9 +48,6 @@ describe('updateStripeAccountId()', () => {
   });
 
   test(`Should remove the QueryEvent.GET_COMMUNITY_INTEGRATIONS key from the CommunityIntegrations cache after updating the stripeAccountId.`, async () => {
-    const integrations = await buildCommunityIntegrations();
-    const cacheKey: string = `${QueryEvent.GET_COMMUNITY_INTEGRATIONS}-${integrations.community.id}`;
-
     CommunityIntegrations.cache.set(cacheKey, integrations);
 
     await updateStripeAccountId({
@@ -44,8 +59,6 @@ describe('updateStripeAccountId()', () => {
   });
 
   test('Should emit a CONNECT_INTEGRATIONS email.', async () => {
-    const integrations = await buildCommunityIntegrations();
-
     const spyEmitEmailEvent = jest
       .spyOn(emitEmailEvent, 'default')
       .mockImplementation();

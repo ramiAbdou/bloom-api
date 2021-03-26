@@ -6,8 +6,8 @@ import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import { QueryEvent } from '@util/constants.events';
 import {
-  buildApplications,
-  buildCommunities,
+  applicationFactory,
+  communityFactory,
   initDatabaseIntegrationTest
 } from '@util/test.util';
 import Application from '../Application';
@@ -23,8 +23,8 @@ describe(`getApplication()`, () => {
       const bm: BloomManager = new BloomManager();
 
       application = await bm.createAndFlush(Application, {
-        ...buildApplications()[0],
-        community: bm.create(Community, buildCommunities()[0])
+        ...applicationFactory.build(),
+        community: bm.create(Community, communityFactory.build())
       });
 
       communityId = application.community.id;

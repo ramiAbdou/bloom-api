@@ -3,22 +3,36 @@
  */
 
 import BloomManager from '@core/db/BloomManager';
+import Community from '@entities/community/Community';
 import { QueryEvent } from '@util/constants.events';
 import {
-  buildCommunityIntegrations,
+  communityFactory,
+  communityIntegrationsFactory,
   initDatabaseIntegrationTest
 } from '@util/test.util';
 import CommunityIntegrations from '../CommunityIntegrations';
 import getCommunityIntegrations from './getCommunityIntegrations';
 
 describe(`getCommunityIntegrations()`, () => {
-  initDatabaseIntegrationTest();
+  let integrations: CommunityIntegrations;
+  let communityId: string;
+  let cacheKey: string;
+
+  initDatabaseIntegrationTest({
+    beforeEach: async () => {
+      const bm: BloomManager = new BloomManager();
+
+      integrations = await bm.createAndFlush(CommunityIntegrations, {
+        ...communityIntegrationsFactory.build(),
+        community: bm.create(Community, communityFactory.build())
+      });
+
+      communityId = integrations.community.id;
+      cacheKey = `${QueryEvent.GET_COMMUNITY_INTEGRATIONS}-${communityId}`;
+    }
+  });
 
   test('Should add CommunityIntegrations to cache after query.', async () => {
-    const integrations = await buildCommunityIntegrations();
-    const communityId: string = integrations.community.id;
-    const cacheKey = `${QueryEvent.GET_COMMUNITY_INTEGRATIONS}-${communityId}`;
-
     const actualResult: CommunityIntegrations = await getCommunityIntegrations(
       {},
       { communityId }
@@ -28,10 +42,6 @@ describe(`getCommunityIntegrations()`, () => {
   });
 
   test('If args.communityId is supplied, should use that to query the CommunityIntegrations.', async () => {
-    const integrations = await buildCommunityIntegrations();
-    const communityId: string = integrations.community.id;
-    const cacheKey = `${QueryEvent.GET_COMMUNITY_INTEGRATIONS}-${communityId}`;
-
     const spyFindOne = jest.spyOn(BloomManager.prototype, 'findOne');
 
     const actualResult: CommunityIntegrations = await getCommunityIntegrations(
@@ -45,10 +55,6 @@ describe(`getCommunityIntegrations()`, () => {
   });
 
   test('If args.communityId is NOT supplied, should use ctx.communityId to query the CommunityIntegrations.', async () => {
-    const integrations = await buildCommunityIntegrations();
-    const communityId: string = integrations.community.id;
-    const cacheKey = `${QueryEvent.GET_COMMUNITY_INTEGRATIONS}-${communityId}`;
-
     const spyFindOne = jest.spyOn(BloomManager.prototype, 'findOne');
 
     const actualResult: CommunityIntegrations = await getCommunityIntegrations(

@@ -4,7 +4,7 @@
 
 import BloomManager from '@core/db/BloomManager';
 import { QueryEvent } from '@util/constants.events';
-import { buildCommunities, initDatabaseIntegrationTest } from '@util/test.util';
+import { communityFactory, initDatabaseIntegrationTest } from '@util/test.util';
 import Community from '../Community';
 import getCommunity from './getCommunity';
 
@@ -17,7 +17,7 @@ describe(`getCommunity()`, () => {
     beforeEach: async () => {
       community = await new BloomManager().createAndFlush(
         Community,
-        buildCommunities()[0]
+        communityFactory.build()
       );
 
       communityId = community.id;
