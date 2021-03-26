@@ -109,11 +109,11 @@ export const communityIntegrationsFactory = Factory.Sync.makeFactory<
 export const eventFactory = Factory.Sync.makeFactory<Partial<Event>>({
   description: faker.lorem.paragraph(),
   endTime: Factory.each((i: number) => {
-    if (i % 2 === 0) return day.utc().add(26, 'hour').format();
+    if (i % 2 === 1) return day.utc().add(26, 'hour').format();
     return day.utc().subtract(25, 'hour').format();
   }),
   startTime: Factory.each((i: number) => {
-    if (i % 2 === 0) return day.utc().add(25, 'hour').format();
+    if (i % 2 === 1) return day.utc().add(25, 'hour').format();
     return day.utc().subtract(26, 'hour').format();
   }),
   title: faker.lorem.words(5),
