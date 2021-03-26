@@ -40,7 +40,9 @@ export const decodeToken = (token: string): any => {
 /**
  * Returns the current UTC timestamp as a string to the millisecond.
  *
- * @example now() => '2020-08-31T23:17:20Z'
+ * @example
+ * // Returns '2020-08-31T23:17:20Z'.
+ * now()
  */
 export const now = () => day.utc().format();
 

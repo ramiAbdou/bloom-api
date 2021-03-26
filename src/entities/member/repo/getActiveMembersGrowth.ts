@@ -9,7 +9,10 @@ import { QueryEvent } from '@util/constants.events';
  * Returns the [# of Active Members, % of Growth in last 30 days.]
  *
  * @param ctx.communityId - ID of the Community (authenticated).
- * @example getActiveMembersGrowth() => [528, 173.1]
+ *
+ * @example
+ * // Returns [528, 173.1]
+ * getActiveMembersGrowth()
  */
 const getActiveMembersGrowth = async (
   ctx: Pick<GQLContext, 'communityId'>

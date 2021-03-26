@@ -5,26 +5,39 @@
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import { QueryEvent } from '@util/constants.events';
-import { buildApplication, initDatabaseIntegrationTest } from '@util/test.util';
+import {
+  applicationFactory,
+  communityFactory,
+  initDatabaseIntegrationTest
+} from '@util/test.util';
 import Application from '../Application';
 import getApplication from './getApplication';
 
 describe(`getApplication()`, () => {
-  initDatabaseIntegrationTest([Application, Community]);
+  let application: Application;
+  let communityId: string;
+  let cacheKey: string;
+
+  initDatabaseIntegrationTest({
+    beforeEach: async () => {
+      const bm: BloomManager = new BloomManager();
+
+      application = await bm.createAndFlush(Application, {
+        ...applicationFactory.build(),
+        community: bm.create(Community, communityFactory.build())
+      });
+
+      communityId = application.community.id;
+      cacheKey = `${QueryEvent.GET_APPLICATION}-${communityId}`;
+    }
+  });
 
   test('Should add Application to cache after query.', async () => {
-    const application: Application = await buildApplication();
-    const communityId: string = application.community.id;
-    const cacheKey: string = `${QueryEvent.GET_APPLICATION}-${communityId}`;
-
     const actualResult: Application = await getApplication({ communityId });
     expect(Application.cache.get(cacheKey)).toEqual(actualResult);
   });
 
   test('Should use args.communityId to query the Application.', async () => {
-    const application: Application = await buildApplication();
-    const communityId: string = application.community.id;
-
     const spyFindOneOrFail = jest.spyOn(
       BloomManager.prototype,
       'findOneOrFail'
@@ -33,7 +46,6 @@ describe(`getApplication()`, () => {
     const actualResult: Application = await getApplication({ communityId });
 
     const whereArg = spyFindOneOrFail.mock.calls[0][1];
-    const cacheKey: string = `${QueryEvent.GET_APPLICATION}-${communityId}`;
 
     expect(whereArg).toEqual({ community: communityId });
     expect(actualResult.id).toBe(application.id);

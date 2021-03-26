@@ -4,20 +4,39 @@
 
 import faker from 'faker';
 
+import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import * as emitGoogleEvent from '@system/events/repo/emitGoogleEvent';
 import { GoogleEvent, QueryEvent } from '@util/constants.events';
-import { buildEvent, initDatabaseIntegrationTest } from '@util/test.util';
+import {
+  communityFactory,
+  eventFactory,
+  initDatabaseIntegrationTest
+} from '@util/test.util';
 import Event, { EventPrivacy } from '../Event';
 import getUpcomingEvents from './getUpcomingEvents';
 import updateEvent, { UpdateEventArgs } from './updateEvent';
 
 describe('updateEvent()', () => {
-  initDatabaseIntegrationTest([Community, Event]);
+  let event: Event;
+  let eventId: string;
+  let cacheKey: string;
+
+  initDatabaseIntegrationTest({
+    beforeEach: async () => {
+      const bm: BloomManager = new BloomManager();
+
+      event = await bm.createAndFlush(Event, {
+        ...eventFactory.build(),
+        community: bm.create(Community, communityFactory.build())
+      });
+
+      eventId = event.id;
+      cacheKey = `${QueryEvent.GET_EVENT}-${eventId}`;
+    }
+  });
 
   test('Should update the Event with the updated data.', async () => {
-    const event: Event = (await buildEvent()) as Event;
-
     const updateArgs: UpdateEventArgs = {
       description: faker.random.words(10),
       eventId: event.id,
@@ -42,9 +61,6 @@ describe('updateEvent()', () => {
   });
 
   test('Should emit a GoogleEvent.UPDATE_CALENDAR_EVENT event.', async () => {
-    const event: Event = (await buildEvent()) as Event;
-    const eventId: string = event.id;
-
     const spyEmitGoogleEvent = jest
       .spyOn(emitGoogleEvent, 'default')
       .mockImplementation();
@@ -57,22 +73,14 @@ describe('updateEvent()', () => {
   });
 
   test('Should invalidate QueryEvent.GET_EVENT in Event cache.', async () => {
-    const event: Event = (await buildEvent()) as Event;
-    const eventId: string = event.id;
-    const cacheKey: string = `${QueryEvent.GET_EVENT}-${eventId}`;
-
     jest.spyOn(emitGoogleEvent, 'default').mockImplementation();
-
     await updateEvent({ eventId });
-
     expect(Event.cache.has(cacheKey)).toBe(false);
   });
 
   test('Should invalidate QueryEvent.GET_UPCOMING_EVENTS in Event cache.', async () => {
-    const event: Event = (await buildEvent()) as Event;
-    const eventId: string = event.id;
     const communityId: string = event.community.id;
-    const cacheKey: string = `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`;
+    cacheKey = `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`;
     jest.spyOn(emitGoogleEvent, 'default').mockImplementation();
 
     await getUpcomingEvents({ communityId });

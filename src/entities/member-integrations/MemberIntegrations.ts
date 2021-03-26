@@ -49,12 +49,14 @@ export default class MemberIntegrations extends BaseEntity {
   /**
    * Returns a formatted version of the Stripe.PaymentMethod.
    *
-   * @example paymentMethod() => {
-   *  brand: "Visa",
-   *  expirationDate: "08/24",
-   *  last4: "3221",
-   *  zipCode: "91789",
-   * }
+   * @example
+   * // Returns {
+   * //   brand: "Visa",
+   * //   expirationDate: "08/24",
+   * //   last4: "3221",
+   * //   zipCode: "91789",
+   * // }
+   * memberIntegrations.paymentMethod()
    */
   @Authorized()
   @Field(() => PaymentMethod, { nullable: true })
@@ -87,7 +89,9 @@ export default class MemberIntegrations extends BaseEntity {
    * Returns the renewalDate of the Stripe.Subscription, if the
    * stripeSubscriptionId exists. Returns null, otherwise.
    *
-   * @example renewalDate() => "2021-04-09T07:19:20-08:00"
+   * @example
+   * // Returns '2021-04-09T07:19:20-08:00'.
+   * renewalDate()
    */
   @Authorized()
   @Field(() => String, { nullable: true })

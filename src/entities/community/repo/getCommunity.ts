@@ -24,7 +24,7 @@ const getCommunity = async (
 ): Promise<Community> => {
   const queryArgs: FilterQuery<Community> = args.urlName
     ? { urlName: args.urlName }
-    : ctx.communityId;
+    : { id: ctx.communityId };
 
   const key: string = args.urlName ?? ctx.communityId;
 

@@ -1,10 +1,10 @@
 import day from 'dayjs';
+import * as Factory from 'factory.ts';
 import faker from 'faker';
-import { EntityData, EntityName, MikroORM } from '@mikro-orm/core';
+import { MikroORM } from '@mikro-orm/core';
 import { EntityManager, PostgreSqlDriver } from '@mikro-orm/postgresql';
 
 import { clearEntityCaches } from '@core/cache/Cache.util';
-import BloomManager from '@core/db/BloomManager';
 import db from '@core/db/db';
 import Application from '@entities/application/Application';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
@@ -33,19 +33,7 @@ import User from '@entities/user/User';
  * @param em - Entity Manager.
  * @param entityNames - List of EntityName(s) to truncate.
  */
-export const clearAllTableData = async (
-  em: EntityManager,
-  entityNames?: EntityName<any>[]
-): Promise<void> => {
-  if (entityNames) {
-    entityNames.map(async (entityName: EntityName<any>) => {
-      await em.createQueryBuilder(entityName).truncate().execute();
-    });
-
-    em.clear();
-    return;
-  }
-
+export const clearAllTableData = async (em: EntityManager): Promise<void> => {
   await em.createQueryBuilder(Application).truncate().execute();
   await em.createQueryBuilder(CommunityIntegrations).truncate().execute();
   await em.createQueryBuilder(Community).truncate().execute();
@@ -66,8 +54,13 @@ export const clearAllTableData = async (
   await em.createQueryBuilder(Supporter).truncate().execute();
   await em.createQueryBuilder(Task).truncate().execute();
   await em.createQueryBuilder(User).truncate().execute();
+
   em.clear();
 };
+
+interface InitDatabaseIntegrationTestArgs {
+  beforeEach?: Function;
+}
 
 /**
  * Initializes an integration by calling the pre- and post- Jest hooks,
@@ -76,7 +69,7 @@ export const clearAllTableData = async (
  * Handles database interactions.
  */
 export const initDatabaseIntegrationTest = (
-  entityNames?: EntityName<any>[]
+  args?: InitDatabaseIntegrationTestArgs
 ): void => {
   let orm: MikroORM<PostgreSqlDriver>;
 
@@ -85,152 +78,63 @@ export const initDatabaseIntegrationTest = (
     orm = await db.createConnection();
   });
 
-  // Removes all of the table data.
+  // Removes all of the table data and clears the caches.
   beforeEach(async () => {
     clearEntityCaches();
-    await clearAllTableData(orm.em, entityNames);
+    await clearAllTableData(orm.em);
+    if (args?.beforeEach) await args.beforeEach();
   });
 
   // Closes the database connection after the tests finish.
   afterAll(async () => orm.close(true));
 };
 
-// ## BUILD TEST OBJECTS
+export const applicationFactory = Factory.Sync.makeFactory<
+  Partial<Application>
+>({
+  description: faker.lorem.sentences(3),
+  title: faker.random.words(3)
+});
 
-interface BuildTestObjectArgs<T = any> {
-  // Allows there to be overrides for each test object as opposed to the same
-  // overrides for every test object.
-  buildOverrides?: (index: number) => EntityData<T>;
+export const communityFactory = Factory.Sync.makeFactory<Partial<Community>>({
+  name: faker.random.word(),
+  primaryColor: faker.commerce.color(),
+  urlName: faker.random.word()
+});
 
-  // Defaults to 1, if more then will return an array of random test object.s
-  count?: number;
+export const communityIntegrationsFactory = Factory.Sync.makeFactory<
+  Partial<CommunityIntegrations>
+>({});
 
-  // Overrides that applies to every test object.
-  overrides?: EntityData<T>;
-}
+export const eventFactory = Factory.Sync.makeFactory<Partial<Event>>({
+  description: faker.lorem.paragraph(),
+  endTime: Factory.each((i: number) => {
+    if (i % 2 === 1) return day.utc().add(26, 'hour').format();
+    return day.utc().subtract(25, 'hour').format();
+  }),
+  startTime: Factory.each((i: number) => {
+    if (i % 2 === 1) return day.utc().add(25, 'hour').format();
+    return day.utc().subtract(26, 'hour').format();
+  }),
+  title: faker.lorem.words(5),
+  videoUrl: faker.internet.url()
+});
 
-export const buildApplication = async (): Promise<Application> => {
-  const bm: BloomManager = new BloomManager();
+export const memberFactory = Factory.Sync.makeFactory<Partial<Member>>({
+  email: faker.internet.email(),
+  firstName: faker.name.firstName(),
+  lastName: faker.name.lastName()
+});
 
-  return bm.createAndFlush(Application, {
-    community: bm.create(Community, {
-      name: faker.random.word(),
-      primaryColor: faker.commerce.color(),
-      urlName: faker.random.word()
-    }),
-    description: faker.lorem.sentences(3),
-    title: faker.random.words(3)
-  });
-};
+export const memberIntegrationsFactory = Factory.Sync.makeFactory<
+  Partial<MemberIntegrations>
+>({});
 
-export const buildCommunity = async (
-  args?: BuildTestObjectArgs<Community>
-): Promise<Community> => {
-  const { overrides = {} } = args ?? {};
+export const memberPlanFactory = Factory.Sync.makeFactory<Partial<MemberPlan>>({
+  amount: Factory.each((i: number) => i * 5),
+  name: faker.name.title()
+});
 
-  const bm: BloomManager = new BloomManager();
-
-  return bm.createAndFlush(Community, {
-    application: bm.create(Application, {
-      description: faker.lorem.sentences(3),
-      title: faker.random.words(3)
-    }),
-    communityIntegrations: bm.create(CommunityIntegrations, {}),
-    name: faker.random.word(),
-    primaryColor: faker.commerce.color(),
-    urlName: faker.random.word(),
-    ...overrides
-  });
-};
-
-export const buildCommunityIntegrations = async (
-  args?: BuildTestObjectArgs<CommunityIntegrations>
-): Promise<CommunityIntegrations> => {
-  const { overrides = {} } = args ?? {};
-
-  const bm: BloomManager = new BloomManager();
-
-  return bm.createAndFlush(CommunityIntegrations, {
-    community: bm.create(Community, {
-      name: faker.random.word(),
-      primaryColor: faker.commerce.color(),
-      urlName: faker.random.word()
-    }),
-    ...overrides
-  });
-};
-
-export const buildEvent = async (
-  args?: BuildTestObjectArgs<Event>
-): Promise<Event | Event[]> => {
-  const { buildOverrides = () => null, count = 1, overrides = {} } = args ?? {};
-
-  const bm: BloomManager = new BloomManager();
-
-  const community: Community = bm.create(Community, {
-    name: faker.random.word(),
-    primaryColor: faker.commerce.color(),
-    urlName: faker.random.word()
-  });
-
-  const events: Event[] = Array.from(Array(count).keys()).map(
-    (_, i: number) => {
-      return bm.create(Event, {
-        community,
-        description: faker.lorem.paragraph(),
-        endTime: day.utc().add(26, 'hour'),
-        startTime: day.utc().add(25, 'hour'),
-        title: faker.lorem.words(5),
-        videoUrl: faker.internet.url(),
-        ...overrides,
-        ...buildOverrides(i)
-      });
-    }
-  );
-
-  await bm.flush();
-
-  return count >= 2 ? (events as Event[]) : (events[0] as Event);
-};
-
-export const buildMember = async (
-  args?: BuildTestObjectArgs<Member>
-): Promise<Member> => {
-  const { overrides = {} } = args ?? {};
-
-  const bm: BloomManager = new BloomManager();
-
-  return bm.createAndFlush(Member, {
-    ...overrides,
-    email: faker.internet.email(),
-    firstName: faker.name.firstName(),
-    lastName: faker.name.lastName(),
-    memberIntegrations: bm.create(MemberIntegrations, {}),
-    user: bm.create(User, { email: faker.internet.email() })
-  });
-};
-
-export const buildMemberPlan = async (
-  args?: BuildTestObjectArgs<MemberPlan>
-): Promise<MemberPlan | MemberPlan[]> => {
-  const { buildOverrides = () => null, count = 1, overrides = {} } = args ?? {};
-
-  const bm: BloomManager = new BloomManager();
-
-  const memberPlans: MemberPlan[] = Array.from(Array(count).keys()).map(
-    (_, i: number) => {
-      return bm.create(MemberPlan, {
-        amount: i * 5,
-        name: faker.name.title(),
-        ...overrides,
-        ...buildOverrides(i)
-      });
-    }
-  );
-
-  await bm.flush();
-
-  return count >= 2
-    ? (memberPlans as MemberPlan[])
-    : (memberPlans[0] as MemberPlan);
-};
+export const userFactory = Factory.Sync.makeFactory<Partial<User>>({
+  email: faker.internet.email()
+});
