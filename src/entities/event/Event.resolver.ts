@@ -6,8 +6,8 @@ import Event from './Event';
 import createEvent, { CreateEventArgs } from './repo/createEvent';
 import deleteEvent, { DeleteEventArgs } from './repo/deleteEvent';
 import getEvent, { GetEventArgs } from './repo/getEvent';
-import getPastEvents from './repo/getPastEvents';
-import getUpcomingEvents from './repo/getUpcomingEvents';
+import listPastEvents from './repo/listPastEvents';
+import listUpcomingEvents from './repo/listUpcomingEvents';
 import updateEvent, { UpdateEventArgs } from './repo/updateEvent';
 
 @Resolver()
@@ -37,14 +37,14 @@ export default class EventResolver {
 
   @Authorized()
   @Query(() => [Event])
-  async getPastEvents(@Ctx() ctx: GQLContext): Promise<Event[]> {
-    return getPastEvents(ctx);
+  async listPastEvents(@Ctx() ctx: GQLContext): Promise<Event[]> {
+    return listPastEvents(ctx);
   }
 
   @Authorized()
   @Query(() => [Event], { nullable: true })
-  async getUpcomingEvents(@Ctx() ctx: GQLContext): Promise<Event[]> {
-    return getUpcomingEvents(ctx);
+  async listUpcomingEvents(@Ctx() ctx: GQLContext): Promise<Event[]> {
+    return listUpcomingEvents(ctx);
   }
 
   @Authorized(MemberRole.ADMIN)

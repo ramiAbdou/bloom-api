@@ -2,8 +2,8 @@ import { Args, Authorized, Ctx, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@util/constants';
 import Community from './Community';
-import getCommunities, { GetCommunitiesArgs } from './repo/getCommunities';
 import getCommunity, { GetCommunityArgs } from './repo/getCommunity';
+import listCommunities, { ListCommunitiesArgs } from './repo/listCommunities';
 
 @Resolver()
 export default class CommunityResolver {
@@ -17,7 +17,9 @@ export default class CommunityResolver {
 
   @Authorized()
   @Query(() => [Community])
-  async getCommunities(@Args() args: GetCommunitiesArgs): Promise<Community[]> {
-    return getCommunities(args);
+  async listCommunities(
+    @Args() args: ListCommunitiesArgs
+  ): Promise<Community[]> {
+    return listCommunities(args);
   }
 }

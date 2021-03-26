@@ -7,25 +7,25 @@ import { now } from '@util/util';
 import Event from '../Event';
 
 /**
- * Returns all of upcoming Event(s).
+ * Returns all of past Event(s).
  *
  * @param ctx.communityId - ID of the Community.
  */
-const getUpcomingEvents = async (
+const listPastEvents = async (
   ctx: Pick<GQLContext, 'communityId'>
 ): Promise<Event[]> => {
   const { communityId } = ctx;
 
   const events: Event[] = await new BloomManager().find(
     Event,
-    { community: communityId, endTime: { $gte: now() } },
+    { community: communityId, endTime: { $lt: now() } },
     {
-      cacheKey: `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`,
-      orderBy: { startTime: QueryOrder.ASC }
+      cacheKey: `${QueryEvent.LIST_PAST_EVENTS}-${communityId}`,
+      orderBy: { startTime: QueryOrder.DESC }
     }
   );
 
   return events;
 };
 
-export default getUpcomingEvents;
+export default listPastEvents;

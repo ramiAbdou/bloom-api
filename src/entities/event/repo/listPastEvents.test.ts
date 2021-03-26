@@ -12,9 +12,9 @@ import {
   initDatabaseIntegrationTest
 } from '@util/test.util';
 import { now } from '@util/util';
-import getPastEvents from './getPastEvents';
+import listPastEvents from './listPastEvents';
 
-describe(`getPastEvents()`, () => {
+describe(`listPastEvents()`, () => {
   let communityId: string;
   let cacheKey: string;
 
@@ -30,17 +30,17 @@ describe(`getPastEvents()`, () => {
       await bm.flush();
 
       communityId = community.id;
-      cacheKey = `${QueryEvent.GET_PAST_EVENTS}-${communityId}`;
+      cacheKey = `${QueryEvent.LIST_PAST_EVENTS}-${communityId}`;
     }
   });
 
   test('Should add the past Event(s) to cache after query.', async () => {
-    const queriedEvents: Event[] = await getPastEvents({ communityId });
+    const queriedEvents: Event[] = await listPastEvents({ communityId });
     expect(Event.cache.get(cacheKey)).toEqual(queriedEvents);
   });
 
   test('Should all be events in the past.', async () => {
-    const queriedEvents: Event[] = await getPastEvents({ communityId });
+    const queriedEvents: Event[] = await listPastEvents({ communityId });
 
     expect(queriedEvents.length).toBeGreaterThan(0);
     queriedEvents.forEach((event) => expect(event.endTime < now()).toBe(true));

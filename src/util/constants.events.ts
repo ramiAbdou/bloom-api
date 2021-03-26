@@ -83,7 +83,6 @@ export enum QueryEvent {
   GET_CHANGE_PREVIEW = 'getChangePreview',
   GET_COMMUNITY = 'getCommunity',
   GET_COMMUNITY_INTEGRATIONS = 'getCommunityIntegrations',
-  GET_COMMUNITIES = 'getCommunities',
   GET_EVENT = 'getEvent',
   GET_EVENT_ATTENDEES = 'getEventAttendees',
   GET_EVENT_ATTENDEES_SERIES = 'getEventAttendeesSeries',
@@ -98,16 +97,17 @@ export enum QueryEvent {
   GET_MEMBERS_GROWTH = 'getMembersGrowth',
   GET_MEMBERS_SERIES = 'getMembersSeries',
   GET_OWNER = 'getOwner',
-  GET_PAST_EVENTS = 'getPastEvents',
   GET_PAYMENTS = 'getPayments',
   GET_PAYMENTS_SERIES = 'getPaymentsSeries',
   GET_RANKED_QUESTIONS = 'getRankedQuestions',
   GET_QUESTIONS = 'getQuestions',
   GET_TOKENS = 'getTokens',
-  GET_UPCOMING_EVENTS = 'getUpcomingEvents',
   GET_UPCOMING_EVENT_GUESTS = 'getUpcomingEventGuests',
   GET_USER = 'getUser',
-  IS_EMAIL_TAKEN = 'isEmailTaken'
+  IS_EMAIL_TAKEN = 'isEmailTaken',
+  LIST_COMMUNITIES = 'listCommunities',
+  LIST_PAST_EVENTS = 'listPastEvents',
+  LIST_UPCOMING_EVENTS = 'listUpcomingEvents'
 }
 
 export enum LoggerEvent {

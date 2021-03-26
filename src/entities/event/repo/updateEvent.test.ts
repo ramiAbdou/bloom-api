@@ -14,7 +14,7 @@ import {
   initDatabaseIntegrationTest
 } from '@util/test.util';
 import Event, { EventPrivacy } from '../Event';
-import getUpcomingEvents from './getUpcomingEvents';
+import listUpcomingEvents from './listUpcomingEvents';
 import updateEvent, { UpdateEventArgs } from './updateEvent';
 
 describe('updateEvent()', () => {
@@ -83,7 +83,7 @@ describe('updateEvent()', () => {
     cacheKey = `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`;
     jest.spyOn(emitGoogleEvent, 'default').mockImplementation();
 
-    await getUpcomingEvents({ communityId });
+    await listUpcomingEvents({ communityId });
     expect(Event.cache.has(cacheKey)).toBe(true);
     await updateEvent({ eventId, imageUrl: faker.internet.url() });
     expect(Event.cache.has(cacheKey)).toBe(false);
