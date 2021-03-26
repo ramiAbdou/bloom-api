@@ -132,7 +132,7 @@ export default class Member extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @BeforeCreate()
-  beforeCreate() {
+  beforeCreate(): void {
     if (
       (this.role && this.status !== MemberStatus.INVITED) ||
       this.community.autoAccept
@@ -151,14 +151,14 @@ export default class Member extends BaseEntity {
   }
 
   @BeforeUpdate()
-  beforeUpdate() {
+  beforeUpdate(): void {
     if (this.status === MemberStatus.ACCEPTED && !this.joinedAt) {
       this.joinedAt = now();
     }
   }
 
   @AfterCreate()
-  afterCreate() {
+  afterCreate(): void {
     Member.cache.invalidate(
       this.status === MemberStatus.PENDING
         ? [`${QueryEvent.LIST_APPLICANTS}-${this.community.id}`]
@@ -167,7 +167,7 @@ export default class Member extends BaseEntity {
   }
 
   @AfterUpdate()
-  afterUpdate() {
+  afterUpdate(): void {
     Member.cache.invalidate([
       `${QueryEvent.LIST_MEMBERS}-${this.id}`,
       `${QueryEvent.LIST_MEMBERS}-${this.community.id}`

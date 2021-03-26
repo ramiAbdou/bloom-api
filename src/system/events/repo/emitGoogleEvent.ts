@@ -13,7 +13,7 @@ const emitGoogleEvent = (
   googleEvent: GoogleEvent,
   args: Omit<GoogleEventArgs, 'googleEvent'>,
   options?: EmitEventOptions
-) => {
+): void => {
   setTimeout(() => {
     eventBus.emit(BusEvent.GOOGLE_EVENT, { ...args, googleEvent });
   }, options?.delay ?? 0);

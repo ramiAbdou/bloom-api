@@ -37,7 +37,7 @@ export default class MemberSocials extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @AfterUpdate()
-  async afterUpdate() {
+  async afterUpdate(): Promise<void> {
     await wrap(this.member).init();
 
     MemberSocials.cache.invalidate([

@@ -22,7 +22,7 @@ export interface GoogleEventArgs {
  * @param args.guestId - ID of the EventGuest.
  * @param args.googleEvent - Internal Google Event.
  */
-const processGoogleEvent = async (args: GoogleEventArgs) => {
+const processGoogleEvent = async (args: GoogleEventArgs): Promise<void> => {
   const { eventId, guestId, googleEvent } = args;
 
   const bm: BloomManager = new BloomManager();

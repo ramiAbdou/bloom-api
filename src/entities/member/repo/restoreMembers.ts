@@ -17,9 +17,10 @@ export class RestoreMembersArgs {
 const restoreMembers = async (args: RestoreMembersArgs): Promise<Member[]> => {
   const { memberIds } = args;
 
-  const members: Member[] = await new BloomManager().findAndRestore(
+  const members: Member[] = await new BloomManager().findAndUpdate(
     Member,
-    memberIds
+    { id: memberIds },
+    { deletedAt: null }
   );
 
   return members;

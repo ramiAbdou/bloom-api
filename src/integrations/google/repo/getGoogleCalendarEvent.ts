@@ -1,4 +1,4 @@
-import { calendar_v3 } from 'googleapis';
+import { calendar_v3 as calendarV3 } from 'googleapis';
 
 import { eventsCalendar } from '../Google.util';
 
@@ -9,7 +9,7 @@ import { eventsCalendar } from '../Google.util';
  */
 const getGoogleCalendarEvent = async (
   googleCalendarEventId: string
-): Promise<calendar_v3.Schema$Event> => {
+): Promise<calendarV3.Schema$Event> => {
   if (!googleCalendarEventId) return null;
 
   const response = await eventsCalendar.events.get({

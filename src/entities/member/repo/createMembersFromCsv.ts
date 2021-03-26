@@ -37,7 +37,9 @@ interface CreateMembersFromCsvArgs {
  * Stores basic information on the User/Member entity, and everything else is
  * stored as MemberData.
  */
-const createMemberFromCsvRow = async (args: CreateMemberFromCsvRowArgs) => {
+const createMemberFromCsvRow = async (
+  args: CreateMemberFromCsvRowArgs
+): Promise<Member> => {
   const {
     bm,
     community,
@@ -59,7 +61,7 @@ const createMemberFromCsvRow = async (args: CreateMemberFromCsvRowArgs) => {
       : internet.email();
 
   // If no email exists or it is a duplicate email, don't process.
-  if (!email || uniqueEmails.has(email)) return;
+  if (!email || uniqueEmails.has(email)) return null;
   uniqueEmails.add(email);
 
   const [user, wasFound] = await bm.findOneOrCreate(User, { email }, { email });
@@ -68,7 +70,7 @@ const createMemberFromCsvRow = async (args: CreateMemberFromCsvRowArgs) => {
   // member. The possible case for this is for an OWNER of a community.
   // They will have already been created in a script and might also be
   // in a CSV.
-  if (wasFound && (await bm.findOne(Member, { community, user }))) return;
+  if (wasFound && (await bm.findOne(Member, { community, user }))) return null;
 
   // // We persist the member instead of the user since the user can
   // // potentially be persisted already.
@@ -132,6 +134,8 @@ const createMemberFromCsvRow = async (args: CreateMemberFromCsvRowArgs) => {
       if (question) bm.create(MemberValue, { member, question, value });
     }
   );
+
+  return member;
 };
 
 /**
@@ -141,7 +145,9 @@ const createMemberFromCsvRow = async (args: CreateMemberFromCsvRowArgs) => {
  * NEW users if the email is not found in the DB based on the CSV row, or
  * adds a Member based on the current users in our DB.
  */
-const createMembersFromCsv = async (args: CreateMembersFromCsvArgs) => {
+const createMembersFromCsv = async (
+  args: CreateMembersFromCsvArgs
+): Promise<Member[]> => {
   const { urlName, ownerEmail } = args;
 
   const bm: BloomManager = new BloomManager();
@@ -161,9 +167,9 @@ const createMembersFromCsv = async (args: CreateMembersFromCsvArgs) => {
   // INCLUDING case-insensitive duplicates.
   const uniqueEmails = new Set<string>();
 
-  await Promise.all(
+  const members: Member[] = await Promise.all(
     responses.map(async (row: CsvRowData) => {
-      await createMemberFromCsvRow({
+      return createMemberFromCsvRow({
         bm,
         community,
         ownerEmail,
@@ -176,7 +182,8 @@ const createMembersFromCsv = async (args: CreateMembersFromCsvArgs) => {
   );
 
   await bm.flush();
-  return community;
+
+  return members;
 };
 
 export default createMembersFromCsv;

@@ -24,7 +24,7 @@ export default class EventGuest extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @AfterCreate()
-  async afterCreate() {
+  async afterCreate(): Promise<void> {
     await wrap(this.event).init();
 
     EventGuest.cache.invalidate([
@@ -37,7 +37,7 @@ export default class EventGuest extends BaseEntity {
   }
 
   @AfterDelete()
-  async afterDelete() {
+  async afterDelete(): Promise<void> {
     await wrap(this.event).init();
 
     EventGuest.cache.invalidate([

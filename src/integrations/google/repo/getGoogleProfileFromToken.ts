@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { google, oauth2_v2 } from 'googleapis';
+import { google, oauth2_v2 as oauth2V2 } from 'googleapis';
 
 import { APP } from '@util/constants';
 
@@ -11,7 +11,7 @@ import { APP } from '@util/constants';
  */
 const getGoogleProfileFromToken = async (
   code: string
-): Promise<oauth2_v2.Schema$Userinfoplus> => {
+): Promise<oauth2V2.Schema$Userinfoplus> => {
   // Initializes the Google Auth library with the clientId and clientSecret.
   const auth = new google.auth.OAuth2({
     clientId: process.env.GOOGLE_CLIENT_ID,
@@ -37,7 +37,7 @@ const getGoogleProfileFromToken = async (
   // appropriate user information with the updated tokens.
   auth.setCredentials(credentials);
 
-  const oauth2: oauth2_v2.Oauth2 = google.oauth2({ auth, version: 'v2' });
+  const oauth2: oauth2V2.Oauth2 = google.oauth2({ auth, version: 'v2' });
   const { data: profile } = await oauth2.userinfo.get();
 
   // We want to make the picture 400 x 400 (by default Google makes it 96 x 96).

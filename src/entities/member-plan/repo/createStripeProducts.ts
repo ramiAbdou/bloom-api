@@ -56,7 +56,9 @@ interface CreateStripeProductsArgs {
  * Creates the corresponding Stripe products and prices for every MemberPlan
  * that isn't free. Updates the MemberPlan entity as well.
  */
-const createStripeProducts = async (args: CreateStripeProductsArgs) => {
+const createStripeProducts = async (
+  args: CreateStripeProductsArgs
+): Promise<MemberPlan[]> => {
   const { urlName } = args;
 
   const bm: BloomManager = new BloomManager();

@@ -1,4 +1,4 @@
-import { calendar_v3 } from 'googleapis';
+import { calendar_v3 as calendarV3 } from 'googleapis';
 
 import logger from '@system/logger/logger';
 import { GoogleEvent } from '@util/constants.events';
@@ -14,8 +14,8 @@ import { eventsCalendar } from '../Google.util';
  */
 const addGoogleCalendarEventAttendee = async (
   eventId: string,
-  attendee: calendar_v3.Schema$EventAttendee
-): Promise<calendar_v3.Schema$Event> => {
+  attendee: calendarV3.Schema$EventAttendee
+): Promise<calendarV3.Schema$Event> => {
   if (!eventId) return null;
 
   // Need to fetch all of the previous event attendees first to append

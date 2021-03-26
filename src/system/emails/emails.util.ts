@@ -31,7 +31,7 @@ export interface FormatPersonalizationData {
  *
  * @param emailEvent - Type of EmailEvent.
  */
-export const getSendGridTemplateId = (emailEvent: EmailEvent) => {
+export const getSendGridTemplateId = (emailEvent: EmailEvent): string => {
   switch (emailEvent) {
     case EmailEvent.ACCEPTED_INTO_COMMUNITY:
       return process.env.SENDGRID_ACCEPTED_INTO_COMMUNITY_TEMPLATE_ID;

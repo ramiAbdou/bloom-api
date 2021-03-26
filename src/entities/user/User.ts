@@ -36,7 +36,7 @@ export default class User extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @BeforeCreate()
-  async beforeCreate() {
+  beforeCreate(): void {
     this.email = this.email.toLowerCase();
   }
 

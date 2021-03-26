@@ -44,7 +44,9 @@ export const decodeToken = (token: string): any => {
  * // Returns '2020-08-31T23:17:20Z'.
  * now()
  */
-export const now = () => day.utc().format();
+export const now = (): string => {
+  return day.utc().format();
+};
 
 interface SignTokenArgs {
   expires?: boolean;
@@ -57,7 +59,7 @@ interface SignTokenArgs {
  * @param args.expires - Default is true, false if the token shouldn't expire.
  * @param args.payload - Payload to encode in the token.
  */
-export const signToken = (args: SignTokenArgs) => {
+export const signToken = (args: SignTokenArgs): string => {
   const { expires = true, payload } = args;
 
   return jwt.sign(
@@ -106,7 +108,7 @@ export const splitArrayIntoChunks = (
  * @param arr - Array of 2-tuples in which the first value gets evaluated to a
  * boolean.
  */
-export const take = (arr: [any, any][]) => {
+export const take = (arr: [any, any][]): any => {
   for (let i = 0; i < arr.length; i++) {
     const element: [any, any] = arr[i];
     if (element[0]) return element[1];

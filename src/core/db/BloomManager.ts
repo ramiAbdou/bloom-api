@@ -13,7 +13,6 @@ import {
 
 import Cache from '@core/cache/Cache';
 import logger from '@system/logger/logger';
-import { now } from '@util/util';
 import { getEntityCache } from '../cache/Cache.util';
 import {
   BloomCreateAndFlushArgs,
@@ -172,56 +171,6 @@ class BloomManager {
   }
 
   /**
-   * Returns the restored entities. For any soft-deleted entities, we set
-   * deletedAt to null to "restore" them.
-   */
-  async findAndRestore<T, P>(
-    entityName: EntityName<T>,
-    where: FilterQuery<T>,
-    options?: BloomFindAndUpdateOptions<T, P>
-  ): Promise<Loaded<T, P>[]> {
-    // If not found, get it from the DB.
-    const result = await this.find<T, P>(entityName, where, {
-      ...options,
-      filters: false
-    });
-
-    result.forEach((entity: Loaded<T, P>) => {
-      // @ts-ignore b/c deletedAt isn't detected.
-      entity.deletedAt = null;
-    });
-
-    await this.flush();
-    return result;
-  }
-
-  /**
-   * Instead of actually removing and flushing the entity(s), this function
-   * acts as a SOFT DELETE and simply sets the deletedAt column within the
-   * table. There is a global filter that gets all entities that have a
-   * deletedAt = null.
-   */
-  async findAndDelete<T, P>(
-    entityName: EntityName<T>,
-    where: FilterQuery<T>,
-    options?: BloomFindAndDeleteOptions<T, P>
-  ): Promise<T[]> {
-    // If not found, get it from the DB.
-    const result = await this.find<T, P>(entityName, where, options);
-
-    const updatedResult = result.map((entity: Loaded<T, P>) => {
-      // @ts-ignore b/c not sure the right type for this.
-      entity.deletedAt = now();
-      return entity;
-    });
-
-    if (!options?.soft) this.em.remove(result);
-
-    await this.flush();
-    return updatedResult;
-  }
-
-  /**
    * Instead of actually removing and flushing the entity(s), this function
    * acts as a SOFT DELETE and simply sets the deletedAt column within the
    * table. There is a global filter that gets all entities that have a
@@ -235,29 +184,12 @@ class BloomManager {
     // If not found, get it from the DB.
     const result = await this.findOne<T, P>(entityName, where, { ...options });
 
-    // @ts-ignore b/c type checking.
-    result.deletedAt = now();
-    if (!options?.soft) this.em.remove(result);
+    if (!options?.soft) {
+      this.em.remove(result);
+    }
 
     await this.flush();
-    return result;
-  }
 
-  async findOneAndRestore<T, P>(
-    entityName: EntityName<T>,
-    where: FilterQuery<T>,
-    options?: BloomFindAndUpdateOptions<T, P>
-  ): Promise<Loaded<T, P>> {
-    // If not found, get it from the DB.
-    const result = await this.findOne<T, P>(entityName, where, {
-      ...options,
-      filters: false
-    });
-
-    // @ts-ignore b/c deletedAt isn't detected.
-    result.deletedAt = null;
-
-    await this.flush();
     return result;
   }
 
@@ -279,7 +211,7 @@ class BloomManager {
    * database. This effectively synchronizes the in-memory state of managed
    * objects with the database.
    */
-  async flush() {
+  async flush(): Promise<void> {
     const contextId = nanoid();
 
     try {

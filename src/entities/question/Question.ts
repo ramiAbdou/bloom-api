@@ -84,7 +84,7 @@ export default class Question extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @BeforeCreate()
-  beforeCreate() {
+  beforeCreate(): void {
     if (this.category === QuestionCategory.BIO) {
       if (!this.title) this.title = 'Bio';
       this.type = QuestionType.LONG_TEXT;
@@ -158,14 +158,14 @@ export default class Question extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @AfterCreate()
-  afterCreate() {
+  afterCreate(): void {
     Question.cache.invalidate([
       `${QueryEvent.LIST_QUESTIONS}-${this.community.id}`
     ]);
   }
 
   @AfterUpdate()
-  afterUpdate() {
+  afterUpdate(): void {
     Question.cache.invalidate([
       `${QueryEvent.LIST_QUESTIONS}-${this.community.id}`
     ]);

@@ -31,17 +31,20 @@ export default class UserResolver {
    * Logs a user out of the session by removing the HTTP only cookies.
    */
   @Mutation(() => Boolean)
-  async logout(@Ctx() ctx: GQLContext) {
+  async logout(@Ctx() ctx: GQLContext): Promise<boolean> {
     return logout(ctx);
   }
 
   @Mutation(() => Boolean, { nullable: true })
-  async sendLoginLink(@Args() args: SendLoginLinkArgs) {
+  async sendLoginLink(@Args() args: SendLoginLinkArgs): Promise<void> {
     return sendLoginLink(args);
   }
 
   @Mutation(() => VerifiedToken)
-  async verifyToken(@Args() args: TokenArgs, @Ctx() ctx: GQLContext) {
+  async verifyToken(
+    @Args() args: TokenArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<VerifiedToken> {
     return verifyToken(args, ctx);
   }
 }

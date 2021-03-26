@@ -1,5 +1,5 @@
 import express from 'express';
-import { oauth2_v2 } from 'googleapis';
+import { oauth2_v2 as oauth2V2 } from 'googleapis';
 
 import updatePictureUrl from '@entities/member/repo/updatePictureUrl';
 import getLoginError from '@entities/user/repo/getLoginError';
@@ -37,7 +37,7 @@ const handleGoogleAuth = async (
   const parsedState: ParsedGoogleAuthQueryState = JSON.parse(safeState);
   const { communityId, pathname } = parsedState;
 
-  const googleProfile: oauth2_v2.Schema$Userinfoplus = await getGoogleProfileFromToken(
+  const googleProfile: oauth2V2.Schema$Userinfoplus = await getGoogleProfileFromToken(
     code as string
   );
 

@@ -50,7 +50,7 @@ export default class Payment extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @AfterCreate()
-  async afterCreate() {
+  async afterCreate(): Promise<void> {
     Payment.cache.invalidate([
       // Need to make sure that the 'isDuesActive' is updated.
       `${QueryEvent.LIST_MEMBERS}-${this.member.id}`,

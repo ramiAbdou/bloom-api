@@ -37,7 +37,7 @@ const sendEmailsBatch = async (args: SendEmailsBatch) => {
  * @param mjml Name of the MJML file (including the .mjml extension).
  * @param variables Optional variables that populate the Handlebars template.
  */
-const sendEmails = async (args: EmailArgs) => {
+const sendEmails = async (args: EmailArgs): Promise<void> => {
   // Shouldn't send any emails in development. If needed, comment this line
   // out manually each time.
   if (process.env.APP_ENV === 'dev') return;

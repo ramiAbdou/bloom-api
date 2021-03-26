@@ -11,7 +11,7 @@ import createPayment from '@entities/payment/repo/createPayment';
  *
  * @param event - Stripe.Event to handle: 'invoice.paid'.
  */
-const handleInvoicePaid = async (event: Stripe.Event) => {
+const handleInvoicePaid = async (event: Stripe.Event): Promise<void> => {
   const stripeAccountId: string = event.account;
   const invoice = event.data.object as Stripe.Invoice;
 

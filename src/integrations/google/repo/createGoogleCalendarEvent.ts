@@ -1,4 +1,4 @@
-import { calendar_v3 } from 'googleapis';
+import { calendar_v3 as calendarV3 } from 'googleapis';
 
 import logger from '@system/logger/logger';
 import { GoogleEvent } from '@util/constants.events';
@@ -16,10 +16,10 @@ import { eventsCalendar } from '../Google.util';
  */
 const createGoogleCalendarEvent = async (
   args: Pick<
-    calendar_v3.Schema$Event,
+    calendarV3.Schema$Event,
     'description' | 'end' | 'location' | 'start' | 'summary' | 'visibility'
   >
-): Promise<calendar_v3.Schema$Event> => {
+): Promise<calendarV3.Schema$Event> => {
   try {
     const response = await eventsCalendar.events.insert({
       calendarId: process.env.GOOGLE_CALENDAR_ID,

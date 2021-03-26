@@ -55,7 +55,7 @@ export default class CommunityIntegrations extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @AfterUpdate()
-  afterUpdate() {
+  afterUpdate(): void {
     CommunityIntegrations.cache.invalidate([
       `${QueryEvent.GET_COMMUNITY_INTEGRATIONS}-${this.community.id}`
     ]);

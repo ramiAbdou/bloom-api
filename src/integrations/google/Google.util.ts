@@ -1,4 +1,4 @@
-import { google } from 'googleapis';
+import { calendar_v3 as calendarV3, google } from 'googleapis';
 
 import googleConfig from '../../../google.json';
 
@@ -14,7 +14,7 @@ const googleClient = new google.auth.JWT(
 
 // In the future, could have other Service Account calendar (eg: Meetups, etc)
 // but this calendar is only for Bloom customers' events.
-export const eventsCalendar = google.calendar({
+export const eventsCalendar: calendarV3.Calendar = google.calendar({
   auth: googleClient,
   version: 'v3'
 });

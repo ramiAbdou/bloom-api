@@ -11,7 +11,7 @@ import logger, {
 } from '@system/logger/logger';
 
 export default class BloomManagerSubscriber implements EventSubscriber {
-  async onFlush<T>(args: FlushEventArgs): Promise<void> {
+  async onFlush(args: FlushEventArgs): Promise<void> {
     const { uow } = args;
 
     const changes: LoggerChangeSet[] = uow

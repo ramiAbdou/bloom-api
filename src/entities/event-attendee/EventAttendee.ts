@@ -17,7 +17,7 @@ export default class EventAttendee extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @AfterCreate()
-  async afterCreate() {
+  async afterCreate(): Promise<void> {
     await wrap(this.event).init();
 
     EventAttendee.cache.invalidate([

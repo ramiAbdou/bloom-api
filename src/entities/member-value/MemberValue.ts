@@ -31,7 +31,7 @@ export default class MemberValue extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @AfterCreate()
-  async afterCreate() {
+  async afterCreate(): Promise<void> {
     await wrap(this.member).init();
 
     MemberValue.cache.invalidate([
@@ -41,7 +41,7 @@ export default class MemberValue extends BaseEntity {
   }
 
   @AfterUpdate()
-  async afterUpdate() {
+  async afterUpdate(): Promise<void> {
     await wrap(this.member).init();
 
     MemberValue.cache.invalidate([
