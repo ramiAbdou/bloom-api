@@ -4,13 +4,16 @@ import { AuthTokens, GQLContext } from '@util/constants';
 import { VerifyEvent } from '@util/constants.events';
 import { TokenArgs } from '@util/constants.gql';
 import { decodeToken } from '@util/util';
-import createEventAttendeeFromGuestToken from '../../event-attendee/repo/createEventAttendeeFromGuestToken';
+import createEventAttendee from '../../event-attendee/repo/createEventAttendee';
 import refreshToken from './refreshToken';
 
 @ObjectType()
 export class VerifiedToken {
   @Field(() => String, { nullable: true })
   event?: VerifyEvent;
+
+  @Field({ nullable: true })
+  eventId?: string;
 
   @Field({ nullable: true })
   guestId?: string;
@@ -39,12 +42,12 @@ const verifyToken = async (
   const { res } = ctx;
 
   const verifiedToken: VerifiedToken = decodeToken(token) ?? {};
-  const { event, guestId, memberId, userId } = verifiedToken;
+  const { event, eventId, memberId, userId } = verifiedToken;
 
   let tokens: AuthTokens;
 
   if (event === VerifyEvent.JOIN_EVENT) {
-    await createEventAttendeeFromGuestToken({ guestId });
+    await createEventAttendee({ eventId });
   }
 
   if ([VerifyEvent.LOG_IN].includes(event)) {
