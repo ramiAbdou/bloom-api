@@ -75,11 +75,17 @@ export default class MemberIntegrations extends BaseEntity {
     );
 
     const { address } = paymentMethod.billing_details;
-    const { brand, exp_month, exp_year, last4 } = paymentMethod.card;
+
+    const {
+      brand,
+      exp_month: expMonth,
+      exp_year: expYear,
+      last4
+    } = paymentMethod.card;
 
     return {
       brand: `${brand[0].toUpperCase()}${brand.slice(1)}`,
-      expirationDate: `${exp_month}/${exp_year}`,
+      expirationDate: `${expMonth}/${expYear}`,
       last4,
       zipCode: address.postal_code
     };
@@ -115,7 +121,7 @@ export default class MemberIntegrations extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @AfterUpdate()
-  afterUpdate() {
+  afterUpdate(): void {
     MemberIntegrations.cache.invalidate([
       `${QueryEvent.GET_MEMBER_INTEGRATIONS}-${this.member.id}`
     ]);

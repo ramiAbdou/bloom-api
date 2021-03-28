@@ -4,7 +4,6 @@ import BloomManager from '@core/db/BloomManager';
 import Application from '@entities/application/Application';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
-import { FlushEvent } from '@util/constants.events';
 
 /**
  * Returns the new Community.
@@ -20,15 +19,11 @@ const createCommunity = async (
 
   const bm: BloomManager = new BloomManager();
 
-  const community: Community = await bm.createAndFlush(
-    Community,
-    {
-      ...data,
-      application: bm.create(Application, application ?? {}),
-      communityIntegrations: bm.create(CommunityIntegrations, {})
-    },
-    { flushEvent: FlushEvent.CREATE_COMMUNITY }
-  );
+  const community: Community = await bm.createAndFlush(Community, {
+    ...data,
+    application: bm.create(Application, application ?? {}),
+    communityIntegrations: bm.create(CommunityIntegrations, {})
+  });
 
   return community;
 };

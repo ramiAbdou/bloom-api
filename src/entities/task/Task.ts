@@ -28,7 +28,7 @@ export default class Task extends BaseEntity {
 
   // ## METHODS
 
-  execute() {
+  execute(): void {
     switch (this.event) {
       case TaskEvent.EVENT_REMINDER_1_DAY:
         emitEmailEvent(EmailEvent.EVENT_REMINDER, {

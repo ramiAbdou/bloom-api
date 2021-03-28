@@ -5,7 +5,7 @@ import { AcceptedIntoCommunityPayload } from '@system/emails/repo/getAcceptedInt
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import emitMailchimpEvent from '@system/events/repo/emitMailchimpEvent';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent, MailchimpEvent } from '@util/constants.events';
+import { EmailEvent, MailchimpEvent } from '@util/constants.events';
 import { now } from '@util/util';
 import Member, { MemberStatus } from '../Member';
 
@@ -35,8 +35,7 @@ const respondToApplicants = async (
   const members: Member[] = await new BloomManager().findAndUpdate(
     Member,
     { id: memberIds },
-    { joinedAt: now(), status: response },
-    { flushEvent: FlushEvent.RESPOND_TO_APPLICANTS }
+    { joinedAt: now(), status: response }
   );
 
   if (response === MemberStatus.ACCEPTED) {

@@ -59,7 +59,7 @@ export const clearAllTableData = async (em: EntityManager): Promise<void> => {
 };
 
 interface InitDatabaseIntegrationTestArgs {
-  beforeEach?: Function;
+  beforeEach?: () => Promise<void>;
 }
 
 /**

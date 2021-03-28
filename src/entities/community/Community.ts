@@ -69,7 +69,7 @@ export default class Community extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @BeforeCreate()
-  beforeCreate() {
+  beforeCreate(): void {
     if (!this.logoUrl) {
       const DIGITAL_OCEAN_URL = process.env.DIGITAL_OCEAN_BUCKET_URL;
       this.logoUrl = `${DIGITAL_OCEAN_URL}/${this.urlName}`;
@@ -77,14 +77,14 @@ export default class Community extends BaseEntity {
   }
 
   @AfterUpdate()
-  async afterUpdate() {
+  async afterUpdate(): Promise<void> {
     const members: Member[] = await this.members.loadItems();
 
     Community.cache.invalidate([
       `${QueryEvent.GET_COMMUNITY}-${this.id}`,
       `${QueryEvent.GET_COMMUNITY}-${this.urlName}`,
       ...members.map((member: Member) => {
-        return `${QueryEvent.GET_COMMUNITIES}-${member.user.id}`;
+        return `${QueryEvent.LIST_COMMUNITIES}-${member.user.id}`;
       })
     ]);
   }

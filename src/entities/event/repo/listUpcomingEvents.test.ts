@@ -12,9 +12,9 @@ import {
   initDatabaseIntegrationTest
 } from '@util/test.util';
 import { now } from '@util/util';
-import getUpcomingEvents from './getUpcomingEvents';
+import listUpcomingEvents from './listUpcomingEvents';
 
-describe(`getUpcomingEvents()`, () => {
+describe(`listUpcomingEvents()`, () => {
   let communityId: string;
   let cacheKey: string;
 
@@ -30,17 +30,17 @@ describe(`getUpcomingEvents()`, () => {
       await bm.flush();
 
       communityId = community.id;
-      cacheKey = `${QueryEvent.GET_UPCOMING_EVENTS}-${communityId}`;
+      cacheKey = `${QueryEvent.LIST_UPCOMING_EVENTS}-${communityId}`;
     }
   });
 
   test('Should add the upcoming Event(s) to cache after query.', async () => {
-    const queriedEvents: Event[] = await getUpcomingEvents({ communityId });
+    const queriedEvents: Event[] = await listUpcomingEvents({ communityId });
     expect(Event.cache.get(cacheKey)).toEqual(queriedEvents);
   });
 
   test('Should all be events that are upcoming.', async () => {
-    const queriedEvents: Event[] = await getUpcomingEvents({ communityId });
+    const queriedEvents: Event[] = await listUpcomingEvents({ communityId });
 
     expect(queriedEvents.length).toBeGreaterThan(0);
 

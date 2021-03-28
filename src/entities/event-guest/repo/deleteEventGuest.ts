@@ -3,7 +3,7 @@ import { ArgsType, Field } from 'type-graphql';
 import BloomManager from '@core/db/BloomManager';
 import emitGoogleEvent from '@system/events/repo/emitGoogleEvent';
 import { GQLContext } from '@util/constants';
-import { FlushEvent, GoogleEvent } from '@util/constants.events';
+import { GoogleEvent } from '@util/constants.events';
 import EventGuest from '../EventGuest';
 
 @ArgsType()
@@ -29,8 +29,7 @@ const deleteEventGuest = async (
 
   const guest: EventGuest = await new BloomManager().findOneAndDelete(
     EventGuest,
-    { event: eventId, member: memberId },
-    { flushEvent: FlushEvent.DELETE_EVENT_GUEST }
+    { event: eventId, member: memberId }
   );
 
   emitGoogleEvent(GoogleEvent.DELETE_CALENDAR_EVENT_ATTENDEE, {

@@ -13,10 +13,8 @@ export interface CreateEventInviteesPayload {
 
 export interface CreateEventInviteesVars {
   community: Pick<Community, 'name'>;
-  event: Pick<
-    Event,
-    'endTime' | 'eventUrl' | 'privacy' | 'startTime' | 'summary' | 'title'
-  >;
+  event: Pick<Event, 'endTime' | 'privacy' | 'startTime' | 'summary' | 'title'>;
+  eventUrl: string;
   member: Pick<Member, 'email' | 'firstName'>;
 }
 
@@ -45,21 +43,22 @@ const getCreateEventInviteesVars = async (
 
   const partialEvent: Pick<
     Event,
-    'endTime' | 'eventUrl' | 'privacy' | 'startTime' | 'summary' | 'title'
+    'endTime' | 'privacy' | 'startTime' | 'summary' | 'title'
   > = {
     endTime: stringifyEmailTimestamp(event.endTime),
-    // @ts-ignore b/c we need to await the call.
-    eventUrl: await event.eventUrl(),
     privacy: event.privacy,
     startTime: stringifyEmailTimestamp(event.startTime),
     summary: event.summary,
     title: event.title
   };
 
+  const eventUrl: string = await event.eventUrl();
+
   const variables: CreateEventInviteesVars[] = members.map((member: Member) => {
     return {
       community: partialCommunity,
       event: partialEvent,
+      eventUrl,
       member: { email: member.email, firstName: member.firstName }
     };
   });

@@ -86,15 +86,6 @@ export const getAllEntityCaches = (): Cache[] => {
  *
  * @param entityNames - List of EntityName(s) to clear caches for.
  */
-export const clearEntityCaches = (entityNames?: EntityName<any>[]) => {
-  if (entityNames) {
-    entityNames.forEach(async (entityName: EntityName<any>) => {
-      const cache = getEntityCache(entityName);
-      if (cache) cache.reset();
-    });
-
-    return;
-  }
-
+export const clearEntityCaches = (): void => {
   getAllEntityCaches().forEach((cache) => cache.reset());
 };

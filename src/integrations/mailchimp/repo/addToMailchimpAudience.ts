@@ -17,7 +17,9 @@ interface AddToMailchimpAudienceArgs {
  * @param args.mailchimpAccessToken - Mailchimp access token (for querying).
  * @param args.mailchimpListId - ID of the Mailchimp List to add to.
  */
-const addToMailchimpAudience = async (args: AddToMailchimpAudienceArgs) => {
+const addToMailchimpAudience = async (
+  args: AddToMailchimpAudienceArgs
+): Promise<void> => {
   const {
     email,
     firstName,

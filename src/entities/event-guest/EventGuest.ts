@@ -24,28 +24,28 @@ export default class EventGuest extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @AfterCreate()
-  async afterCreate() {
+  async afterCreate(): Promise<void> {
     await wrap(this.event).init();
 
     EventGuest.cache.invalidate([
-      `${QueryEvent.GET_EVENT_GUESTS}-${this.event.id}`,
-      `${QueryEvent.GET_EVENT_GUESTS}-${this.member?.id}`,
-      `${QueryEvent.GET_EVENT_GUESTS}-${this.supporter?.id}`,
-      `${QueryEvent.GET_EVENT_GUESTS}-${this.event.community.id}`,
-      `${QueryEvent.GET_UPCOMING_EVENT_GUESTS}-${this.event.community.id}`
+      `${QueryEvent.LIST_EVENT_GUESTS}-${this.event.id}`,
+      `${QueryEvent.LIST_EVENT_GUESTS}-${this.member?.id}`,
+      `${QueryEvent.LIST_EVENT_GUESTS}-${this.supporter?.id}`,
+      `${QueryEvent.LIST_EVENT_GUESTS}-${this.event.community.id}`,
+      `${QueryEvent.LIST_UPCOMING_EVENT_GUESTS}-${this.event.community.id}`
     ]);
   }
 
   @AfterDelete()
-  async afterDelete() {
+  async afterDelete(): Promise<void> {
     await wrap(this.event).init();
 
     EventGuest.cache.invalidate([
-      `${QueryEvent.GET_EVENT_GUESTS}-${this.event.id}`,
-      `${QueryEvent.GET_EVENT_GUESTS}-${this.member?.id}`,
-      `${QueryEvent.GET_EVENT_GUESTS}-${this.supporter?.id}`,
-      `${QueryEvent.GET_EVENT_GUESTS}-${this.event.community.id}`,
-      `${QueryEvent.GET_UPCOMING_EVENT_GUESTS}-${this.event.community.id}`
+      `${QueryEvent.LIST_EVENT_GUESTS}-${this.event.id}`,
+      `${QueryEvent.LIST_EVENT_GUESTS}-${this.member?.id}`,
+      `${QueryEvent.LIST_EVENT_GUESTS}-${this.supporter?.id}`,
+      `${QueryEvent.LIST_EVENT_GUESTS}-${this.event.community.id}`,
+      `${QueryEvent.LIST_UPCOMING_EVENT_GUESTS}-${this.event.community.id}`
     ]);
   }
 

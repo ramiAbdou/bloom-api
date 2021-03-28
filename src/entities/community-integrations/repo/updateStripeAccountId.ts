@@ -1,7 +1,7 @@
 import BloomManager from '@core/db/BloomManager';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { IntegrationsBrand } from '@util/constants';
-import { EmailEvent, FlushEvent } from '@util/constants.events';
+import { EmailEvent } from '@util/constants.events';
 import CommunityIntegrations from '../CommunityIntegrations';
 
 interface UpdateStripeAccountIdArgs {
@@ -24,8 +24,7 @@ const updateStripeAccountId = async (
   const communityIntegrations = await new BloomManager().findOneAndUpdate(
     CommunityIntegrations,
     { community: { urlName } },
-    { stripeAccountId },
-    { flushEvent: FlushEvent.UPDATE_STRIPE_ACCOUNT_ID }
+    { stripeAccountId }
   );
 
   emitEmailEvent(EmailEvent.CONNECT_INTEGRATIONS, {

@@ -31,22 +31,22 @@ export default class MemberValue extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @AfterCreate()
-  async afterCreate() {
+  async afterCreate(): Promise<void> {
     await wrap(this.member).init();
 
     MemberValue.cache.invalidate([
-      `${QueryEvent.GET_MEMBER_VALUES}-${this.member.id}`,
-      `${QueryEvent.GET_MEMBER_VALUES}-${this.member.community.id}`
+      `${QueryEvent.LIST_MEMBER_VALUES}-${this.member.id}`,
+      `${QueryEvent.LIST_MEMBER_VALUES}-${this.member.community.id}`
     ]);
   }
 
   @AfterUpdate()
-  async afterUpdate() {
+  async afterUpdate(): Promise<void> {
     await wrap(this.member).init();
 
     MemberValue.cache.invalidate([
-      `${QueryEvent.GET_MEMBER_VALUES}-${this.member.id}`,
-      `${QueryEvent.GET_MEMBER_VALUES}-${this.member.community.id}`
+      `${QueryEvent.LIST_MEMBER_VALUES}-${this.member.id}`,
+      `${QueryEvent.LIST_MEMBER_VALUES}-${this.member.community.id}`
     ]);
   }
 

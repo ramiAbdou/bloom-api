@@ -5,7 +5,7 @@ import BloomManager from '@core/db/BloomManager';
 import createMemberRefresh from '@entities/member-refresh/repo/createMemberRefresh';
 import Member from '@entities/member/Member';
 import { AuthTokens, JWT } from '@util/constants';
-import { FlushEvent, VerifyEvent } from '@util/constants.events';
+import { VerifyEvent } from '@util/constants.events';
 import { signToken } from '@util/util';
 import User from '../User';
 
@@ -91,7 +91,7 @@ const refreshToken = async (args: RefreshTokenArgs): Promise<AuthTokens> => {
 
   // Update the refreshToken in the DB, and create a refresh entity.
   user.refreshToken = tokens.refreshToken;
-  await bm.flush({ flushEvent: FlushEvent.UPDATE_REFRESH_TOKEN });
+  await bm.flush();
   await createMemberRefresh({ memberId: member.id });
 
   return tokens;

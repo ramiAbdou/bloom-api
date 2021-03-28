@@ -4,7 +4,8 @@ import BloomManager from '@core/db/BloomManager';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import emitGoogleEvent from '@system/events/repo/emitGoogleEvent';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent, GoogleEvent } from '@util/constants.events';
+import { EmailEvent, GoogleEvent } from '@util/constants.events';
+import { now } from '@util/util';
 import Event from '../Event';
 
 @ArgsType()
@@ -27,10 +28,10 @@ const deleteEvent = async (
   const { eventId } = args;
   const { communityId, memberId } = ctx;
 
-  const event: Event = await new BloomManager().findOneAndDelete(
+  const event: Event = await new BloomManager().findOneAndUpdate(
     Event,
     eventId,
-    { flushEvent: FlushEvent.DELETE_EVENT, soft: true }
+    { deletedAt: now() }
   );
 
   emitEmailEvent(EmailEvent.DELETE_EVENT_COORDINATOR, {

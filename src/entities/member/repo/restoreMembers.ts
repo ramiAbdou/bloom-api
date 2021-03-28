@@ -1,7 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
-import { FlushEvent } from '@util/constants.events';
 import Member from '../Member';
 
 @ArgsType()
@@ -18,10 +17,10 @@ export class RestoreMembersArgs {
 const restoreMembers = async (args: RestoreMembersArgs): Promise<Member[]> => {
   const { memberIds } = args;
 
-  const members: Member[] = await new BloomManager().findAndRestore(
+  const members: Member[] = await new BloomManager().findAndUpdate(
     Member,
-    memberIds,
-    { flushEvent: FlushEvent.RESTORE_MEMBERS }
+    { id: memberIds },
+    { deletedAt: null }
   );
 
   return members;

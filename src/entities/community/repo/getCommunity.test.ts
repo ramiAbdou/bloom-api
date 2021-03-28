@@ -21,7 +21,7 @@ describe(`getCommunity()`, () => {
       );
 
       communityId = community.id;
-      cacheKey = `${QueryEvent.GET_COMMUNITIES}-${communityId}`;
+      cacheKey = `${QueryEvent.LIST_COMMUNITIES}-${communityId}`;
     }
   });
 
@@ -32,7 +32,7 @@ describe(`getCommunity()`, () => {
 
   test('If args.urlName is supplied, should use that to query the Community.', async () => {
     const { urlName } = community;
-    cacheKey = `${QueryEvent.GET_COMMUNITIES}-${urlName}`;
+    cacheKey = `${QueryEvent.LIST_COMMUNITIES}-${urlName}`;
 
     const spyFindOneOrFail = jest.spyOn(
       BloomManager.prototype,

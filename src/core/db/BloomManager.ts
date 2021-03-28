@@ -5,6 +5,7 @@ import {
   EntityManager,
   EntityName,
   FilterQuery,
+  FindOneOptions,
   Loaded,
   New,
   Populate,
@@ -13,16 +14,13 @@ import {
 
 import Cache from '@core/cache/Cache';
 import logger from '@system/logger/logger';
-import { now } from '@util/util';
 import { getEntityCache } from '../cache/Cache.util';
 import {
   BloomCreateAndFlushArgs,
-  BloomFindAndDeleteOptions,
   BloomFindAndUpdateOptions,
   BloomFindOneAndUpdateOptions,
   BloomFindOneOptions,
-  BloomFindOptions,
-  FlushArgs
+  BloomFindOptions
 } from './BloomManager.types';
 import db from './db';
 
@@ -151,7 +149,7 @@ class BloomManager {
 
     wrap(result).assign(data);
 
-    await this.flush(options);
+    await this.flush();
     return result;
   }
 
@@ -168,58 +166,8 @@ class BloomManager {
       wrap(entity).assign(data);
     });
 
-    await this.flush(options);
+    await this.flush();
     return result;
-  }
-
-  /**
-   * Returns the restored entities. For any soft-deleted entities, we set
-   * deletedAt to null to "restore" them.
-   */
-  async findAndRestore<T, P>(
-    entityName: EntityName<T>,
-    where: FilterQuery<T>,
-    options?: BloomFindAndUpdateOptions<T, P>
-  ): Promise<Loaded<T, P>[]> {
-    // If not found, get it from the DB.
-    const result = await this.find<T, P>(entityName, where, {
-      ...options,
-      filters: false
-    });
-
-    result.forEach((entity: Loaded<T, P>) => {
-      // @ts-ignore b/c deletedAt isn't detected.
-      entity.deletedAt = null;
-    });
-
-    await this.flush(options);
-    return result;
-  }
-
-  /**
-   * Instead of actually removing and flushing the entity(s), this function
-   * acts as a SOFT DELETE and simply sets the deletedAt column within the
-   * table. There is a global filter that gets all entities that have a
-   * deletedAt = null.
-   */
-  async findAndDelete<T, P>(
-    entityName: EntityName<T>,
-    where: FilterQuery<T>,
-    options?: BloomFindAndDeleteOptions<T, P>
-  ): Promise<T[]> {
-    // If not found, get it from the DB.
-    const result = await this.find<T, P>(entityName, where, options);
-
-    const updatedResult = result.map((entity: Loaded<T, P>) => {
-      // @ts-ignore b/c not sure the right type for this.
-      entity.deletedAt = now();
-      return entity;
-    });
-
-    if (!options?.soft) this.em.remove(result);
-
-    await this.flush(options);
-    return updatedResult;
   }
 
   /**
@@ -231,34 +179,11 @@ class BloomManager {
   async findOneAndDelete<T, P>(
     entityName: EntityName<T>,
     where: FilterQuery<T>,
-    options?: BloomFindAndDeleteOptions<T, P>
+    options?: FindOneOptions<T, P>
   ): Promise<T> {
     // If not found, get it from the DB.
     const result = await this.findOne<T, P>(entityName, where, { ...options });
-
-    // @ts-ignore b/c type checking.
-    result.deletedAt = now();
-    if (!options?.soft) this.em.remove(result);
-
-    await this.flush(options);
-    return result;
-  }
-
-  async findOneAndRestore<T, P>(
-    entityName: EntityName<T>,
-    where: FilterQuery<T>,
-    options?: BloomFindAndUpdateOptions<T, P>
-  ): Promise<Loaded<T, P>> {
-    // If not found, get it from the DB.
-    const result = await this.findOne<T, P>(entityName, where, {
-      ...options,
-      filters: false
-    });
-
-    // @ts-ignore b/c deletedAt isn't detected.
-    result.deletedAt = null;
-
-    await this.flush(options);
+    await this.em.removeAndFlush(result);
     return result;
   }
 
@@ -280,27 +205,21 @@ class BloomManager {
    * database. This effectively synchronizes the in-memory state of managed
    * objects with the database.
    */
-  async flush?(args?: FlushArgs) {
-    const { flushEvent } = args ?? {};
+  async flush(): Promise<void> {
     const contextId = nanoid();
 
     try {
       // Log the intent to flush the entities with BEFORE_FLUSH.
-      logger.log({ contextId, event: flushEvent, level: 'BEFORE_FLUSH' });
+      logger.log({ contextId, level: 'BEFORE_FLUSH' });
 
       // Runs the actual flush.
       await this.em.flush();
 
       // Log the success in flushing the entities with AFTER_FLUSH.
-      logger.log({ contextId, event: flushEvent, level: 'AFTER_FLUSH' });
+      logger.log({ contextId, level: 'AFTER_FLUSH' });
     } catch (e) {
       // Log the error with FLUSH_ERROR.
-      logger.log({
-        contextId,
-        error: e.stack,
-        event: flushEvent,
-        level: 'FLUSH_ERROR'
-      });
+      logger.log({ contextId, error: e.stack, level: 'FLUSH_ERROR' });
 
       throw e;
     }
@@ -315,7 +234,7 @@ class BloomManager {
     options?: BloomCreateAndFlushArgs<P>
   ): Promise<T> {
     const entity = this.create(entityName, data);
-    await this.flush(options);
+    await this.flush();
 
     if (options?.populate) {
       this.em.merge(entity);

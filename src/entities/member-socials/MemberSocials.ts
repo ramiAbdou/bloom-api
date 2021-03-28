@@ -17,11 +17,6 @@ export default class MemberSocials extends BaseEntity {
   @Field({ nullable: true })
   @Property({ nullable: true })
   @IsUrl()
-  clubhouseUrl: string;
-
-  @Field({ nullable: true })
-  @Property({ nullable: true })
-  @IsUrl()
   facebookUrl: string;
 
   @Field({ nullable: true })
@@ -42,12 +37,12 @@ export default class MemberSocials extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @AfterUpdate()
-  async afterUpdate() {
+  async afterUpdate(): Promise<void> {
     await wrap(this.member).init();
 
     MemberSocials.cache.invalidate([
       `${QueryEvent.GET_MEMBER_SOCIALS}-${this.member.id}`,
-      `${QueryEvent.GET_MEMBER_SOCIALS}-${this.member.community.id}`
+      `${QueryEvent.LIST_MEMBER_SOCIALS}-${this.member.community.id}`
     ]);
   }
 

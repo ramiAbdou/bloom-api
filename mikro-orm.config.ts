@@ -22,7 +22,6 @@ import MemberRefresh from '@entities/member-refresh/MemberRefresh';
 import MemberSocials from '@entities/member-socials/MemberSocials';
 import MemberValue from '@entities/member-value/MemberValue';
 import Member from '@entities/member/Member';
-import MemberSubscriber from '@entities/member/Member.subscriber';
 import Payment from '@entities/payment/Payment';
 import Question from '@entities/question/Question';
 import RankedQuestion from '@entities/ranked-question/RankedQuestion';
@@ -83,7 +82,7 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
   namingStrategy: NamingStrategy,
   password: process.env.DB_PASSWORD,
   port: Number(process.env.DB_PORT),
-  subscribers: [new BloomManagerSubscriber(), new MemberSubscriber()],
+  subscribers: [new BloomManagerSubscriber()],
   type: 'postgresql',
   user: process.env.DB_USER
 };

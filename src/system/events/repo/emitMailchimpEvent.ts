@@ -11,7 +11,7 @@ import eventBus from '../eventBus';
 const emitMailchimpEvent = (
   mailchimpEvent: MailchimpEvent,
   args: Omit<MailchimpEventArgs, 'mailchimpEvent'>
-) => {
+): void => {
   eventBus.emit(BusEvent.MAILCHIMP_EVENT, { ...args, mailchimpEvent });
 };
 

@@ -17,14 +17,14 @@ export default class EventAttendee extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @AfterCreate()
-  async afterCreate() {
+  async afterCreate(): Promise<void> {
     await wrap(this.event).init();
 
     EventAttendee.cache.invalidate([
-      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.event.id}`,
-      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.member?.id}`,
-      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.supporter?.id}`,
-      `${QueryEvent.GET_EVENT_ATTENDEES}-${this.event.community.id}`,
+      `${QueryEvent.LIST_EVENT_ATTENDEES}-${this.event.id}`,
+      `${QueryEvent.LIST_EVENT_ATTENDEES}-${this.member?.id}`,
+      `${QueryEvent.LIST_EVENT_ATTENDEES}-${this.supporter?.id}`,
+      `${QueryEvent.LIST_EVENT_ATTENDEES}-${this.event.community.id}`,
       `${QueryEvent.GET_EVENT_ATTENDEES_SERIES}-${this.event.community.id}`
     ]);
   }

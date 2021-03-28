@@ -5,12 +5,7 @@ import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import emitGoogleEvent from '@system/events/repo/emitGoogleEvent';
 import emitTaskEvent from '@system/events/repo/emitTaskEvent';
 import { GQLContext } from '@util/constants';
-import {
-  EmailEvent,
-  FlushEvent,
-  GoogleEvent,
-  TaskEvent
-} from '@util/constants.events';
+import { EmailEvent, GoogleEvent, TaskEvent } from '@util/constants.events';
 import createEventInvitees from '../../event-invitee/repo/createEventInvitees';
 import Event, { EventPrivacy } from '../Event';
 
@@ -58,11 +53,10 @@ const createEvent = async (
   const { communityId, memberId } = ctx;
   const { invitees: memberIdsToInvite, ...eventData } = args;
 
-  const event: Event = await new BloomManager().createAndFlush(
-    Event,
-    { ...eventData, community: communityId },
-    { flushEvent: FlushEvent.CREATE_EVENT }
-  );
+  const event: Event = await new BloomManager().createAndFlush(Event, {
+    ...eventData,
+    community: communityId
+  });
 
   const eventId: string = event.id;
 

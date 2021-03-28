@@ -13,7 +13,7 @@ const emitEmailEvent = (
   emailEvent: EmailEvent,
   emailPayload: EmailPayload,
   options?: EmitEventOptions
-) => {
+): void => {
   setTimeout(() => {
     eventBus.emit(BusEvent.EMAIL_EVENT, { emailEvent, emailPayload });
   }, options?.delay ?? 0);

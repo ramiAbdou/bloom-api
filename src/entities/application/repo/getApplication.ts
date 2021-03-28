@@ -15,7 +15,9 @@ export class GetApplicationArgs {
  *
  * @param args.communityId - ID of the Community.
  */
-const getApplication = async (args: GetApplicationArgs) => {
+const getApplication = async (
+  args: GetApplicationArgs
+): Promise<Application> => {
   const { communityId } = args;
 
   const application: Application = await new BloomManager().findOneOrFail(

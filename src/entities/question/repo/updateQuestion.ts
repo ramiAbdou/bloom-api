@@ -1,7 +1,6 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
-import { FlushEvent } from '@util/constants.events';
 import Question from '../Question';
 
 @ArgsType()
@@ -25,8 +24,7 @@ const updateQuestion = async (args: UpdateQuestionArgs): Promise<Question> => {
   const question: Question = await new BloomManager().findOneAndUpdate(
     Question,
     questionId,
-    { ...questionData },
-    { flushEvent: FlushEvent.UPDATE_QUESTION }
+    { ...questionData }
   );
 
   return question;

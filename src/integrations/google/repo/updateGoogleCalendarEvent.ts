@@ -1,4 +1,4 @@
-import { calendar_v3 } from 'googleapis';
+import { calendar_v3 as calendarV3 } from 'googleapis';
 
 import logger from '@system/logger/logger';
 import { GoogleEvent } from '@util/constants.events';
@@ -14,8 +14,8 @@ import { eventsCalendar } from '../Google.util';
  */
 const updateGoogleCalendarEvent = async (
   eventId: string,
-  args: Pick<calendar_v3.Schema$Event, 'description' | 'summary' | 'visibility'>
-): Promise<calendar_v3.Schema$Event> => {
+  args: Pick<calendarV3.Schema$Event, 'description' | 'summary' | 'visibility'>
+): Promise<calendarV3.Schema$Event> => {
   if (!eventId) return null;
 
   try {

@@ -5,7 +5,7 @@ import { QueryEvent } from '@util/constants.events';
 import Community from '../Community';
 
 @ArgsType()
-export class GetCommunitiesArgs {
+export class ListCommunitiesArgs {
   @Field({ nullable: true })
   userId?: string;
 }
@@ -15,18 +15,18 @@ export class GetCommunitiesArgs {
  *
  * @param args.userId - ID of the User.
  */
-const getCommunities = async (
-  args: GetCommunitiesArgs
+const listCommunities = async (
+  args: ListCommunitiesArgs
 ): Promise<Community[]> => {
   const { userId } = args;
 
   const communities: Community[] = await new BloomManager().find(
     Community,
     { members: { user: userId } },
-    { cacheKey: `${QueryEvent.GET_COMMUNITIES}-${userId}` }
+    { cacheKey: `${QueryEvent.LIST_COMMUNITIES}-${userId}` }
   );
 
   return communities;
 };
 
-export default getCommunities;
+export default listCommunities;

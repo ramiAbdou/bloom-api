@@ -1,5 +1,5 @@
 import { ArgsType, Field } from 'type-graphql';
-import { FilterQuery, QueryOrder } from '@mikro-orm/core';
+import { QueryOrder } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
 import { QueryEvent } from '@util/constants.events';
@@ -7,7 +7,7 @@ import { take } from '@util/util';
 import Member, { MemberStatus } from '../Member';
 
 @ArgsType()
-export class GetMembersArgs {
+export class ListMembersArgs {
   @Field({ nullable: true })
   communityId: string;
 
@@ -25,10 +25,10 @@ export class GetMembersArgs {
  * @param args.memberId - ID of the Member.
  * @param args.userId - ID of the User.
  */
-const getMembers = async (args: GetMembersArgs): Promise<Member[]> => {
+const listMembers = async (args: ListMembersArgs): Promise<Member[]> => {
   const { communityId, memberId, userId } = args;
 
-  const queryArgs: FilterQuery<Member> = take([
+  const queryArgs = take([
     [communityId, { community: communityId }],
     [memberId, { id: memberId }],
     [userId, { user: userId }]
@@ -36,12 +36,11 @@ const getMembers = async (args: GetMembersArgs): Promise<Member[]> => {
 
   const members: Member[] = await new BloomManager().find(
     Member,
-    // @ts-ignore b/c not sure why the TS error appears.
     { ...queryArgs, status: MemberStatus.ACCEPTED },
     {
       cacheKey: communityId
-        ? `${QueryEvent.GET_MEMBERS}-${communityId}`
-        : `${QueryEvent.GET_MEMBERS}-${userId}`,
+        ? `${QueryEvent.LIST_MEMBERS}-${communityId}`
+        : `${QueryEvent.LIST_MEMBERS}-${userId}`,
       orderBy: { createdAt: QueryOrder.DESC, updatedAt: QueryOrder.DESC }
     }
   );
@@ -49,4 +48,4 @@ const getMembers = async (args: GetMembersArgs): Promise<Member[]> => {
   return members;
 };
 
-export default getMembers;
+export default listMembers;

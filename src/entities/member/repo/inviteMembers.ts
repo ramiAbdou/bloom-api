@@ -8,7 +8,7 @@ import User from '@entities/user/User';
 import { InviteMembersPayload } from '@system/emails/repo/getInviteMembersVars';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, FlushEvent } from '@util/constants.events';
+import { EmailEvent } from '@util/constants.events';
 import Member, { MemberRole, MemberStatus } from '../Member';
 
 @InputType()
@@ -101,7 +101,7 @@ const inviteMembers = async (
     })
   );
 
-  await bm.flush({ flushEvent: FlushEvent.INVITE_MEMBERS });
+  await bm.flush();
 
   emitEmailEvent(EmailEvent.INVITE_MEMBERS, {
     communityId,

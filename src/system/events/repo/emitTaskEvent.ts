@@ -8,7 +8,7 @@ import eventBus from '../eventBus';
  * @param event
  * @param payload
  */
-const emitTaskEvent = (event: TaskEvent, payload: TaskPayload) => {
+const emitTaskEvent = (event: TaskEvent, payload: TaskPayload): void => {
   eventBus.emit(BusEvent.TASK_EVENT, { event, payload });
 };
 

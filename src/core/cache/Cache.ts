@@ -24,7 +24,7 @@ export default class Cache extends LRUCache<string, any> {
    * @param key - Key to store in the cache.
    * @param value - Value to associate with the key.
    */
-  set(key: string, value: any): boolean {
+  set(key: string, value: unknown): boolean {
     if (key === null || key === undefined) return false;
     super.set(key, value);
     return true;

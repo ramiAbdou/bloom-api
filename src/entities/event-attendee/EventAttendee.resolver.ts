@@ -7,10 +7,10 @@ import EventAttendee from './EventAttendee';
 import createEventAttendee, {
   CreateEventAttendeeArgs
 } from './repo/createEventAttendee';
-import getEventAttendees, {
-  GetEventAttendeesArgs
-} from './repo/getEventAttendees';
 import getEventAttendeesSeries from './repo/getEventAttendeesSeries';
+import listEventAttendees, {
+  ListEventAttendeesArgs
+} from './repo/listEventAttendees';
 
 @Resolver()
 export default class EventAttendeeResolver {
@@ -23,19 +23,19 @@ export default class EventAttendeeResolver {
   }
 
   @Authorized(MemberRole.ADMIN)
-  @Query(() => [EventAttendee])
-  async getEventAttendees(
-    @Args() args: GetEventAttendeesArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<EventAttendee[]> {
-    return getEventAttendees(args, ctx);
-  }
-
-  @Authorized(MemberRole.ADMIN)
   @Query(() => [TimeSeriesData])
   async getEventAttendeesSeries(
     @Ctx() ctx: GQLContext
   ): Promise<TimeSeriesData[]> {
     return getEventAttendeesSeries(ctx);
+  }
+
+  @Authorized(MemberRole.ADMIN)
+  @Query(() => [EventAttendee])
+  async listEventAttendees(
+    @Args() args: ListEventAttendeesArgs,
+    @Ctx() ctx: GQLContext
+  ): Promise<EventAttendee[]> {
+    return listEventAttendees(args, ctx);
   }
 }

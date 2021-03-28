@@ -1,6 +1,5 @@
 import BloomManager from '@core/db/BloomManager';
 import User from '@entities/user/User';
-import { FlushEvent } from '@util/constants.events';
 
 interface UpdateGoogleIdArgs {
   email: string;
@@ -20,8 +19,7 @@ const updateGoogleId = async (args: UpdateGoogleIdArgs): Promise<User> => {
   const user: User = await new BloomManager().findOneAndUpdate(
     User,
     { email },
-    { googleId },
-    { flushEvent: FlushEvent.UPDATE_GOOGLE_ID }
+    { googleId }
   );
 
   return user;

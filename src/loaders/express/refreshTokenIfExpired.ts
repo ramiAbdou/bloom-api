@@ -19,7 +19,7 @@ const refreshTokenIfExpired = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
-) => {
+): Promise<void> => {
   const { accessToken, refreshToken } = req.cookies;
 
   // If there is no accessToken, there is a valid refreshToken and

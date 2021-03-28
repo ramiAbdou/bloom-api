@@ -10,7 +10,7 @@ import Question from '../Question';
  *
  * @param ctx.communityId - ID of the Community (authenticated).
  */
-const getQuestions = async (
+const listQuestions = async (
   ctx: Pick<GQLContext, 'communityId'>
 ): Promise<Question[]> => {
   const { communityId } = ctx;
@@ -19,7 +19,7 @@ const getQuestions = async (
     Question,
     { community: communityId },
     {
-      cacheKey: `${QueryEvent.GET_QUESTIONS}-${communityId}`,
+      cacheKey: `${QueryEvent.LIST_QUESTIONS}-${communityId}`,
       orderBy: { createdAt: QueryOrder.ASC, rank: QueryOrder.ASC }
     }
   );
@@ -27,4 +27,4 @@ const getQuestions = async (
   return questions;
 };
 
-export default getQuestions;
+export default listQuestions;

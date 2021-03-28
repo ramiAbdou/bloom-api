@@ -10,14 +10,14 @@ import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import demoteMembers, { DemoteMembersArgs } from './repo/demoteMembers';
 import getActiveMembersGrowth from './repo/getActiveMembersGrowth';
 import getActiveMembersSeries from './repo/getActiveMembersSeries';
-import getApplicants from './repo/getApplicants';
 import getMember, { GetMemberArgs } from './repo/getMember';
-import getMembers, { GetMembersArgs } from './repo/getMembers';
 import getMembersGrowth from './repo/getMembersGrowth';
 import getMembersSeries from './repo/getMembersSeries';
 import getOwner, { GetOwnerArgs } from './repo/getOwner';
 import inviteMembers, { InviteMembersArgs } from './repo/inviteMembers';
 import isEmailTaken, { IsEmailTakenArgs } from './repo/isEmailTaken';
+import listApplicants from './repo/listApplicants';
+import listMembers, { ListMembersArgs } from './repo/listMembers';
 import promoteMembers, { PromoteMembersArgs } from './repo/promoteMembers';
 import respondToApplicants, {
   RespondToApplicantsArgs
@@ -71,12 +71,6 @@ export default class MemberResolver {
     return getActiveMembersSeries(ctx);
   }
 
-  @Authorized(MemberRole.ADMIN)
-  @Query(() => [Member])
-  async getApplicants(@Ctx() ctx: GQLContext): Promise<Member[]> {
-    return getApplicants(ctx);
-  }
-
   @Authorized()
   @Query(() => Member)
   async getMember(
@@ -84,12 +78,6 @@ export default class MemberResolver {
     @Ctx() ctx: GQLContext
   ): Promise<Member> {
     return getMember(args, ctx);
-  }
-
-  @Authorized()
-  @Query(() => [Member])
-  async getMembers(@Args() args: GetMembersArgs): Promise<Member[]> {
-    return getMembers(args);
   }
 
   @Query(() => Member)
@@ -121,6 +109,18 @@ export default class MemberResolver {
   @Query(() => Boolean)
   async isEmailTaken(@Args() args: IsEmailTakenArgs): Promise<boolean> {
     return isEmailTaken(args);
+  }
+
+  @Authorized(MemberRole.ADMIN)
+  @Query(() => [Member])
+  async listApplicants(@Ctx() ctx: GQLContext): Promise<Member[]> {
+    return listApplicants(ctx);
+  }
+
+  @Authorized()
+  @Query(() => [Member])
+  async listMembers(@Args() args: ListMembersArgs): Promise<Member[]> {
+    return listMembers(args);
   }
 
   @Authorized(MemberRole.OWNER)

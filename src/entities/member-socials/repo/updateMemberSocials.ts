@@ -2,14 +2,10 @@ import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import { GQLContext } from '@util/constants';
-import { FlushEvent } from '@util/constants.events';
 import MemberSocials from '../MemberSocials';
 
 @ArgsType()
 export class UpdateMemberSocialsArgs {
-  @Field({ nullable: true })
-  clubhouseUrl?: string;
-
   @Field({ nullable: true })
   facebookUrl?: string;
 
@@ -26,7 +22,6 @@ export class UpdateMemberSocialsArgs {
 /**
  * Returns the updated MemberSocials.
  *
- * @param args.clubhouseUrl Clubhouse URL of the Member.
  * @param args.facebookUrl Facebook URL of the Member.
  * @param args.instagramUrl Instagram URL of the Member.
  * @param args.linkedInUrl LinkedIn URL of the Member.
@@ -41,8 +36,7 @@ const updateMemberSocials = async (
   const socials: MemberSocials = await new BloomManager().findOneAndUpdate(
     MemberSocials,
     { member: memberId },
-    { ...args },
-    { flushEvent: FlushEvent.UPDATE_MEMBER_SOCIALS }
+    { ...args }
   );
 
   return socials;

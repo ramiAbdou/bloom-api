@@ -7,35 +7,23 @@ import { QueryEvent } from '@util/constants.events';
 @ArgsType()
 export class GetMemberSocialsArgs {
   @Field({ nullable: true })
-  communityId?: string;
-
-  @Field({ nullable: true })
   memberId?: string;
 }
 
 /**
- * Returns the MemberSocials(s). Note this returns an array.
+ * Returns the MemberSocials.
  *
- * @param args.communityId - ID of the Community.
  * @param args.memberId - ID of the Member.
  */
 const getMemberSocials = async (
   args: GetMemberSocialsArgs
-): Promise<MemberSocials[]> => {
-  const { communityId, memberId } = args;
+): Promise<MemberSocials> => {
+  const { memberId } = args;
 
-  const queryArgs = communityId
-    ? { member: { community: communityId } }
-    : { member: memberId };
-
-  const socials: MemberSocials[] = await new BloomManager().find(
+  const socials: MemberSocials = await new BloomManager().findOne(
     MemberSocials,
-    { ...queryArgs },
-    {
-      cacheKey: communityId
-        ? `${QueryEvent.GET_MEMBER_SOCIALS}-${communityId}`
-        : `${QueryEvent.GET_MEMBER_SOCIALS}-${memberId}`
-    }
+    { member: memberId },
+    { cacheKey: `${QueryEvent.GET_MEMBER_SOCIALS}-${memberId}` }
   );
 
   return socials;

@@ -6,7 +6,7 @@ import { EntityData } from '@mikro-orm/core';
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import createCommunity from '@entities/community/repo/createCommunity';
-import importCsvData from '@entities/community/repo/importCsvData';
+import createMembersFromCsv from '@entities/member/repo/createMembersFromCsv';
 import Question, {
   QuestionCategory,
   QuestionType
@@ -91,14 +91,13 @@ const oneReqQuestions: EntityData<Question>[] = [
     type: QuestionType.LONG_TEXT
   },
   { category: QuestionCategory.JOINED_AT, rank: 1400 },
-  { category: QuestionCategory.CLUBHOUSE_URL, rank: 1500 },
-  { category: QuestionCategory.FACEBOOK_URL, rank: 1600 },
+  { category: QuestionCategory.FACEBOOK_URL, rank: 1500 },
   {
     category: QuestionCategory.LINKED_IN_URL,
     description: 'Ex: www.linkedin.com/in/name',
-    rank: 1700
+    rank: 1600
   },
-  { category: QuestionCategory.TWITTER_URL, rank: 1800 }
+  { category: QuestionCategory.TWITTER_URL, rank: 1700 }
 ];
 
 const oneReqRankedQuestionRank = {
@@ -151,7 +150,7 @@ const createPaidCommunity = async () => {
 
   await bm.flush();
 
-  await importCsvData({
+  await createMembersFromCsv({
     ownerEmail: process.env.USER_EMAIL,
     urlName: URL_NAME
   });

@@ -100,27 +100,27 @@ export default class Event extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @BeforeCreate()
-  beforeCreate() {
+  beforeCreate(): void {
     this.endTime = day.utc(this.endTime).format();
     this.startTime = day.utc(this.startTime).format();
   }
 
   @AfterCreate()
-  afterCreate() {
+  afterCreate(): void {
     Event.cache.invalidate([
-      `${QueryEvent.GET_UPCOMING_EVENTS}-${this.community.id}`
+      `${QueryEvent.LIST_UPCOMING_EVENTS}-${this.community.id}`
     ]);
   }
 
   @AfterUpdate()
-  afterUpdate() {
+  afterUpdate(): void {
     const isPast: boolean = day.utc().isAfter(day.utc(this.endTime));
 
     Event.cache.invalidate([
       `${QueryEvent.GET_EVENT}-${this.id}`,
       ...(isPast
-        ? [`${QueryEvent.GET_PAST_EVENTS}-${this.community.id}`]
-        : [`${QueryEvent.GET_UPCOMING_EVENTS}-${this.community.id}`])
+        ? [`${QueryEvent.LIST_PAST_EVENTS}-${this.community.id}`]
+        : [`${QueryEvent.LIST_UPCOMING_EVENTS}-${this.community.id}`])
     ]);
   }
 

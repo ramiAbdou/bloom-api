@@ -55,16 +55,16 @@ export default class MemberPlan extends BaseEntity {
   // ## LIFECYCLE HOOKS
 
   @AfterCreate()
-  afterCreate() {
+  afterCreate(): void {
     MemberPlan.cache.invalidate([
-      `${QueryEvent.GET_MEMBER_PLANS}-${this.community.id}`
+      `${QueryEvent.LIST_MEMBER_PLANS}-${this.community.id}`
     ]);
   }
 
   @AfterUpdate()
-  afterUpdate() {
+  afterUpdate(): void {
     MemberPlan.cache.invalidate([
-      `${QueryEvent.GET_MEMBER_PLANS}-${this.community.id}`
+      `${QueryEvent.LIST_MEMBER_PLANS}-${this.community.id}`
     ]);
   }
 

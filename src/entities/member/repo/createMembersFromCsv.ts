@@ -10,24 +10,23 @@ import MemberValue from '@entities/member-value/MemberValue';
 import Member, { MemberRole, MemberStatus } from '@entities/member/Member';
 import Question, { QuestionCategory } from '@entities/question/Question';
 import User from '@entities/user/User';
-import { FlushEvent } from '@util/constants.events';
-import Community from '../Community';
+import Community from '../../community/Community';
 
-type CsvRowData = Record<string | QuestionCategory, any>;
+type CsvRowData = Record<string | QuestionCategory, string>;
 
-interface ProcessRowArgs {
+interface CreateMemberFromCsvRowArgs {
   bm: BloomManager;
   community: Community;
   ownerEmail: string;
+  plans: MemberPlan[];
   questions: Question[];
   row: CsvRowData;
-  plans: MemberPlan[];
   uniqueEmails: Set<string>;
 }
 
-interface ImportCsvDataArgs {
-  urlName: string;
+interface CreateMembersFromCsvArgs {
   ownerEmail: string;
+  urlName: string;
 }
 
 /**
@@ -38,15 +37,19 @@ interface ImportCsvDataArgs {
  * Stores basic information on the User/Member entity, and everything else is
  * stored as MemberData.
  */
-const processRow = async ({
-  bm,
-  community,
-  questions,
-  ownerEmail,
-  row,
-  plans,
-  uniqueEmails
-}: ProcessRowArgs) => {
+const createMemberFromCsvRow = async (
+  args: CreateMemberFromCsvRowArgs
+): Promise<Member> => {
+  const {
+    bm,
+    community,
+    questions,
+    ownerEmail,
+    row,
+    plans,
+    uniqueEmails
+  } = args;
+
   // Precondition: Every row (JSON) should have a field called EMAIL.
   const { EMAIL: dirtyEmail, FIRST_NAME: firstName, LAST_NAME: lastName } = row;
 
@@ -58,7 +61,7 @@ const processRow = async ({
       : internet.email();
 
   // If no email exists or it is a duplicate email, don't process.
-  if (!email || uniqueEmails.has(email)) return;
+  if (!email || uniqueEmails.has(email)) return null;
   uniqueEmails.add(email);
 
   const [user, wasFound] = await bm.findOneOrCreate(User, { email }, { email });
@@ -67,7 +70,7 @@ const processRow = async ({
   // member. The possible case for this is for an OWNER of a community.
   // They will have already been created in a script and might also be
   // in a CSV.
-  if (wasFound && (await bm.findOne(Member, { community, user }))) return;
+  if (wasFound && (await bm.findOne(Member, { community, user }))) return null;
 
   // // We persist the member instead of the user since the user can
   // // potentially be persisted already.
@@ -92,21 +95,6 @@ const processRow = async ({
       // was already processed.
       if (!value) return;
 
-      if (key === QuestionCategory.MEMBER_PLAN) {
-        member.plan = plans.find(({ name }) => value === name);
-        return;
-      }
-
-      if (key === QuestionCategory.LINKED_IN_URL) {
-        socials.linkedInUrl = value;
-        return;
-      }
-
-      if (key === QuestionCategory.TWITTER_URL) {
-        socials.twitterUrl = value;
-        return;
-      }
-
       if (key === QuestionCategory.JOINED_AT) {
         const dayObject = day.utc(value);
 
@@ -117,6 +105,21 @@ const processRow = async ({
 
         member.createdAt = createdAt;
         member.joinedAt = createdAt;
+        return;
+      }
+
+      if (key === QuestionCategory.LINKED_IN_URL) {
+        socials.linkedInUrl = value;
+        return;
+      }
+
+      if (key === QuestionCategory.MEMBER_PLAN) {
+        member.plan = plans.find((plan: MemberPlan) => value === plan.name);
+        return;
+      }
+
+      if (key === QuestionCategory.TWITTER_URL) {
+        socials.twitterUrl = value;
         return;
       }
 
@@ -131,6 +134,8 @@ const processRow = async ({
       if (question) bm.create(MemberValue, { member, question, value });
     }
   );
+
+  return member;
 };
 
 /**
@@ -140,7 +145,11 @@ const processRow = async ({
  * NEW users if the email is not found in the DB based on the CSV row, or
  * adds a Member based on the current users in our DB.
  */
-const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
+const createMembersFromCsv = async (
+  args: CreateMembersFromCsvArgs
+): Promise<Member[]> => {
+  const { urlName, ownerEmail } = args;
+
   const bm: BloomManager = new BloomManager();
 
   const [community, responses]: [
@@ -151,16 +160,16 @@ const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
     csv().fromFile(`./seeders/${urlName}.csv`)
   ]);
 
-  const questions = community.questions.getItems();
-  const plans = community.plans.getItems();
+  const questions: Question[] = community.questions.getItems();
+  const plans: MemberPlan[] = community.plans.getItems();
 
   // Adds protection against any emails that are duplicates in the CSV file,
   // INCLUDING case-insensitive duplicates.
   const uniqueEmails = new Set<string>();
 
-  await Promise.all(
+  const members: Member[] = await Promise.all(
     responses.map(async (row: CsvRowData) => {
-      await processRow({
+      return createMemberFromCsvRow({
         bm,
         community,
         ownerEmail,
@@ -172,8 +181,9 @@ const importCsvData = async ({ urlName, ownerEmail }: ImportCsvDataArgs) => {
     })
   );
 
-  await bm.flush({ flushEvent: FlushEvent.IMPORT_COMMUNITY_CSV });
-  return community;
+  await bm.flush();
+
+  return members;
 };
 
-export default importCsvData;
+export default createMembersFromCsv;

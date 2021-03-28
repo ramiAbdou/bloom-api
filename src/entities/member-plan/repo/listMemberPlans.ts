@@ -7,7 +7,7 @@ import { QueryEvent } from '@util/constants.events';
 import MemberPlan from '../MemberPlan';
 
 @ArgsType()
-export class GetMemberPlansArgs {
+export class ListMemberPlansArgs {
   @Field({ nullable: true })
   communityId?: string;
 }
@@ -18,8 +18,8 @@ export class GetMemberPlansArgs {
  * @param args.communityId - ID of the Community.
  * @param ctx.communityId - ID of the Community (authenticated).
  */
-const getMemberPlans = async (
-  args: GetMemberPlansArgs,
+const listMemberPlans = async (
+  args: ListMemberPlansArgs,
   ctx: Pick<GQLContext, 'communityId'>
 ): Promise<MemberPlan[]> => {
   const communityId: string = args.communityId ?? ctx.communityId;
@@ -28,7 +28,7 @@ const getMemberPlans = async (
     MemberPlan,
     { community: communityId },
     {
-      cacheKey: `${QueryEvent.GET_MEMBER_PLANS}-${communityId}`,
+      cacheKey: `${QueryEvent.LIST_MEMBER_PLANS}-${communityId}`,
       orderBy: { amount: QueryOrder.ASC }
     }
   );
@@ -36,4 +36,4 @@ const getMemberPlans = async (
   return plans;
 };
 
-export default getMemberPlans;
+export default listMemberPlans;

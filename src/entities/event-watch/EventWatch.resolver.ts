@@ -6,7 +6,9 @@ import EventWatch from './EventWatch';
 import createEventWatch, {
   CreateEventWatchArgs
 } from './repo/createEventWatch';
-import getEventWatches, { GetEventWatchesArgs } from './repo/getEventWatches';
+import listEventWatches, {
+  ListEventWatchesArgs
+} from './repo/listEventWatches';
 
 @Resolver()
 export default class EventWatchResolver {
@@ -21,9 +23,9 @@ export default class EventWatchResolver {
 
   @Authorized(MemberRole.ADMIN)
   @Query(() => [EventWatch])
-  async getEventWatches(
-    @Args() args: GetEventWatchesArgs
+  async listEventWatches(
+    @Args() args: ListEventWatchesArgs
   ): Promise<EventWatch[]> {
-    return getEventWatches(args);
+    return listEventWatches(args);
   }
 }

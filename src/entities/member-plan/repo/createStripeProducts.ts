@@ -6,7 +6,6 @@ import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import MemberPlan, { RecurrenceType } from '@entities/member-plan/MemberPlan';
 import { stripe } from '@integrations/stripe/Stripe.util';
-import { FlushEvent } from '@util/constants.events';
 
 interface CreateStripeProductArgs {
   stripeAccountId: string;
@@ -57,7 +56,9 @@ interface CreateStripeProductsArgs {
  * Creates the corresponding Stripe products and prices for every MemberPlan
  * that isn't free. Updates the MemberPlan entity as well.
  */
-const createStripeProducts = async (args: CreateStripeProductsArgs) => {
+const createStripeProducts = async (
+  args: CreateStripeProductsArgs
+): Promise<MemberPlan[]> => {
   const { urlName } = args;
 
   const bm: BloomManager = new BloomManager();
@@ -79,7 +80,7 @@ const createStripeProducts = async (args: CreateStripeProductsArgs) => {
     })
   );
 
-  await bm.flush({ flushEvent: FlushEvent.CREATE_STRIPE_PRODUCTS });
+  await bm.flush();
   return updatedTypes;
 };
 

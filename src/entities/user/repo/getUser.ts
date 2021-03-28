@@ -23,9 +23,11 @@ const getUser = async (
 ): Promise<User> => {
   const userId = args.userId ?? ctx.userId;
 
-  const user: User = await new BloomManager().findOneOrFail(User, userId, {
-    cacheKey: `${QueryEvent.GET_USER}-${userId}`
-  });
+  const user: User = await new BloomManager().findOneOrFail(
+    User,
+    { id: userId },
+    { cacheKey: `${QueryEvent.GET_USER}-${userId}` }
+  );
 
   return user;
 };
