@@ -2,7 +2,7 @@ import day from 'dayjs';
 import fs from 'fs';
 import { AnyEntity, EntityData } from '@mikro-orm/core';
 
-import { BusEvent, GoogleEvent, LoggerEvent } from '@util/constants.events';
+import { BusEvent, GoogleEvent } from '@util/constants.events';
 import { now } from '@util/util';
 
 type LoggerLevel =
@@ -26,7 +26,7 @@ interface LoggerLog {
   changes?: LoggerChangeSet[];
   contextId?: string;
   error?: string;
-  event?: GoogleEvent | LoggerEvent | BusEvent;
+  event?: GoogleEvent | BusEvent;
   level: LoggerLevel;
   timestamp: string;
 }

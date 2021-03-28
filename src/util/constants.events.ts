@@ -111,10 +111,6 @@ export enum QueryEvent {
   LIST_UPCOMING_EVENTS = 'listUpcomingEvents'
 }
 
-export enum LoggerEvent {
-  START_SERVER = 'START_SERVER'
-}
-
 export enum VerifyEvent {
   JOIN_EVENT = 'JOIN_EVENT',
   LOG_IN = 'LOG_IN'
