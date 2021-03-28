@@ -4,7 +4,7 @@ import { AuthTokens, GQLContext } from '@util/constants';
 import { VerifyEvent } from '@util/constants.events';
 import { TokenArgs } from '@util/constants.gql';
 import { decodeToken } from '@util/util';
-import createEventAttendee from '../../event-attendee/repo/createEventAttendee';
+// import createEventAttendee from '../../event-attendee/repo/createEventAttendee';
 import refreshToken from './refreshToken';
 
 @ObjectType()
@@ -46,9 +46,9 @@ const verifyToken = async (
 
   let tokens: AuthTokens;
 
-  if (event === VerifyEvent.JOIN_EVENT) {
-    await createEventAttendee({ eventId });
-  }
+  // if (event === VerifyEvent.JOIN_EVENT) {
+  //   await createEventAttendee({ eventId });
+  // }
 
   if ([VerifyEvent.LOG_IN].includes(event)) {
     tokens = await refreshToken({ memberId, res, userId });
