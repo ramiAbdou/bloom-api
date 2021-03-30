@@ -17,7 +17,7 @@ export interface ApplyToCommunityAdminsVars {
 }
 
 /**
- * Returns email variables for APPLY_TO_COMMUNITY_ADMINS.
+ * Returns email variables for EmailEvent.APPLY_TO_COMMUNITY_ADMINS.
  *
  * @param context.applicantId - ID of the Member (status: PENDING).
  * @param context.memberId - ID of the Member.

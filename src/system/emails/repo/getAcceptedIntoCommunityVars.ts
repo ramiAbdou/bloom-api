@@ -16,7 +16,7 @@ export interface AcceptedIntoCommunityVars {
 }
 
 /**
- * Returns email variables for ACCEPTED_TO_COMMUNITY.
+ * Returns email variables for EmailEvent.ACCEPTED_TO_COMMUNITY.
  *
  * @param context.communityId - ID of the Community.
  * @param context.memberId - ID of the Member.
