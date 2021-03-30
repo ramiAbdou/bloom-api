@@ -29,8 +29,8 @@ const getAcceptedIntoCommunityVars = async (
   const bm: BloomManager = new BloomManager();
 
   const [community, members]: [Community, Member[]] = await Promise.all([
-    bm.findOne(Community, communityId),
-    bm.find(Member, memberIds)
+    bm.findOne(Community, { id: communityId }),
+    bm.find(Member, { id: memberIds })
   ]);
 
   const variables: AcceptedIntoCommunityVars[] = members.map(

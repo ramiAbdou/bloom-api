@@ -34,6 +34,8 @@ const getLoginError = async (args: GetLoginErrorArgs): Promise<ErrorType> => {
 
   const members: Member[] = await user.members.loadItems();
 
+  if (!members.length) return ErrorType.NO_MEMBER_APPLICATIONS;
+
   // True if the User has >= 1 Member with status INVITED.
   const hasInvitedStatus: boolean = members.some((member: Member) => {
     return member.status === MemberStatus.INVITED;

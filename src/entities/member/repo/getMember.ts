@@ -21,7 +21,7 @@ const getMember = async (
   args: GetMemberArgs,
   ctx: Pick<GQLContext, 'memberId'>
 ): Promise<Member> => {
-  const memberId = args.memberId ?? ctx.memberId;
+  const memberId: string = args.memberId ?? ctx.memberId;
 
   const member: Member = await new BloomManager().findOneOrFail(
     Member,

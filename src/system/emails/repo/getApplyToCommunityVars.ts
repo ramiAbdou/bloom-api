@@ -26,20 +26,16 @@ const getApplyToCommunityVars = async (
 
   const bm: BloomManager = new BloomManager();
 
-  const [community, user]: [Community, Member] = await Promise.all([
+  const [community, member]: [Community, Member] = await Promise.all([
     bm.findOne(Community, { id: communityId }),
     bm.findOne(Member, { id: memberId })
   ]);
 
-  const partialCommunity: Pick<Community, 'name'> = { name: community.name };
-
-  const partialUser: Pick<Member, 'email' | 'firstName'> = {
-    email: user.email,
-    firstName: user.firstName
-  };
-
   const variables: ApplyToCommunityVars[] = [
-    { community: partialCommunity, member: partialUser }
+    {
+      community: { name: community.name },
+      member: { email: member.email, firstName: member.firstName }
+    }
   ];
 
   return variables;

@@ -39,19 +39,13 @@ const getApplyToCommunityAdminsVars = async (
     bm.findOne(Member, { id: applicantId })
   ]);
 
-  const partialCommunity: Pick<Community, 'name'> = { name: community.name };
-
-  const partialApplicant: Pick<Member, 'fullName'> = {
-    fullName: applicant.fullName
-  };
-
   const variables: ApplyToCommunityAdminsVars[] = admins.map(
-    (admin: Member) => {
+    (member: Member) => {
       return {
-        applicant: partialApplicant,
+        applicant: { fullName: applicant.fullName },
         applicantUrl: `${APP.CLIENT_URL}/${community.urlName}/applicants`,
-        community: partialCommunity,
-        member: { email: admin.email, firstName: admin.firstName }
+        community: { name: community.name },
+        member: { email: member.email, firstName: member.firstName }
       };
     }
   );
