@@ -20,7 +20,7 @@ const listQuestions = async (
     { community: communityId },
     {
       cacheKey: `${QueryEvent.LIST_QUESTIONS}-${communityId}`,
-      orderBy: { createdAt: QueryOrder.ASC, rank: QueryOrder.ASC }
+      orderBy: { rank: QueryOrder.ASC }
     }
   );
 

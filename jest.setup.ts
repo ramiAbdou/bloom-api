@@ -1,4 +1,5 @@
 import 'jest-chain';
+import 'jest-sorted';
 import './google.json';
 import '@core/db/db';
 

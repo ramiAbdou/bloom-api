@@ -45,9 +45,8 @@ export default class Question extends BaseEntity {
 
   // ## FIELDS
 
-  // If the question is a special question, we have to store it in a different
-  // fashion. For example, EMAIL would be stored on the user, NOT the
-  // member.
+  // If the question is a special question, we store it with a category. These
+  // are questions that are typically seen in many communities.
   @Field(() => String, { nullable: true })
   @Enum({ items: () => QuestionCategory, nullable: true, type: String })
   category?: QuestionCategory;
@@ -56,19 +55,24 @@ export default class Question extends BaseEntity {
   @Property({ nullable: true, type: 'text' })
   description?: string;
 
+  // True if the Question should never be modified by anybody. Essentially,
+  // these are "system-generated" Question(s).
   @Field({ defaultValue: false })
   @Property()
   locked: boolean = false;
 
   // Will only be non-null if the type is MULTIPLE_CHOICE or MULTIPLE_SELECT.
+  // TODO: Should we make this a separate entity?
   @Field(() => [String], { nullable: true })
   @Property({ nullable: true, type: ArrayType })
   options?: string[];
 
+  // General order of the Question when rendered on front-end.
   @Field({ nullable: true })
   @Property({ nullable: true })
   rank?: number;
 
+  // True if the Question is required for Member(s) to answer.
   @Field()
   @Property()
   required: boolean = true;
@@ -93,7 +97,6 @@ export default class Question extends BaseEntity {
     if (this.category === QuestionCategory.DUES_STATUS) {
       if (!this.title) this.title = 'Dues Status';
       this.locked = true;
-      this.options = ['Paid', 'Not Paid'];
       this.type = QuestionType.MULTIPLE_CHOICE;
     }
 
