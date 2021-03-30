@@ -1,6 +1,6 @@
 import { calendar_v3 as calendarV3 } from 'googleapis';
 
-import logger from '@system/logger/logger';
+import logger from '@system/logger';
 import { GoogleEvent } from '@util/constants.events';
 import { eventsCalendar } from '../Google.util';
 
@@ -26,20 +26,22 @@ const createGoogleCalendarEvent = async (
       requestBody: args
     });
 
-    logger.log({
+    logger.info({
       event: GoogleEvent.CREATE_CALENDAR_EVENT,
-      level: 'INFO'
+      googleCalendarEventId: response.data.id,
+      message: 'Created Google Calendar event.'
     });
 
     return response.data;
-  } catch (e) {
-    logger.log({
-      error: e,
+  } catch (error) {
+    logger.error({
+      error,
       event: GoogleEvent.CREATE_CALENDAR_EVENT,
-      level: 'ERROR'
+      googleCalendarEvent: args,
+      message: 'Failed to create Google Calendar event.'
     });
 
-    throw new Error('There was an issue creating the Google Calendar event.');
+    throw new Error('Failed to create Google Calendar event.');
   }
 };
 

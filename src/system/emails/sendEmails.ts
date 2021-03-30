@@ -1,5 +1,5 @@
 import sg, { MailDataRequired } from '@sendgrid/mail';
-import logger from '@system/logger/logger';
+import logger from '@system/logger';
 import { EmailArgs } from './emails.types';
 import {
   FormatPersonalizationData,
@@ -22,11 +22,8 @@ const sendEmailsBatch = async (args: SendEmailsBatch) => {
 
   try {
     await sg.send(options);
-  } catch (e) {
-    logger.log({
-      error: `Failed to send SendGrid mail: ${e.stack}`,
-      level: 'ERROR'
-    });
+  } catch (error) {
+    logger.error({ error, message: `Failed to send SendGrid mail.` });
   }
 };
 

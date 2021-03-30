@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 import {
   AnyEntity,
   EntityData,
@@ -13,7 +12,6 @@ import {
 } from '@mikro-orm/core';
 
 import Cache from '@core/cache/Cache';
-import logger from '@system/logger/logger';
 import { getEntityCache } from '../cache/Cache.util';
 import {
   BloomCreateAndFlushArgs,
@@ -216,23 +214,7 @@ class BloomManager {
    * objects with the database.
    */
   async flush(): Promise<void> {
-    const contextId = nanoid();
-
-    try {
-      // Log the intent to flush the entities with BEFORE_FLUSH.
-      logger.log({ contextId, level: 'BEFORE_FLUSH' });
-
-      // Runs the actual flush.
-      await this.em.flush();
-
-      // Log the success in flushing the entities with AFTER_FLUSH.
-      logger.log({ contextId, level: 'AFTER_FLUSH' });
-    } catch (e) {
-      // Log the error with FLUSH_ERROR.
-      logger.log({ contextId, error: e.stack, level: 'FLUSH_ERROR' });
-
-      throw e;
-    }
+    await this.em.flush();
   }
 
   /**

@@ -12,6 +12,7 @@ import { MikroORM } from '@mikro-orm/core';
 import { APP } from '@util/constants';
 import { Express } from 'express';
 import db from '@core/db/db';
+import logger from '@system/logger';
 import initApollo from './loaders/apollo/initApollo';
 import initExpress from './loaders/express/initExpress';
 
@@ -45,7 +46,7 @@ const startServer = async () => {
   });
 
   app.listen(process.env.PORT || 8080, () => {
-    console.log(`Running on port ${process.env.PORT || 8080}.`);
+    logger.info(`Running on port ${process.env.PORT || 8080}.`);
   });
 };
 

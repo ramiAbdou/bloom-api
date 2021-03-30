@@ -1,6 +1,6 @@
 import { calendar_v3 as calendarV3 } from 'googleapis';
 
-import logger from '@system/logger/logger';
+import logger from '@system/logger';
 import { GoogleEvent } from '@util/constants.events';
 import { eventsCalendar } from '../Google.util';
 
@@ -25,20 +25,22 @@ const updateGoogleCalendarEvent = async (
       requestBody: args
     });
 
-    logger.log({
+    logger.info({
       event: GoogleEvent.UPDATE_CALENDAR_EVENT,
-      level: 'INFO'
+      googleCalendarEventId: eventId,
+      message: 'Updated Google Calendar event.'
     });
 
     return response.data;
-  } catch (e) {
-    logger.log({
-      error: e,
+  } catch (error) {
+    logger.error({
+      error,
       event: GoogleEvent.UPDATE_CALENDAR_EVENT,
-      level: 'ERROR'
+      googleCalendarEventId: eventId,
+      message: 'Failed to update Google Calendar event.'
     });
 
-    throw new Error('There was an issue updating the Google Calendar event.');
+    throw new Error('Failed to update Google Calendar event.');
   }
 };
 

@@ -1,6 +1,6 @@
 import { calendar_v3 as calendarV3 } from 'googleapis';
 
-import logger from '@system/logger/logger';
+import logger from '@system/logger';
 import { GoogleEvent } from '@util/constants.events';
 import { eventsCalendar } from '../Google.util';
 
@@ -35,17 +35,21 @@ const addGoogleCalendarEventAttendee = async (
       requestBody: { attendees: [...previousAttendees, attendee] }
     });
 
-    logger.log({
+    logger.info({
+      attendee,
       event: GoogleEvent.ADD_CALENDAR_EVENT_ATTENDEE,
-      level: 'INFO'
+      googleCalendarEventId: eventId,
+      message: 'Added attendee to Google Calendar event.'
     });
 
     return response.data;
   } catch (e) {
-    logger.log({
+    logger.error({
+      attendee,
       error: e,
       event: GoogleEvent.ADD_CALENDAR_EVENT_ATTENDEE,
-      level: 'ERROR'
+      googleCalendarEventId: eventId,
+      message: 'Failed to add attendee to Google Calendar event.'
     });
 
     throw new Error(`Couldn't add attendee to Google Calendar event.`);
