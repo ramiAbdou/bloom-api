@@ -80,7 +80,9 @@ const createEventAttendee = async (
 
   const existingAttendee = await bm.findOne(
     EventAttendee,
-    member ? { event: eventId, member } : { event: eventId, supporter },
+    member
+      ? { event: eventId, member, supporter: null }
+      : { event: eventId, member: null, supporter },
     { populate: ['member', 'supporter'] }
   );
 

@@ -50,7 +50,9 @@ const createEventGuest = async (
 
   const existingGuest = await bm.findOne(
     EventGuest,
-    member ? { event: eventId, member } : { event: eventId, supporter },
+    member
+      ? { event: eventId, member, supporter: null }
+      : { event: eventId, member: null, supporter },
     { populate: ['member', 'supporter'] }
   );
 

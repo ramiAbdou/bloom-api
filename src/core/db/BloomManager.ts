@@ -233,7 +233,7 @@ class BloomManager {
     data: EntityData<T>,
     options?: BloomCreateAndFlushArgs<P>
   ): Promise<T> {
-    const entity = this.create(entityName, data);
+    const entity: T = this.create(entityName, data);
     await this.flush();
 
     if (options?.populate) {
