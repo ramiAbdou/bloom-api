@@ -1,6 +1,6 @@
 import { calendar_v3 as calendarV3 } from 'googleapis';
 
-import logger from '@system/logger/logger';
+import logger from '@system/logger';
 import { GoogleEvent } from '@util/constants.events';
 import { eventsCalendar } from '../Google.util';
 
@@ -37,20 +37,21 @@ const deleteGoogleCalendarEventAttendee = async (
       requestBody: { attendees: filteredAttendees }
     });
 
-    logger.log({
+    logger.info({
       event: GoogleEvent.DELETE_CALENDAR_EVENT_ATTENDEE,
-      level: 'INFO'
+      googleCalendarEventId: eventId,
+      message: 'Removed attendee from Google Calendar event.'
     });
 
     return response.data;
-  } catch (e) {
-    logger.log({
-      error: e,
+  } catch (error) {
+    logger.error({
+      error,
       event: GoogleEvent.DELETE_CALENDAR_EVENT_ATTENDEE,
-      level: 'ERROR'
+      message: 'Failed to remove attendee from Google Calendar event.'
     });
 
-    throw new Error(`Couldn't remove attendee from Google Calendar event.`);
+    throw new Error('Failed to remove attendee from Google Calendar event.');
   }
 };
 

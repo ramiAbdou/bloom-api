@@ -6,7 +6,6 @@ import {
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
-import BloomManagerSubscriber from '@core/db/BloomManager.subscriber';
 import NamingStrategy from '@core/db/NamingStrategy';
 import Application from '@entities/application/Application';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
@@ -82,7 +81,6 @@ const dbConfig: Options<IDatabaseDriver<Connection>> = {
   namingStrategy: NamingStrategy,
   password: process.env.DB_PASSWORD,
   port: Number(process.env.DB_PORT),
-  subscribers: [new BloomManagerSubscriber()],
   type: 'postgresql',
   user: process.env.DB_USER
 };

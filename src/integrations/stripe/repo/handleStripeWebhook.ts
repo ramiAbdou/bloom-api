@@ -1,7 +1,7 @@
 import express from 'express';
 import Stripe from 'stripe';
 
-import logger from '@system/logger/logger';
+import logger from '@system/logger';
 import { stripe } from '../Stripe.util';
 import handleInvoicePaid from './handleInvoicePaid';
 
@@ -36,9 +36,9 @@ const handleStripeWebhook = async (
       break;
 
     default:
-      logger.log({
+      logger.error({
         error: `Unhandled Stripe event: ${event.type}.`,
-        level: 'ERROR'
+        message: 'Failed to handle Stripe event.'
       });
   }
 

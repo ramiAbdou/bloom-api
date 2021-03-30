@@ -1,4 +1,4 @@
-import logger from '@system/logger/logger';
+import logger from '@system/logger';
 import { GoogleEvent } from '@util/constants.events';
 import { eventsCalendar } from '../Google.util';
 
@@ -16,20 +16,22 @@ const deleteGoogleCalendarEvent = async (eventId: string): Promise<boolean> => {
       eventId
     });
 
-    logger.log({
+    logger.info({
       event: GoogleEvent.DELETE_CALENDAR_EVENT,
-      level: 'INFO'
+      googleCalendarEventId: eventId,
+      message: 'Deleted Google Calendar event'
     });
 
     return true;
-  } catch (e) {
-    logger.log({
-      error: e,
+  } catch (error) {
+    logger.error({
+      error,
       event: GoogleEvent.DELETE_CALENDAR_EVENT,
-      level: 'ERROR'
+      googleCalendarEventId: eventId,
+      message: 'Failed to delete Google Calendar event'
     });
 
-    throw new Error(`Couldn't delete Google Calendar event.`);
+    throw new Error('Failed to delete Google Calendar event');
   }
 };
 
