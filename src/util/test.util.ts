@@ -21,7 +21,7 @@ import MemberSocials from '@entities/member-socials/MemberSocials';
 import MemberValue from '@entities/member-value/MemberValue';
 import Member from '@entities/member/Member';
 import Payment from '@entities/payment/Payment';
-import Question from '@entities/question/Question';
+import Question, { QuestionType } from '@entities/question/Question';
 import RankedQuestion from '@entities/ranked-question/RankedQuestion';
 import Supporter from '@entities/supporter/Supporter';
 import Task from '@entities/task/Task';
@@ -133,6 +133,13 @@ export const memberIntegrationsFactory = Factory.Sync.makeFactory<
 export const memberPlanFactory = Factory.Sync.makeFactory<Partial<MemberPlan>>({
   amount: Factory.each((i: number) => i * 5),
   name: faker.name.title()
+});
+
+export const questionFactory = Factory.Sync.makeFactory<Partial<Question>>({
+  description: faker.random.words(10),
+  rank: Factory.each((i: number) => i * 100),
+  title: faker.random.words(5),
+  type: QuestionType.SHORT_TEXT
 });
 
 export const userFactory = Factory.Sync.makeFactory<Partial<User>>({

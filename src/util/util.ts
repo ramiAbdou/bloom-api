@@ -33,10 +33,24 @@ export const buildUrl = (args: BuildUrlArgs): string => {
  * in the key-value map.
  *
  * @param obj - Object to clean.
+ *
+ * @example
+ * // Returns { a: 1 }
+ * cleanObject({ a: 1, b: undefined, c: undefined })
+ *
+ * @example
+ * // Returns { a: 1, b: 1 }
+ * cleanObject({ a: 1, b: 1, c: undefined })
+ *
+ * @example
+ * // Returns { a: 1, b: 1, c: null }
+ * cleanObject({ a: 1, b: 1, c: null })
  */
 export const cleanObject = (obj: Record<string, any>): Record<string, any> => {
   return Object.entries(obj).reduce(
     (acc: Record<string, any>, [key, value]: [string, any]) => {
+      // If the value is undefined, just return the original accumulator.
+      // Otherwise, add the key-value pair!
       return value === undefined ? acc : { ...acc, [key]: value };
     },
     {}

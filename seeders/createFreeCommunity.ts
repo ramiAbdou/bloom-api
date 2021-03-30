@@ -11,10 +11,10 @@ import Question, {
   QuestionCategory,
   QuestionType
 } from '@entities/question/Question';
+import updateCommunity from '../src/entities/community/repo/updateCommunity';
 import createMemberPlans, {
   CreateMemberPlanInput
 } from '../src/entities/member-plan/repo/createMemberPlans';
-import createQuestions from '../src/entities/question/repo/createQuestions';
 import RankedQuestion from '../src/entities/ranked-question/RankedQuestion';
 import populateRandomEvents from './populateRandomEvents';
 import populateRandomMembers from './populateRandomMembers';
@@ -22,17 +22,6 @@ import populateRandomMembers from './populateRandomMembers';
 day.extend(utc);
 
 const URL_NAME = 'colorstack';
-
-const freeCommunity: EntityData<Community> = {
-  application: {
-    description: `Our mission is to increase the entrance, retention, and success of Black, Latinx, and Native American college students in computing. The stronger our community, the better positioned we are to move the needle for racial diversity in tech. Thank you for joining us.`,
-    title: `ColorStack Student Application`
-  },
-  defaultTypeName: 'General Member',
-  name: 'ColorStack',
-  primaryColor: '#2B736D',
-  urlName: URL_NAME
-};
 
 const freeCommunityQuestions: EntityData<Question>[] = [
   { category: QuestionCategory.FIRST_NAME, rank: 100 },
@@ -131,25 +120,39 @@ const freeCommunityPlans: CreateMemberPlanInput[] = [
 ];
 
 const createFreeCommunity = async () => {
-  const community = await createCommunity(freeCommunity);
+  const community: Community = await createCommunity({
+    application: {
+      description: `Our mission is to increase the entrance, retention, and success of Black, Latinx, and Native American college students in computing. The stronger our community, the better positioned we are to move the needle for racial diversity in tech. Thank you for joining us.`,
+      title: `ColorStack Student Application`
+    },
+    defaultTypeName: 'General Member',
+    name: 'ColorStack',
+    primaryColor: '#2B736D',
+    questions: freeCommunityQuestions,
+    urlName: URL_NAME
+  });
+
+  const questions: Question[] = community.questions.getItems();
+
+  const updatedCommunity: Community = await updateCommunity({
+    communityId: community.id,
+    highlightedQuestion: questions.find((question: Question) => {
+      return question.title === 'School';
+    })?.id
+  });
 
   await createMemberPlans(
     { defaultPlanName: 'General Member', plans: freeCommunityPlans },
-    { communityId: community.id }
+    { communityId: updatedCommunity.id }
   );
 
   const bm: BloomManager = new BloomManager();
-
-  const questions = await createQuestions(
-    { highlightedQuestionTitle: 'School', questions: freeCommunityQuestions },
-    { communityId: community.id }
-  );
 
   questions.forEach((question: Question) => {
     if (!freeCommunityRankedQuestionRank[question.title]) return;
 
     bm.create(RankedQuestion, {
-      application: community.application,
+      application: updatedCommunity.application,
       question,
       rank: freeCommunityRankedQuestionRank[question.title]
     });

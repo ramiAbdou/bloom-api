@@ -12,28 +12,17 @@ import Question, {
   QuestionType
 } from '@entities/question/Question';
 import RankedQuestion from '@entities/ranked-question/RankedQuestion';
+import updateCommunity from '../src/entities/community/repo/updateCommunity';
 import { RecurrenceType } from '../src/entities/member-plan/MemberPlan';
 import createMemberPlans, {
   CreateMemberPlanInput
 } from '../src/entities/member-plan/repo/createMemberPlans';
-import createQuestions from '../src/entities/question/repo/createQuestions';
 import populateRandomEvent from './populateRandomEvents';
 import populateRandomMembers from './populateRandomMembers';
 
 day.extend(utc);
 
-const URL_NAME = 'onereq';
-
-const paidCommunity: EntityData<Community> = {
-  application: {
-    description: `Helping recruiters make an impact through talent acquisition is our “Req”. It’s evergreen. The mission is always the same. Let’s Build Together. OneReq at a time.`,
-    title: `OneReq Member Application`
-  },
-  autoAccept: true,
-  name: 'OneReq',
-  primaryColor: '#8185A5',
-  urlName: URL_NAME
-};
+const URL_NAME: string = 'onereq';
 
 const oneReqQuestions: EntityData<Question>[] = [
   { category: QuestionCategory.FIRST_NAME, rank: 100 },
@@ -123,17 +112,31 @@ const oneReqPlans: CreateMemberPlanInput[] = [
   { amount: 15.0, name: 'Family', recurrence: RecurrenceType.MONTHLY }
 ];
 
-const createPaidCommunity = async () => {
-  const community = await createCommunity(paidCommunity);
+const createPaidCommunity = async (): Promise<void> => {
+  const community = await createCommunity({
+    application: {
+      description: `Helping recruiters make an impact through talent acquisition is our “Req”. It’s evergreen. The mission is always the same. Let’s Build Together. OneReq at a time.`,
+      title: `OneReq Member Application`
+    },
+    autoAccept: true,
+    name: 'OneReq',
+    primaryColor: '#8185A5',
+    questions: oneReqQuestions,
+    urlName: URL_NAME
+  });
+
+  const questions: Question[] = community.questions.getItems();
+
+  const updatedCommunity: Community = await updateCommunity({
+    communityId: community.id,
+    highlightedQuestion: questions.find((question: Question) => {
+      return question.title === 'Company';
+    })?.id
+  });
 
   await createMemberPlans(
     { defaultPlanName: 'Supporter', plans: oneReqPlans },
-    { communityId: community.id }
-  );
-
-  const questions: Question[] = await createQuestions(
-    { highlightedQuestionTitle: 'Company', questions: oneReqQuestions },
-    { communityId: community.id }
+    { communityId: updatedCommunity.id }
   );
 
   const bm: BloomManager = new BloomManager();

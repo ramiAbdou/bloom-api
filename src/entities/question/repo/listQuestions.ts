@@ -8,7 +8,7 @@ import Question from '../Question';
 /**
  * Returns the Question(s).
  *
- * @param ctx.communityId - ID of the Community (authenticated).
+ * @param ctx.communityId - ID of the (authenticated) Community.
  */
 const listQuestions = async (
   ctx: Pick<GQLContext, 'communityId'>
@@ -20,7 +20,7 @@ const listQuestions = async (
     { community: communityId },
     {
       cacheKey: `${QueryEvent.LIST_QUESTIONS}-${communityId}`,
-      orderBy: { createdAt: QueryOrder.ASC, rank: QueryOrder.ASC }
+      orderBy: { rank: QueryOrder.ASC }
     }
   );
 

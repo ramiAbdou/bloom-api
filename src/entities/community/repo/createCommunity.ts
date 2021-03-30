@@ -4,6 +4,8 @@ import BloomManager from '@core/db/BloomManager';
 import Application from '@entities/application/Application';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
+import Question from '@entities/question/Question';
+import { cleanObject } from '@util/util';
 
 /**
  * Returns the new Community.
@@ -15,14 +17,17 @@ import Community from '@entities/community/Community';
 const createCommunity = async (
   args: EntityData<Community>
 ): Promise<Community> => {
-  const { application, ...data } = args;
+  const { application, questions, ...communityData } = args;
 
   const bm: BloomManager = new BloomManager();
 
   const community: Community = await bm.createAndFlush(Community, {
-    ...data,
+    ...cleanObject(communityData),
     application: bm.create(Application, application ?? {}),
-    communityIntegrations: bm.create(CommunityIntegrations, {})
+    communityIntegrations: bm.create(CommunityIntegrations, {}),
+    questions: questions?.map((question: Question) => {
+      return bm.create(Question, question);
+    })
   });
 
   return community;
