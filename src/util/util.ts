@@ -29,6 +29,21 @@ export const buildUrl = (args: BuildUrlArgs): string => {
 };
 
 /**
+ * Returns the cleaned object by removing all of the values that are undefined
+ * in the key-value map.
+ *
+ * @param obj - Object to clean.
+ */
+export const cleanObject = (obj: Record<string, any>): Record<string, any> => {
+  return Object.entries(obj).reduce(
+    (acc: Record<string, any>, [key, value]: [string, any]) => {
+      return value === undefined ? acc : { ...acc, [key]: value };
+    },
+    {}
+  );
+};
+
+/**
  * Returns the decoded information stored inside the JWT token. We first
  * verify the token to ensure that it is not expired, then decode it.
  */

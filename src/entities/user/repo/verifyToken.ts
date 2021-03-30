@@ -1,10 +1,11 @@
 import { Field, ObjectType } from 'type-graphql';
 
 import { AuthTokens, GQLContext } from '@util/constants';
+import { ErrorContext, ErrorType } from '@util/constants.errors';
 import { VerifyEvent } from '@util/constants.events';
 import { TokenArgs } from '@util/constants.gql';
 import { decodeToken } from '@util/util';
-// import createEventAttendee from '../../event-attendee/repo/createEventAttendee';
+import createEventAttendee from '../../event-attendee/repo/createEventAttendee';
 import refreshToken from './refreshToken';
 
 @ObjectType()
@@ -13,10 +14,10 @@ export class VerifiedToken {
   event?: VerifyEvent;
 
   @Field({ nullable: true })
-  eventId?: string;
+  communityId?: string;
 
   @Field({ nullable: true })
-  guestId?: string;
+  eventId?: string;
 
   @Field({ nullable: true })
   memberId?: string;
@@ -42,21 +43,19 @@ const verifyToken = async (
   const { res } = ctx;
 
   const verifiedToken: VerifiedToken = decodeToken(token) ?? {};
-  const { event, memberId, userId } = verifiedToken;
+  const { event, eventId, memberId, userId } = verifiedToken;
 
-  let tokens: AuthTokens;
-
-  // if (event === VerifyEvent.JOIN_EVENT) {
-  //   await createEventAttendee({ eventId });
-  // }
-
-  if ([VerifyEvent.LOG_IN].includes(event)) {
-    tokens = await refreshToken({ memberId, res, userId });
+  if (event === VerifyEvent.JOIN_EVENT) {
+    await createEventAttendee({ eventId }, { memberId });
   }
 
-  if (event === VerifyEvent.LOG_IN && !tokens) {
-    res.cookie('LOGIN_LINK_ERROR', 'TOKEN_EXPIRED');
-    return null;
+  if (event === VerifyEvent.LOG_IN) {
+    const tokens: AuthTokens = await refreshToken({ memberId, res, userId });
+
+    if (!tokens) {
+      res.cookie(ErrorContext.LOGIN_ERROR, ErrorType.TOKEN_EXPIRED);
+      return null;
+    }
   }
 
   return verifiedToken;

@@ -4,7 +4,7 @@ import { oauth2_v2 as oauth2V2 } from 'googleapis';
 import updatePictureUrl from '@entities/member/repo/updatePictureUrl';
 import getLoginError from '@entities/user/repo/getLoginError';
 import refreshToken from '@entities/user/repo/refreshToken';
-import updateGoogleId from '@entities/user/repo/updateGoogleId';
+import updateUser from '@entities/user/repo/updateUser';
 import { APP } from '@util/constants';
 import { ErrorContext, ErrorType } from '@util/constants.errors';
 import getGoogleProfileFromToken from './getGoogleProfileFromToken';
@@ -46,7 +46,7 @@ const handleGoogleAuth = async (
   // Try to update the User's googleId and the Member(s)' profile pictures
   // if they are non-existent.
   await Promise.all([
-    updateGoogleId({ email, googleId }),
+    updateUser({ email, googleId }),
     updatePictureUrl({ email, pictureUrl })
   ]);
 
