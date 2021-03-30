@@ -37,6 +37,8 @@ export const buildUrl = (args: BuildUrlArgs): string => {
 export const cleanObject = (obj: Record<string, any>): Record<string, any> => {
   return Object.entries(obj).reduce(
     (acc: Record<string, any>, [key, value]: [string, any]) => {
+      // If the value is undefined, just return the original accumulator.
+      // Otherwise, add the key-value pair!
       return value === undefined ? acc : { ...acc, [key]: value };
     },
     {}

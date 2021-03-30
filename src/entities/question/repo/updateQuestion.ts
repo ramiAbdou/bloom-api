@@ -1,6 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
+import { cleanObject } from '@util/util';
 import Question from '../Question';
 
 @ArgsType()
@@ -23,8 +24,8 @@ const updateQuestion = async (args: UpdateQuestionArgs): Promise<Question> => {
 
   const question: Question = await new BloomManager().findOneAndUpdate(
     Question,
-    questionId,
-    { ...questionData }
+    { id: questionId },
+    cleanObject(questionData)
   );
 
   return question;
