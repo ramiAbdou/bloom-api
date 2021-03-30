@@ -38,7 +38,8 @@ const getEventReminderVars = async (
         communityId: event.community.id,
         event: VerifyEvent.JOIN_EVENT,
         eventId,
-        memberId: guest.member.id
+        memberId: guest.member?.id,
+        supporterId: guest.supporter?.id
       } as VerifiedToken
     });
 
