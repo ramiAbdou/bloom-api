@@ -1,10 +1,12 @@
 import { Field, ObjectType } from 'type-graphql';
 
 import { AuthTokens, GQLContext } from '@util/constants';
+import { ErrorContext, ErrorType } from '@util/constants.errors';
 import { VerifyEvent } from '@util/constants.events';
 import { TokenArgs } from '@util/constants.gql';
 import { decodeToken } from '@util/util';
-// import createEventAttendee from '../../event-attendee/repo/createEventAttendee';
+import createEventAttendeeWithMember from '../../event-attendee/repo/createEventAttendeeWithMember';
+import createEventAttendeeWithSupporter from '../../event-attendee/repo/createEventAttendeeWithSupporter';
 import refreshToken from './refreshToken';
 
 @ObjectType()
@@ -13,13 +15,16 @@ export class VerifiedToken {
   event?: VerifyEvent;
 
   @Field({ nullable: true })
+  communityId?: string;
+
+  @Field({ nullable: true })
   eventId?: string;
 
   @Field({ nullable: true })
-  guestId?: string;
+  memberId?: string;
 
   @Field({ nullable: true })
-  memberId?: string;
+  supporterId?: string;
 
   @Field({ nullable: true })
   userId?: string;
@@ -28,10 +33,7 @@ export class VerifiedToken {
 /**
  * Returns the VerifiedToken based on the VerifyEvent that is supplied.
  *
- * @param args.event - VerifyEvent to process.
- * @param args.guestId - ID of the EventGuest.
- * @param args.memberId - ID of the Member.
- * @param args.userId - ID of the User.
+ * @param args.token - JWT token to decode and process.
  * @param ctx.res - Express response object.
  */
 const verifyToken = async (
@@ -42,21 +44,23 @@ const verifyToken = async (
   const { res } = ctx;
 
   const verifiedToken: VerifiedToken = decodeToken(token) ?? {};
-  const { event, memberId, userId } = verifiedToken;
+  const { event, eventId, memberId, supporterId, userId } = verifiedToken;
 
-  let tokens: AuthTokens;
-
-  // if (event === VerifyEvent.JOIN_EVENT) {
-  //   await createEventAttendee({ eventId });
-  // }
-
-  if ([VerifyEvent.LOG_IN].includes(event)) {
-    tokens = await refreshToken({ memberId, res, userId });
+  if (event === VerifyEvent.JOIN_EVENT && memberId) {
+    await createEventAttendeeWithMember({ eventId }, { memberId });
   }
 
-  if (event === VerifyEvent.LOG_IN && !tokens) {
-    res.cookie('LOGIN_LINK_ERROR', 'TOKEN_EXPIRED');
-    return null;
+  if (event === VerifyEvent.JOIN_EVENT && supporterId) {
+    await createEventAttendeeWithSupporter({ eventId, supporterId });
+  }
+
+  if (event === VerifyEvent.LOG_IN) {
+    const tokens: AuthTokens = await refreshToken({ memberId, res, userId });
+
+    if (!tokens) {
+      res.cookie(ErrorContext.LOGIN_ERROR, ErrorType.TOKEN_EXPIRED);
+      return null;
+    }
   }
 
   return verifiedToken;

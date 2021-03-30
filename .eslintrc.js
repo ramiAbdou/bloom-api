@@ -50,8 +50,8 @@ module.exports = {
       { blankLine: 'always', prev: 'multiline-const', next: '*' },
       {
         blankLine: 'always',
-        prev: ['block-like', 'multiline-expression'],
-        next: '*'
+        prev: '*',
+        next: ['block-like', 'multiline-expression']
       },
       {
         blankLine: 'always',

@@ -83,7 +83,7 @@ const refreshToken = async (args: RefreshTokenArgs): Promise<AuthTokens> => {
 
     res.cookie('accessToken', tokens.accessToken, {
       ...options,
-      maxAge: JWT.EXPIRES_IN * 1000 // x1000 because represented as milliseconds.
+      maxAge: JWT.EXPIRES_IN * 1000 // x1000 b/c represented as milliseconds.
     });
 
     res.cookie('refreshToken', tokens.refreshToken, options);

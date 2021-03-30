@@ -24,19 +24,22 @@ const getEventReminderVars = async (
 ): Promise<EventReminderVars[]> => {
   const { eventId } = context as EventReminderPayload;
 
-  const event: Event = await new BloomManager().findOne(Event, eventId, {
-    populate: ['community', 'guests.member', 'guests.supporter']
-  });
+  const bm: BloomManager = new BloomManager();
 
-  const guests: EventGuest[] = event.guests.getItems();
+  const [event, guests]: [Event, EventGuest[]] = await Promise.all([
+    bm.findOne(Event, { id: eventId }),
+    bm.find(EventGuest, { event: eventId })
+  ]);
 
   const variables: EventReminderVars[] = guests.map((guest: EventGuest) => {
     const token: string = signToken({
       expires: false,
       payload: {
+        communityId: event.community.id,
         event: VerifyEvent.JOIN_EVENT,
-        guestId: guest.id,
-        memberId: guest.member.id
+        eventId,
+        memberId: guest.member?.id,
+        supporterId: guest.supporter?.id
       } as VerifiedToken
     });
 

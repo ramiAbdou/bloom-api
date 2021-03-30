@@ -1,9 +1,11 @@
 import BloomManager from '@core/db/BloomManager';
 import User from '@entities/user/User';
+import { cleanObject } from '@util/util';
 
-interface UpdateGoogleIdArgs {
+interface UpdateUserArgs {
   email: string;
-  googleId: string;
+  googleId?: string;
+  refreshToken?: string;
 }
 
 /**
@@ -12,17 +14,18 @@ interface UpdateGoogleIdArgs {
  *
  * @param args.email - Email of the User.
  * @param args.googleId - ID of the Google Profile.
+ * @param args.refreshToken - Refresh token of the User.
  */
-const updateGoogleId = async (args: UpdateGoogleIdArgs): Promise<User> => {
-  const { email, googleId } = args;
+const updateUser = async (args: UpdateUserArgs): Promise<User> => {
+  const { email, googleId, refreshToken } = args;
 
   const user: User = await new BloomManager().findOneAndUpdate(
     User,
     { email },
-    { googleId }
+    cleanObject({ googleId, refreshToken })
   );
 
   return user;
 };
 
-export default updateGoogleId;
+export default updateUser;

@@ -42,14 +42,14 @@ const getEventRsvpVars = async (
     )
   ]);
 
-  if (!guest) throw new Error('Event guest no longer exists.');
-
   const token: string = signToken({
     expires: false,
     payload: {
+      communityId,
       event: VerifyEvent.JOIN_EVENT,
-      guestId,
-      memberId: guest.member.id
+      eventId,
+      memberId: guest.member?.id,
+      supporterId: guest.supporter?.id
     } as VerifiedToken
   });
 

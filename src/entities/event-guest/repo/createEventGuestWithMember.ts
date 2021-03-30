@@ -1,9 +1,7 @@
 import { ArgsType, Field } from 'type-graphql';
-import { EntityData } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
 import Member from '@entities/member/Member';
-import Supporter from '@entities/supporter/Supporter';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import emitGoogleEvent from '@system/events/repo/emitGoogleEvent';
 import { GQLContext } from '@util/constants';
@@ -11,47 +9,32 @@ import { EmailEvent, GoogleEvent } from '@util/constants.events';
 import EventGuest from '../EventGuest';
 
 @ArgsType()
-export class CreateEventGuestArgs {
-  @Field({ nullable: true })
-  email?: string;
-
+export class CreateEventGuestWithMemberArgs {
   @Field()
   eventId: string;
-
-  @Field({ nullable: true })
-  firstName?: string;
-
-  @Field({ nullable: true })
-  lastName?: string;
 }
 
 /**
  * Returns a new Eventguest.
  *
- * @param args.email - Email of the Supporter.
- * @param args.firstName - First name of the Supporter.
- * @param args.lastName - Last name of the Supporter.
  * @param args.eventId - ID of the Event.
  * @param ctx.memberId - ID of the Member (authenticated).
  */
-const createEventGuest = async (
-  args: CreateEventGuestArgs,
+const createEventGuestWithMember = async (
+  args: CreateEventGuestWithMemberArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<EventGuest> => {
-  const { email, eventId, firstName, lastName } = args;
+  const { eventId } = args;
   const { communityId, memberId } = ctx;
 
   const bm: BloomManager = new BloomManager();
 
-  const [member, supporter]: [Member, Supporter] = await Promise.all([
-    bm.findOne(Member, { id: memberId }),
-    bm.findOne(Supporter, { community: communityId, email })
-  ]);
+  const member: Member = await bm.findOne(Member, { id: memberId });
 
   const existingGuest = await bm.findOne(
     EventGuest,
-    member ? { event: eventId, member } : { event: eventId, supporter },
-    { populate: ['member', 'supporter'] }
+    { event: eventId, member, supporter: null },
+    { populate: ['member'] }
   );
 
   if (existingGuest) {
@@ -60,17 +43,10 @@ const createEventGuest = async (
     );
   }
 
-  const guestArgs: EntityData<EventGuest> = member
-    ? { member }
-    : {
-        supporter:
-          supporter ?? bm.create(Supporter, { email, firstName, lastName })
-      };
-
   const guest: EventGuest = await bm.createAndFlush(
     EventGuest,
-    { ...guestArgs, event: eventId },
-    { populate: ['member', 'supporter'] }
+    { event: eventId, member },
+    { populate: ['member'] }
   );
 
   emitEmailEvent(
@@ -87,4 +63,4 @@ const createEventGuest = async (
   return guest;
 };
 
-export default createEventGuest;
+export default createEventGuestWithMember;

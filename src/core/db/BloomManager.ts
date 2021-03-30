@@ -131,8 +131,18 @@ class BloomManager {
     data: EntityData<T>,
     options?: BloomFindOneOptions<T, P>
   ): Promise<[Loaded<T, P> | T, boolean]> {
-    let result = await this.findOne<T, P>(entityName, where, options);
-    if (result && options?.update) result = wrap(result).assign(data);
+    let result: Loaded<T, P> = await this.findOne<T, P>(
+      entityName,
+      where,
+      options
+    );
+
+    // If the entity was found and we have the update option set to true, then
+    // we should update the found entity, but not flush it yet.
+    if (result && options?.update) {
+      result = wrap(result).assign(data);
+    }
+
     return [result ?? this.create(entityName, data), !!result];
   }
 
@@ -233,7 +243,7 @@ class BloomManager {
     data: EntityData<T>,
     options?: BloomCreateAndFlushArgs<P>
   ): Promise<T> {
-    const entity = this.create(entityName, data);
+    const entity: T = this.create(entityName, data);
     await this.flush();
 
     if (options?.populate) {

@@ -4,9 +4,12 @@ import { MemberRole } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import { TimeSeriesData } from '@util/constants.gql';
 import EventAttendee from './EventAttendee';
-import createEventAttendee, {
-  CreateEventAttendeeArgs
-} from './repo/createEventAttendee';
+import createEventAttendeeWithMember, {
+  CreateEventAttendeeWithMemberArgs
+} from './repo/createEventAttendeeWithMember';
+import createEventAttendeeWithSupporter, {
+  CreateEventAttendeeWithSupporterArgs
+} from './repo/createEventAttendeeWithSupporter';
 import getEventAttendeesSeries from './repo/getEventAttendeesSeries';
 import listEventAttendees, {
   ListEventAttendeesArgs
@@ -15,11 +18,18 @@ import listEventAttendees, {
 @Resolver()
 export default class EventAttendeeResolver {
   @Mutation(() => EventAttendee)
-  async createEventAttendee(
-    @Args() args: CreateEventAttendeeArgs,
+  async createEventAttendeeWithMember(
+    @Args() args: CreateEventAttendeeWithMemberArgs,
     @Ctx() ctx: GQLContext
   ): Promise<EventAttendee> {
-    return createEventAttendee(args, ctx);
+    return createEventAttendeeWithMember(args, ctx);
+  }
+
+  @Mutation(() => EventAttendee)
+  async createEventAttendeeWithSupporter(
+    @Args() args: CreateEventAttendeeWithSupporterArgs
+  ): Promise<EventAttendee> {
+    return createEventAttendeeWithSupporter(args);
   }
 
   @Authorized(MemberRole.ADMIN)

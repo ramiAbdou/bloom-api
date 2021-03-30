@@ -35,7 +35,10 @@ const respondToApplicants = async (
   const members: Member[] = await new BloomManager().findAndUpdate(
     Member,
     { id: memberIds },
-    { joinedAt: now(), status: response }
+    {
+      joinedAt: response === MemberStatus.ACCEPTED ? now() : null,
+      status: response
+    }
   );
 
   if (response === MemberStatus.ACCEPTED) {

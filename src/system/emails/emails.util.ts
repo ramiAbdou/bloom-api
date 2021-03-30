@@ -166,7 +166,8 @@ export const getPersonalizations = async (
       return (
         process.env.APP_ENV === 'stage' ||
         process.env.APP_ENV === 'prod' ||
-        vars.member.email === process.env.USER_EMAIL
+        vars.member.email === process.env.USER_EMAIL ||
+        vars.member.email === process.env.USER_SECONDARY_EMAIL
       );
     })
     .map((vars: EmailVars) => {

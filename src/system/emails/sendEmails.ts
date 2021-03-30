@@ -40,10 +40,13 @@ const sendEmailsBatch = async (args: SendEmailsBatch) => {
 const sendEmails = async (args: EmailArgs): Promise<void> => {
   // Shouldn't send any emails in development. If needed, comment this line
   // out manually each time.
-  if (process.env.APP_ENV === 'dev') return;
+  // if (process.env.APP_ENV === 'dev') return;
 
-  const chunkedPersonalizations = await getPersonalizations(args);
+  const chunkedPersonalizations: FormatPersonalizationData[][] = await getPersonalizations(
+    args
+  );
 
+  // Should be at least one batch of emails to send.
   if (!chunkedPersonalizations[0]?.length) return;
 
   await Promise.all(
