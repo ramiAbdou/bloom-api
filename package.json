@@ -13,6 +13,7 @@
     "lint:fix": "eslint --ignore-path .gitignore src --ext .ts --fix",
     "migrate:create:dev": "APP_ENV=dev npx mikro-orm migration:create",
     "migrate:down:dev": "APP_ENV=dev npx mikro-orm migration:down",
+    "migrate:list:dev": "APP_ENV=dev npx mikro-orm migration:list",
     "migrate:up:dev": "APP_ENV=dev npx mikro-orm migration:up",
     "seed:dev": "APP_ENV=dev npx ts-node -r tsconfig-paths/register seeders/seeder.ts",
     "start:dev": "APP_ENV=dev nodemon",

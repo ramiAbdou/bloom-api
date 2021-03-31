@@ -11,7 +11,7 @@ module.exports = {
     {
       // Type GraphQL resolvers and MikroORM subscribers don't ever need to use
       // "this" in the classes for anything.
-      files: ['*.resolver.ts', '*.subscriber.ts'],
+      files: ['*.resolver.ts', '*.subscriber.ts', 'Migration*.ts'],
       rules: { 'class-methods-use-this': 0 }
     },
     {
