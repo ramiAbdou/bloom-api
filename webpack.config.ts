@@ -1,6 +1,5 @@
 import { TsConfigPathsPlugin } from 'awesome-typescript-loader';
 import Dotenv from 'dotenv-webpack';
-import DuplicatePackageCheckerPlugin from 'duplicate-package-checker-webpack-plugin';
 import knexPackage from 'knex/package.json';
 import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
@@ -60,10 +59,6 @@ const webpackConfig: Configuration = {
   plugins: [
     // Loads the appropriate .env file based on the APP_ENV.
     new Dotenv({ path: path.resolve(__dirname, dotEnvName) }),
-
-    // Checks to see if there are any duplicate packages in our node_modules,
-    // and gives a warning so we can fix them if needed.
-    new DuplicatePackageCheckerPlugin(),
 
     new EnvironmentPlugin({ WEBPACK: true }),
 
