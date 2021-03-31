@@ -12,11 +12,6 @@ class Db {
    */
   async createConnection(): Promise<MikroORM<PostgreSqlDriver>> {
     const orm = (await MikroORM.init(dbConfig)) as MikroORM<PostgreSqlDriver>;
-
-    if (process.env.NODE_ENV === 'test') {
-      await orm.getSchemaGenerator().updateSchema();
-    }
-
     this.em = orm.em;
     return orm;
   }
@@ -25,12 +20,15 @@ class Db {
    * Removes all records in the database. Helps in unit testing not to have
    * polluted data. Anywhere this is used, don't forget to close the connection!
    */
-  async cleanForTesting(): Promise<void> {
-    if (process.env.APP_ENV !== 'dev') return;
+  async clean(): Promise<void> {
+    if (process.env.APP_ENV !== 'dev' && process.env.NODE_ENV !== 'test') {
+      return;
+    }
 
     const orm = await this.createConnection();
     await orm.getSchemaGenerator().dropSchema();
     await orm.getSchemaGenerator().createSchema();
+    await orm.getMigrator().up();
   }
 
   async close(): Promise<void> {

@@ -8,7 +8,7 @@ day.extend(timezone);
 day.extend(utc);
 
 const wipeDatabase = async () => {
-  await db.cleanForTesting();
+  await db.clean();
   await db.close();
 };
 
