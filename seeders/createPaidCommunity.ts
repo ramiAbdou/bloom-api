@@ -13,10 +13,10 @@ import Question, {
 } from '@entities/question/Question';
 import RankedQuestion from '@entities/ranked-question/RankedQuestion';
 import updateCommunity from '../src/entities/community/repo/updateCommunity';
-import { RecurrenceType } from '../src/entities/member-plan/MemberPlan';
-import createMemberPlans, {
-  CreateMemberPlanInput
-} from '../src/entities/member-plan/repo/createMemberPlans';
+import { RecurrenceType } from '../src/entities/member-type/MemberType';
+import createMemberTypes, {
+  CreateMemberTypeInput
+} from '../src/entities/member-type/repo/createMemberTypes';
 import populateRandomEvent from './populateRandomEvents';
 import populateRandomMembers from './populateRandomMembers';
 
@@ -29,7 +29,7 @@ const oneReqQuestions: EntityData<Question>[] = [
   { category: QuestionCategory.LAST_NAME, rank: 200 },
   { category: QuestionCategory.DUES_STATUS, rank: 300 },
   { category: QuestionCategory.EVENTS_ATTENDED, rank: 400 },
-  { category: QuestionCategory.MEMBER_PLAN, rank: 500 },
+  { category: QuestionCategory.MEMBER_TYPE, rank: 500 },
   { category: QuestionCategory.EMAIL, rank: 600 },
   { category: QuestionCategory.GENDER, rank: 700 },
   { category: QuestionCategory.BIO, rank: 800 },
@@ -102,7 +102,7 @@ const oneReqRankedQuestionRank = {
   'What is your biggest challenge in Talent Acquisition?': 1000
 };
 
-const oneReqPlans: CreateMemberPlanInput[] = [
+const oneReqMemberTypes: CreateMemberTypeInput[] = [
   { amount: 5.0, name: 'Supporter', recurrence: RecurrenceType.MONTHLY },
   {
     amount: 10.0,
@@ -134,8 +134,8 @@ const createPaidCommunity = async (): Promise<void> => {
     })?.id
   });
 
-  await createMemberPlans(
-    { defaultPlanName: 'Supporter', plans: oneReqPlans },
+  await createMemberTypes(
+    { defaultMemberTypeName: 'Supporter', memberTypes: oneReqMemberTypes },
     { communityId: updatedCommunity.id }
   );
 

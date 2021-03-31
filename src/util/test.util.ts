@@ -15,9 +15,9 @@ import EventInvitee from '@entities/event-invitee/EventInvitee';
 import EventWatch from '@entities/event-watch/EventWatch';
 import Event from '@entities/event/Event';
 import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
-import MemberPlan from '@entities/member-plan/MemberPlan';
 import MemberRefresh from '@entities/member-refresh/MemberRefresh';
 import MemberSocials from '@entities/member-socials/MemberSocials';
+import MemberType from '@entities/member-type/MemberType';
 import MemberValue from '@entities/member-value/MemberValue';
 import Member from '@entities/member/Member';
 import Payment from '@entities/payment/Payment';
@@ -43,9 +43,9 @@ export const clearAllTableData = async (em: EntityManager): Promise<void> => {
   await em.createQueryBuilder(EventWatch).truncate().execute();
   await em.createQueryBuilder(Event).truncate().execute();
   await em.createQueryBuilder(MemberIntegrations).truncate().execute();
-  await em.createQueryBuilder(MemberPlan).truncate().execute();
   await em.createQueryBuilder(MemberRefresh).truncate().execute();
   await em.createQueryBuilder(MemberSocials).truncate().execute();
+  await em.createQueryBuilder(MemberType).truncate().execute();
   await em.createQueryBuilder(MemberValue).truncate().execute();
   await em.createQueryBuilder(Member).truncate().execute();
   await em.createQueryBuilder(Payment).truncate().execute();
@@ -130,7 +130,7 @@ export const memberIntegrationsFactory = Factory.Sync.makeFactory<
   Partial<MemberIntegrations>
 >({});
 
-export const memberPlanFactory = Factory.Sync.makeFactory<Partial<MemberPlan>>({
+export const memberTypeFactory = Factory.Sync.makeFactory<Partial<MemberType>>({
   amount: Factory.each((i: number) => i * 5),
   name: faker.name.title()
 });

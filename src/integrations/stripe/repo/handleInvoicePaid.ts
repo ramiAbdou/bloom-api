@@ -30,7 +30,7 @@ const handleInvoicePaid = async (event: Stripe.Event): Promise<void> => {
   // a Payment in our own database, nor send a confirmation email.
   if (invoice.amount_paid) {
     await createPayment(
-      { invoice, planId: member.plan.id },
+      { invoice, memberTypeId: member.memberType.id },
       { communityId: community.id, memberId: member.id }
     );
   }

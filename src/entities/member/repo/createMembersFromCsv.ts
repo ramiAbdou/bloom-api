@@ -4,8 +4,8 @@ import { internet } from 'faker';
 
 import BloomManager from '@core/db/BloomManager';
 import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
-import MemberPlan from '@entities/member-plan/MemberPlan';
 import MemberSocials from '@entities/member-socials/MemberSocials';
+import MemberType from '@entities/member-type/MemberType';
 import MemberValue from '@entities/member-value/MemberValue';
 import Member, { MemberRole, MemberStatus } from '@entities/member/Member';
 import Question, { QuestionCategory } from '@entities/question/Question';
@@ -18,7 +18,7 @@ interface CreateMemberFromCsvRowArgs {
   bm: BloomManager;
   community: Community;
   ownerEmail: string;
-  plans: MemberPlan[];
+  memberTypes: MemberType[];
   questions: Question[];
   row: CsvRowData;
   uniqueEmails: Set<string>;
@@ -46,7 +46,7 @@ const createMemberFromCsvRow = async (
     questions,
     ownerEmail,
     row,
-    plans,
+    memberTypes,
     uniqueEmails
   } = args;
 
@@ -113,8 +113,11 @@ const createMemberFromCsvRow = async (
         return;
       }
 
-      if (key === QuestionCategory.MEMBER_PLAN) {
-        member.plan = plans.find((plan: MemberPlan) => value === plan.name);
+      if (key === QuestionCategory.MEMBER_TYPE) {
+        member.memberType = memberTypes.find(
+          (memberType: MemberType) => value === memberType.name
+        );
+
         return;
       }
 
@@ -156,12 +159,16 @@ const createMembersFromCsv = async (
     Community,
     Record<string, any>[]
   ] = await Promise.all([
-    bm.findOne(Community, { urlName }, { populate: ['questions', 'plans'] }),
+    bm.findOne(
+      Community,
+      { urlName },
+      { populate: ['memberTypes', 'questions'] }
+    ),
     csv().fromFile(`./seeders/${urlName}.csv`)
   ]);
 
   const questions: Question[] = community.questions.getItems();
-  const plans: MemberPlan[] = community.plans.getItems();
+  const memberTypes: MemberType[] = community.memberTypes.getItems();
 
   // Adds protection against any emails that are duplicates in the CSV file,
   // INCLUDING case-insensitive duplicates.
@@ -172,8 +179,8 @@ const createMembersFromCsv = async (
       return createMemberFromCsvRow({
         bm,
         community,
+        memberTypes,
         ownerEmail,
-        plans,
         questions,
         row,
         uniqueEmails

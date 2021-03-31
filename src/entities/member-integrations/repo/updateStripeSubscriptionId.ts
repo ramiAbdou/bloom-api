@@ -3,7 +3,7 @@ import { ArgsType, Field, Int } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
-import MemberPlan from '@entities/member-plan/MemberPlan';
+import MemberType from '@entities/member-type/MemberType';
 import createStripeSubscription, {
   CreateStripeSubscriptionArgs
 } from '@integrations/stripe/repo/createStripeSubscription';
@@ -16,7 +16,7 @@ import MemberIntegrations from '../MemberIntegrations';
 @ArgsType()
 export class UpdateStripeSubscriptionIdArgs {
   @Field()
-  memberPlanId: string;
+  memberTypeId: string;
 
   @Field(() => Int, { nullable: true })
   prorationDate?: number;
@@ -30,7 +30,7 @@ export class UpdateStripeSubscriptionIdArgs {
  * Precondition: MemberIntegrations associated with memberId must already
  * have a stripeCustomerId.
  *
- * @param args.memberPlanId - ID of the MemberPlan to switch to.
+ * @param args.memberTypeId - ID of the MemberType to switch to.
  * @param args.prorationDate - UTC timestamp of the proration date.
  * @param ctx.communityId - ID of the Community (authenticated).
  * @param ctx.memberId - ID of the Member (authenticated).
@@ -39,15 +39,15 @@ const updateStripeSubscriptionId = async (
   args: UpdateStripeSubscriptionIdArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<MemberIntegrations> => {
-  const { memberPlanId, prorationDate } = args;
+  const { memberTypeId, prorationDate } = args;
   const { communityId, memberId } = ctx;
 
   const bm: BloomManager = new BloomManager();
 
-  const [communityIntegrations, memberIntegrations, memberPlan]: [
+  const [communityIntegrations, memberIntegrations, memberType]: [
     CommunityIntegrations,
     MemberIntegrations,
-    MemberPlan
+    MemberType
   ] = await Promise.all([
     bm.findOne(CommunityIntegrations, { community: communityId }),
     bm.findOne(
@@ -55,7 +55,7 @@ const updateStripeSubscriptionId = async (
       { member: memberId },
       { populate: ['member'] }
     ),
-    bm.findOne(MemberPlan, memberPlanId)
+    bm.findOne(MemberType, { id: memberTypeId })
   ]);
 
   const baseSubscriptionArgs: Pick<
@@ -63,7 +63,7 @@ const updateStripeSubscriptionId = async (
     'stripeAccountId' | 'stripePriceId'
   > = {
     stripeAccountId: communityIntegrations.stripeAccountId,
-    stripePriceId: memberPlan.stripePriceId
+    stripePriceId: memberType.stripePriceId
   };
 
   const createSubscriptionArgs: CreateStripeSubscriptionArgs = {
@@ -81,10 +81,10 @@ const updateStripeSubscriptionId = async (
     ? await updateStripeSubscription(updateSubscriptionArgs)
     : await createStripeSubscription(createSubscriptionArgs);
 
-  // Update the stripeSubscriptionId and change the memberPlan for the Member
+  // Update the stripeSubscriptionId and change the memberType for the Member
   // once it goes through!
   memberIntegrations.stripeSubscriptionId = subscription.id;
-  memberIntegrations.member.plan = memberPlan;
+  memberIntegrations.member.memberType = memberType;
 
   await bm.flush();
 

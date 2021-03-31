@@ -4,36 +4,36 @@ import { QueryOrder } from '@mikro-orm/core';
 import BloomManager from '@core/db/BloomManager';
 import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/constants.events';
-import MemberPlan from '../MemberPlan';
+import MemberType from '../MemberType';
 
 @ArgsType()
-export class ListMemberPlansArgs {
+export class ListMemberTypesArgs {
   @Field({ nullable: true })
   communityId?: string;
 }
 
 /**
- * Returns the MemberPlan(s) in a Community.
+ * Returns the MemberType(s) in a Community.
  *
  * @param args.communityId - ID of the Community.
  * @param ctx.communityId - ID of the Community (authenticated).
  */
-const listMemberPlans = async (
-  args: ListMemberPlansArgs,
+const listMemberTypes = async (
+  args: ListMemberTypesArgs,
   ctx: Pick<GQLContext, 'communityId'>
-): Promise<MemberPlan[]> => {
+): Promise<MemberType[]> => {
   const communityId: string = args.communityId ?? ctx.communityId;
 
-  const plans: MemberPlan[] = await new BloomManager().find(
-    MemberPlan,
+  const memberTypes: MemberType[] = await new BloomManager().find(
+    MemberType,
     { community: communityId },
     {
-      cacheKey: `${QueryEvent.LIST_MEMBER_PLANS}-${communityId}`,
+      cacheKey: `${QueryEvent.LIST_MEMBER_TYPES}-${communityId}`,
       orderBy: { amount: QueryOrder.ASC }
     }
   );
 
-  return plans;
+  return memberTypes;
 };
 
-export default listMemberPlans;
+export default listMemberTypes;

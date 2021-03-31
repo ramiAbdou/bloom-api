@@ -1,7 +1,7 @@
 import express from 'express';
 
 import updateStripeAccountId from '@entities/community-integrations/repo/updateStripeAccountId';
-import createStripeProducts from '@entities/member-plan/repo/createStripeProducts';
+import createStripeProducts from '@entities/member-type/repo/createStripeProducts';
 import { APP, AuthQueryArgs } from '@util/constants';
 import getStripeAccountId from './getStripeAccountId';
 

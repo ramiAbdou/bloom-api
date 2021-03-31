@@ -27,7 +27,7 @@ export enum QuestionCategory {
   JOINED_AT = 'JOINED_AT',
   LAST_NAME = 'LAST_NAME',
   LINKED_IN_URL = 'LINKED_IN_URL',
-  MEMBER_PLAN = 'MEMBER_PLAN',
+  MEMBER_TYPE = 'MEMBER_TYPE',
   TWITTER_URL = 'TWITTER_URL'
 }
 
@@ -146,8 +146,8 @@ export default class Question extends BaseEntity {
       this.type = QuestionType.SHORT_TEXT;
     }
 
-    if (this.category === QuestionCategory.MEMBER_PLAN) {
-      if (!this.title) this.title = 'Member Plan';
+    if (this.category === QuestionCategory.MEMBER_TYPE) {
+      if (!this.title) this.title = 'Member Type';
       this.locked = true;
       this.type = QuestionType.MULTIPLE_CHOICE;
     }
