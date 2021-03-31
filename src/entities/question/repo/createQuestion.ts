@@ -34,7 +34,7 @@ export class CreateQuestionArgs {
 /**
  * Returns a new Question.
  *
- * @param args - Question data (eg: description, endTime, startTime).
+ * @param args - Question data (eg: title, category, description).
  * @param ctx.communityId - ID of the Community (authenticated).
  * @param ctx.memberId - ID of the Member (authenticated).
  */
