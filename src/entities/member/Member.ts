@@ -89,6 +89,10 @@ export default class Member extends BaseEntity {
   @IsUrl()
   pictureUrl: string;
 
+  @Field({ nullable: true })
+  @Property({ nullable: true })
+  position?: string;
+
   // If the member has a role, it will either be ADMIN or OWNER. There should
   // only be one OWNER in a community.
   @Field(() => String, { nullable: true })

@@ -1,5 +1,10 @@
 import { Migration } from '@mikro-orm/migrations';
 
+/**
+ * CHANGELOG
+ *  - Renames the "member_plans" table to "member_types".
+ *  - Updates anywhere that has "plan_id" to "member_type_id".
+ */
 export class Migration20210331200012 extends Migration {
   async up(): Promise<void> {
     this.addSql('alter table "member_plans" rename to "member_types";');
