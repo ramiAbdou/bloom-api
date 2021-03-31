@@ -3,7 +3,7 @@ import Dotenv from 'dotenv-webpack';
 import knexPackage from 'knex/package.json';
 import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
-import { Configuration, EnvironmentPlugin, IgnorePlugin } from 'webpack';
+import { EnvironmentPlugin, IgnorePlugin } from 'webpack';
 import mikroOrmPackage from '@mikro-orm/core/package.json';
 
 let dotEnvName: string;
@@ -20,7 +20,7 @@ const optionalModules = new Set([
   ...Object.keys(mikroOrmPackage.peerDependencies)
 ]);
 
-const webpackConfig: Configuration = {
+const webpackConfig = {
   entry: path.join(__dirname, '/src/index.ts'),
 
   // Automatically sets the NODE_ENV to production as well.
@@ -81,7 +81,7 @@ const webpackConfig: Configuration = {
       }
     }),
 
-    new IgnorePlugin(/^pg-native$/)
+    new IgnorePlugin({ resourceRegExp: /^pg-native$/ })
   ],
 
   // Gets path aliases from tsconfig.js.
