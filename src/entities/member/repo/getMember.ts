@@ -26,7 +26,7 @@ const getMember = async (
   const member: Member = await new BloomManager().findOneOrFail(
     Member,
     memberId,
-    { cacheKey: `${QueryEvent.LIST_MEMBERS}-${memberId}` }
+    { cacheKey: `${QueryEvent.GET_MEMBER}-${memberId}` }
   );
 
   return member;

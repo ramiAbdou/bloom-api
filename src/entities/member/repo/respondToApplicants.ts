@@ -5,7 +5,7 @@ import { AcceptedIntoCommunityPayload } from '@system/emails/repo/getAcceptedInt
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import emitMailchimpEvent from '@system/events/repo/emitMailchimpEvent';
 import { GQLContext } from '@util/constants';
-import { EmailEvent, MailchimpEvent, QueryEvent } from '@util/constants.events';
+import { EmailEvent, MailchimpEvent } from '@util/constants.events';
 import { now } from '@util/util';
 import Member, { MemberStatus } from '../Member';
 
@@ -40,8 +40,6 @@ const respondToApplicants = async (
       status: response
     }
   );
-
-  Member.cache.invalidate([`${QueryEvent.LIST_APPLICANTS}-${communityId}`]);
 
   if (response === MemberStatus.ACCEPTED) {
     emitEmailEvent(EmailEvent.ACCEPTED_INTO_COMMUNITY, {

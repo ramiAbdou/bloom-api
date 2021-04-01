@@ -145,6 +145,10 @@ export default class Member extends BaseEntity {
       this.status = MemberStatus.ACCEPTED;
     }
 
+    if (this.status === MemberStatus.ACCEPTED && !this.joinedAt) {
+      this.joinedAt = now();
+    }
+
     // If no member type is provided, assign them the default member.
     // Every community should've assigned one default member.
     if (!this.memberType) this.memberType = this.community.defaultType;
@@ -174,6 +178,7 @@ export default class Member extends BaseEntity {
   afterUpdate(): void {
     Member.cache.invalidate([
       `${QueryEvent.GET_MEMBER}-${this.id}`,
+      `${QueryEvent.LIST_APPLICANTS}-${this.community.id}`,
       `${QueryEvent.LIST_MEMBERS}-${this.community.id}`
     ]);
   }
