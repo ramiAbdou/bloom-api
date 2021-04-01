@@ -7,7 +7,8 @@ import {
   Entity,
   Enum,
   ManyToOne,
-  Property
+  Property,
+  Unique
 } from '@mikro-orm/core';
 
 import Cache from '@core/cache/Cache';
@@ -40,6 +41,7 @@ export enum QuestionType {
 
 @ObjectType()
 @Entity()
+@Unique({ properties: 'category' })
 export default class Question extends BaseEntity {
   static cache: Cache = new Cache();
 
@@ -47,6 +49,7 @@ export default class Question extends BaseEntity {
 
   // If the question is a special question, we store it with a category. These
   // are questions that are typically seen in many communities.
+  @Unique()
   @Field(() => String, { nullable: true })
   @Enum({ items: () => QuestionCategory, nullable: true, type: String })
   category?: QuestionCategory;
