@@ -2,6 +2,7 @@ import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import { GQLContext } from '@util/constants';
+import { cleanObject } from '@util/util';
 import Member from '../Member';
 
 @ArgsType()
@@ -37,7 +38,7 @@ const updateMember = async (
   const updatedMember: Member = await new BloomManager().findOneAndUpdate(
     Member,
     memberId,
-    { ...args }
+    cleanObject(args)
   );
 
   return updatedMember;
