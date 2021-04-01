@@ -23,7 +23,7 @@ export enum RecurrenceType {
 
 @ObjectType()
 @Entity()
-export default class MemberPlan extends BaseEntity {
+export default class MemberType extends BaseEntity {
   static cache: Cache = new Cache();
 
   // ## FIELDS
@@ -56,15 +56,15 @@ export default class MemberPlan extends BaseEntity {
 
   @AfterCreate()
   afterCreate(): void {
-    MemberPlan.cache.invalidate([
-      `${QueryEvent.LIST_MEMBER_PLANS}-${this.community.id}`
+    MemberType.cache.invalidate([
+      `${QueryEvent.LIST_MEMBER_TYPES}-${this.community.id}`
     ]);
   }
 
   @AfterUpdate()
   afterUpdate(): void {
-    MemberPlan.cache.invalidate([
-      `${QueryEvent.LIST_MEMBER_PLANS}-${this.community.id}`
+    MemberType.cache.invalidate([
+      `${QueryEvent.LIST_MEMBER_TYPES}-${this.community.id}`
     ]);
   }
 
@@ -74,6 +74,6 @@ export default class MemberPlan extends BaseEntity {
   @ManyToOne(() => Community)
   community: Community;
 
-  @OneToMany(() => Member, (member) => member.plan)
+  @OneToMany(() => Member, (member: Member) => member.memberType)
   members = new Collection<Member>(this);
 }

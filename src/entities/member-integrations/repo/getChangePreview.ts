@@ -3,7 +3,7 @@ import { ArgsType, Field, ObjectType } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
-import MemberPlan from '@entities/member-plan/MemberPlan';
+import MemberType from '@entities/member-type/MemberType';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { GQLContext } from '@util/constants';
 import MemberIntegrations from '../MemberIntegrations';
@@ -11,7 +11,7 @@ import MemberIntegrations from '../MemberIntegrations';
 @ArgsType()
 export class GetChangePreviewArgs {
   @Field()
-  memberPlanId: string;
+  memberTypeId: string;
 
   @Field(() => Number, { nullable: true })
   prorationDate?: number;
@@ -28,29 +28,29 @@ export class GetChangePreviewResult {
 
 /**
  * Returns a preview of the amount Stripe would charge if the Member were
- * to switch their MemberPlan.
+ * to switch their MemberType.
  *
- * @param args.memberPlanId - ID of the MemberPlan.
+ * @param args.memberTypeId - ID of the MemberType.
  * @param ctx.communityId - ID of the Community (authenticated).
  * @param ctx.memberId - ID of the Member (authenticated).
  */
 const getChangePreview = async (
-  args: Pick<GetChangePreviewArgs, 'memberPlanId'>,
+  args: Pick<GetChangePreviewArgs, 'memberTypeId'>,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<GetChangePreviewResult> => {
-  const { memberPlanId } = args;
+  const { memberTypeId } = args;
   const { communityId, memberId } = ctx;
 
   const bm: BloomManager = new BloomManager();
 
-  const [communityIntegrations, memberIntegrations, memberPlan]: [
+  const [communityIntegrations, memberIntegrations, memberType]: [
     CommunityIntegrations,
     MemberIntegrations,
-    MemberPlan
+    MemberType
   ] = await Promise.all([
     bm.findOne(CommunityIntegrations, { community: communityId }),
     bm.findOne(MemberIntegrations, { member: memberId }),
-    bm.findOne(MemberPlan, memberPlanId)
+    bm.findOne(MemberType, { id: memberTypeId })
   ]);
 
   const { stripeCustomerId, stripeSubscriptionId } = memberIntegrations;
@@ -66,7 +66,7 @@ const getChangePreview = async (
 
   const subscriptionItems = [
     // Switch to new price to see what the next invoice would look like.
-    { id: subscription.items.data[0].id, price: memberPlan.stripePriceId }
+    { id: subscription.items.data[0].id, price: memberType.stripePriceId }
   ] as Stripe.InvoiceRetrieveUpcomingParams.SubscriptionItem[];
 
   const invoice: Stripe.Invoice = await stripe.invoices.retrieveUpcoming(

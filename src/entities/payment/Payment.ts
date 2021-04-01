@@ -16,7 +16,7 @@ import Community from '@entities/community/Community';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { EmailEvent, QueryEvent } from '@util/constants.events';
-import MemberPlan from '../member-plan/MemberPlan';
+import MemberType from '../member-type/MemberType';
 import Member from '../member/Member';
 
 export enum PaymentType {
@@ -92,7 +92,7 @@ export default class Payment extends BaseEntity {
   @ManyToOne(() => Member)
   member: Member;
 
-  @Field(() => MemberPlan)
-  @ManyToOne(() => MemberPlan)
-  plan: MemberPlan;
+  @Field(() => MemberType)
+  @ManyToOne(() => MemberType)
+  memberType: MemberType;
 }

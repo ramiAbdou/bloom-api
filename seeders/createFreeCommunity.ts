@@ -12,9 +12,9 @@ import Question, {
   QuestionType
 } from '@entities/question/Question';
 import updateCommunity from '../src/entities/community/repo/updateCommunity';
-import createMemberPlans, {
-  CreateMemberPlanInput
-} from '../src/entities/member-plan/repo/createMemberPlans';
+import createMemberTypes, {
+  CreateMemberTypeInput
+} from '../src/entities/member-type/repo/createMemberTypes';
 import RankedQuestion from '../src/entities/ranked-question/RankedQuestion';
 import populateRandomEvents from './populateRandomEvents';
 import populateRandomMembers from './populateRandomMembers';
@@ -28,7 +28,7 @@ const freeCommunityQuestions: EntityData<Question>[] = [
   { category: QuestionCategory.LAST_NAME, rank: 200 },
   { category: QuestionCategory.DUES_STATUS, rank: 300 },
   { category: QuestionCategory.EVENTS_ATTENDED, rank: 350 },
-  { category: QuestionCategory.MEMBER_PLAN, rank: 400 },
+  { category: QuestionCategory.MEMBER_TYPE, rank: 400 },
   {
     category: QuestionCategory.EMAIL,
     description: `We'd prefer if you use your school email, but if you check another email more frequently, please provide that email. Make sure to check for typos.`,
@@ -115,7 +115,7 @@ const freeCommunityRankedQuestionRank = {
   'How do you plan to contribute to the community?': 1100
 };
 
-const freeCommunityPlans: CreateMemberPlanInput[] = [
+const freeCommunityMemberTypes: CreateMemberTypeInput[] = [
   { name: 'General Member' }
 ];
 
@@ -141,8 +141,11 @@ const createFreeCommunity = async () => {
     })?.id
   });
 
-  await createMemberPlans(
-    { defaultPlanName: 'General Member', plans: freeCommunityPlans },
+  await createMemberTypes(
+    {
+      defaultMemberTypeName: 'General Member',
+      memberTypes: freeCommunityMemberTypes
+    },
     { communityId: updatedCommunity.id }
   );
 

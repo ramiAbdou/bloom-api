@@ -8,7 +8,7 @@ import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
 import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
-import MemberPlan from '@entities/member-plan/MemberPlan';
+import MemberType from '@entities/member-type/MemberType';
 import Member from '@entities/member/Member';
 import User from '@entities/user/User';
 import * as createStripeSubscription from '@integrations/stripe/repo/createStripeSubscription';
@@ -18,7 +18,7 @@ import {
   communityIntegrationsFactory,
   initDatabaseIntegrationTest,
   memberFactory,
-  memberPlanFactory,
+  memberTypeFactory,
   userFactory
 } from '@util/test.util';
 import updateStripeSubscriptionId from './updateStripeSubscriptionId';
@@ -31,27 +31,27 @@ describe('updateStripeSubscriptionId()', () => {
   let communityId: string;
   let member: Member;
   let memberId: string;
-  let memberPlans: MemberPlan[];
-  let memberPlanId: string;
+  let memberTypes: MemberType[];
+  let memberTypeId: string;
 
   initDatabaseIntegrationTest({
     beforeEach: async () => {
       const bm: BloomManager = new BloomManager();
 
-      memberPlans = memberPlanFactory.buildList(3).map((data) => {
-        return bm.create(MemberPlan, data);
+      memberTypes = memberTypeFactory.buildList(3).map((data) => {
+        return bm.create(MemberType, data);
       });
 
       const community: Community = bm.create(Community, {
         ...communityFactory.build(),
-        plans: memberPlans
+        memberTypes
       });
 
       member = bm.create(Member, {
         ...memberFactory.build(),
         community,
         memberIntegrations: bm.create(MemberIntegrations, {}),
-        plan: memberPlans[0],
+        memberType: memberTypes[0],
         user: bm.create(User, userFactory.build())
       });
 
@@ -66,8 +66,8 @@ describe('updateStripeSubscriptionId()', () => {
 
       communityId = integrations.community.id;
       memberId = member.id;
-      memberPlans = integrations.community.plans.getItems();
-      memberPlanId = integrations.community.plans[0].id;
+      memberTypes = integrations.community.memberTypes.getItems();
+      memberTypeId = integrations.community.memberTypes[0].id;
     }
   });
 
@@ -79,7 +79,7 @@ describe('updateStripeSubscriptionId()', () => {
       } as Stripe.Subscription);
 
     const updatedMemberIntegrations = await updateStripeSubscriptionId(
-      { memberPlanId },
+      { memberTypeId },
       { communityId, memberId }
     );
 
@@ -93,11 +93,11 @@ describe('updateStripeSubscriptionId()', () => {
 
     expect(updatedMemberIntegrations)
       .toHaveProperty('stripeSubscriptionId', mockedStripeSubcriptionId)
-      .toHaveProperty('member.plan.id', memberPlanId);
+      .toHaveProperty('member.memberType.id', memberTypeId);
   });
 
-  test('If the MemberIntegrations does have a stripeSubscriptionId, it should update the Stripe subscription (not stripeSubscriptionId) and update the MemberPlan of the Member.', async () => {
-    const newMemberPlanId: string = memberPlans[1].id;
+  test('If the MemberIntegrations does have a stripeSubscriptionId, it should update the Stripe subscription (not stripeSubscriptionId) and update the MemberType of the Member.', async () => {
+    const newMemberTypeId: string = memberTypes[1].id;
 
     await new BloomManager().findOneAndUpdate(
       MemberIntegrations,
@@ -112,7 +112,7 @@ describe('updateStripeSubscriptionId()', () => {
       } as Stripe.Subscription);
 
     const updatedMemberIntegrations = await updateStripeSubscriptionId(
-      { memberPlanId: newMemberPlanId, prorationDate: null },
+      { memberTypeId: newMemberTypeId, prorationDate: null },
       { communityId, memberId }
     );
 
@@ -127,11 +127,11 @@ describe('updateStripeSubscriptionId()', () => {
 
     expect(updatedMemberIntegrations)
       .toHaveProperty('stripeSubscriptionId', mockedStripeSubcriptionId)
-      .toHaveProperty('member.plan.id', newMemberPlanId);
+      .toHaveProperty('member.memberType.id', newMemberTypeId);
   });
 
   test('Should invalidate the QueryEvent.LIST_MEMBERS key within the Member.cache key by triggering the @AfterUpdate lifecycle hook.', async () => {
-    const newMemberPlanId: string = memberPlans[1].id;
+    const newMemberTypeId: string = memberTypes[1].id;
 
     await new BloomManager().findOneAndUpdate(
       MemberIntegrations,
@@ -146,7 +146,7 @@ describe('updateStripeSubscriptionId()', () => {
     } as Stripe.Subscription);
 
     await updateStripeSubscriptionId(
-      { memberPlanId: newMemberPlanId, prorationDate: null },
+      { memberTypeId: newMemberTypeId, prorationDate: null },
       { communityId, memberId }
     );
 

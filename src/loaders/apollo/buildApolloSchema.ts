@@ -9,8 +9,8 @@ import EventGuestResolver from '@entities/event-guest/EventGuest.resolver';
 import EventWatchResolver from '@entities/event-watch/EventWatch.resolver';
 import EventResolver from '@entities/event/Event.resolver';
 import MemberIntegrationsResolver from '@entities/member-integrations/MemberIntegrations.resolver';
-import MemberPlanResolver from '@entities/member-plan/MemberPlan.resolver';
 import MemberSocialsResolver from '@entities/member-socials/MemberSocials.resolver';
+import MemberTypeResolver from '@entities/member-type/MemberType.resolver';
 import MemberValueResolver from '@entities/member-value/MemberValue.resolver';
 import MemberResolver from '@entities/member/Member.resolver';
 import PaymentResolver from '@entities/payment/Payment.resolver';
@@ -36,8 +36,8 @@ const buildApolloSchema = async (): Promise<GraphQLSchema> => {
       MemberResolver,
       MemberIntegrationsResolver,
       MemberSocialsResolver,
+      MemberTypeResolver,
       MemberValueResolver,
-      MemberPlanResolver,
       PaymentResolver,
       QuestionResolver,
       RankedQuestionResolver,

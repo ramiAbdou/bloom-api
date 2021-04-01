@@ -6,7 +6,7 @@ import Payment, { PaymentType } from '../Payment';
 
 interface CreatePaymentArgs {
   invoice: Stripe.Invoice;
-  planId: string;
+  memberTypeId: string;
 }
 
 /**
@@ -22,7 +22,7 @@ const assertCreatePayment = (args: CreatePaymentArgs) => {
  * Returns a new Payment.
  *
  * @param args.invoice - Stripe.Invoice.
- * @param args.planId - ID of the MemberPlan.
+ * @param args.memberTypeId - ID of the MemberType.
  * @param ctx.communityId - ID of the Community (authenticated).
  * @param ctx.memberId - ID of the Member (authenticated).
  */
@@ -30,7 +30,7 @@ const createPayment = async (
   args: CreatePaymentArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<Payment> => {
-  const { invoice, planId } = args;
+  const { invoice, memberTypeId } = args;
   const { communityId, memberId } = ctx;
 
   assertCreatePayment(args);
@@ -39,7 +39,7 @@ const createPayment = async (
     amount: invoice.amount_paid / 100,
     community: communityId,
     member: memberId,
-    plan: planId,
+    memberType: memberTypeId,
     stripeInvoiceId: invoice.id,
     stripeInvoiceUrl: invoice.hosted_invoice_url,
     type: PaymentType.DUES

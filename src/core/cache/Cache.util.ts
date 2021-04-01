@@ -9,9 +9,9 @@ import EventInvitee from '@entities/event-invitee/EventInvitee';
 import EventWatch from '@entities/event-watch/EventWatch';
 import Event from '@entities/event/Event';
 import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
-import MemberPlan from '@entities/member-plan/MemberPlan';
 import MemberRefresh from '@entities/member-refresh/MemberRefresh';
 import MemberSocials from '@entities/member-socials/MemberSocials';
+import MemberType from '@entities/member-type/MemberType';
 import MemberValue from '@entities/member-value/MemberValue';
 import Member from '@entities/member/Member';
 import Payment from '@entities/payment/Payment';
@@ -38,9 +38,9 @@ export const getEntityCache = (name: EntityName<any>): Cache => {
   if (name === EventWatch) return EventWatch.cache;
   if (name === Member) return Member.cache;
   if (name === MemberIntegrations) return MemberIntegrations.cache;
-  if (name === MemberPlan) return MemberPlan.cache;
   if (name === MemberRefresh) return MemberRefresh.cache;
   if (name === MemberSocials) return MemberSocials.cache;
+  if (name === MemberType) return MemberType.cache;
   if (name === MemberValue) return MemberValue.cache;
   if (name === Payment) return Payment.cache;
   if (name === Question) return Question.cache;
@@ -67,7 +67,7 @@ export const getAllEntityCaches = (): Cache[] => {
     EventWatch.cache,
     Member.cache,
     MemberIntegrations.cache,
-    MemberPlan.cache,
+    MemberType.cache,
     MemberRefresh.cache,
     MemberSocials.cache,
     MemberValue.cache,

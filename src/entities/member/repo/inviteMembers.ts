@@ -97,7 +97,7 @@ const inviteMembers = async (
           firstName,
           lastName,
           memberIntegrations: bm.create(MemberIntegrations, {}),
-          plan: community.defaultType.id,
+          memberType: community.defaultType.id,
           role: isAdmin ? MemberRole.ADMIN : null,
           socials: bm.create(MemberSocials, {}),
           status: MemberStatus.INVITED,

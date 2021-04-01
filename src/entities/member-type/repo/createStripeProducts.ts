@@ -4,24 +4,24 @@ import { assign } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
-import MemberPlan, { RecurrenceType } from '@entities/member-plan/MemberPlan';
+import MemberType, { RecurrenceType } from '@entities/member-type/MemberType';
 import { stripe } from '@integrations/stripe/Stripe.util';
 
 interface CreateStripeProductArgs {
+  memberType: MemberType;
   stripeAccountId: string;
-  plan: MemberPlan;
 }
 
 /**
- * Updates the MemberPlan's stripePriceId and stripeProductId for all types
+ * Updates the MemberType's stripePriceId and stripeProductId for all types
  * that are not free. Calls the Stripe SDK product and price creation methods
  * for the community.
  */
 const attachStripeProduct = async (
   args: CreateStripeProductArgs
-): Promise<MemberPlan> => {
-  const { stripeAccountId, plan } = args;
-  const { amount, id, name, recurrence } = plan;
+): Promise<MemberType> => {
+  const { memberType, stripeAccountId } = args;
+  const { amount, id, name, recurrence } = memberType;
 
   const product: Stripe.Product = await stripe.products.create(
     { id, name },
@@ -40,12 +40,12 @@ const attachStripeProduct = async (
     { idempotencyKey: nanoid(), stripeAccount: stripeAccountId }
   );
 
-  const updatedPlan: MemberPlan = assign(plan, {
+  const updatedMemberType: MemberType = assign(memberType, {
     stripePriceId: price.id,
     stripeProductId: product.id
   });
 
-  return updatedPlan;
+  return updatedMemberType;
 };
 
 interface CreateStripeProductsArgs {
@@ -53,35 +53,36 @@ interface CreateStripeProductsArgs {
 }
 
 /**
- * Creates the corresponding Stripe products and prices for every MemberPlan
- * that isn't free. Updates the MemberPlan entity as well.
+ * Creates the corresponding Stripe products and prices for every MemberType
+ * that isn't free. Updates the MemberType entity as well.
  */
 const createStripeProducts = async (
   args: CreateStripeProductsArgs
-): Promise<MemberPlan[]> => {
+): Promise<MemberType[]> => {
   const { urlName } = args;
 
   const bm: BloomManager = new BloomManager();
 
-  const [communityIntegrations, plans]: [
+  const [communityIntegrations, memberTypes]: [
     CommunityIntegrations,
-    MemberPlan[]
+    MemberType[]
   ] = await Promise.all([
     bm.findOne(CommunityIntegrations, { community: { urlName } }),
-    bm.find(MemberPlan, { community: { urlName } })
+    bm.find(MemberType, { community: { urlName } })
   ]);
 
-  const updatedTypes: MemberPlan[] = await Promise.all(
-    plans.map(async (plan: MemberPlan) => {
+  const updatedMemberTypes: MemberType[] = await Promise.all(
+    memberTypes.map(async (memberType: MemberType) => {
       return attachStripeProduct({
-        plan,
+        memberType,
         stripeAccountId: communityIntegrations.stripeAccountId
       });
     })
   );
 
   await bm.flush();
-  return updatedTypes;
+
+  return updatedMemberTypes;
 };
 
 export default createStripeProducts;
