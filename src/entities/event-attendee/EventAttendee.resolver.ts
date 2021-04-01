@@ -40,7 +40,7 @@ export default class EventAttendeeResolver {
     return getEventAttendeesSeries(ctx);
   }
 
-  @Authorized(MemberRole.ADMIN)
+  @Authorized()
   @Query(() => [EventAttendee])
   async listEventAttendees(
     @Args() args: ListEventAttendeesArgs,
