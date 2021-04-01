@@ -178,6 +178,7 @@ export default class Member extends BaseEntity {
   afterUpdate(): void {
     Member.cache.invalidate([
       `${QueryEvent.GET_MEMBER}-${this.id}`,
+      `${QueryEvent.LIST_APPLICANTS}-${this.community.id}`,
       `${QueryEvent.LIST_MEMBERS}-${this.community.id}`
     ]);
   }
