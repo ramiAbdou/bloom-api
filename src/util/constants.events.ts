@@ -86,7 +86,6 @@ export enum QueryEvent {
   GET_EVENT = 'getEvent',
   GET_EVENT_ATTENDEES_SERIES = 'getEventAttendeesSeries',
   GET_MEMBER_INTEGRATIONS = 'getMemberIntegrations',
-  GET_MEMBER_SOCIALS = 'getMemberSocials',
   GET_MEMBER = 'getMember',
   GET_MEMBERS_GROWTH = 'getMembersGrowth',
   GET_MEMBERS_SERIES = 'getMembersSeries',
@@ -96,13 +95,7 @@ export enum QueryEvent {
   IS_EMAIL_TAKEN = 'isEmailTaken',
   LIST_EVENT_ATTENDEES = 'listEventAttendees',
   LIST_EVENT_GUESTS = 'listEventGuests',
-  LIST_EVENT_WATCHES = 'listEventWatches',
-  LIST_MEMBER_TYPES = 'listMemberTypes',
-  LIST_MEMBER_SOCIALS = 'listMemberSocials',
-  LIST_MEMBERS = 'listMembers',
-  LIST_PAYMENTS = 'listPayments',
-  LIST_QUESTIONS = 'listQuestions',
-  LIST_RANKED_QUESTIONS = 'listRankedQuestions'
+  LIST_EVENT_WATCHES = 'listEventWatches'
 }
 
 export enum VerifyEvent {

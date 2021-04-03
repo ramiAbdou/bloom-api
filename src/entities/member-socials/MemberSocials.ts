@@ -1,10 +1,9 @@
 import { IsUrl } from 'class-validator';
 import { Field, ObjectType } from 'type-graphql';
-import { AfterUpdate, Entity, OneToOne, Property, wrap } from '@mikro-orm/core';
+import { Entity, OneToOne, Property } from '@mikro-orm/core';
 
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
-import { QueryEvent } from '@util/constants.events';
 import Member from '../member/Member';
 
 @ObjectType()
@@ -33,18 +32,6 @@ export default class MemberSocials extends BaseEntity {
   @Property({ nullable: true })
   @IsUrl()
   twitterUrl: string;
-
-  // ## LIFECYCLE HOOKS
-
-  @AfterUpdate()
-  async afterUpdate(): Promise<void> {
-    await wrap(this.member).init();
-
-    MemberSocials.cache.invalidate([
-      `${QueryEvent.GET_MEMBER_SOCIALS}-${this.member.id}`,
-      `${QueryEvent.LIST_MEMBER_SOCIALS}-${this.member.community.id}`
-    ]);
-  }
 
   // ## RELATIONSHIPS
 

@@ -129,27 +129,4 @@ describe('updateStripeSubscriptionId()', () => {
       .toHaveProperty('stripeSubscriptionId', mockedStripeSubcriptionId)
       .toHaveProperty('member.memberType.id', newMemberTypeId);
   });
-
-  test('Should invalidate the QueryEvent.LIST_MEMBERS key within the Member.cache key by triggering the @AfterUpdate lifecycle hook.', async () => {
-    const newMemberTypeId: string = memberTypes[1].id;
-
-    await new BloomManager().findOneAndUpdate(
-      MemberIntegrations,
-      { member: member.id },
-      { stripeSubscriptionId: mockedStripeSubcriptionId }
-    );
-
-    const mockedMemberAfterUpdate = jest.spyOn(Member.prototype, 'afterUpdate');
-
-    jest.spyOn(updateStripeSubscription, 'default').mockResolvedValue({
-      id: mockedStripeSubcriptionId
-    } as Stripe.Subscription);
-
-    await updateStripeSubscriptionId(
-      { memberTypeId: newMemberTypeId, prorationDate: null },
-      { communityId, memberId }
-    );
-
-    expect(mockedMemberAfterUpdate).toBeCalledTimes(1);
-  });
 });

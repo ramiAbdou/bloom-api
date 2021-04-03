@@ -2,7 +2,6 @@ import { IsUrl } from 'class-validator';
 import Stripe from 'stripe';
 import { Field, ObjectType } from 'type-graphql';
 import {
-  AfterCreate,
   AfterUpdate,
   BeforeCreate,
   BeforeUpdate,
@@ -165,19 +164,9 @@ export default class Member extends BaseEntity {
     }
   }
 
-  @AfterCreate()
-  afterCreate(): void {
-    Member.cache.invalidate([
-      `${QueryEvent.LIST_MEMBERS}-${this.community.id}`
-    ]);
-  }
-
   @AfterUpdate()
   afterUpdate(): void {
-    Member.cache.invalidate([
-      `${QueryEvent.GET_MEMBER}-${this.id}`,
-      `${QueryEvent.LIST_MEMBERS}-${this.community.id}`
-    ]);
+    Member.cache.invalidate([`${QueryEvent.GET_MEMBER}-${this.id}`]);
   }
 
   // ## RELATIONSHIPS

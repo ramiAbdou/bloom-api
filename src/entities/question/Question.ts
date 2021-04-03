@@ -1,7 +1,5 @@
 import { Field, ObjectType } from 'type-graphql';
 import {
-  AfterCreate,
-  AfterUpdate,
   ArrayType,
   BeforeCreate,
   Entity,
@@ -13,7 +11,6 @@ import {
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Community from '@entities/community/Community';
-import { QueryEvent } from '@util/constants.events';
 
 export enum QuestionCategory {
   BIO = 'BIO',
@@ -156,22 +153,6 @@ export default class Question extends BaseEntity {
       if (!this.title) this.title = 'Twitter URL';
       this.type = QuestionType.SHORT_TEXT;
     }
-  }
-
-  // ## LIFECYCLE HOOKS
-
-  @AfterCreate()
-  afterCreate(): void {
-    Question.cache.invalidate([
-      `${QueryEvent.LIST_QUESTIONS}-${this.community.id}`
-    ]);
-  }
-
-  @AfterUpdate()
-  afterUpdate(): void {
-    Question.cache.invalidate([
-      `${QueryEvent.LIST_QUESTIONS}-${this.community.id}`
-    ]);
   }
 
   // ## RELATIONSHIPS
