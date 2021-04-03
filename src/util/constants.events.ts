@@ -92,10 +92,7 @@ export enum QueryEvent {
   GET_OWNER = 'getOwner',
   GET_PAYMENTS_SERIES = 'getPaymentsSeries',
   GET_USER_TOKENS = 'getUserTokens',
-  IS_EMAIL_TAKEN = 'isEmailTaken',
-  LIST_EVENT_ATTENDEES = 'listEventAttendees',
-  LIST_EVENT_GUESTS = 'listEventGuests',
-  LIST_EVENT_WATCHES = 'listEventWatches'
+  IS_EMAIL_TAKEN = 'isEmailTaken'
 }
 
 export enum VerifyEvent {
