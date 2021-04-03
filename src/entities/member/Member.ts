@@ -2,7 +2,6 @@ import { IsUrl } from 'class-validator';
 import Stripe from 'stripe';
 import { Field, ObjectType } from 'type-graphql';
 import {
-  AfterUpdate,
   BeforeCreate,
   BeforeUpdate,
   Cascade,
@@ -21,7 +20,6 @@ import {
 import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import { stripe } from '@integrations/stripe/Stripe.util';
-import { QueryEvent } from '@util/constants.events';
 import { now } from '@util/util';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
@@ -162,11 +160,6 @@ export default class Member extends BaseEntity {
     if (this.status === MemberStatus.ACCEPTED && !this.joinedAt) {
       this.joinedAt = now();
     }
-  }
-
-  @AfterUpdate()
-  afterUpdate(): void {
-    Member.cache.invalidate([`${QueryEvent.GET_MEMBER}-${this.id}`]);
   }
 
   // ## RELATIONSHIPS

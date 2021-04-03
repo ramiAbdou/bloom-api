@@ -10,7 +10,6 @@ import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import demoteMembers, { DemoteMembersArgs } from './repo/demoteMembers';
 import getActiveMembersGrowth from './repo/getActiveMembersGrowth';
 import getActiveMembersSeries from './repo/getActiveMembersSeries';
-import getMember, { GetMemberArgs } from './repo/getMember';
 import getMembersGrowth from './repo/getMembersGrowth';
 import getMembersSeries from './repo/getMembersSeries';
 import getOwner, { GetOwnerArgs } from './repo/getOwner';
@@ -67,15 +66,6 @@ export default class MemberResolver {
     @Ctx() ctx: GQLContext
   ): Promise<TimeSeriesData[]> {
     return getActiveMembersSeries(ctx);
-  }
-
-  @Authorized()
-  @Query(() => Member)
-  async getMember(
-    @Args() args: GetMemberArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<Member> {
-    return getMember(args, ctx);
   }
 
   @Query(() => Member)
