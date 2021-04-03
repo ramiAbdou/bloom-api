@@ -78,14 +78,9 @@ export default class Community extends BaseEntity {
 
   @AfterUpdate()
   async afterUpdate(): Promise<void> {
-    const members: Member[] = await this.members.loadItems();
-
     Community.cache.invalidate([
       `${QueryEvent.GET_COMMUNITY}-${this.id}`,
-      `${QueryEvent.GET_COMMUNITY}-${this.urlName}`,
-      ...members.map((member: Member) => {
-        return `${QueryEvent.LIST_COMMUNITIES}-${member.user.id}`;
-      })
+      `${QueryEvent.GET_COMMUNITY}-${this.urlName}`
     ]);
   }
 

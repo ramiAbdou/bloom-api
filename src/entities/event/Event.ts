@@ -2,7 +2,6 @@ import { IsUrl } from 'class-validator';
 import day from 'dayjs';
 import { Field, ObjectType } from 'type-graphql';
 import {
-  AfterCreate,
   AfterUpdate,
   BeforeCreate,
   Collection,
@@ -105,23 +104,9 @@ export default class Event extends BaseEntity {
     this.startTime = day.utc(this.startTime).format();
   }
 
-  @AfterCreate()
-  afterCreate(): void {
-    Event.cache.invalidate([
-      `${QueryEvent.LIST_UPCOMING_EVENTS}-${this.community.id}`
-    ]);
-  }
-
   @AfterUpdate()
   afterUpdate(): void {
-    const isPast: boolean = day.utc().isAfter(day.utc(this.endTime));
-
-    Event.cache.invalidate([
-      `${QueryEvent.GET_EVENT}-${this.id}`,
-      ...(isPast
-        ? [`${QueryEvent.LIST_PAST_EVENTS}-${this.community.id}`]
-        : [`${QueryEvent.LIST_UPCOMING_EVENTS}-${this.community.id}`])
-    ]);
+    Event.cache.invalidate([`${QueryEvent.GET_EVENT}-${this.id}`]);
   }
 
   // ## RELATIONSHIPS

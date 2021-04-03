@@ -167,18 +167,15 @@ export default class Member extends BaseEntity {
 
   @AfterCreate()
   afterCreate(): void {
-    Member.cache.invalidate(
-      this.status === MemberStatus.PENDING
-        ? [`${QueryEvent.LIST_APPLICANTS}-${this.community.id}`]
-        : [`${QueryEvent.LIST_MEMBERS}-${this.community.id}`]
-    );
+    Member.cache.invalidate([
+      `${QueryEvent.LIST_MEMBERS}-${this.community.id}`
+    ]);
   }
 
   @AfterUpdate()
   afterUpdate(): void {
     Member.cache.invalidate([
       `${QueryEvent.GET_MEMBER}-${this.id}`,
-      `${QueryEvent.LIST_APPLICANTS}-${this.community.id}`,
       `${QueryEvent.LIST_MEMBERS}-${this.community.id}`
     ]);
   }

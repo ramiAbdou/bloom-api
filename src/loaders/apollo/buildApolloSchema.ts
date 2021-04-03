@@ -1,7 +1,6 @@
 import { GraphQLSchema } from 'graphql';
 import { buildSchema, ResolverData } from 'type-graphql';
 
-import ApplicationResolver from '@entities/application/Application.resolver';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations.resolver';
 import CommunityResolver from '@entities/community/Community.resolver';
 import EventAttendeeResolver from '@entities/event-attendee/EventAttendee.resolver';
@@ -26,7 +25,6 @@ const buildApolloSchema = async (): Promise<GraphQLSchema> => {
       return isAuthenticated({ context: args.context, roles });
     },
     resolvers: [
-      ApplicationResolver,
       CommunityResolver,
       CommunityIntegrations,
       EventResolver,

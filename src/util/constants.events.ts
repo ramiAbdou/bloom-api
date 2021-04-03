@@ -80,7 +80,6 @@ export enum MutationEvent {
 export enum QueryEvent {
   GET_ACTIVE_MEMBERS_GROWTH = 'getActiveMembersGrowth',
   GET_ACTIVE_MEMBERS_SERIES = 'getActiveMembersSeries',
-  GET_APPLICATION = 'getApplication',
   GET_CHANGE_PREVIEW = 'getChangePreview',
   GET_COMMUNITY = 'getCommunity',
   GET_COMMUNITY_INTEGRATIONS = 'getCommunityIntegrations',
@@ -93,24 +92,17 @@ export enum QueryEvent {
   GET_MEMBERS_SERIES = 'getMembersSeries',
   GET_OWNER = 'getOwner',
   GET_PAYMENTS_SERIES = 'getPaymentsSeries',
-  GET_USER = 'getUser',
   GET_USER_TOKENS = 'getUserTokens',
   IS_EMAIL_TAKEN = 'isEmailTaken',
-  LIST_APPLICANTS = 'listApplicants',
-  LIST_COMMUNITIES = 'listCommunities',
   LIST_EVENT_ATTENDEES = 'listEventAttendees',
   LIST_EVENT_GUESTS = 'listEventGuests',
   LIST_EVENT_WATCHES = 'listEventWatches',
   LIST_MEMBER_TYPES = 'listMemberTypes',
   LIST_MEMBER_SOCIALS = 'listMemberSocials',
-  LIST_MEMBER_VALUES = 'listMemberValues',
   LIST_MEMBERS = 'listMembers',
-  LIST_PAST_EVENTS = 'listPastEvents',
   LIST_PAYMENTS = 'listPayments',
   LIST_QUESTIONS = 'listQuestions',
-  LIST_RANKED_QUESTIONS = 'listRankedQuestions',
-  LIST_UPCOMING_EVENT_GUESTS = 'listUpcomingEventGuests',
-  LIST_UPCOMING_EVENTS = 'listUpcomingEvents'
+  LIST_RANKED_QUESTIONS = 'listRankedQuestions'
 }
 
 export enum VerifyEvent {
