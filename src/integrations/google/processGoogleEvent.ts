@@ -1,7 +1,6 @@
 import BloomManager from '@core/db/BloomManager';
 import EventGuest from '@entities/event-guest/EventGuest';
 import Event, { EventPrivacy } from '@entities/event/Event';
-import updateEvent from '@entities/event/repo/updateEvent';
 import deleteGoogleCalendarEvent from '@integrations/google/repo/deleteGoogleCalendarEvent';
 import deleteGoogleCalendarEventAttendee from '@integrations/google/repo/deleteGoogleCalendarEventAttendee';
 import updateGoogleCalendarEvent from '@integrations/google/repo/updateGoogleCalendarEvent';
@@ -53,7 +52,7 @@ const processGoogleEvent = async (args: GoogleEventArgs): Promise<void> => {
   if (googleEvent === GoogleEvent.CREATE_CALENDAR_EVENT) {
     await bm.em.populate(event, ['community']);
 
-    const googleCalendarEvent = await createGoogleCalendarEvent({
+    await createGoogleCalendarEvent({
       description: event.description,
       end: { dateTime: event.endTime },
       location: await event.eventUrl(),
@@ -61,11 +60,6 @@ const processGoogleEvent = async (args: GoogleEventArgs): Promise<void> => {
       summary: event.title,
       visibility:
         event.privacy === EventPrivacy.MEMBERS_ONLY ? 'private' : 'public'
-    });
-
-    await updateEvent({
-      eventId: event.id,
-      googleCalendarEventId: googleCalendarEvent.id
     });
   }
 

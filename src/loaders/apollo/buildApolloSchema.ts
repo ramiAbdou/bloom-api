@@ -7,11 +7,9 @@ import EventGuestResolver from '@entities/event-guest/EventGuest.resolver';
 import EventWatchResolver from '@entities/event-watch/EventWatch.resolver';
 import EventResolver from '@entities/event/Event.resolver';
 import MemberIntegrationsResolver from '@entities/member-integrations/MemberIntegrations.resolver';
-import MemberSocialsResolver from '@entities/member-socials/MemberSocials.resolver';
 import MemberValueResolver from '@entities/member-value/MemberValue.resolver';
 import MemberResolver from '@entities/member/Member.resolver';
 import PaymentResolver from '@entities/payment/Payment.resolver';
-import QuestionResolver from '@entities/question/Question.resolver';
 import UserResolver from '@entities/user/User.resolver';
 import { GQLContext } from '@util/constants';
 import isAuthenticated from './isAuthenticated';
@@ -29,10 +27,8 @@ const buildApolloSchema = async (): Promise<GraphQLSchema> => {
       EventWatchResolver,
       MemberResolver,
       MemberIntegrationsResolver,
-      MemberSocialsResolver,
       MemberValueResolver,
       PaymentResolver,
-      QuestionResolver,
       UserResolver
     ]
   });

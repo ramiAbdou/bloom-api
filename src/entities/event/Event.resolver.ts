@@ -1,12 +1,10 @@
-import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { MemberRole } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import Event from './Event';
 import createEvent, { CreateEventArgs } from './repo/createEvent';
 import deleteEvent, { DeleteEventArgs } from './repo/deleteEvent';
-import getEvent, { GetEventArgs } from './repo/getEvent';
-import updateEvent, { UpdateEventArgs } from './repo/updateEvent';
 
 @Resolver()
 export default class EventResolver {
@@ -26,16 +24,5 @@ export default class EventResolver {
     @Ctx() ctx: GQLContext
   ): Promise<Event> {
     return deleteEvent(args, ctx);
-  }
-
-  @Query(() => Event)
-  async getEvent(@Args() args: GetEventArgs): Promise<Event> {
-    return getEvent(args);
-  }
-
-  @Authorized(MemberRole.ADMIN)
-  @Mutation(() => Event, { nullable: true })
-  async updateEvent(@Args() args: UpdateEventArgs): Promise<Event> {
-    return updateEvent(args);
   }
 }

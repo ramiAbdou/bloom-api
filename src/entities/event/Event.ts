@@ -2,7 +2,6 @@ import { IsUrl } from 'class-validator';
 import day from 'dayjs';
 import { Field, ObjectType } from 'type-graphql';
 import {
-  AfterUpdate,
   BeforeCreate,
   Collection,
   Entity,
@@ -17,7 +16,6 @@ import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import getGoogleCalendarEvent from '@integrations/google/repo/getGoogleCalendarEvent';
 import { APP } from '@util/constants';
-import { QueryEvent } from '@util/constants.events';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
@@ -102,11 +100,6 @@ export default class Event extends BaseEntity {
   beforeCreate(): void {
     this.endTime = day.utc(this.endTime).format();
     this.startTime = day.utc(this.startTime).format();
-  }
-
-  @AfterUpdate()
-  afterUpdate(): void {
-    Event.cache.invalidate([`${QueryEvent.GET_EVENT}-${this.id}`]);
   }
 
   // ## RELATIONSHIPS

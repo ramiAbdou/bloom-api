@@ -20,7 +20,6 @@ import respondToApplicants, {
   RespondToApplicantsArgs
 } from './repo/respondToApplicants';
 import restoreMembers, { RestoreMembersArgs } from './repo/restoreMembers';
-import updateMember, { UpdateMemberArgs } from './repo/updateMember';
 
 @Resolver()
 export default class MemberResolver {
@@ -121,14 +120,5 @@ export default class MemberResolver {
   @Mutation(() => [Member])
   async restoreMembers(@Args() args: RestoreMembersArgs): Promise<Member[]> {
     return restoreMembers(args);
-  }
-
-  @Authorized()
-  @Mutation(() => Member, { nullable: true })
-  async updateMember(
-    @Args() args: UpdateMemberArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<Member> {
-    return updateMember(args, ctx);
   }
 }
