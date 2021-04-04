@@ -2,9 +2,6 @@ import { Args, Authorized, Ctx, Mutation, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@util/constants';
 import EventGuest from './EventGuest';
-import createEventGuestWithMember, {
-  CreateEventGuestWithMemberArgs
-} from './repo/createEventGuestWithMember';
 import createEventGuestWithSupporter, {
   CreateEventGuestWithSupporterArgs
 } from './repo/createEventGuestWithSupporter';
@@ -14,14 +11,6 @@ import deleteEventGuest, {
 
 @Resolver()
 export default class EventGuestResolver {
-  @Mutation(() => EventGuest, { nullable: true })
-  async createEventGuestWithMember(
-    @Args() args: CreateEventGuestWithMemberArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<EventGuest> {
-    return createEventGuestWithMember(args, ctx);
-  }
-
   @Mutation(() => EventGuest, { nullable: true })
   async createEventGuestWithSupporter(
     @Args() args: CreateEventGuestWithSupporterArgs

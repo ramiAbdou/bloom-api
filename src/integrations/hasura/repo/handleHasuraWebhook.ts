@@ -1,6 +1,7 @@
 import express from 'express';
 
-import { HasuraRole } from '../Hasura.types';
+import handleHasuraAuthentication from './handleHasuraAuthentication';
+import handleHasuraEventTrigger from './handleHasuraEventTrigger';
 
 /**
  * Returns a 200 status if the Stripe webhook was handled properly.
@@ -14,12 +15,11 @@ const handleHasuraWebhook = async (
   req: express.Request,
   res: express.Response
 ): Promise<express.Response> => {
-  return res.json({
-    'X-Hasura-Custom': 'hello',
-    'X-Hasura-Is-Owner': 'true',
-    'X-Hasura-Role': HasuraRole.GUEST,
-    'X-Hasura-User-Id': '1'
-  });
+  if (req.body.event && req.body.trigger) {
+    return handleHasuraEventTrigger(req, res);
+  }
+
+  return handleHasuraAuthentication(req, res);
 };
 
 export default handleHasuraWebhook;

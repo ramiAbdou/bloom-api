@@ -1,5 +1,4 @@
 import BloomManager from '@core/db/BloomManager';
-import Community from '@entities/community/Community';
 import EventGuest from '@entities/event-guest/EventGuest';
 import Event from '@entities/event/Event';
 import Member from '@entities/member/Member';
@@ -10,7 +9,6 @@ import { buildUrl, signToken } from '@util/util';
 import { EmailPayload } from '../emails.types';
 
 export interface EventRsvpPayload {
-  communityId: string;
   eventId: string;
   guestId: string;
 }
@@ -24,17 +22,12 @@ export interface EventRsvpVars {
 const getEventRsvpVars = async (
   context: EmailPayload
 ): Promise<EventRsvpVars[]> => {
-  const { communityId, eventId, guestId } = context as EventRsvpPayload;
+  const { eventId, guestId } = context as EventRsvpPayload;
 
   const bm: BloomManager = new BloomManager();
 
-  const [community, event, guest]: [
-    Community,
-    Event,
-    EventGuest
-  ] = await Promise.all([
-    bm.findOne(Community, { id: communityId }),
-    bm.findOne(Event, { id: eventId }),
+  const [event, guest]: [Event, EventGuest] = await Promise.all([
+    bm.findOne(Event, { id: eventId }, { populate: ['community'] }),
     bm.findOne(
       EventGuest,
       { id: guestId },
@@ -45,7 +38,7 @@ const getEventRsvpVars = async (
   const token: string = signToken({
     expires: false,
     payload: {
-      communityId,
+      communityId: event.community.id,
       event: VerifyEvent.JOIN_EVENT,
       eventId,
       memberId: guest.member?.id,
@@ -55,7 +48,7 @@ const getEventRsvpVars = async (
 
   const joinUrl: string = buildUrl({
     params: { token },
-    url: `${APP.CLIENT_URL}/${community.urlName}/events/${eventId}`
+    url: `${APP.CLIENT_URL}/${event.community.urlName}/events/${eventId}`
   });
 
   const variables: EventRsvpVars[] = [

@@ -4,7 +4,6 @@ import { buildSchema, ResolverData } from 'type-graphql';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations.resolver';
 import EventAttendeeResolver from '@entities/event-attendee/EventAttendee.resolver';
 import EventGuestResolver from '@entities/event-guest/EventGuest.resolver';
-import EventWatchResolver from '@entities/event-watch/EventWatch.resolver';
 import EventResolver from '@entities/event/Event.resolver';
 import MemberIntegrationsResolver from '@entities/member-integrations/MemberIntegrations.resolver';
 import MemberValueResolver from '@entities/member-value/MemberValue.resolver';
@@ -24,7 +23,6 @@ const buildApolloSchema = async (): Promise<GraphQLSchema> => {
       EventResolver,
       EventAttendeeResolver,
       EventGuestResolver,
-      EventWatchResolver,
       MemberResolver,
       MemberIntegrationsResolver,
       MemberValueResolver,
