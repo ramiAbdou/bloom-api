@@ -2,6 +2,7 @@ import camelCaseKeys from 'camelcase-keys';
 import express from 'express';
 
 import handleCreateEventGuest from '@entities/event-guest/repo/handleCreateEventGuest';
+import handleDeleteEvent from '@entities/event/repo/handleDeleteEvent';
 import { HasuraEvent, HasuraEventPayload } from '../Hasura.types';
 
 /**
@@ -22,20 +23,13 @@ const handleHasuraEventTrigger = async (
       handleCreateEventGuest(payload);
       break;
 
+    case HasuraEvent.DELETE_EVENT:
+      handleDeleteEvent(payload);
+      break;
+
     default:
       break;
   }
-
-  // emitEmailEvent(
-  //   EmailEvent.EVENT_RSVP,
-  //   { communityId, eventId, guestId: guest.id },
-  //   { delay: 5000 }
-  // );
-
-  // emitGoogleEvent(GoogleEvent.ADD_CALENDAR_EVENT_ATTENDEE, {
-  //   eventId,
-  //   guestId: guest.id
-  // });
 
   return res.sendStatus(200);
 };

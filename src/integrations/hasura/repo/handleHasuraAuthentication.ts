@@ -16,8 +16,8 @@ const handleHasuraAuthentication = async (
   return res.json({
     'X-Hasura-Custom': 'hello',
     'X-Hasura-Is-Owner': 'true',
-    'X-Hasura-Role': HasuraRole.GUEST,
-    'X-Hasura-User-Id': '1'
+    'X-Hasura-Member-Id': '1',
+    'X-Hasura-Role': HasuraRole.GUEST
   });
 };
 
