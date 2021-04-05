@@ -28,15 +28,10 @@ export default class Community extends BaseEntity {
 
   // ## FIELDS
 
-  // True if the member should be accepted automatically.
-  @Field({ defaultValue: false })
-  @Property()
-  autoAccept: boolean = false;
-
-  @Field({ nullable: true })
-  @Property({ nullable: true, unique: true })
+  @Field()
+  @Property({ unique: true })
   @IsUrl()
-  logoUrl?: string;
+  logoUrl: string;
 
   @Field({ nullable: true })
   @Property({ nullable: true })

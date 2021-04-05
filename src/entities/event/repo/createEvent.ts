@@ -17,11 +17,11 @@ export class CreateEventArgs {
   @Field()
   endTime: string;
 
+  @Field(() => [String])
+  eventInvitees?: string[];
+
   @Field({ nullable: true })
   imageUrl?: string;
-
-  @Field(() => [String])
-  invitees?: string[];
 
   @Field(() => String, { defaultValue: EventPrivacy.MEMBERS_ONLY })
   privacy: EventPrivacy;
@@ -51,7 +51,7 @@ const createEvent = async (
   ctx: Pick<GQLContext, 'communityId' | 'memberId'>
 ): Promise<Event> => {
   const { communityId, memberId } = ctx;
-  const { invitees: memberIdsToInvite, ...eventData } = args;
+  const { eventInvitees: memberIdsToInvite, ...eventData } = args;
 
   const event: Event = await new BloomManager().createAndFlush(Event, {
     ...eventData,

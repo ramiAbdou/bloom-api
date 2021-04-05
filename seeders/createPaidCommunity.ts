@@ -118,7 +118,6 @@ const createPaidCommunity = async (): Promise<void> => {
       description: `Helping recruiters make an impact through talent acquisition is our “Req”. It’s evergreen. The mission is always the same. Let’s Build Together. OneReq at a time.`,
       title: `OneReq Member Application`
     },
-    autoAccept: true,
     name: 'OneReq',
     primaryColor: '#8185A5',
     questions: oneReqQuestions,

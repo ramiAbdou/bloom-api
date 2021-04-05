@@ -134,10 +134,7 @@ export default class Member extends BaseEntity {
 
   @BeforeCreate()
   beforeCreate(): void {
-    if (
-      (this.role && this.status !== MemberStatus.INVITED) ||
-      this.community.autoAccept
-    ) {
+    if (this.role && this.status !== MemberStatus.INVITED) {
       this.joinedAt = now();
       this.status = MemberStatus.ACCEPTED;
     }
