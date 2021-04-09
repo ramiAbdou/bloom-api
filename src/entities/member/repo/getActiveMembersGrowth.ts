@@ -1,9 +1,19 @@
 import day from 'dayjs';
+import { Field, ObjectType } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import Member from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import { QueryEvent } from '@util/constants.events';
+
+@ObjectType()
+export class GetActiveMembersGrowthResult {
+  @Field()
+  count: number;
+
+  @Field()
+  growth: number;
+}
 
 /**
  * Returns the [# of Active Members, % of Growth in last 30 days.]
@@ -16,7 +26,7 @@ import { QueryEvent } from '@util/constants.events';
  */
 const getActiveMembersGrowth = async (
   ctx: Pick<GQLContext, 'communityId'>
-): Promise<number[]> => {
+): Promise<GetActiveMembersGrowthResult> => {
   const { communityId } = ctx;
 
   const cacheKey = `${QueryEvent.GET_ACTIVE_MEMBERS_GROWTH}-${communityId}`;
@@ -45,7 +55,7 @@ const getActiveMembersGrowth = async (
   const result = [refreshesThisMonth, growthPercentage];
   Member.cache.set(cacheKey, result);
 
-  return result;
+  return { count: refreshesThisMonth, growth: growthPercentage };
 };
 
 export default getActiveMembersGrowth;
