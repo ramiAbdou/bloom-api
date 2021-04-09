@@ -17,7 +17,6 @@ import getMembersGrowth, {
 } from './repo/getMembersGrowth';
 import getMembersSeries from './repo/getMembersSeries';
 import inviteMembers, { InviteMembersArgs } from './repo/inviteMembers';
-import isEmailTaken, { IsEmailTakenArgs } from './repo/isEmailTaken';
 import promoteMembers, { PromoteMembersArgs } from './repo/promoteMembers';
 import respondToApplicants, {
   RespondToApplicantsArgs
@@ -93,11 +92,6 @@ export default class MemberResolver {
     @Ctx() ctx: GQLContext
   ): Promise<Member[]> {
     return inviteMembers(args, ctx);
-  }
-
-  @Query(() => Boolean)
-  async isEmailTaken(@Args() args: IsEmailTakenArgs): Promise<boolean> {
-    return isEmailTaken(args);
   }
 
   @Authorized(MemberRole.OWNER)

@@ -79,10 +79,8 @@ export enum QueryEvent {
   GET_MEMBER_INTEGRATIONS = 'getMemberIntegrations',
   GET_MEMBERS_GROWTH = 'getMembersGrowth',
   GET_MEMBERS_SERIES = 'getMembersSeries',
-  GET_OWNER = 'getOwner',
   GET_PAYMENTS_SERIES = 'getPaymentsSeries',
-  GET_USER_TOKENS = 'getUserTokens',
-  IS_EMAIL_TAKEN = 'isEmailTaken'
+  GET_USER_TOKENS = 'getUserTokens'
 }
 
 export enum VerifyEvent {
