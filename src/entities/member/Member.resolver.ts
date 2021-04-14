@@ -7,7 +7,6 @@ import applyToCommunity, {
   ApplyToCommunityArgs
 } from './repo/applyToCommunity';
 import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
-import demoteMembers, { DemoteMembersArgs } from './repo/demoteMembers';
 import getActiveMembersGrowth, {
   GetActiveMembersGrowthResult
 } from './repo/getActiveMembersGrowth';
@@ -17,7 +16,6 @@ import getMembersGrowth, {
 } from './repo/getMembersGrowth';
 import getMembersSeries from './repo/getMembersSeries';
 import inviteMembers, { InviteMembersArgs } from './repo/inviteMembers';
-import promoteMembers, { PromoteMembersArgs } from './repo/promoteMembers';
 import respondToApplicants, {
   RespondToApplicantsArgs
 } from './repo/respondToApplicants';
@@ -44,15 +42,6 @@ export default class MemberResolver {
     @Ctx() ctx: GQLContext
   ): Promise<Member[]> {
     return deleteMembers(args, ctx);
-  }
-
-  @Authorized(MemberRole.OWNER)
-  @Mutation(() => [Member])
-  async demoteMembers(
-    @Args() args: DemoteMembersArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<Member[]> {
-    return demoteMembers(args, ctx);
   }
 
   @Authorized(MemberRole.ADMIN)
@@ -92,15 +81,6 @@ export default class MemberResolver {
     @Ctx() ctx: GQLContext
   ): Promise<Member[]> {
     return inviteMembers(args, ctx);
-  }
-
-  @Authorized(MemberRole.OWNER)
-  @Mutation(() => [Member])
-  async promoteMembers(
-    @Args() args: PromoteMembersArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<Member[]> {
-    return promoteMembers(args, ctx);
   }
 
   @Authorized(MemberRole.ADMIN)

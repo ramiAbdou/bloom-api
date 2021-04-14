@@ -1,8 +1,6 @@
 import { IsUrl } from 'class-validator';
-import day from 'dayjs';
 import { Field, ObjectType } from 'type-graphql';
 import {
-  BeforeCreate,
   Collection,
   Entity,
   Enum,
@@ -92,14 +90,6 @@ export default class Event extends BaseEntity {
     );
 
     return googleCalendarEvent.htmlLink;
-  }
-
-  // ## LIFECYCLE HOOKS
-
-  @BeforeCreate()
-  beforeCreate(): void {
-    this.endTime = day.utc(this.endTime).format();
-    this.startTime = day.utc(this.startTime).format();
   }
 
   // ## RELATIONSHIPS
