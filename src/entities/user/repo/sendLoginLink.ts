@@ -1,4 +1,4 @@
-import { ArgsType, Field } from 'type-graphql';
+import { ArgsType, Field, ObjectType } from 'type-graphql';
 
 import { LoginLinkEmailPayload } from '@system/emails/repo/getLoginLinkVars';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
@@ -18,33 +18,43 @@ export class SendLoginLinkArgs {
   email: string;
 
   @Field({ nullable: true })
-  pathname?: string;
+  redirectUrl?: string;
+}
+
+@ObjectType()
+export class SendLoginLinkResult {
+  @Field()
+  ok: boolean;
 }
 
 /**
  * Generates a temporary login URL with token for the User with the given email.
  * Runs the refresh flow for the user.
  */
-const sendLoginLink = async (args: SendLoginLinkArgs): Promise<void> => {
-  const { communityId, email, pathname } = args;
-
+const sendLoginLink = async ({
+  communityId,
+  email,
+  redirectUrl
+}: SendLoginLinkArgs): Promise<SendLoginLinkResult> => {
   // If the User hasn't been accepted into any community, throw an error.
   const loginError: ErrorType = await getLoginError({ communityId, email });
   if (loginError) throw new Error(loginError);
 
   // Otherwise, run the refresh flow and get the temporary token to store in
   // the login URL.
-  const { accessToken: token } = await refreshToken({ email });
+  const accessToken: string = await refreshToken({ email });
 
   const loginUrl: string = buildUrl({
-    params: { token },
-    url: APP.CLIENT_URL + (pathname ?? '')
+    params: { token: accessToken },
+    url: APP.CLIENT_URL + (redirectUrl ?? '')
   });
 
   emitEmailEvent(EmailEvent.LOGIN_LINK, {
     email,
     loginUrl
   } as LoginLinkEmailPayload);
+
+  return { ok: true };
 };
 
 export default sendLoginLink;

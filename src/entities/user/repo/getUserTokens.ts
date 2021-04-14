@@ -1,10 +1,10 @@
 import { ArgsType, Field, ObjectType } from 'type-graphql';
 
-import BloomManager from '@core/db/BloomManager';
-import Member from '@entities/member/Member';
-import { AuthTokens, GQLContext } from '@util/constants';
-import { decodeToken } from '@util/util';
-import refreshToken from './refreshToken';
+// import BloomManager from '@core/db/BloomManager';
+// import Member from '@entities/member/Member';
+import { GQLContext } from '@util/constants';
+// import { decodeToken } from '@util/util';
+// import refreshToken from './refreshToken';
 
 @ArgsType()
 export class GetUserTokensArgs {
@@ -14,12 +14,6 @@ export class GetUserTokensArgs {
 
 @ObjectType()
 export class GetUserTokensResult {
-  @Field({ nullable: true })
-  communityId?: string;
-
-  @Field({ nullable: true })
-  memberId: string;
-
   @Field({ nullable: true })
   userId: string;
 }
@@ -40,28 +34,29 @@ const getUserTokens = async (
   args: GetUserTokensArgs,
   ctx: Pick<GQLContext, 'communityId' | 'memberId' | 'res' | 'userId'>
 ): Promise<GetUserTokensResult> => {
-  const { urlName } = args;
-  const { communityId, memberId, res, userId } = ctx;
+  return { userId: ctx.userId };
+  // const { urlName } = args;
+  // const { communityId, memberId, res, userId } = ctx;
 
-  if (!urlName) return { communityId, memberId, userId };
+  // if (!urlName) return { userId };
 
-  const member: Member = await new BloomManager().findOne(Member, {
-    community: { urlName },
-    user: userId
-  });
+  // // const member: Member = await new BloomManager().findOne(Member, {
+  // //   community: { urlName },
+  // //   user: userId
+  // // });
 
-  if (member && member.community?.id !== communityId) {
-    const tokens: AuthTokens = await refreshToken({
-      memberId: member.id,
-      res,
-      userId
-    });
+  // // if (member && member.community?.id !== communityId) {
+  // //   const accessToken: string = await refreshToken({
+  // //     memberId: member.id,
+  // //     res,
+  // //     userId
+  // //   });
 
-    const decodedToken = decodeToken(tokens.accessToken);
-    return decodedToken;
-  }
+  // //   const decodedToken = decodeToken(accessToken);
+  // //   return decodedToken;
+  // // }
 
-  return { communityId, memberId, userId };
+  // return { communityId, memberId, userId };
 };
 
 export default getUserTokens;

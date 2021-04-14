@@ -32,8 +32,6 @@ export const JWT = {
 
 export type AuthQueryArgs = { code: string; state?: string };
 
-export type AuthTokens = { accessToken: string; refreshToken: string };
-
 export enum IntegrationsBrand {
   MAILCHIMP = 'Mailchimp',
   STRIPE = 'Stripe',

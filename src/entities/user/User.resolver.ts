@@ -7,7 +7,10 @@ import getUserTokens, {
   GetUserTokensResult
 } from './repo/getUserTokens';
 import logout from './repo/logout';
-import sendLoginLink, { SendLoginLinkArgs } from './repo/sendLoginLink';
+import sendLoginLink, {
+  SendLoginLinkArgs,
+  SendLoginLinkResult
+} from './repo/sendLoginLink';
 import verifyToken, { VerifiedToken } from './repo/verifyToken';
 
 @Resolver()
@@ -25,8 +28,10 @@ export default class UserResolver {
     return logout(ctx);
   }
 
-  @Mutation(() => Boolean, { nullable: true })
-  async sendLoginLink(@Args() args: SendLoginLinkArgs): Promise<void> {
+  @Mutation(() => SendLoginLinkResult, { nullable: true })
+  async sendLoginLink(
+    @Args() args: SendLoginLinkArgs
+  ): Promise<SendLoginLinkResult> {
     return sendLoginLink(args);
   }
 

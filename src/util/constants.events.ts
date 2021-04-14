@@ -47,12 +47,10 @@ export enum TaskEvent {
 
 export enum MutationEvent {
   APPLY_TO_COMMUNITY = 'applyToCommunity',
-  CREATE_EVENT = 'createEvent',
   CREATE_EVENT_ATTENDEE_WITH_MEMBER = 'createEventAttendeeWithMember',
   CREATE_EVENT_ATTENDEE_WITH_SUPPORTER = 'createEventAttendeeWithSupporter',
   CREATE_EVENT_GUEST_WITH_SUPPORTER = 'createEventGuestWithSupporter',
   CREATE_MEMBER_TYPES = 'createMemberTypes',
-  DELETE_EVENT = 'deleteEvent',
   DELETE_EVENT_GUEST = 'deleteEventGuest',
   DELETE_MEMBERS = 'deleteMembers',
   DEMOTE_MEMBERS = 'demoteMembers',

@@ -2,9 +2,9 @@ import { Response } from 'express';
 import { FilterQuery } from '@mikro-orm/core';
 
 import BloomManager from '@core/db/BloomManager';
-import createMemberRefresh from '@entities/member-refresh/repo/createMemberRefresh';
-import Member from '@entities/member/Member';
-import { AuthTokens, JWT } from '@util/constants';
+// import createMemberRefresh from '@entities/member-refresh/repo/createMemberRefresh';
+// import Member from '@entities/member/Member';
+import { JWT } from '@util/constants';
 import { VerifyEvent } from '@util/constants.events';
 import { signToken } from '@util/util';
 import User from '../User';
@@ -29,9 +29,14 @@ interface RefreshTokenArgs {
  * @param args.res - Express Response object.
  * @param args.userId - ID of the User to refresh.
  */
-const refreshToken = async (args: RefreshTokenArgs): Promise<AuthTokens> => {
-  const { email, googleId, memberId, res, rToken, userId } = args;
-
+const refreshToken = async ({
+  email,
+  googleId,
+  memberId,
+  res,
+  rToken,
+  userId
+}: RefreshTokenArgs): Promise<string> => {
   if (!email && !googleId && !memberId && !rToken && !userId) return null;
 
   let queryArgs: FilterQuery<User>;
@@ -42,9 +47,7 @@ const refreshToken = async (args: RefreshTokenArgs): Promise<AuthTokens> => {
   else if (rToken) queryArgs = { refreshToken: rToken };
   else if (memberId) queryArgs = { members: { id: memberId } };
 
-  const bm: BloomManager = new BloomManager();
-
-  const user: User = await bm.findOne(User, queryArgs);
+  const user: User = await new BloomManager().findOne(User, queryArgs);
 
   // If no user found with the given arguments or a user is found and
   // the access token is expired, then exit. Also, if there is a loginToken
@@ -54,25 +57,12 @@ const refreshToken = async (args: RefreshTokenArgs): Promise<AuthTokens> => {
     return null;
   }
 
-  let member: Member;
-
-  if (memberId) member = await bm.findOne(Member, { id: memberId });
-  else {
-    await user.members.init();
-    member = user.members[0];
-  }
-
   const payload = {
-    communityId: member.community.id,
-    memberId: member.id,
     userId: user.id,
     ...(email ? { event: VerifyEvent.LOG_IN } : {})
   };
 
-  const tokens: AuthTokens = {
-    accessToken: signToken({ payload }),
-    refreshToken: signToken({ expires: false, payload })
-  };
+  const accessToken: string = signToken({ payload });
 
   // If an Express Response object is passed in, set the HTTP only cookies.
   if (res) {
@@ -81,20 +71,17 @@ const refreshToken = async (args: RefreshTokenArgs): Promise<AuthTokens> => {
       secure: process.env.APP_ENV === 'stage' || process.env.APP_ENV === 'prod'
     };
 
-    res.cookie('accessToken', tokens.accessToken, {
+    res.cookie('accessToken', accessToken, {
       ...options,
       maxAge: JWT.EXPIRES_IN * 1000 // x1000 b/c represented as milliseconds.
     });
 
-    res.cookie('refreshToken', tokens.refreshToken, options);
+    res.cookie('refreshToken', user.refreshToken, options);
   }
 
-  // Update the refreshToken in the DB, and create a refresh entity.
-  user.refreshToken = tokens.refreshToken;
-  await bm.flush();
-  await createMemberRefresh({ memberId: member.id });
+  // await createMemberRefresh({ memberId: member.id });
 
-  return tokens;
+  return accessToken;
 };
 
 export default refreshToken;

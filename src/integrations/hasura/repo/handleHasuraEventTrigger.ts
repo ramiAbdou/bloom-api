@@ -2,6 +2,7 @@ import camelCaseKeys from 'camelcase-keys';
 import express from 'express';
 
 import handleCreateEventGuest from '@entities/event-guest/repo/handleCreateEventGuest';
+import handleCreateEvent from '@entities/event/repo/handleCreateEvent';
 import handleDeleteEvent from '@entities/event/repo/handleDeleteEvent';
 import { HasuraEvent, HasuraEventPayload } from '../Hasura.types';
 
@@ -19,6 +20,10 @@ const handleHasuraEventTrigger = async (
   console.log('hasura event caught', payload.trigger.name);
 
   switch (payload.trigger.name) {
+    case HasuraEvent.CREATE_EVENT:
+      handleCreateEvent(payload);
+      break;
+
     case HasuraEvent.CREATE_EVENT_GUEST:
       handleCreateEventGuest(payload);
       break;

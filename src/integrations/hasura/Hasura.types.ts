@@ -1,4 +1,5 @@
 export enum HasuraEvent {
+  CREATE_EVENT = 'create_event',
   CREATE_EVENT_GUEST = 'create_event_guest',
   DELETE_EVENT = 'delete_event'
 }
