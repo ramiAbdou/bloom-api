@@ -4,6 +4,7 @@ import express from 'express';
 import handleCreateEventGuest from '@entities/event-guest/repo/handleCreateEventGuest';
 import handleCreateEvent from '@entities/event/repo/handleCreateEvent';
 import handleDeleteEvent from '@entities/event/repo/handleDeleteEvent';
+import handleDeleteMember from '@entities/member/repo/handleDeleteMember';
 import handleUpdateMemberRole from '@entities/member/repo/handleUpdateMemberRole';
 import { HasuraEvent, HasuraEventPayload } from '../Hasura.types';
 
@@ -31,6 +32,10 @@ const handleHasuraEventTrigger = async (
 
     case HasuraEvent.DELETE_EVENT:
       handleDeleteEvent(payload);
+      break;
+
+    case HasuraEvent.DELETE_MEMBER:
+      handleDeleteMember(payload);
       break;
 
     case HasuraEvent.UPDATE_MEMBER_ROLE:

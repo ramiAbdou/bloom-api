@@ -6,7 +6,6 @@ import { TimeSeriesData } from '@util/constants.gql';
 import applyToCommunity, {
   ApplyToCommunityArgs
 } from './repo/applyToCommunity';
-import deleteMembers, { DeleteMembersArgs } from './repo/deleteMembers';
 import getActiveMembersGrowth, {
   GetActiveMembersGrowthResult
 } from './repo/getActiveMembersGrowth';
@@ -33,15 +32,6 @@ export default class MemberResolver {
     @Ctx() ctx: GQLContext
   ): Promise<Member> {
     return applyToCommunity(args, ctx);
-  }
-
-  @Authorized(MemberRole.ADMIN)
-  @Mutation(() => [Member])
-  async deleteMembers(
-    @Args() args: DeleteMembersArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<Member[]> {
-    return deleteMembers(args, ctx);
   }
 
   @Authorized(MemberRole.ADMIN)
