@@ -10,13 +10,6 @@ import { HasuraEventPayload } from '@integrations/hasura/Hasura.types';
 const handleUpdateMemberRole = (payload: HasuraEventPayload): boolean => {
   const member = payload.event.data.new;
 
-  // emitEmailEvent(EmailEvent.PROMOTE_MEMBERS, {
-  //   communityId: event.communityId,
-  //   memberIds
-  // });
-
-  // console.log(payload.event.data);
-
   return true;
 };
 

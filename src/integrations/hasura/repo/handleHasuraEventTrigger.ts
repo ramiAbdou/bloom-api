@@ -6,6 +6,7 @@ import handleCreateEvent from '@entities/event/repo/handleCreateEvent';
 import handleDeleteEvent from '@entities/event/repo/handleDeleteEvent';
 import handleDeleteMember from '@entities/member/repo/handleDeleteMember';
 import handleUpdateMemberRole from '@entities/member/repo/handleUpdateMemberRole';
+import handleUpdateMemberStatus from '@entities/member/repo/handleUpdateMemberStatus';
 import { HasuraEvent, HasuraEventPayload } from '../Hasura.types';
 
 /**
@@ -40,6 +41,10 @@ const handleHasuraEventTrigger = async (
 
     case HasuraEvent.UPDATE_MEMBER_ROLE:
       handleUpdateMemberRole(payload);
+      break;
+
+    case HasuraEvent.UPDATE_MEMBER_STATUS:
+      handleUpdateMemberStatus(payload);
       break;
 
     default:

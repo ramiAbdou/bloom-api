@@ -3,7 +3,8 @@ export enum HasuraEvent {
   CREATE_EVENT_GUEST = 'create_event_guest',
   DELETE_EVENT = 'delete_event',
   DELETE_MEMBER = 'delete_member',
-  UPDATE_MEMBER_ROLE = 'update_member_role'
+  UPDATE_MEMBER_ROLE = 'update_member_role',
+  UPDATE_MEMBER_STATUS = 'update_member_status'
 }
 
 export interface HasuraEventPayload {
