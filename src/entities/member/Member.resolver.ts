@@ -18,7 +18,6 @@ import inviteMembers, { InviteMembersArgs } from './repo/inviteMembers';
 import respondToApplicants, {
   RespondToApplicantsArgs
 } from './repo/respondToApplicants';
-import restoreMembers, { RestoreMembersArgs } from './repo/restoreMembers';
 
 @Resolver()
 export default class MemberResolver {
@@ -80,11 +79,5 @@ export default class MemberResolver {
     @Ctx() ctx: GQLContext
   ): Promise<Member[]> {
     return respondToApplicants(args, ctx);
-  }
-
-  @Authorized(MemberRole.ADMIN)
-  @Mutation(() => [Member])
-  async restoreMembers(@Args() args: RestoreMembersArgs): Promise<Member[]> {
-    return restoreMembers(args);
   }
 }

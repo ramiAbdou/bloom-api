@@ -53,7 +53,6 @@ export enum MutationEvent {
   LOGOUT = 'logout',
   REMOVE_STRIPE_SUBSCRIPTION_ID = 'removeStripeSubscriptionId',
   RESPOND_TO_APPLICANTS = 'respondToApplicants',
-  RESTORE_MEMBERS = 'restoreMembers',
   SEND_LOGIN_LINK = 'sendLoginLink',
   UPDATE_MAILCHIMP_LIST_ID = 'updateMailchimpListId',
   UPDATE_MEMBER_VALUES = 'updateMemberValues',
