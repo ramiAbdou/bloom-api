@@ -1,7 +1,7 @@
 version: '3.6'
 services:
   graphql-engine:
-    image: hasura/graphql-engine:v1.3.3
+    image: hasura/graphql-engine:v2.0.0-alpha.8
     ports:
       - '8000:8000'
     restart: always

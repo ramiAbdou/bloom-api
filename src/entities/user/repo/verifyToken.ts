@@ -5,7 +5,6 @@ import { ErrorContext, ErrorType } from '@util/constants.errors';
 import { VerifyEvent } from '@util/constants.events';
 import { TokenArgs } from '@util/constants.gql';
 import { decodeToken } from '@util/util';
-import createEventAttendeeWithMember from '../../event-attendee/repo/createEventAttendeeWithMember';
 import createEventAttendeeWithSupporter from '../../event-attendee/repo/createEventAttendeeWithSupporter';
 import refreshToken from './refreshToken';
 
@@ -46,9 +45,9 @@ const verifyToken = async (
   const verifiedToken: VerifiedToken = decodeToken(token) ?? {};
   const { event, eventId, memberId, supporterId, userId } = verifiedToken;
 
-  if (event === VerifyEvent.JOIN_EVENT && memberId) {
-    await createEventAttendeeWithMember({ eventId }, { memberId });
-  }
+  // if (event === VerifyEvent.JOIN_EVENT && memberId) {
+  //   await createEventAttendeeWithMember({ eventId }, { memberId });
+  // }
 
   if (event === VerifyEvent.JOIN_EVENT && supporterId) {
     await createEventAttendeeWithSupporter({ eventId, supporterId });
