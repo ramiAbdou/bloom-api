@@ -146,6 +146,10 @@ event_triggers:
       timeout_sec: 60
     webhook_from_env: HASURA_GRAPHQL_AUTH_HOOK
 configuration:
+  custom_root_fields:
+    insert_one: createMember
+    select: members
+    update_by_pk: updateMember
   custom_column_names:
     community_id: communityId
     created_at: createdAt

@@ -69,6 +69,10 @@ update_permissions:
       filter: {}
     role: guest
 configuration:
+  custom_root_fields:
+    insert_one: createQuestion
+    select: questions
+    update_by_pk: updateQuestion
   custom_column_names:
     community_id: communityId
     created_at: createdAt

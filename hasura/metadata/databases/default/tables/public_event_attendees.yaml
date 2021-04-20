@@ -24,6 +24,10 @@ select_permissions:
       filter: {}
     role: guest
 configuration:
+  custom_root_fields:
+    insert_one: createEventAttendee
+    select: eventAttendees
+    update_by_pk: updateEventAttendee
   custom_column_names:
     created_at: createdAt
     deleted_at: deletedAt

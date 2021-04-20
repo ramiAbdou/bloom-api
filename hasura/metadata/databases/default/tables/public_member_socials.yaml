@@ -35,6 +35,10 @@ update_permissions:
       filter: {}
     role: guest
 configuration:
+  custom_root_fields:
+    insert_one: createMemberSocials
+    select: memberSocials
+    update_by_pk: updateMemberSocials
   custom_column_names:
     created_at: createdAt
     deleted_at: deletedAt

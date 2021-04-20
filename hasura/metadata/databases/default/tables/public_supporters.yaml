@@ -38,6 +38,10 @@ select_permissions:
       filter: {}
     role: guest
 configuration:
+  custom_root_fields:
+    insert_one: createSupporter
+    select: supporters
+    update_by_pk: updateSupporter
   custom_column_names:
     community_id: communityId
     created_at: createdAt

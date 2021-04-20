@@ -19,6 +19,10 @@ select_permissions:
       filter: {}
     role: guest
 configuration:
+  custom_root_fields:
+    insert_one: createMemberIntegrations
+    select: memberIntegrations
+    update_by_pk: updateMemberIntegrations
   custom_column_names:
     created_at: createdAt
     deleted_at: deletedAt

@@ -86,6 +86,10 @@ select_permissions:
       filter: {}
     role: guest
 configuration:
+  custom_root_fields:
+    insert_one: createCommunity
+    select: communities
+    update_by_pk: updateCommunity
   custom_column_names:
     created_at: createdAt
     default_type_id: defaultTypeId

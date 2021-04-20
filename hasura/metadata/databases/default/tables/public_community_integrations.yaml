@@ -20,6 +20,10 @@ select_permissions:
       filter: {}
     role: guest
 configuration:
+  custom_root_fields:
+    insert_one: createCommunityIntegrations
+    select: communityIntegrations
+    update_by_pk: updateCommunityIntegrations
   custom_column_names:
     community_id: communityId
     created_at: createdAt

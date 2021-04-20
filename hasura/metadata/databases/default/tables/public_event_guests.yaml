@@ -39,7 +39,7 @@ select_permissions:
 event_triggers:
   - definition:
       enable_manual: false
-      insert:
+      insert_one:
         columns: '*'
     name: create_event_guest
     retry_conf:
@@ -48,6 +48,10 @@ event_triggers:
       timeout_sec: 60
     webhook_from_env: HASURA_GRAPHQL_AUTH_HOOK
 configuration:
+  custom_root_fields:
+    insert_one: createEventGuest
+    select: eventGuests
+    update_by_pk: updateEventGuest
   custom_column_names:
     created_at: createdAt
     deleted_at: deletedAt

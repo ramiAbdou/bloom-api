@@ -34,6 +34,10 @@ update_permissions:
       filter: {}
     role: guest
 configuration:
+  custom_root_fields:
+    insert_one: createMemberValue
+    select: memberValues
+    update_by_pk: updateMemberValue
   custom_column_names:
     created_at: createdAt
     deleted_at: deletedAt

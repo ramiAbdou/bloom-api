@@ -26,6 +26,10 @@ select_permissions:
       filter: {}
     role: guest
 configuration:
+  custom_root_fields:
+    insert_one: createApplication
+    select: applications
+    update_by_pk: updateApplication
   custom_column_names:
     created_at: createdAt
     deleted_at: deletedAt

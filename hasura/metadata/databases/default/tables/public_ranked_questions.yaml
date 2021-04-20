@@ -21,6 +21,10 @@ select_permissions:
       filter: {}
     role: guest
 configuration:
+  custom_root_fields:
+    insert_one: createRankedQuestion
+    select: rankedQuestions
+    update_by_pk: updateRankedQuestion
   custom_column_names:
     application_id: applicationId
     created_at: createdAt
