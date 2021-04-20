@@ -1,13 +1,13 @@
 import camelCaseKeys from 'camelcase-keys';
 import express from 'express';
 
-import handleCreateEventGuest from '@entities/event-guest/repo/handleCreateEventGuest';
-import handleCreateEvent from '@entities/event/repo/handleCreateEvent';
-import handleDeleteEvent from '@entities/event/repo/handleDeleteEvent';
-import handleDeleteMember from '@entities/member/repo/handleDeleteMember';
-import handleUpdateMemberRole from '@entities/member/repo/handleUpdateMemberRole';
-import handleUpdateMemberStatus from '@entities/member/repo/handleUpdateMemberStatus';
 import { HasuraEvent, HasuraEventPayload } from '../Hasura.types';
+import handleCreateEvent from './handleCreateEvent';
+import handleCreateEventGuest from './handleCreateEventGuest';
+import handleDeleteEvent from './handleDeleteEvent';
+import handleDeleteMember from './handleDeleteMember';
+import handleUpdateMemberRole from './handleUpdateMemberRole';
+import handleUpdateMemberStatus from './handleUpdateMemberStatus';
 
 /**
  * Returns a 200 response if the Hasura event was handled successfully.
