@@ -72,6 +72,7 @@ configuration:
   custom_root_fields:
     insert_one: createQuestion
     select: questions
+    select_by_pk: question
     update_by_pk: updateQuestion
   custom_column_names:
     community_id: communityId

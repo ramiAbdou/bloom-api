@@ -29,6 +29,7 @@ configuration:
   custom_root_fields:
     insert_one: createApplication
     select: applications
+    select_by_pk: application
     update_by_pk: updateApplication
   custom_column_names:
     created_at: createdAt

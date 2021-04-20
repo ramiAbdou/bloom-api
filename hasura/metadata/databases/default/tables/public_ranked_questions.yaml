@@ -24,6 +24,7 @@ configuration:
   custom_root_fields:
     insert_one: createRankedQuestion
     select: rankedQuestions
+    select_by_pk: rankedQuestion
     update_by_pk: updateRankedQuestion
   custom_column_names:
     application_id: applicationId

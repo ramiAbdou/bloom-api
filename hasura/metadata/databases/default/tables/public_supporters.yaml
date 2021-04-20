@@ -41,6 +41,7 @@ configuration:
   custom_root_fields:
     insert_one: createSupporter
     select: supporters
+    select_by_pk: supporter
     update_by_pk: updateSupporter
   custom_column_names:
     community_id: communityId

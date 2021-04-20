@@ -5,4 +5,5 @@ configuration:
   custom_root_fields:
     insert_one: createTask
     select: tasks
+    select_by_pk: task
     update_by_pk: updateTask

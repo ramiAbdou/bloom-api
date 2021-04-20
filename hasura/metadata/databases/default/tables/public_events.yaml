@@ -122,6 +122,7 @@ configuration:
   custom_root_fields:
     insert_one: createEvent
     select: events
+    select_by_pk: event
     update_by_pk: updateEvent
   custom_column_names:
     created_at: createdAt

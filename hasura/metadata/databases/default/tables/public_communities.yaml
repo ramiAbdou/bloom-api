@@ -89,6 +89,7 @@ configuration:
   custom_root_fields:
     insert_one: createCommunity
     select: communities
+    select_by_pk: community
     update_by_pk: updateCommunity
   custom_column_names:
     created_at: createdAt

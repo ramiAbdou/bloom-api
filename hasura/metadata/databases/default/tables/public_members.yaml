@@ -149,6 +149,7 @@ configuration:
   custom_root_fields:
     insert_one: createMember
     select: members
+    select_by_pk: member
     update_by_pk: updateMember
   custom_column_names:
     community_id: communityId

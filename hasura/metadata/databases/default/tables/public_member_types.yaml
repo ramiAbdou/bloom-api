@@ -48,6 +48,7 @@ configuration:
   custom_root_fields:
     insert_one: createMemberType
     select: memberTypes
+    select_by_pk: memberType
     update_by_pk: updateMemberTypes
   custom_column_names:
     community_id: communityId

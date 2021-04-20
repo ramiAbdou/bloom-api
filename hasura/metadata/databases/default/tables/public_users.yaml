@@ -32,6 +32,7 @@ configuration:
   custom_root_fields:
     insert_one: createUser
     select: users
+    select_by_pk: user
     update_by_pk: updateUser
   custom_column_names:
     created_at: createdAt

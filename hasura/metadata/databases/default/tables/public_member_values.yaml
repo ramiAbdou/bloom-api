@@ -37,6 +37,7 @@ configuration:
   custom_root_fields:
     insert_one: createMemberValue
     select: memberValues
+    select_by_pk: memberValue
     update_by_pk: updateMemberValue
   custom_column_names:
     created_at: createdAt

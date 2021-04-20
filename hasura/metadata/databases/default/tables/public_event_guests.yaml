@@ -51,6 +51,7 @@ configuration:
   custom_root_fields:
     insert_one: createEventGuest
     select: eventGuests
+    select_by_pk: eventGuest
     update_by_pk: updateEventGuest
   custom_column_names:
     created_at: createdAt

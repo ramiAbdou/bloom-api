@@ -31,6 +31,7 @@ configuration:
   custom_root_fields:
     insert_one: createPayment
     select: payments
+    select_by_pk: payment
     update_by_pk: updatePayment
   custom_column_names:
     community_id: communityId

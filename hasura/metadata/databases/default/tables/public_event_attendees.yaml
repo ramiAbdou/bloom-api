@@ -27,6 +27,7 @@ configuration:
   custom_root_fields:
     insert_one: createEventAttendee
     select: eventAttendees
+    select_by_pk: eventAttendee
     update_by_pk: updateEventAttendee
   custom_column_names:
     created_at: createdAt
