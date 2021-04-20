@@ -1,0 +1,22 @@
+table:
+  name: ranked_questions
+  schema: public
+object_relationships:
+  - name: application
+    using:
+      foreign_key_constraint_on: application_id
+  - name: question
+    using:
+      foreign_key_constraint_on: question_id
+select_permissions:
+  - permission:
+      columns:
+        - rank
+        - application_id
+        - created_at
+        - deleted_at
+        - id
+        - question_id
+        - updated_at
+      filter: {}
+    role: guest

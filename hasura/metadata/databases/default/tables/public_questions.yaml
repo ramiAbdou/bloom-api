@@ -1,0 +1,70 @@
+table:
+  name: questions
+  schema: public
+object_relationships:
+- name: community
+  using:
+    foreign_key_constraint_on: community_id
+- name: communityById
+  using:
+    manual_configuration:
+      column_mapping:
+        id: highlighted_question_id
+      insertion_order: null
+      remote_table:
+        name: communities
+        schema: public
+- name: ranked_question
+  using:
+    manual_configuration:
+      column_mapping:
+        id: question_id
+      insertion_order: null
+      remote_table:
+        name: ranked_questions
+        schema: public
+array_relationships:
+- name: member_values
+  using:
+    foreign_key_constraint_on:
+      column: question_id
+      table:
+        name: member_values
+        schema: public
+select_permissions:
+- permission:
+    columns:
+    - id
+    - created_at
+    - deleted_at
+    - updated_at
+    - category
+    - description
+    - locked
+    - options
+    - rank
+    - required
+    - title
+    - type
+    - community_id
+    filter: {}
+  role: guest
+update_permissions:
+- permission:
+    check: {}
+    columns:
+    - id
+    - created_at
+    - deleted_at
+    - updated_at
+    - category
+    - description
+    - locked
+    - options
+    - rank
+    - required
+    - title
+    - type
+    - community_id
+    filter: {}
+  role: guest

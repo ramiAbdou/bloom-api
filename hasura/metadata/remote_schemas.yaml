@@ -1,1 +1,5 @@
-[]
+- name: bloom-graphql
+  definition:
+    url: http://host.docker.internal:8080/graphql
+    timeout_seconds: 60
+    forward_client_headers: true

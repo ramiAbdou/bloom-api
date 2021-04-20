@@ -1,0 +1,35 @@
+table:
+  name: member_values
+  schema: public
+object_relationships:
+  - name: member
+    using:
+      foreign_key_constraint_on: member_id
+  - name: question
+    using:
+      foreign_key_constraint_on: question_id
+select_permissions:
+  - permission:
+      columns:
+        - id
+        - created_at
+        - deleted_at
+        - updated_at
+        - value
+        - member_id
+        - question_id
+      filter: {}
+    role: guest
+update_permissions:
+  - permission:
+      check: {}
+      columns:
+        - id
+        - created_at
+        - deleted_at
+        - updated_at
+        - value
+        - member_id
+        - question_id
+      filter: {}
+    role: guest

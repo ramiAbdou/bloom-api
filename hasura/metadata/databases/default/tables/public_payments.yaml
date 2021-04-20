@@ -1,0 +1,29 @@
+table:
+  name: payments
+  schema: public
+object_relationships:
+  - name: community
+    using:
+      foreign_key_constraint_on: community_id
+  - name: member
+    using:
+      foreign_key_constraint_on: member_id
+  - name: member_type
+    using:
+      foreign_key_constraint_on: member_type_id
+select_permissions:
+  - permission:
+      columns:
+        - id
+        - created_at
+        - deleted_at
+        - updated_at
+        - amount
+        - type
+        - stripe_invoice_id
+        - stripe_invoice_url
+        - community_id
+        - member_id
+        - member_type_id
+      filter: {}
+    role: guest

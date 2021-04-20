@@ -1,0 +1,36 @@
+table:
+  name: member_socials
+  schema: public
+object_relationships:
+  - name: member
+    using:
+      foreign_key_constraint_on: member_id
+select_permissions:
+  - permission:
+      columns:
+        - id
+        - created_at
+        - deleted_at
+        - updated_at
+        - facebook_url
+        - instagram_url
+        - linked_in_url
+        - twitter_url
+        - member_id
+      filter: {}
+    role: guest
+update_permissions:
+  - permission:
+      check: {}
+      columns:
+        - id
+        - created_at
+        - deleted_at
+        - updated_at
+        - facebook_url
+        - instagram_url
+        - linked_in_url
+        - twitter_url
+        - member_id
+      filter: {}
+    role: guest

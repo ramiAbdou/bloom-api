@@ -1,0 +1,20 @@
+table:
+  name: member_integrations
+  schema: public
+object_relationships:
+  - name: member
+    using:
+      foreign_key_constraint_on: member_id
+select_permissions:
+  - permission:
+      columns:
+        - id
+        - created_at
+        - deleted_at
+        - updated_at
+        - stripe_customer_id
+        - stripe_payment_method_id
+        - stripe_subscription_id
+        - member_id
+      filter: {}
+    role: guest

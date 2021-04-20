@@ -1,0 +1,30 @@
+table:
+  name: users
+  schema: public
+array_relationships:
+  - name: members
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          name: members
+          schema: public
+  - name: supporters
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          name: supporters
+          schema: public
+select_permissions:
+  - permission:
+      columns:
+        - id
+        - created_at
+        - deleted_at
+        - updated_at
+        - email
+        - google_id
+        - refresh_token
+      filter: {}
+    role: guest

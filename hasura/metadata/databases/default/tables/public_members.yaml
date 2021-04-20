@@ -1,0 +1,156 @@
+table:
+  name: members
+  schema: public
+object_relationships:
+- name: community
+  using:
+    foreign_key_constraint_on: community_id
+- name: communityById
+  using:
+    manual_configuration:
+      column_mapping:
+        id: owner_id
+      insertion_order: null
+      remote_table:
+        name: communities
+        schema: public
+- name: member_integrations
+  using:
+    manual_configuration:
+      column_mapping:
+        id: member_id
+      insertion_order: null
+      remote_table:
+        name: member_integrations
+        schema: public
+- name: member_socials
+  using:
+    manual_configuration:
+      column_mapping:
+        id: member_id
+      insertion_order: null
+      remote_table:
+        name: member_socials
+        schema: public
+- name: member_type
+  using:
+    foreign_key_constraint_on: member_type_id
+- name: user
+  using:
+    foreign_key_constraint_on: user_id
+array_relationships:
+- name: event_attendees
+  using:
+    foreign_key_constraint_on:
+      column: member_id
+      table:
+        name: event_attendees
+        schema: public
+- name: event_guests
+  using:
+    foreign_key_constraint_on:
+      column: member_id
+      table:
+        name: event_guests
+        schema: public
+- name: event_invitees
+  using:
+    foreign_key_constraint_on:
+      column: member_id
+      table:
+        name: event_invitees
+        schema: public
+- name: event_watches
+  using:
+    foreign_key_constraint_on:
+      column: member_id
+      table:
+        name: event_watches
+        schema: public
+- name: member_refreshes
+  using:
+    foreign_key_constraint_on:
+      column: member_id
+      table:
+        name: member_refreshes
+        schema: public
+- name: member_values
+  using:
+    foreign_key_constraint_on:
+      column: member_id
+      table:
+        name: member_values
+        schema: public
+- name: payments
+  using:
+    foreign_key_constraint_on:
+      column: member_id
+      table:
+        name: payments
+        schema: public
+select_permissions:
+- permission:
+    columns:
+    - id
+    - created_at
+    - deleted_at
+    - updated_at
+    - bio
+    - email
+    - first_name
+    - last_name
+    - joined_at
+    - picture_url
+    - role
+    - status
+    - community_id
+    - member_type_id
+    - user_id
+    - position
+    filter: {}
+  role: guest
+update_permissions:
+- permission:
+    check: {}
+    columns:
+    - bio
+    - role
+    - status
+    - community_id
+    - created_at
+    - deleted_at
+    - email
+    - first_name
+    - id
+    - joined_at
+    - last_name
+    - member_type_id
+    - picture_url
+    - position
+    - updated_at
+    - user_id
+    filter: {}
+  role: guest
+event_triggers:
+- definition:
+    enable_manual: false
+    update:
+      columns:
+      - role
+  name: update_member_role
+  retry_conf:
+    interval_sec: 10
+    num_retries: 0
+    timeout_sec: 60
+  webhook_from_env: HASURA_GRAPHQL_AUTH_HOOK
+- definition:
+    enable_manual: false
+    update:
+      columns:
+      - status
+  name: update_member_status
+  retry_conf:
+    interval_sec: 10
+    num_retries: 0
+    timeout_sec: 60
+  webhook_from_env: HASURA_GRAPHQL_AUTH_HOOK
