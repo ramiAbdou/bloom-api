@@ -33,3 +33,10 @@ update_permissions:
         - question_id
       filter: {}
     role: guest
+configuration:
+  custom_column_names:
+    created_at: createdAt
+    deleted_at: deletedAt
+    member_id: memberId
+    question_id: questionId
+    updated_at: updatedAt

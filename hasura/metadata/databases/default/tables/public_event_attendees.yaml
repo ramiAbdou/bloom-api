@@ -23,3 +23,11 @@ select_permissions:
         - supporter_id
       filter: {}
     role: guest
+configuration:
+  custom_column_names:
+    created_at: createdAt
+    deleted_at: deletedAt
+    event_id: eventId
+    member_id: memberId
+    supporter_id: supporterId
+    updated_at: updatedAt

@@ -19,3 +19,13 @@ select_permissions:
         - zapier_api_key
       filter: {}
     role: guest
+configuration:
+  custom_column_names:
+    community_id: communityId
+    created_at: createdAt
+    deleted_at: deletedAt
+    mailchimp_access_token: mailchimpAccessToken
+    mailchimp_list_id: mailchimpListId
+    stripe_account_id: stripeAccountId
+    updated_at: updatedAt
+    zapier_api_key: zapierApiKey

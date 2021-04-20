@@ -6,7 +6,7 @@ object_relationships:
     using:
       foreign_key_constraint_on: community_id
 array_relationships:
-  - name: ranked_questions
+  - name: rankedQuestions
     using:
       foreign_key_constraint_on:
         column: application_id
@@ -25,3 +25,8 @@ select_permissions:
         - community_id
       filter: {}
     role: guest
+configuration:
+  custom_column_names:
+    created_at: createdAt
+    deleted_at: deletedAt
+    updated_at: updatedAt

@@ -34,3 +34,13 @@ update_permissions:
         - member_id
       filter: {}
     role: guest
+configuration:
+  custom_column_names:
+    created_at: createdAt
+    deleted_at: deletedAt
+    facebook_url: facebookUrl
+    instagram_url: instagramUrl
+    linked_in_url: linkedInUrl
+    member_id: memberId
+    twitter_url: twitterUrl
+    updated_at: updatedAt

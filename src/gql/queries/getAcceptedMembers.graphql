@@ -1,0 +1,9 @@
+query GetAcceptedMembers($memberIds: [String!]!) {
+  members(where: { id: { _in: $memberIds } }) {
+    email
+    firstName
+    community {
+      name
+    }
+  }
+}

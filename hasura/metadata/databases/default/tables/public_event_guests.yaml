@@ -47,3 +47,11 @@ event_triggers:
       num_retries: 2
       timeout_sec: 60
     webhook_from_env: HASURA_GRAPHQL_AUTH_HOOK
+configuration:
+  custom_column_names:
+    created_at: createdAt
+    deleted_at: deletedAt
+    event_id: eventId
+    member_id: memberId
+    supporter_id: supporterId
+    updated_at: updatedAt

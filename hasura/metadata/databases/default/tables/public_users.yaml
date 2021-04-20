@@ -28,3 +28,10 @@ select_permissions:
         - refresh_token
       filter: {}
     role: guest
+configuration:
+  custom_column_names:
+    created_at: createdAt
+    deleted_at: deletedAt
+    google_id: googleId
+    refresh_token: refreshToken
+    updated_at: updatedAt

@@ -44,3 +44,11 @@ select_permissions:
         - community_id
       filter: {}
     role: guest
+configuration:
+  custom_column_names:
+    community_id: communityId
+    created_at: createdAt
+    deleted_at: deletedAt
+    stripe_price_id: stripePriceId
+    stripe_product_id: stripeProductId
+    updated_at: updatedAt

@@ -18,3 +18,12 @@ select_permissions:
         - member_id
       filter: {}
     role: guest
+configuration:
+  custom_column_names:
+    created_at: createdAt
+    deleted_at: deletedAt
+    member_id: memberId
+    stripe_customer_id: stripeCustomerId
+    stripe_payment_method_id: stripePaymentMethodId
+    stripe_subscription_id: stripeSubscriptionId
+    updated_at: updatedAt

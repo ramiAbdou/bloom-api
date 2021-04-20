@@ -1,3 +1,5 @@
+import { gql } from 'graphql-request';
+
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import Member from '@entities/member/Member';
@@ -15,6 +17,18 @@ export interface AcceptedIntoCommunityVars {
   member: Pick<Member, 'email' | 'firstName'>;
 }
 
+const GET_ACCEPTED_MEMBERS: string = gql`
+  query GetAcceptedMembers($memberIds: [String!]!) {
+    members(where: { id: { _in: $memberIds } }) {
+      email
+      first_name
+      community {
+        name
+      }
+    }
+  }
+`;
+
 /**
  * Returns email variables for EmailEvent.ACCEPTED_TO_COMMUNITY.
  *
@@ -27,6 +41,8 @@ const getAcceptedIntoCommunityVars = async (
   const { communityId, memberIds } = context as AcceptedIntoCommunityPayload;
 
   const bm: BloomManager = new BloomManager();
+
+  // const { members } = await client.request(GET_ACCEPTED_MEMBERS, { memberIds });
 
   const [community, members]: [Community, Member[]] = await Promise.all([
     bm.em.findOne(Community, { id: communityId }),

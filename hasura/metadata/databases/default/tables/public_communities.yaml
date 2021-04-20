@@ -11,7 +11,7 @@ object_relationships:
         remote_table:
           name: applications
           schema: public
-  - name: community_integrations
+  - name: communityIntegrations
     using:
       manual_configuration:
         column_mapping:
@@ -20,13 +20,10 @@ object_relationships:
         remote_table:
           name: community_integrations
           schema: public
-  - name: highlighted_question
+  - name: highlightedQuestion
     using:
       foreign_key_constraint_on: highlighted_question_id
-  - name: member
-    using:
-      foreign_key_constraint_on: owner_id
-  - name: member_type
+  - name: memberType
     using:
       foreign_key_constraint_on: default_type_id
 array_relationships:
@@ -37,7 +34,7 @@ array_relationships:
         table:
           name: events
           schema: public
-  - name: member_types
+  - name: memberTypes
     using:
       foreign_key_constraint_on:
         column: community_id
@@ -79,7 +76,6 @@ select_permissions:
         - created_at
         - deleted_at
         - updated_at
-        - auto_accept
         - logo_url
         - knowledge_hub_url
         - name
@@ -87,6 +83,16 @@ select_permissions:
         - url_name
         - default_type_id
         - highlighted_question_id
-        - owner_id
       filter: {}
     role: guest
+configuration:
+  custom_column_names:
+    created_at: createdAt
+    default_type_id: defaultTypeId
+    deleted_at: deletedAt
+    highlighted_question_id: highlightedQuestionId
+    logo_url: logoUrl
+    knowledge_hub_url: knowledgeHubUrl
+    primary_color: primaryColor
+    updated_at: updatedAt
+    url_name: urlName

@@ -2,38 +2,47 @@ table:
   name: supporters
   schema: public
 object_relationships:
-- name: community
-  using:
-    foreign_key_constraint_on: community_id
-- name: user
-  using:
-    foreign_key_constraint_on: user_id
+  - name: community
+    using:
+      foreign_key_constraint_on: community_id
+  - name: user
+    using:
+      foreign_key_constraint_on: user_id
 array_relationships:
-- name: event_attendees
-  using:
-    foreign_key_constraint_on:
-      column: supporter_id
-      table:
-        name: event_attendees
-        schema: public
-- name: event_guests
-  using:
-    foreign_key_constraint_on:
-      column: supporter_id
-      table:
-        name: event_guests
-        schema: public
+  - name: eventAttendees
+    using:
+      foreign_key_constraint_on:
+        column: supporter_id
+        table:
+          name: event_attendees
+          schema: public
+  - name: eventGuests
+    using:
+      foreign_key_constraint_on:
+        column: supporter_id
+        table:
+          name: event_guests
+          schema: public
 select_permissions:
-- permission:
-    columns:
-    - id
-    - created_at
-    - deleted_at
-    - updated_at
-    - email
-    - first_name
-    - last_name
-    - community_id
-    - user_id
-    filter: {}
-  role: guest
+  - permission:
+      columns:
+        - id
+        - created_at
+        - deleted_at
+        - updated_at
+        - email
+        - first_name
+        - last_name
+        - community_id
+        - user_id
+      filter: {}
+    role: guest
+configuration:
+  custom_column_names:
+    community_id: communityId
+    created_at: createdAt
+    deleted_at: deletedAt
+    first_name: firstName
+    last_name: lastName
+    updated_at: updatedAt
+    user_id: userId

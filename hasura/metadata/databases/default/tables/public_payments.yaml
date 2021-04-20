@@ -8,7 +8,7 @@ object_relationships:
   - name: member
     using:
       foreign_key_constraint_on: member_id
-  - name: member_type
+  - name: memberType
     using:
       foreign_key_constraint_on: member_type_id
 select_permissions:
@@ -27,3 +27,13 @@ select_permissions:
         - member_type_id
       filter: {}
     role: guest
+configuration:
+  custom_column_names:
+    community_id: communityId
+    created_at: createdAt
+    deleted_at: deletedAt
+    member_id: memberId
+    member_type_id: memberTypeId
+    stripe_invoice_id: stripeInvoiceId
+    stripe_invoice_url: stripeInvoiceUrl
+    updated_at: updatedAt
