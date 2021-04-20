@@ -67,8 +67,8 @@ const createStripeProducts = async (
     CommunityIntegrations,
     MemberType[]
   ] = await Promise.all([
-    bm.findOne(CommunityIntegrations, { community: { urlName } }),
-    bm.find(MemberType, { community: { urlName } })
+    bm.em.findOne(CommunityIntegrations, { community: { urlName } }),
+    bm.em.find(MemberType, { community: { urlName } })
   ]);
 
   const updatedMemberTypes: MemberType[] = await Promise.all(
@@ -80,7 +80,7 @@ const createStripeProducts = async (
     })
   );
 
-  await bm.flush();
+  await bm.em.flush();
 
   return updatedMemberTypes;
 };

@@ -8,7 +8,6 @@ import {
   Unique
 } from '@mikro-orm/core';
 
-import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Community from '@entities/community/Community';
 import EventAttendee from '@entities/event-attendee/EventAttendee';
@@ -19,8 +18,6 @@ import User from '@entities/user/User';
 @Entity()
 @Unique({ properties: ['community', 'email'] })
 export default class Supporter extends BaseEntity {
-  static cache: Cache = new Cache();
-
   // ## FIELDS
 
   @Field()

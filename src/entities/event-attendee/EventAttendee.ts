@@ -1,10 +1,8 @@
 import { Field, ObjectType } from 'type-graphql';
-import { AfterCreate, Entity, ManyToOne, Unique, wrap } from '@mikro-orm/core';
+import { Entity, ManyToOne, Unique } from '@mikro-orm/core';
 
-import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Supporter from '@entities/supporter/Supporter';
-import { QueryEvent } from '@util/constants.events';
 import Event from '../event/Event';
 import Member from '../member/Member';
 
@@ -12,18 +10,7 @@ import Member from '../member/Member';
 @Entity()
 @Unique({ properties: ['event', 'member', 'supporter'] })
 export default class EventAttendee extends BaseEntity {
-  static cache: Cache = new Cache();
-
   // ## LIFECYCLE HOOKS
-
-  @AfterCreate()
-  async afterCreate(): Promise<void> {
-    await wrap(this.event).init();
-
-    EventAttendee.cache.invalidate([
-      `${QueryEvent.GET_EVENT_ATTENDEES_SERIES}-${this.event.community.id}`
-    ]);
-  }
 
   // ## RELATIONSHIPS
 

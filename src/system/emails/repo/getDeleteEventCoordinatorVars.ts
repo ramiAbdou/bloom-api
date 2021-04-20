@@ -39,9 +39,9 @@ const getDeleteEventCoordinatorVars = async (
     Event,
     Member
   ] = await Promise.all([
-    bm.findOne(Community, { id: communityId }),
-    bm.findOne(Event, { id: eventId }, { filters: false }),
-    bm.findOne(Member, { id: coordinatorId })
+    bm.em.findOne(Community, { id: communityId }),
+    bm.em.findOne(Event, { id: eventId }, { filters: false }),
+    bm.em.findOne(Member, { id: coordinatorId })
   ]);
 
   const variables: DeleteEventCoordinatorVars[] = [

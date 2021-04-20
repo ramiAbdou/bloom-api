@@ -17,7 +17,6 @@ import {
   wrap
 } from '@mikro-orm/core';
 
-import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import { now } from '@util/util';
@@ -50,8 +49,6 @@ export enum MemberStatus {
 @Entity()
 @Unique({ properties: ['community', 'email'] })
 export default class Member extends BaseEntity {
-  static cache: Cache = new Cache();
-
   // ## FIELDS
 
   @Field({ nullable: true })

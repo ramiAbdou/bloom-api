@@ -29,9 +29,9 @@ const getDeleteEventGuestsVars = async (
     Event,
     EventGuest[]
   ] = await Promise.all([
-    bm.findOne(Community, { id: communityId }),
-    bm.findOne(Event, { id: eventId }, { filters: false }),
-    bm.find(
+    bm.em.findOne(Community, { id: communityId }),
+    bm.em.findOne(Event, { id: eventId }, { filters: false }),
+    bm.em.find(
       EventGuest,
       { event: eventId },
       { populate: ['member', 'supporter'] }

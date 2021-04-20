@@ -31,7 +31,7 @@ const createEventInvitees = async (
     return bm.create(EventInvitee, { event: eventId, member: memberId });
   });
 
-  await bm.flush();
+  await bm.em.flush();
 
   emitEmailEvent(EmailEvent.CREATE_EVENT_INVITEES, {
     communityId,

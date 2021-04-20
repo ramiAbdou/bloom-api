@@ -34,13 +34,13 @@ const getCreateEventCoordinatorVars = async (
     Event,
     Member
   ] = await Promise.all([
-    bm.findOne(Community, { id: communityId }),
-    bm.findOne(
+    bm.em.findOne(Community, { id: communityId }),
+    bm.em.findOne(
       Event,
       { id: eventId },
       { fields: ['endTime', 'privacy', 'startTime', 'summary', 'title'] }
     ),
-    bm.findOne(
+    bm.em.findOne(
       Member,
       { id: coordinatorId },
       { fields: ['email', 'firstName'] }

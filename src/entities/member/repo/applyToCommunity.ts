@@ -103,15 +103,15 @@ const applyToCommunity = async (
   // Populate the questions and types so that we can capture the member
   // data in a relational manner.
   const [community, memberType]: [Community, MemberType] = await Promise.all([
-    bm.findOne(Community, { urlName }, { populate: ['questions'] }),
-    bm.findOne(MemberType, queryArgs)
+    bm.em.findOne(Community, { urlName }, { populate: ['questions'] }),
+    bm.em.findOne(MemberType, queryArgs)
   ]);
 
   // The user can potentially already exist if they are a part of other
   // communities.
   const [user] = await bm.findOneOrCreate(User, { email }, { email });
 
-  if (await bm.findOne(Member, { community, user })) {
+  if (await bm.em.findOne(Member, { community, user })) {
     throw new Error(
       `This email is already registered in the ${community.name} community.`
     );
@@ -162,7 +162,7 @@ const applyToCommunity = async (
     } else bm.create(MemberValue, { member, question, value });
   });
 
-  await bm.flush();
+  await bm.em.flush();
 
   emitEmailEvent(EmailEvent.APPLY_TO_COMMUNITY, {
     communityId: community.id,

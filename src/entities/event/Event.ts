@@ -10,7 +10,6 @@ import {
   wrap
 } from '@mikro-orm/core';
 
-import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import getGoogleCalendarEvent from '@integrations/google/repo/getGoogleCalendarEvent';
 import { APP } from '@util/constants';
@@ -28,8 +27,6 @@ export enum EventPrivacy {
 @ObjectType()
 @Entity()
 export default class Event extends BaseEntity {
-  static cache: Cache = new Cache();
-
   // ## FIELDS
 
   @Field()

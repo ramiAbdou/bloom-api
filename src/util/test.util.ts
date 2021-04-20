@@ -4,7 +4,6 @@ import faker from 'faker';
 import { MikroORM } from '@mikro-orm/core';
 import { EntityManager, PostgreSqlDriver } from '@mikro-orm/postgresql';
 
-import { clearEntityCaches } from '@core/cache/Cache.util';
 import db from '@core/db/db';
 import Application from '@entities/application/Application';
 import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
@@ -80,7 +79,6 @@ export const initDatabaseIntegrationTest = (
 
   // Removes all of the table data and clears the caches.
   beforeEach(async () => {
-    clearEntityCaches();
     await clearAllTableData(orm.em);
     if (args?.beforeEach) await args.beforeEach();
   });

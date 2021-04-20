@@ -8,7 +8,6 @@ import {
   Property
 } from '@mikro-orm/core';
 
-import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Supporter from '@entities/supporter/Supporter';
 import Member from '../member/Member';
@@ -16,8 +15,6 @@ import Member from '../member/Member';
 @ObjectType()
 @Entity()
 export default class User extends BaseEntity {
-  static cache: Cache = new Cache();
-
   // ## FIELDS
 
   @Field()

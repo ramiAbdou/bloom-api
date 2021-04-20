@@ -17,7 +17,7 @@ const getLoginLinkVars = async (
 ): Promise<LoginLinkEmailVars[]> => {
   const { email, loginUrl } = context as LoginLinkEmailPayload;
 
-  const member: Member = await new BloomManager().findOne(
+  const member: Member = await new BloomManager().em.findOne(
     Member,
     { email },
     { fields: ['email', 'firstName'] }

@@ -1,19 +1,15 @@
 import { Field, ObjectType } from 'type-graphql';
-import { AfterUpdate, Entity, OneToOne, Property } from '@mikro-orm/core';
+import { Entity, OneToOne, Property } from '@mikro-orm/core';
 
-import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import getMailchimpAudienceName from '@integrations/mailchimp/repo/getMailchimpAudienceName';
 import getMailchimpAudiences from '@integrations/mailchimp/repo/getMailchimpAudiences';
-import { QueryEvent } from '@util/constants.events';
 import Community from '../community/Community';
 import { MailchimpList } from './CommunityIntegrations.types';
 
 @ObjectType()
 @Entity()
 export default class CommunityIntegrations extends BaseEntity {
-  static cache: Cache = new Cache();
-
   // ## FIELDS
 
   @Property({ nullable: true })
@@ -50,15 +46,6 @@ export default class CommunityIntegrations extends BaseEntity {
     return getMailchimpAudiences({
       mailchimpAccessToken: this.mailchimpAccessToken
     });
-  }
-
-  // ## LIFECYCLE HOOKS
-
-  @AfterUpdate()
-  afterUpdate(): void {
-    CommunityIntegrations.cache.invalidate([
-      `${QueryEvent.GET_COMMUNITY_INTEGRATIONS}-${this.community.id}`
-    ]);
   }
 
   // ## RELATIONSHIPS

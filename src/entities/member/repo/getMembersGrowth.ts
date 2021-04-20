@@ -4,7 +4,6 @@ import { Field, ObjectType } from 'type-graphql';
 import BloomManager from '@core/db/BloomManager';
 import Member, { MemberStatus } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
-import { QueryEvent } from '@util/constants.events';
 
 @ObjectType()
 export class GetMembersGrowthResult {
@@ -29,12 +28,6 @@ const getMembersGrowth = async (
   ctx: Pick<GQLContext, 'communityId'>
 ): Promise<GetMembersGrowthResult> => {
   const { communityId } = ctx;
-
-  const cacheKey = `${QueryEvent.GET_MEMBERS_GROWTH}-${communityId}`;
-
-  if (Member.cache.has(cacheKey)) {
-    return Member.cache.get(cacheKey);
-  }
 
   const endOf30DaysAgo: Dayjs = day.utc().subtract(30, 'day').endOf('day');
   const endOfToday: Dayjs = day.utc().endOf('day');
@@ -64,8 +57,6 @@ const getMembersGrowth = async (
     count: numMembersAddedSince + numMembers30DaysAgo,
     growth: growthPercentage
   };
-
-  Member.cache.set(cacheKey, result);
 
   return result;
 };

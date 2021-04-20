@@ -1,7 +1,6 @@
 import { Field, ObjectType } from 'type-graphql';
 import { Entity, ManyToOne, Property } from '@mikro-orm/core';
 
-import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Member from '../member/Member';
 import Question from '../question/Question';
@@ -9,8 +8,6 @@ import Question from '../question/Question';
 @ObjectType()
 @Entity()
 export default class MemberValue extends BaseEntity {
-  static cache: Cache = new Cache();
-
   // ## FIELDS
 
   // We keep this loosely defined as a string to give flexibility. For

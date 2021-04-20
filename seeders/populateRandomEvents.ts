@@ -95,7 +95,7 @@ const populateRandomEvents = async (community: Community) => {
       'https://zoom.us/j/5962989444?pwd=dWZiazFKOVpxa0FJVThBS3pHSHlIZz09'
   });
 
-  const members: Member[] = await bm.find(
+  const members: Member[] = await bm.em.find(
     Member,
     { community: { id: community.id } },
     { limit: 25, populate: ['user'] }
@@ -160,7 +160,7 @@ const populateRandomEvents = async (community: Community) => {
     }
   });
 
-  await bm.flush();
+  await bm.em.flush();
 };
 
 export default populateRandomEvents;

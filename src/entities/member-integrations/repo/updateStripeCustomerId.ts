@@ -24,9 +24,9 @@ const updateStripeCustomerId = async (
     Member,
     MemberIntegrations
   ] = await Promise.all([
-    bm.findOne(CommunityIntegrations, { community: communityId }),
-    bm.findOne(Member, memberId),
-    bm.findOne(MemberIntegrations, { member: memberId })
+    bm.em.findOne(CommunityIntegrations, { community: communityId }),
+    bm.em.findOne(Member, memberId),
+    bm.em.findOne(MemberIntegrations, { member: memberId })
   ]);
 
   // If the stripeCustomerId already exists, there's no need create a new
@@ -42,7 +42,7 @@ const updateStripeCustomerId = async (
   });
 
   memberIntegrations.stripeCustomerId = stripeCustomer.id;
-  await bm.flush();
+  await bm.em.flush();
 
   return memberIntegrations;
 };

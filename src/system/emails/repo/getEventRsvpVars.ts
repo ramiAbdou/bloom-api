@@ -27,8 +27,8 @@ const getEventRsvpVars = async (
   const bm: BloomManager = new BloomManager();
 
   const [event, guest]: [Event, EventGuest] = await Promise.all([
-    bm.findOne(Event, { id: eventId }, { populate: ['community'] }),
-    bm.findOne(
+    bm.em.findOne(Event, { id: eventId }, { populate: ['community'] }),
+    bm.em.findOne(
       EventGuest,
       { id: guestId },
       { populate: ['member', 'supporter'] }

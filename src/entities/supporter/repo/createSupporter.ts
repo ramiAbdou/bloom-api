@@ -29,7 +29,7 @@ const createSupporter = async ({
 }: CreateSupporterArgs): Promise<Supporter> => {
   const bm: BloomManager = new BloomManager();
 
-  if (supporterId) return bm.findOne(Supporter, { id: supporterId });
+  if (supporterId) return bm.em.findOne(Supporter, { id: supporterId });
 
   const [user]: [User, boolean] = await bm.findOneOrCreate(
     User,
@@ -43,7 +43,7 @@ const createSupporter = async ({
     { community: communityId, email, firstName, lastName, user }
   );
 
-  await bm.flush();
+  await bm.em.flush();
 
   return supporter;
 };

@@ -27,8 +27,8 @@ const getApplyToCommunityVars = async (
   const bm: BloomManager = new BloomManager();
 
   const [community, member]: [Community, Member] = await Promise.all([
-    bm.findOne(Community, { id: communityId }),
-    bm.findOne(Member, { id: memberId })
+    bm.em.findOne(Community, { id: communityId }),
+    bm.em.findOne(Member, { id: memberId })
   ]);
 
   const variables: ApplyToCommunityVars[] = [

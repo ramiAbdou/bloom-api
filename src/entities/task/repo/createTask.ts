@@ -19,8 +19,8 @@ const calculateExecuteAt = async (args: EntityData<Task>): Promise<string> => {
   const bm: BloomManager = new BloomManager();
 
   const [_, event]: [Community, Event] = await Promise.all([
-    bm.findOne(Community, communityId),
-    bm.findOne(Event, eventId)
+    bm.em.findOne(Community, communityId),
+    bm.em.findOne(Event, eventId)
   ]);
 
   if (taskEvent === TaskEvent.EVENT_REMINDER_1_DAY) {

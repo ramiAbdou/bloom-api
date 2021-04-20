@@ -40,7 +40,7 @@ const getUserTokens = async (
 
   // if (!urlName) return { userId };
 
-  // // const member: Member = await new BloomManager().findOne(Member, {
+  // // const member: Member = await new BloomManager().em.findOne(Member, {
   // //   community: { urlName },
   // //   user: userId
   // // });

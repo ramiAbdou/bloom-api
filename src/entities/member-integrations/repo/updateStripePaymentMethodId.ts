@@ -34,8 +34,8 @@ const updateStripePaymentMethodId = async (
     CommunityIntegrations,
     MemberIntegrations
   ] = await Promise.all([
-    bm.findOne(CommunityIntegrations, { community: communityId }),
-    bm.findOne(MemberIntegrations, { member: memberId })
+    bm.em.findOne(CommunityIntegrations, { community: communityId }),
+    bm.em.findOne(MemberIntegrations, { member: memberId })
   ]);
 
   // If no Stripe customer ID exists on the member, create and attach the
@@ -52,7 +52,7 @@ const updateStripePaymentMethodId = async (
   });
 
   memberIntegrations.stripePaymentMethodId = paymentMethodId;
-  await bm.flush();
+  await bm.em.flush();
 
   return memberIntegrations;
 };

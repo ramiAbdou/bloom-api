@@ -7,7 +7,6 @@ import {
   Property
 } from '@mikro-orm/core';
 
-import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Community from '@entities/community/Community';
 import RankedQuestion from '../ranked-question/RankedQuestion';
@@ -15,8 +14,6 @@ import RankedQuestion from '../ranked-question/RankedQuestion';
 @ObjectType()
 @Entity()
 export default class Application extends BaseEntity {
-  static cache: Cache = new Cache();
-
   // ## FIELDS
 
   @Field()

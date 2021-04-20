@@ -31,11 +31,11 @@ const getPaymentReceiptVars = async (
   const bm: BloomManager = new BloomManager();
 
   const [community, payment]: [Community, Payment] = await Promise.all([
-    bm.findOne(Community, { communityIntegrations: { stripeAccountId } }),
-    bm.findOne(Payment, paymentId)
+    bm.em.findOne(Community, { communityIntegrations: { stripeAccountId } }),
+    bm.em.findOne(Payment, paymentId)
   ]);
 
-  const member: Member = await bm.findOne(Member, payment.member.id);
+  const member: Member = await bm.em.findOne(Member, payment.member.id);
 
   card.brand = card.brand.charAt(0).toUpperCase() + card.brand.slice(1);
 

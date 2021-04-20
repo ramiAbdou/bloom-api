@@ -13,7 +13,7 @@ const getMemberIntegrations = async (
 ): Promise<MemberIntegrations[]> => {
   const { memberId } = ctx;
 
-  const memberIntegrations: MemberIntegrations[] = await new BloomManager().find(
+  const memberIntegrations: MemberIntegrations[] = await new BloomManager().em.find(
     MemberIntegrations,
     { member: memberId },
     { cacheKey: `${QueryEvent.GET_MEMBER_INTEGRATIONS}-${memberId}` }

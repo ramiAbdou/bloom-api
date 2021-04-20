@@ -37,13 +37,13 @@ const getConnectIntegrationsVars = async (
     CommunityIntegrations,
     Member[]
   ] = await Promise.all([
-    bm.findOne(
+    bm.em.findOne(
       Community,
       { ...communityArgs },
       { fields: ['name', 'urlName'] }
     ),
-    bm.findOne(CommunityIntegrations, { community: { ...communityArgs } }),
-    bm.find(
+    bm.em.findOne(CommunityIntegrations, { community: { ...communityArgs } }),
+    bm.em.find(
       Member,
       { community: { ...communityArgs }, role: { $ne: null } },
       { fields: ['firstName', 'email'] }

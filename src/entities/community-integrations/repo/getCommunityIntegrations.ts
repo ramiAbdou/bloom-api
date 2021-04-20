@@ -23,7 +23,7 @@ const getCommunityIntegrations = async (
 ): Promise<CommunityIntegrations> => {
   const communityId: string = args.communityId ?? ctx.communityId;
 
-  const communityIntegrations: CommunityIntegrations = await new BloomManager().findOne(
+  const communityIntegrations: CommunityIntegrations = await new BloomManager().em.findOne(
     CommunityIntegrations,
     { community: communityId },
     { cacheKey: `${QueryEvent.GET_COMMUNITY_INTEGRATIONS}-${communityId}` }

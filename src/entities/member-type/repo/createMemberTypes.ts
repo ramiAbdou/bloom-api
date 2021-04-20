@@ -35,7 +35,7 @@ const createMemberTypes = async (
   const { communityId } = ctx;
 
   const bm: BloomManager = new BloomManager();
-  const community: Community = await bm.findOne(Community, communityId);
+  const community: Community = await bm.em.findOne(Community, communityId);
 
   let defaultType: MemberType;
 
@@ -56,7 +56,7 @@ const createMemberTypes = async (
 
   if (defaultType) community.defaultType = defaultType;
 
-  await bm.flush();
+  await bm.em.flush();
 
   return memberTypes;
 };

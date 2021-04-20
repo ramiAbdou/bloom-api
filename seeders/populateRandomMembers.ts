@@ -32,7 +32,7 @@ const populateRandomMembers = async (urlName: string) => {
 
   const bm: BloomManager = new BloomManager();
 
-  const members = await bm.find(
+  const members = await bm.em.find(
     Member,
     {
       community: { urlName },
@@ -67,7 +67,7 @@ const populateRandomMembers = async (urlName: string) => {
     );
   });
 
-  await bm.flush();
+  await bm.em.flush();
 };
 
 export default populateRandomMembers;

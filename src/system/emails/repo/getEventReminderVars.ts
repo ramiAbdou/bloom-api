@@ -27,8 +27,8 @@ const getEventReminderVars = async (
   const bm: BloomManager = new BloomManager();
 
   const [event, guests]: [Event, EventGuest[]] = await Promise.all([
-    bm.findOne(Event, { id: eventId }),
-    bm.find(EventGuest, { event: eventId })
+    bm.em.findOne(Event, { id: eventId }),
+    bm.em.find(EventGuest, { event: eventId })
   ]);
 
   const variables: EventReminderVars[] = guests.map((guest: EventGuest) => {

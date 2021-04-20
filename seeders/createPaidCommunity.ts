@@ -150,7 +150,7 @@ const createPaidCommunity = async (): Promise<void> => {
     });
   });
 
-  await bm.flush();
+  await bm.em.flush();
 
   await createMembersFromCsv({
     ownerEmail: process.env.USER_EMAIL,

@@ -42,9 +42,9 @@ const getInviteMembersVars = async (
     Member,
     Member[]
   ] = await Promise.all([
-    bm.findOne(Community, communityId),
-    bm.findOne(Member, coordinatorId),
-    bm.find(Member, { id: memberIds })
+    bm.em.findOne(Community, communityId),
+    bm.em.findOne(Member, coordinatorId),
+    bm.em.find(Member, { id: memberIds })
   ]);
 
   const variables: InviteMembersVars[] = members.map((member: Member) => {

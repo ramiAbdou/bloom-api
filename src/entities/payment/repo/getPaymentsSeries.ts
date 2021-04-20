@@ -3,7 +3,6 @@ import day, { Dayjs } from 'dayjs';
 import BloomManager from '@core/db/BloomManager';
 import Payment from '@entities/payment/Payment';
 import { GQLContext } from '@util/constants';
-import { QueryEvent } from '@util/constants.events';
 import { TimeSeriesData } from '@util/constants.gql';
 
 /**
@@ -26,15 +25,9 @@ const getPaymentsSeries = async (
 ): Promise<TimeSeriesData[]> => {
   const { communityId } = ctx;
 
-  const cacheKey = `${QueryEvent.GET_PAYMENTS_SERIES}-${communityId}`;
-
-  if (Payment.cache.has(cacheKey)) {
-    return Payment.cache.get(cacheKey);
-  }
-
   const startOfLastMonth: Dayjs = day.utc().subtract(1, 'month').startOf('d');
 
-  const payments = await new BloomManager().find(Payment, {
+  const payments = await new BloomManager().em.find(Payment, {
     community: communityId,
     createdAt: { $gte: startOfLastMonth.format() }
   });

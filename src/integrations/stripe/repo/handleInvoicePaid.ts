@@ -18,8 +18,8 @@ const handleInvoicePaid = async (event: Stripe.Event): Promise<void> => {
   const bm: BloomManager = new BloomManager();
 
   const [community, member]: [Community, Member] = await Promise.all([
-    bm.findOne(Community, { communityIntegrations: { stripeAccountId } }),
-    bm.findOne(
+    bm.em.findOne(Community, { communityIntegrations: { stripeAccountId } }),
+    bm.em.findOne(
       Member,
       { memberIntegrations: { stripeCustomerId: invoice.customer as string } },
       { populate: ['memberIntegrations'] }

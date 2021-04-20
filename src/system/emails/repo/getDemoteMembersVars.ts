@@ -32,9 +32,9 @@ const getDemoteMembersVars = async (
     Member,
     Member[]
   ] = await Promise.all([
-    bm.findOne(Community, { id: communityId }),
-    bm.findOne(Member, { community: communityId, role: MemberRole.OWNER }),
-    bm.find(Member, { id: memberIds })
+    bm.em.findOne(Community, { id: communityId }),
+    bm.em.findOne(Member, { community: communityId, role: MemberRole.OWNER }),
+    bm.em.find(Member, { id: memberIds })
   ]);
 
   const variables: DemoteMembersVars[] = users.map((member: Member) => {

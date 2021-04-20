@@ -8,7 +8,6 @@ import {
   Property
 } from '@mikro-orm/core';
 
-import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Community from '@entities/community/Community';
 
@@ -38,8 +37,6 @@ export enum QuestionType {
 @ObjectType()
 @Entity()
 export default class Question extends BaseEntity {
-  static cache: Cache = new Cache();
-
   // ## FIELDS
 
   // If the question is a special question, we store it with a category. These

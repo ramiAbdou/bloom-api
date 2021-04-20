@@ -3,7 +3,6 @@ import day from 'dayjs';
 import BloomManager from '@core/db/BloomManager';
 import EventAttendee from '@entities/event-attendee/EventAttendee';
 import { GQLContext } from '@util/constants';
-import { QueryEvent } from '@util/constants.events';
 import { TimeSeriesData } from '@util/constants.gql';
 
 /**
@@ -24,13 +23,7 @@ const getEventAttendeesSeries = async (
 ): Promise<TimeSeriesData[]> => {
   const { communityId } = ctx;
 
-  const cacheKey = `${QueryEvent.GET_EVENT_ATTENDEES_SERIES}-${communityId}`;
-
-  if (EventAttendee.cache.has(cacheKey)) {
-    return EventAttendee.cache.get(cacheKey);
-  }
-
-  const attendees: EventAttendee[] = await new BloomManager().find(
+  const attendees: EventAttendee[] = await new BloomManager().em.find(
     EventAttendee,
     {
       createdAt: { $gt: day.utc().subtract(30, 'd').format() },

@@ -47,7 +47,7 @@ const refreshToken = async ({
   else if (rToken) queryArgs = { refreshToken: rToken };
   else if (memberId) queryArgs = { members: { id: memberId } };
 
-  const user: User = await new BloomManager().findOne(User, queryArgs);
+  const user: User = await new BloomManager().em.findOne(User, queryArgs);
 
   // If no user found with the given arguments or a user is found and
   // the access token is expired, then exit. Also, if there is a loginToken

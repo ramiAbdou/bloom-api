@@ -10,7 +10,6 @@ import {
   QueryOrder
 } from '@mikro-orm/core';
 
-import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Supporter from '@entities/supporter/Supporter';
 import Application from '../application/Application';
@@ -24,8 +23,6 @@ import Question from '../question/Question';
 @ObjectType()
 @Entity()
 export default class Community extends BaseEntity {
-  static cache: Cache = new Cache();
-
   // ## FIELDS
 
   @Field()

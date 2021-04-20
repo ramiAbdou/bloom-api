@@ -32,9 +32,9 @@ const getDeleteMembersVars = async (
     Member,
     Member[]
   ] = await Promise.all([
-    bm.findOne(Community, communityId),
-    bm.findOne(Member, { community: communityId, role: MemberRole.OWNER }),
-    bm.find(Member, memberIds)
+    bm.em.findOne(Community, communityId),
+    bm.em.findOne(Member, { community: communityId, role: MemberRole.OWNER }),
+    bm.em.find(Member, memberIds)
   ]);
 
   const variables: DeleteMembersVars[] = members.map((member: Member) => {

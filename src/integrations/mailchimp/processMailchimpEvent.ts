@@ -28,8 +28,8 @@ const processMailchimpEvent = async (
     CommunityIntegrations,
     Member
   ] = await Promise.all([
-    bm.findOne(CommunityIntegrations, { community: communityId }),
-    bm.findOne(Member, memberId)
+    bm.em.findOne(CommunityIntegrations, { community: communityId }),
+    bm.em.findOne(Member, memberId)
   ]);
 
   if (mailchimpEvent === MailchimpEvent.ADD_TO_AUDIENCE) {

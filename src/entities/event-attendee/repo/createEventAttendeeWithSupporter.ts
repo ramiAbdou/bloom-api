@@ -42,7 +42,7 @@ const createEventAttendeeWithSupporter = async (
 
   const bm: BloomManager = new BloomManager();
 
-  const event: Event = await bm.findOne(Event, { id: eventId });
+  const event: Event = await bm.em.findOne(Event, { id: eventId });
 
   const supporter: Supporter = await createSupporter({
     communityId: event.community.id,
@@ -52,7 +52,7 @@ const createEventAttendeeWithSupporter = async (
     supporterId
   });
 
-  const existingAttendee: EventAttendee = await bm.findOne(
+  const existingAttendee: EventAttendee = await bm.em.findOne(
     EventAttendee,
     { event: eventId, member: null, supporter: supporter.id },
     { populate: ['supporter'] }

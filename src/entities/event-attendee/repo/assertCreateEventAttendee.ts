@@ -18,7 +18,7 @@ interface AssertCreateEventAttendeeArgs {
 const assertCreateEventAttendee = async (
   args: AssertCreateEventAttendeeArgs
 ): Promise<void> => {
-  const event: Event = await new BloomManager().findOne(
+  const event: Event = await new BloomManager().em.findOne(
     Event,
     { id: args.eventId },
     { fields: ['endTime', 'startTime'] }

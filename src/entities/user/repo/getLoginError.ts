@@ -20,7 +20,7 @@ const getLoginError = async (args: GetLoginErrorArgs): Promise<ErrorType> => {
 
   if (communityId) {
     // Check if the email is a member of this community.
-    const member: Member = await new BloomManager().findOne(Member, {
+    const member: Member = await new BloomManager().em.findOne(Member, {
       community: communityId,
       email
     });
@@ -28,7 +28,7 @@ const getLoginError = async (args: GetLoginErrorArgs): Promise<ErrorType> => {
     if (!member) return ErrorType.NOT_MEMBER;
   }
 
-  const user: User = await new BloomManager().findOne(User, { email });
+  const user: User = await new BloomManager().em.findOne(User, { email });
 
   if (!user) return ErrorType.USER_NOT_FOUND;
 

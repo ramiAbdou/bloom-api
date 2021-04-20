@@ -4,7 +4,6 @@ import { QueryOrder } from '@mikro-orm/core';
 import BloomManager from '@core/db/BloomManager';
 import Member from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
-import { QueryEvent } from '@util/constants.events';
 import { TimeSeriesData } from '@util/constants.gql';
 
 /**
@@ -23,15 +22,9 @@ const getActiveMembersSeries = async (
 ): Promise<TimeSeriesData[]> => {
   const { communityId } = ctx;
 
-  const cacheKey = `${QueryEvent.GET_ACTIVE_MEMBERS_SERIES}-${communityId}`;
-
-  if (Member.cache.has(cacheKey)) {
-    return Member.cache.get(cacheKey);
-  }
-
   const startOf30DaysAgo = day.utc().subtract(30, 'day').startOf('d');
 
-  const activeMembersThisMonth: Member[] = await new BloomManager().find(
+  const activeMembersThisMonth: Member[] = await new BloomManager().em.find(
     Member,
     {
       community: communityId,
@@ -57,8 +50,6 @@ const getActiveMembersSeries = async (
       return { name: dateKey, value: numActiveMembers };
     })
   );
-
-  Member.cache.set(cacheKey, result);
 
   return result;
 };

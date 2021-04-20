@@ -3,7 +3,6 @@ import day from 'dayjs';
 import BloomManager from '@core/db/BloomManager';
 import Member, { MemberStatus } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
-import { QueryEvent } from '@util/constants.events';
 import { TimeSeriesData } from '@util/constants.gql';
 
 /**
@@ -23,13 +22,8 @@ const getMembersSeries = async (
   ctx: Pick<GQLContext, 'communityId'>
 ): Promise<TimeSeriesData[]> => {
   const { communityId } = ctx;
-  const cacheKey = `${QueryEvent.GET_MEMBERS_SERIES}-${communityId}`;
 
-  if (Member.cache.has(cacheKey)) {
-    return Member.cache.get(cacheKey);
-  }
-
-  const members = await new BloomManager().find(Member, {
+  const members = await new BloomManager().em.find(Member, {
     community: communityId,
     status: MemberStatus.ACCEPTED
   });

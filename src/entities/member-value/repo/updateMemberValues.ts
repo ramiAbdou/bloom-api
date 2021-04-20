@@ -39,7 +39,7 @@ const updateMemberValues = async (
 
   const bm: BloomManager = new BloomManager();
 
-  const values: MemberValue[] = await bm.find(MemberValue, {
+  const values: MemberValue[] = await bm.em.find(MemberValue, {
     member: memberId,
     question: questionIds
   });
@@ -69,7 +69,7 @@ const updateMemberValues = async (
     values
   );
 
-  await bm.flush();
+  await bm.em.flush();
 
   return updatedValues;
 };

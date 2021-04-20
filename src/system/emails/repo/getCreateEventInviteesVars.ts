@@ -34,9 +34,9 @@ const getCreateEventInviteesVars = async (
     Event,
     Member[]
   ] = await Promise.all([
-    bm.findOne(Community, { id: communityId }),
-    bm.findOne(Event, { id: eventId }),
-    bm.find(Member, { id: memberIds })
+    bm.em.findOne(Community, { id: communityId }),
+    bm.em.findOne(Event, { id: eventId }),
+    bm.em.find(Member, { id: memberIds })
   ]);
 
   const partialCommunity: Pick<Community, 'name'> = { name: community.name };

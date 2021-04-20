@@ -48,9 +48,9 @@ const getChangePreview = async (
     MemberIntegrations,
     MemberType
   ] = await Promise.all([
-    bm.findOne(CommunityIntegrations, { community: communityId }),
-    bm.findOne(MemberIntegrations, { member: memberId }),
-    bm.findOne(MemberType, { id: memberTypeId })
+    bm.em.findOne(CommunityIntegrations, { community: communityId }),
+    bm.em.findOne(MemberIntegrations, { member: memberId }),
+    bm.em.findOne(MemberType, { id: memberTypeId })
   ]);
 
   const { stripeCustomerId, stripeSubscriptionId } = memberIntegrations;

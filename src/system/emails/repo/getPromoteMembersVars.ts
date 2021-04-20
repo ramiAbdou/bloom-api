@@ -32,12 +32,12 @@ const getPromoteMembersVars = async (
     Member,
     Member[]
   ] = await Promise.all([
-    bm.findOne(Community, { id: communityId }),
-    bm.findOne(Member, {
+    bm.em.findOne(Community, { id: communityId }),
+    bm.em.findOne(Member, {
       community: communityId,
       role: MemberRole.OWNER
     }),
-    bm.find(Member, { id: memberIds })
+    bm.em.find(Member, { id: memberIds })
   ]);
 
   const variables: PromoteMembersVars[] = members.map((member: Member) => {

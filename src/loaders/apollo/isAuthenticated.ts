@@ -19,7 +19,7 @@ const isAuthenticated = async (args: IsAuthenticatedArgs): Promise<boolean> => {
   // If the User isn't logged in, there won't be any memberId stored.
   if (!memberId) return false;
 
-  const { role } = await new BloomManager().findOne(Member, memberId);
+  const { role } = await new BloomManager().em.findOne(Member, memberId);
 
   // If no roles are specified, we return true b/c only no roles would be
   // specified if we wanted ANY logged-in user to be authorized. And, we have

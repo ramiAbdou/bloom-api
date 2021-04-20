@@ -49,13 +49,13 @@ const updateStripeSubscriptionId = async (
     MemberIntegrations,
     MemberType
   ] = await Promise.all([
-    bm.findOne(CommunityIntegrations, { community: communityId }),
-    bm.findOne(
+    bm.em.findOne(CommunityIntegrations, { community: communityId }),
+    bm.em.findOne(
       MemberIntegrations,
       { member: memberId },
       { populate: ['member'] }
     ),
-    bm.findOne(MemberType, { id: memberTypeId })
+    bm.em.findOne(MemberType, { id: memberTypeId })
   ]);
 
   const baseSubscriptionArgs: Pick<
@@ -86,7 +86,7 @@ const updateStripeSubscriptionId = async (
   memberIntegrations.stripeSubscriptionId = subscription.id;
   memberIntegrations.member.memberType = memberType;
 
-  await bm.flush();
+  await bm.em.flush();
 
   return memberIntegrations;
 };

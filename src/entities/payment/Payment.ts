@@ -10,12 +10,11 @@ import {
   wrap
 } from '@mikro-orm/core';
 
-import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import Community from '@entities/community/Community';
 import { stripe } from '@integrations/stripe/Stripe.util';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
-import { EmailEvent, QueryEvent } from '@util/constants.events';
+import { EmailEvent } from '@util/constants.events';
 import MemberType from '../member-type/MemberType';
 import Member from '../member/Member';
 
@@ -27,8 +26,6 @@ export enum PaymentType {
 @ObjectType()
 @Entity()
 export default class Payment extends BaseEntity {
-  static cache: Cache = new Cache();
-
   // ## FIELDS
 
   @Field(() => Float)
@@ -51,10 +48,6 @@ export default class Payment extends BaseEntity {
 
   @AfterCreate()
   async afterCreate(): Promise<void> {
-    Payment.cache.invalidate([
-      `${QueryEvent.GET_PAYMENTS_SERIES}-${this.community.id}`
-    ]);
-
     // Time to send an email confirmation for the Payment.
     await Promise.all([
       wrap(this.community).init(true, ['communityIntegrations']),

@@ -1,12 +1,10 @@
 import day from 'dayjs';
 import Stripe from 'stripe';
 import { Authorized, Field, ObjectType } from 'type-graphql';
-import { AfterUpdate, Entity, OneToOne, Property, wrap } from '@mikro-orm/core';
+import { Entity, OneToOne, Property, wrap } from '@mikro-orm/core';
 
-import Cache from '@core/cache/Cache';
 import BaseEntity from '@core/db/BaseEntity';
 import { stripe } from '@integrations/stripe/Stripe.util';
-import { QueryEvent } from '@util/constants.events';
 import Member from '../member/Member';
 
 @ObjectType()
@@ -27,8 +25,6 @@ export class PaymentMethod {
 @ObjectType()
 @Entity()
 export default class MemberIntegrations extends BaseEntity {
-  static cache: Cache = new Cache();
-
   // ## FIELDS
 
   // We don't store any of the customer's financial data in our server. Stripe
@@ -116,15 +112,6 @@ export default class MemberIntegrations extends BaseEntity {
     );
 
     return day.utc(subscription.current_period_end * 1000).format();
-  }
-
-  // ## LIFECYCLE HOOKS
-
-  @AfterUpdate()
-  afterUpdate(): void {
-    MemberIntegrations.cache.invalidate([
-      `${QueryEvent.GET_MEMBER_INTEGRATIONS}-${this.member.id}`
-    ]);
   }
 
   // ## RELATIONSHIPS

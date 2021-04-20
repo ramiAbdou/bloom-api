@@ -47,7 +47,7 @@ const assertInviteMembers = async (
 
   const bm: BloomManager = new BloomManager();
 
-  const existingMembers: Member[] = await bm.find(Member, {
+  const existingMembers: Member[] = await bm.em.find(Member, {
     community: communityId,
     user: { email: inputs.map(({ email }) => email.toLowerCase()) }
   });
@@ -80,7 +80,7 @@ const inviteMembers = async (
 
   const bm: BloomManager = new BloomManager();
 
-  const community = await bm.findOne(Community, communityId);
+  const community = await bm.em.findOne(Community, communityId);
 
   const members: Member[] = await Promise.all(
     inputs.map(
@@ -107,7 +107,7 @@ const inviteMembers = async (
     )
   );
 
-  await bm.flush();
+  await bm.em.flush();
 
   emitEmailEvent(EmailEvent.INVITE_MEMBERS, {
     communityId,

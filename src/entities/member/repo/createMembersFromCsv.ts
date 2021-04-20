@@ -70,7 +70,9 @@ const createMemberFromCsvRow = async (
   // member. The possible case for this is for an OWNER of a community.
   // They will have already been created in a script and might also be
   // in a CSV.
-  if (wasFound && (await bm.findOne(Member, { community, user }))) return null;
+  if (wasFound && (await bm.em.findOne(Member, { community, user }))) {
+    return null;
+  }
 
   // // We persist the member instead of the user since the user can
   // // potentially be persisted already.
@@ -159,7 +161,7 @@ const createMembersFromCsv = async (
     Community,
     Record<string, any>[]
   ] = await Promise.all([
-    bm.findOne(
+    bm.em.findOne(
       Community,
       { urlName },
       { populate: ['memberTypes', 'questions'] }
@@ -188,7 +190,7 @@ const createMembersFromCsv = async (
     })
   );
 
-  await bm.flush();
+  await bm.em.flush();
 
   return members;
 };

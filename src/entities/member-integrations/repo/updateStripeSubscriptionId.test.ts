@@ -62,7 +62,7 @@ describe('updateStripeSubscriptionId()', () => {
         community
       });
 
-      await bm.flush();
+      await bm.em.flush();
 
       communityId = integrations.community.id;
       memberId = member.id;

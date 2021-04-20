@@ -12,7 +12,7 @@ const handlePendingTasks = async (): Promise<void> => {
 
   // Get all the Tasks with executeAt time that is before the current time
   // and that haven't finished.
-  const tasks: Task[] = await bm.find(Task, {
+  const tasks: Task[] = await bm.em.find(Task, {
     executeAt: { $lte: day.utc().format() }
   });
 
@@ -21,7 +21,7 @@ const handlePendingTasks = async (): Promise<void> => {
     bm.em.remove(task);
   });
 
-  await bm.flush();
+  await bm.em.flush();
 };
 
 export default handlePendingTasks;

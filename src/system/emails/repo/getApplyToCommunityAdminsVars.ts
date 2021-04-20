@@ -34,9 +34,9 @@ const getApplyToCommunityAdminsVars = async (
     Member[],
     Member
   ] = await Promise.all([
-    bm.findOne(Community, { id: communityId }),
-    bm.find(Member, { community: communityId, role: { $ne: null } }),
-    bm.findOne(Member, { id: applicantId })
+    bm.em.findOne(Community, { id: communityId }),
+    bm.em.find(Member, { community: communityId, role: { $ne: null } }),
+    bm.em.findOne(Member, { id: applicantId })
   ]);
 
   const variables: ApplyToCommunityAdminsVars[] = admins.map(
