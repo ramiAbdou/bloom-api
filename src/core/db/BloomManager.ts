@@ -5,6 +5,7 @@ import {
   EntityName,
   FilterQuery,
   FindOneOptions,
+  FindOptions,
   Loaded,
   New,
   Populate,
@@ -13,7 +14,6 @@ import {
 
 import {
   BloomCreateAndFlushArgs,
-  BloomFindAndUpdateOptions,
   BloomFindOneAndUpdateOptions,
   BloomFindOneOptions
 } from './BloomManager.types';
@@ -88,7 +88,7 @@ class BloomManager {
     entityName: EntityName<T>,
     where: FilterQuery<T>,
     data: EntityData<T>,
-    options?: BloomFindAndUpdateOptions<T, P>
+    options?: FindOptions<T, P>
   ): Promise<Loaded<T, P>[]> {
     // If not found, get it from the DB.
     const result = await this.em.find<T, P>(entityName, where, { ...options });

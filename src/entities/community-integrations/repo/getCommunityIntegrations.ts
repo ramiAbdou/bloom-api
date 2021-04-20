@@ -2,7 +2,6 @@ import { ArgsType, Field } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import { GQLContext } from '@util/constants';
-import { QueryEvent } from '@util/constants.events';
 import CommunityIntegrations from '../CommunityIntegrations';
 
 @ArgsType()
@@ -25,8 +24,7 @@ const getCommunityIntegrations = async (
 
   const communityIntegrations: CommunityIntegrations = await new BloomManager().em.findOne(
     CommunityIntegrations,
-    { community: communityId },
-    { cacheKey: `${QueryEvent.GET_COMMUNITY_INTEGRATIONS}-${communityId}` }
+    { community: communityId }
   );
 
   return communityIntegrations;

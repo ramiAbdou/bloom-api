@@ -1,6 +1,5 @@
 import BloomManager from '@core/db/BloomManager';
 import { GQLContext } from '@util/constants';
-import { QueryEvent } from '@util/constants.events';
 import MemberIntegrations from '../MemberIntegrations';
 
 /**
@@ -15,8 +14,7 @@ const getMemberIntegrations = async (
 
   const memberIntegrations: MemberIntegrations[] = await new BloomManager().em.find(
     MemberIntegrations,
-    { member: memberId },
-    { cacheKey: `${QueryEvent.GET_MEMBER_INTEGRATIONS}-${memberId}` }
+    { member: memberId }
   );
 
   return memberIntegrations;

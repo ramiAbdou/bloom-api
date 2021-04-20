@@ -1,3 +1,7 @@
+export enum HasuraCronTrigger {
+  PENDING_TASKS = 'pending_tasks'
+}
+
 export enum HasuraEvent {
   CREATE_EVENT = 'create_event',
   CREATE_EVENT_GUEST = 'create_event_guest',

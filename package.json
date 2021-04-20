@@ -15,7 +15,6 @@
     "migrate:down:dev": "APP_ENV=dev npx mikro-orm migration:down",
     "migrate:list:dev": "APP_ENV=dev npx mikro-orm migration:list",
     "migrate:up:dev": "APP_ENV=dev npx mikro-orm migration:up",
-    "seed:dev": "APP_ENV=dev npx ts-node -r tsconfig-paths/register seeders/seeder.ts",
     "start:dev": "APP_ENV=dev nodemon",
     "start:stage": "APP_ENV=stage node dist/index.js",
     "start:prod": "APP_ENV=prod node dist/index.js",
@@ -24,9 +23,7 @@
     "test:integration": "APP_ENV=dev jest --group=integration",
     "test:unit": "APP_ENV=dev jest --group=unit",
     "test:watch": "APP_ENV=dev jest --watch",
-    "validate": "npm-run-all --parallel format:check lint",
-    "wipe:dev": "APP_ENV=dev npx ts-node -r tsconfig-paths/register seeders/wipe.ts",
-    "wipe:test:dev": "APP_ENV=dev NODE_ENV=test npx ts-node -r tsconfig-paths/register seeders/wipe.ts"
+    "validate": "npm-run-all --parallel format:check lint"
   },
   "engines": {
     "node": "12.16.3",
