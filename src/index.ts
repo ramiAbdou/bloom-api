@@ -8,7 +8,6 @@ import advancedFormat from 'dayjs/plugin/advancedFormat';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { MikroORM } from '@mikro-orm/core';
-import { gql } from 'graphql-request';
 
 import { APP } from '@util/constants';
 import { Express } from 'express';
@@ -18,8 +17,6 @@ import initApollo from './loaders/apollo/initApollo';
 import initExpress from './loaders/express/initExpress';
 
 import './loaders/misc';
-import client from './gql/client';
-import { IMember } from './util/constants.entities';
 
 day.extend(advancedFormat);
 day.extend(utc);
@@ -42,20 +39,6 @@ const startServer = async () => {
     MikroORM
   ] = await Promise.all([initExpress(), initApollo(), db.createConnection()]);
 
-  const { members, users } = await client.request(gql`
-    query GetMembers {
-      members {
-        id
-      }
-
-      users {
-        id
-      }
-    }
-  `);
-
-  console.log(members, users);
-
   apolloServer.applyMiddleware({
     app,
     cors: { origin: APP.CLIENT_URL },
@@ -63,7 +46,7 @@ const startServer = async () => {
   });
 
   app.listen(process.env.PORT || 8080, () => {
-    console.log('running on port 8080');
+    console.log('Running on port 8080.');
     logger.info(`Running on port ${process.env.PORT || 8080}.`);
   });
 };

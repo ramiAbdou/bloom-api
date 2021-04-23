@@ -99,6 +99,8 @@ select_permissions:
         - updated_at
         - user_id
       filter: {}
+      computed_fields:
+        - fullName
     role: guest
 update_permissions:
   - permission:
@@ -162,3 +164,10 @@ configuration:
     picture_url: pictureUrl
     updated_at: updatedAt
     user_id: userId
+computed_fields:
+  - name: fullName
+    definition:
+      function:
+        schema: public
+        name: member_full_name
+      table_argument: null

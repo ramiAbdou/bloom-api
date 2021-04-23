@@ -125,6 +125,7 @@ configuration:
     select_by_pk: event
     update_by_pk: updateEvent
   custom_column_names:
+    community_id: communityId
     created_at: createdAt
     deleted_at: deletedAt
     end_time: endTime
