@@ -91,23 +91,23 @@ export default class Event extends BaseEntity {
 
   // ## RELATIONSHIPS
 
-  @Field(() => [EventAttendee])
-  @OneToMany(() => EventAttendee, ({ event }) => event)
-  attendees = new Collection<EventAttendee>(this);
-
   @Field(() => Community)
   @ManyToOne(() => Community)
   community: Community;
 
+  @Field(() => [EventAttendee])
+  @OneToMany(() => EventAttendee, ({ event }) => event)
+  eventAttendees = new Collection<EventAttendee>(this);
+
   @Field(() => [EventGuest])
   @OneToMany(() => EventGuest, ({ event }) => event)
-  guests = new Collection<EventGuest>(this);
+  eventGuests = new Collection<EventGuest>(this);
 
   @Field(() => [EventInvitee])
   @OneToMany(() => EventInvitee, ({ event }) => event)
-  invitees = new Collection<EventInvitee>(this);
+  eventInvitees = new Collection<EventInvitee>(this);
 
   @Field(() => [EventWatch])
   @OneToMany(() => EventWatch, ({ event }) => event)
-  watches = new Collection<EventWatch>(this);
+  eventWatches = new Collection<EventWatch>(this);
 }

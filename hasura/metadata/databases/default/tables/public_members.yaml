@@ -81,6 +81,7 @@ array_relationships:
           schema: public
 select_permissions:
   - permission:
+      allow_aggregations: true
       columns:
         - bio
         - role
@@ -98,10 +99,26 @@ select_permissions:
         - position
         - updated_at
         - user_id
-      filter: {}
       computed_fields:
         - fullName
+      filter: {}
     role: guest
+insert_permissions:
+  - permission:
+      columns:
+        - bio
+        - community_id
+        - created_at
+        - email
+        - first_name
+        - last_name
+        - member_type_id
+        - status
+        - id
+        - updated_at
+      check: {}
+    role: guest
+
 update_permissions:
   - permission:
       check: {}

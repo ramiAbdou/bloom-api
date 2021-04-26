@@ -58,6 +58,8 @@
     "faker": "^4.1.0",
     "googleapis": "^39.2.0",
     "graphql": "^15.3.0",
+    "graphql-fields-list": "^2.2.3",
+    "graphql-list-fields": "^2.0.2",
     "graphql-request": "^3.4.0",
     "handlebars": "^4.7.6",
     "helmet": "^3.22.1",

@@ -1,6 +1,9 @@
 table:
   name: users
   schema: public
+
+## ARRAY RELATIONSHIPS
+
 array_relationships:
   - name: members
     using:
@@ -16,6 +19,21 @@ array_relationships:
         table:
           name: supporters
           schema: public
+
+## INSERT PERMSSIONS
+
+insert_permissions:
+  - permission:
+      columns:
+        - created_at
+        - email
+        - id
+        - updated_at
+      check: {}
+    role: guest
+
+## SELECT PERMISSIONS
+
 select_permissions:
   - permission:
       columns:
@@ -28,6 +46,18 @@ select_permissions:
         - refresh_token
       filter: {}
     role: guest
+
+## UPDATE PERMISSIONS
+
+update_permissions:
+  - permission:
+      columns:
+        - updated_at
+      filter: {}
+    role: guest
+
+## CONFIGURATION
+
 configuration:
   custom_root_fields:
     insert_one: createUser

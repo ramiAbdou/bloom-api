@@ -10,6 +10,7 @@ import MemberResolver from '@entities/member/Member.resolver';
 import PaymentResolver from '@entities/payment/Payment.resolver';
 import UserResolver from '@entities/user/User.resolver';
 import { GQLContext } from '@util/constants';
+import EventResolver from '../../entities/event/Event.resolver';
 import isAuthenticated from './isAuthenticated';
 
 const buildApolloSchema = async (): Promise<GraphQLSchema> => {
@@ -19,6 +20,7 @@ const buildApolloSchema = async (): Promise<GraphQLSchema> => {
     },
     resolvers: [
       CommunityIntegrations,
+      EventResolver,
       EventAttendeeResolver,
       EventGuestResolver,
       MemberResolver,
