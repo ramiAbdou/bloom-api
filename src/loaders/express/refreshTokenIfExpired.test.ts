@@ -21,7 +21,7 @@ cases(
 
     const mockedRefreshTokenFlow = jest
       .spyOn(refreshTokenFlow, 'default')
-      .mockResolvedValue({ accessToken: 'abc', refreshToken: 'cde' });
+      .mockResolvedValue('abc');
 
     await refreshTokenIfExpired(req, res, next);
 

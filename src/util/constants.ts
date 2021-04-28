@@ -32,12 +32,6 @@ export const JWT = {
 
 export type AuthQueryArgs = { code: string; state?: string };
 
-export enum IntegrationsBrand {
-  MAILCHIMP = 'Mailchimp',
-  STRIPE = 'Stripe',
-  ZAPIER = 'Zapier'
-}
-
 export type KeyValue = { key: string; value: any };
 
 // ## GRAPHQL

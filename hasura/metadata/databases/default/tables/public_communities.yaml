@@ -11,15 +11,6 @@ object_relationships:
         remote_table:
           name: applications
           schema: public
-  - name: communityIntegrations
-    using:
-      manual_configuration:
-        column_mapping:
-          id: community_id
-        insertion_order: null
-        remote_table:
-          name: community_integrations
-          schema: public
   - name: highlightedQuestion
     using:
       foreign_key_constraint_on: highlighted_question_id
@@ -47,13 +38,6 @@ array_relationships:
         column: community_id
         table:
           name: members
-          schema: public
-  - name: payments
-    using:
-      foreign_key_constraint_on:
-        column: community_id
-        table:
-          name: payments
           schema: public
   - name: questions
     using:

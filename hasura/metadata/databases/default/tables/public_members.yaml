@@ -5,15 +5,6 @@ object_relationships:
   - name: community
     using:
       foreign_key_constraint_on: community_id
-  - name: memberIntegrations
-    using:
-      manual_configuration:
-        column_mapping:
-          id: member_id
-        insertion_order: null
-        remote_table:
-          name: member_integrations
-          schema: public
   - name: memberSocials
     using:
       manual_configuration:
@@ -71,13 +62,6 @@ array_relationships:
         column: member_id
         table:
           name: member_values
-          schema: public
-  - name: payments
-    using:
-      foreign_key_constraint_on:
-        column: member_id
-        table:
-          name: payments
           schema: public
 select_permissions:
   - permission:

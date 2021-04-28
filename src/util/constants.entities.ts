@@ -68,8 +68,6 @@ export class ICommunity extends BaseEntity {
 
   application?: IApplication;
 
-  communityIntegrations: ICommunityIntegrations;
-
   events: IEvent[];
 
   highlightedQuestion: IQuestion;
@@ -80,31 +78,9 @@ export class ICommunity extends BaseEntity {
 
   members: IMember[];
 
-  payments: IPayment[];
-
   questions: IQuestion[];
 
   supporters: ISupporter[];
-}
-
-// ## COMMUNITY INTEGRATIONS
-
-export class ICommunityIntegrations extends BaseEntity {
-  isMailchimpAuthenticated: boolean;
-
-  mailchimpLists: { name: string; id: string }[];
-
-  mailchimpListId: string;
-
-  mailchimpListName: string;
-
-  stripeAccountId: string;
-
-  // RELATIONSHIPS
-
-  community: ICommunity;
-
-  communityId: string;
 }
 
 // ## EVENT
@@ -243,8 +219,6 @@ export class IMember extends BaseEntity {
 
   eventWatches: IEventWatch[];
 
-  memberIntegrations: IMemberIntegrations;
-
   memberSocials: IMemberSocials;
 
   memberType: IMemberType;
@@ -253,35 +227,9 @@ export class IMember extends BaseEntity {
 
   memberValues: IMemberValue[];
 
-  payments: IPayment[];
-
   user: IUser;
 
   userId: string;
-}
-
-// ## MEMBER INTEGRATIONS
-
-export interface IPaymentMethod {
-  brand: string;
-  expirationDate: string;
-  last4: string;
-  paymentMethodId?: string;
-  zipCode: string;
-}
-
-export class IMemberIntegrations extends BaseEntity {
-  paymentMethod: IPaymentMethod;
-
-  renewalDate?: string;
-
-  stripeSubscriptionId?: string;
-
-  // RELATIONSHIPS
-
-  member: IMember;
-
-  memberId: string;
 }
 
 // MEMBER SOCIALS

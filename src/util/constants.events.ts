@@ -11,7 +11,6 @@ export enum EmailEvent {
   ACCEPTED_INTO_COMMUNITY = 'ACCEPTED_INTO_COMMUNITY',
   APPLY_TO_COMMUNITY = 'APPLY_TO_COMMUNITY',
   APPLY_TO_COMMUNITY_ADMINS = 'APPLY_TO_COMMUNITY_ADMINS',
-  CONNECT_INTEGRATIONS = 'CONNECT_INTEGRATIONS',
   CREATE_EVENT_COORDINATOR = 'CREATE_EVENT_COORDINATOR',
   CREATE_EVENT_INVITEES = 'CREATE_EVENT_INVITEES',
   DELETE_EVENT_COORDINATOR = 'DELETE_EVENT_COORDINATOR',
@@ -22,7 +21,6 @@ export enum EmailEvent {
   EVENT_RSVP = 'EVENT_RSVP',
   INVITE_MEMBERS = 'INVITE_MEMBERS',
   LOGIN_LINK = 'LOGIN_LINK',
-  PAYMENT_RECEIPT = 'PAYMENT_RECEIPT',
   PROMOTE_MEMBERS = 'PROMOTE_MEMBERS'
 }
 
@@ -55,8 +53,6 @@ export enum MutationEvent {
   SEND_LOGIN_LINK = 'sendLoginLink',
   UPDATE_MAILCHIMP_LIST_ID = 'updateMailchimpListId',
   UPDATE_MEMBER_VALUES = 'updateMemberValues',
-  UPDATE_STRIPE_PAYMENT_METHOD_ID = 'updateStripePaymentMethodId',
-  UPDATE_STRIPE_SUBSCRIPTION_ID = 'updateStripeSubscriptionId',
   VERIFY_TOKEN = 'verifyToken'
 }
 
@@ -64,12 +60,9 @@ export enum QueryEvent {
   GET_ACTIVE_MEMBERS_GROWTH = 'getActiveMembersGrowth',
   GET_ACTIVE_MEMBERS_SERIES = 'getActiveMembersSeries',
   GET_CHANGE_PREVIEW = 'getChangePreview',
-  GET_COMMUNITY_INTEGRATIONS = 'getCommunityIntegrations',
   GET_EVENT_ATTENDEES_SERIES = 'getEventAttendeesSeries',
-  GET_MEMBER_INTEGRATIONS = 'getMemberIntegrations',
   GET_MEMBERS_GROWTH = 'getMembersGrowth',
   GET_MEMBERS_SERIES = 'getMembersSeries',
-  GET_PAYMENTS_SERIES = 'getPaymentsSeries',
   GET_USER_TOKENS = 'getUserTokens'
 }
 

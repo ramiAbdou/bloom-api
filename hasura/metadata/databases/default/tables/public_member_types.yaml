@@ -22,13 +22,6 @@ array_relationships:
         table:
           name: members
           schema: public
-  - name: payments
-    using:
-      foreign_key_constraint_on:
-        column: member_type_id
-        table:
-          name: payments
-          schema: public
 select_permissions:
   - permission:
       columns:

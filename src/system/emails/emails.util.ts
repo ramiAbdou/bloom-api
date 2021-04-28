@@ -6,7 +6,6 @@ import { EmailArgs, EmailVars } from './emails.types';
 import getAcceptedIntoCommunityVars from './repo/getAcceptedIntoCommunityVars';
 import getApplyToCommunityAdminsVars from './repo/getApplyToCommunityAdminsVars';
 import getApplyToCommunityVars from './repo/getApplyToCommunityVars';
-import getConnectIntegrationsVars from './repo/getConnectIntegrationsVars';
 import getCreateEventCoordinatorVars from './repo/getCreateEventCoordinatorVars';
 import getCreateEventInviteesVars from './repo/getCreateEventInviteesVars';
 import getDeleteEventCoordinatorVars from './repo/getDeleteEventCoordinatorVars';
@@ -17,7 +16,6 @@ import getEventReminderVars from './repo/getEventReminderVars';
 import getEventRsvpVars from './repo/getEventRsvpVars';
 import getInviteMembersVars from './repo/getInviteMembersVars';
 import getLoginLinkVars from './repo/getLoginLinkVars';
-import getPaymentReceiptVars from './repo/getPaymentReceiptVars';
 import getPromoteMembersVars from './repo/getPromoteMembersVars';
 
 export interface FormatPersonalizationData {
@@ -41,9 +39,6 @@ export const getSendGridTemplateId = (emailEvent: EmailEvent): string => {
 
     case EmailEvent.APPLY_TO_COMMUNITY_ADMINS:
       return process.env.SENDGRID_APPLY_TO_COMMUNITY_ADMINS_TEMPLATE_ID;
-
-    case EmailEvent.CONNECT_INTEGRATIONS:
-      return process.env.SENDGRID_CONNECT_INTEGRATIONS_TEMPLATE_ID;
 
     case EmailEvent.CREATE_EVENT_COORDINATOR:
       return process.env.SENDGRID_CREATE_EVENT_COORDINATOR_TEMPLATE_ID;
@@ -75,9 +70,6 @@ export const getSendGridTemplateId = (emailEvent: EmailEvent): string => {
     case EmailEvent.LOGIN_LINK:
       return process.env.SENDGRID_LOGIN_LINK_TEMPLATE_ID;
 
-    case EmailEvent.PAYMENT_RECEIPT:
-      return process.env.SENDGRID_PAYMENT_RECEIPT_TEMPLATE_ID;
-
     case EmailEvent.PROMOTE_MEMBERS:
       return process.env.SENDGRID_PROMOTE_MEMBERS_TEMPLATE_ID;
 
@@ -105,9 +97,6 @@ const getEmailVars = (args: EmailArgs): Promise<EmailVars[]> => {
 
     case EmailEvent.APPLY_TO_COMMUNITY_ADMINS:
       return getApplyToCommunityAdminsVars(emailPayload);
-
-    case EmailEvent.CONNECT_INTEGRATIONS:
-      return getConnectIntegrationsVars(emailPayload);
 
     case EmailEvent.CREATE_EVENT_COORDINATOR:
       return getCreateEventCoordinatorVars(emailPayload);
@@ -138,9 +127,6 @@ const getEmailVars = (args: EmailArgs): Promise<EmailVars[]> => {
 
     case EmailEvent.LOGIN_LINK:
       return getLoginLinkVars(emailPayload);
-
-    case EmailEvent.PAYMENT_RECEIPT:
-      return getPaymentReceiptVars(emailPayload);
 
     case EmailEvent.PROMOTE_MEMBERS:
       return getPromoteMembersVars(emailPayload);
