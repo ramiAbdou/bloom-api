@@ -34,12 +34,6 @@ export default class MemberType extends BaseEntity {
   @Enum({ items: () => RecurrenceType, type: String })
   recurrence: RecurrenceType = RecurrenceType.YEARLY;
 
-  @Property({ nullable: true })
-  stripePriceId: string;
-
-  @Property({ nullable: true })
-  stripeProductId: string;
-
   @Field()
   @Property({ persist: false })
   get isFree(): boolean {

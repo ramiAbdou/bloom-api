@@ -2,7 +2,6 @@ import { ArgsType, Field, InputType } from 'type-graphql';
 
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
-import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
 import MemberSocials from '@entities/member-socials/MemberSocials';
 import User from '@entities/user/User';
 import { InviteMembersPayload } from '@system/emails/repo/getInviteMembersVars';
@@ -96,7 +95,6 @@ const inviteMembers = async (
           email,
           firstName,
           lastName,
-          memberIntegrations: bm.create(MemberIntegrations, {}),
           memberType: community.defaultType.id,
           role: isAdmin ? MemberRole.ADMIN : null,
           socials: bm.create(MemberSocials, {}),

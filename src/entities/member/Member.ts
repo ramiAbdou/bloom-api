@@ -1,5 +1,4 @@
 import { IsUrl } from 'class-validator';
-import Stripe from 'stripe';
 import { Field, ObjectType } from 'type-graphql';
 import {
   BeforeCreate,
@@ -12,25 +11,20 @@ import {
   OneToMany,
   OneToOne,
   Property,
-  QueryOrder,
-  Unique,
-  wrap
+  Unique
 } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
-import { stripe } from '@integrations/stripe/Stripe.util';
 import { now } from '@util/util';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
 import EventInvitee from '../event-invitee/EventInvitee';
 import EventWatch from '../event-watch/EventWatch';
-import MemberIntegrations from '../member-integrations/MemberIntegrations';
 import MemberRefresh from '../member-refresh/MemberRefresh';
 import MemberSocials from '../member-socials/MemberSocials';
 import MemberType from '../member-type/MemberType';
 import MemberValue from '../member-value/MemberValue';
-import Payment from '../payment/Payment';
 import User from '../user/User';
 
 export enum MemberRole {
@@ -97,36 +91,6 @@ export default class Member extends BaseEntity {
   @Enum({ items: () => MemberStatus, type: String })
   status: MemberStatus = MemberStatus.PENDING;
 
-  // ## METHODS
-
-  /**
-   * Returns true if the Member has paid their dues in less than the
-   * RecurrenceType of their MemberType.
-   *
-   * Example: If the Member's current MemberType is on a MONTHLY recurrence
-   * and they paid dues less than a month ago, then they are active. Otherwise,
-   * they are not.
-   */
-  @Field(() => Boolean)
-  async isDuesActive(): Promise<boolean> {
-    if (process.env.APP_ENV !== 'prod') return true;
-
-    await wrap(this.community).init(true, ['communityIntegrations']);
-    await wrap(this.memberIntegrations).init();
-
-    // If there is no Stripe.Subscription associated with the Member, not
-    // dues active.
-    if (!this.memberIntegrations.stripeSubscriptionId) return false;
-
-    const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(
-      this.memberIntegrations.stripeSubscriptionId,
-      { stripeAccount: this.community.communityIntegrations.stripeAccountId }
-    );
-
-    const { status } = subscription;
-    return status === 'active' || status === 'trialing';
-  }
-
   // ## LIFECYCLE HOOKS
 
   @BeforeCreate()
@@ -174,10 +138,6 @@ export default class Member extends BaseEntity {
   @OneToMany(() => EventInvitee, ({ member }) => member)
   invitees = new Collection<EventInvitee>(this);
 
-  @Field(() => MemberIntegrations)
-  @OneToOne(() => MemberIntegrations, (integrations) => integrations.member)
-  memberIntegrations: MemberIntegrations;
-
   // 99% of the time, type MUST exist. However, in some communities, the OWNER
   // or ADMINs are not actually general members of the community. For example,
   // in ColorStack, the Community Manager isn't a part of the community, but
@@ -185,12 +145,6 @@ export default class Member extends BaseEntity {
   @Field(() => MemberType)
   @ManyToOne(() => MemberType, { nullable: true })
   memberType: MemberType;
-
-  @Field(() => [Payment])
-  @OneToMany(() => Payment, ({ member }) => member, {
-    orderBy: { createdAt: QueryOrder.DESC }
-  })
-  payments: Collection<Payment> = new Collection<Payment>(this);
 
   @OneToMany(() => MemberRefresh, ({ member }) => member)
   refreshes: Collection<MemberRefresh> = new Collection<MemberRefresh>(this);

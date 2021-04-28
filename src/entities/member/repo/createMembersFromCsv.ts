@@ -3,7 +3,6 @@ import day from 'dayjs';
 import { internet } from 'faker';
 
 import BloomManager from '@core/db/BloomManager';
-import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
 import MemberSocials from '@entities/member-socials/MemberSocials';
 import MemberType from '@entities/member-type/MemberType';
 import MemberValue from '@entities/member-value/MemberValue';
@@ -81,7 +80,6 @@ const createMemberFromCsvRow = async (
     email,
     firstName,
     lastName,
-    memberIntegrations: bm.create(MemberIntegrations, {}),
     role: email === ownerEmail ? MemberRole.OWNER : null,
     status: MemberStatus.ACCEPTED,
     user

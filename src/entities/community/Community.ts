@@ -13,11 +13,9 @@ import {
 import BaseEntity from '@core/db/BaseEntity';
 import Supporter from '@entities/supporter/Supporter';
 import Application from '../application/Application';
-import CommunityIntegrations from '../community-integrations/CommunityIntegrations';
 import Event from '../event/Event';
 import MemberType from '../member-type/MemberType';
 import Member from '../member/Member';
-import Payment from '../payment/Payment';
 import Question from '../question/Question';
 
 @ObjectType()
@@ -76,12 +74,6 @@ export default class Community extends BaseEntity {
   })
   application: Application;
 
-  @Field(() => CommunityIntegrations, { nullable: true })
-  @OneToOne(() => CommunityIntegrations, ({ community }) => community, {
-    nullable: true
-  })
-  communityIntegrations: CommunityIntegrations;
-
   // If the community is invite-only, there will be no application. The only
   // way for someone to join is if the admin adds them manually.
   @OneToOne({ nullable: true })
@@ -105,10 +97,6 @@ export default class Community extends BaseEntity {
     orderBy: { amount: QueryOrder.ASC }
   })
   memberTypes = new Collection<MemberType>(this);
-
-  @Field(() => [Payment])
-  @OneToMany(() => Payment, ({ community }) => community)
-  payments = new Collection<Payment>(this);
 
   // Should get the questions by the order that they are stored in the DB.
   @Field(() => [Question])

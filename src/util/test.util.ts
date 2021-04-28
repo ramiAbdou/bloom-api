@@ -6,20 +6,17 @@ import { EntityManager, PostgreSqlDriver } from '@mikro-orm/postgresql';
 
 import db from '@core/db/db';
 import Application from '@entities/application/Application';
-import CommunityIntegrations from '@entities/community-integrations/CommunityIntegrations';
 import Community from '@entities/community/Community';
 import EventAttendee from '@entities/event-attendee/EventAttendee';
 import EventGuest from '@entities/event-guest/EventGuest';
 import EventInvitee from '@entities/event-invitee/EventInvitee';
 import EventWatch from '@entities/event-watch/EventWatch';
 import Event from '@entities/event/Event';
-import MemberIntegrations from '@entities/member-integrations/MemberIntegrations';
 import MemberRefresh from '@entities/member-refresh/MemberRefresh';
 import MemberSocials from '@entities/member-socials/MemberSocials';
 import MemberType from '@entities/member-type/MemberType';
 import MemberValue from '@entities/member-value/MemberValue';
 import Member from '@entities/member/Member';
-import Payment from '@entities/payment/Payment';
 import Question, { QuestionType } from '@entities/question/Question';
 import RankedQuestion from '@entities/ranked-question/RankedQuestion';
 import Supporter from '@entities/supporter/Supporter';
@@ -34,20 +31,17 @@ import User from '@entities/user/User';
  */
 export const clearAllTableData = async (em: EntityManager): Promise<void> => {
   await em.createQueryBuilder(Application).truncate().execute();
-  await em.createQueryBuilder(CommunityIntegrations).truncate().execute();
   await em.createQueryBuilder(Community).truncate().execute();
   await em.createQueryBuilder(EventAttendee).truncate().execute();
   await em.createQueryBuilder(EventGuest).truncate().execute();
   await em.createQueryBuilder(EventInvitee).truncate().execute();
   await em.createQueryBuilder(EventWatch).truncate().execute();
   await em.createQueryBuilder(Event).truncate().execute();
-  await em.createQueryBuilder(MemberIntegrations).truncate().execute();
   await em.createQueryBuilder(MemberRefresh).truncate().execute();
   await em.createQueryBuilder(MemberSocials).truncate().execute();
   await em.createQueryBuilder(MemberType).truncate().execute();
   await em.createQueryBuilder(MemberValue).truncate().execute();
   await em.createQueryBuilder(Member).truncate().execute();
-  await em.createQueryBuilder(Payment).truncate().execute();
   await em.createQueryBuilder(Question).truncate().execute();
   await em.createQueryBuilder(RankedQuestion).truncate().execute();
   await em.createQueryBuilder(Supporter).truncate().execute();
@@ -100,10 +94,6 @@ export const communityFactory = Factory.Sync.makeFactory<Partial<Community>>({
   urlName: faker.random.word()
 });
 
-export const communityIntegrationsFactory = Factory.Sync.makeFactory<
-  Partial<CommunityIntegrations>
->({});
-
 export const eventFactory = Factory.Sync.makeFactory<Partial<Event>>({
   description: faker.lorem.paragraph(),
   endTime: Factory.each((i: number) => {
@@ -123,10 +113,6 @@ export const memberFactory = Factory.Sync.makeFactory<Partial<Member>>({
   firstName: faker.name.firstName(),
   lastName: faker.name.lastName()
 });
-
-export const memberIntegrationsFactory = Factory.Sync.makeFactory<
-  Partial<MemberIntegrations>
->({});
 
 export const memberTypeFactory = Factory.Sync.makeFactory<Partial<MemberType>>({
   amount: Factory.each((i: number) => i * 5),
