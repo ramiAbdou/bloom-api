@@ -11,6 +11,18 @@ object_relationships:
   - name: supporter
     using:
       foreign_key_constraint_on: supporter_id
+insert_permissions:
+  - permission:
+      backend_only: false
+      check: {}
+      columns:
+        - id
+        - created_at
+        - updated_at
+        - event_id
+        - member_id
+    role: guest
+
 select_permissions:
   - permission:
       columns:
@@ -24,6 +36,16 @@ select_permissions:
       filter: {}
       allow_aggregations: true
     role: guest
+
+## UPDATE PERMISSIONS
+
+update_permissions:
+  - permission:
+      columns:
+        - updated_at
+      filter: {}
+    role: guest
+
 configuration:
   custom_root_fields:
     insert_one: createEventAttendee

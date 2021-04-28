@@ -18,12 +18,12 @@ insert_permissions:
       columns:
         - id
         - created_at
-        - deleted_at
         - updated_at
         - event_id
         - member_id
         - supporter_id
     role: guest
+
 select_permissions:
   - permission:
       columns:
@@ -37,6 +37,16 @@ select_permissions:
       filter: {}
       allow_aggregations: true
     role: guest
+
+## UPDATE PERMISSIONS
+
+update_permissions:
+  - permission:
+      columns:
+        - updated_at
+      filter: {}
+    role: guest
+
 event_triggers:
   - definition:
       enable_manual: false
