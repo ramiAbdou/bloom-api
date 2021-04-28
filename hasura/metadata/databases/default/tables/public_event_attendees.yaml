@@ -22,6 +22,7 @@ select_permissions:
         - member_id
         - supporter_id
       filter: {}
+      allow_aggregations: true
     role: guest
 configuration:
   custom_root_fields:

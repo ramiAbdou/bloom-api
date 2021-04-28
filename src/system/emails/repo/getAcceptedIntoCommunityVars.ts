@@ -42,8 +42,6 @@ const getAcceptedIntoCommunityVars = async (
 
   const bm: BloomManager = new BloomManager();
 
-  // const { members } = await client.request(GET_ACCEPTED_MEMBERS, { memberIds });
-
   const [community, members]: [Community, Member[]] = await Promise.all([
     bm.em.findOne(Community, { id: communityId }),
     bm.em.find(Member, { id: memberIds })

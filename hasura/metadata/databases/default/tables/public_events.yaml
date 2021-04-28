@@ -74,6 +74,7 @@ select_permissions:
         - video_url
         - community_id
       filter: {}
+      allow_aggregations: true
     role: guest
 update_permissions:
   - permission:

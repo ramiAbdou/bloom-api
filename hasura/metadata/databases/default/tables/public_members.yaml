@@ -170,6 +170,7 @@ configuration:
     select: members
     select_by_pk: member
     update_by_pk: updateMember
+    update: updateMembers
   custom_column_names:
     community_id: communityId
     created_at: createdAt

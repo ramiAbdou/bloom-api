@@ -30,7 +30,18 @@ select_permissions:
         - event_id
         - member_id
       filter: {}
+      allow_aggregations: true
     role: guest
+
+## UPDATE PERMISSIONS
+
+update_permissions:
+  - permission:
+      columns:
+        - updated_at
+      filter: {}
+    role: guest
+
 configuration:
   custom_root_fields:
     insert_one: createEventWatch
