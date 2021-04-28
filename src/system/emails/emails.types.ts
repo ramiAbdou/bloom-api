@@ -12,10 +12,6 @@ import {
   ApplyToCommunityVars
 } from './repo/getApplyToCommunityVars';
 import {
-  ConnectIntegrationsPayload,
-  ConnectIntegrationsVars
-} from './repo/getConnectIntegrationsVars';
-import {
   CreateEventCoordinatorPayload,
   CreateEventCoordinatorVars
 } from './repo/getCreateEventCoordinatorVars';
@@ -50,10 +46,6 @@ import {
   LoginLinkEmailVars
 } from './repo/getLoginLinkVars';
 import {
-  PaymentReceiptPayload,
-  PaymentReceiptVars
-} from './repo/getPaymentReceiptVars';
-import {
   PromoteMembersPayload,
   PromoteMembersVars
 } from './repo/getPromoteMembersVars';
@@ -67,7 +59,6 @@ export type EmailPayload =
   | AcceptedIntoCommunityPayload
   | ApplyToCommunityPayload
   | ApplyToCommunityAdminsPayload
-  | ConnectIntegrationsPayload
   | CreateEventCoordinatorPayload
   | CreateEventInviteesPayload
   | DeleteEventCoordinatorPayload
@@ -78,14 +69,12 @@ export type EmailPayload =
   | EventRsvpPayload
   | InviteMembersPayload
   | LoginLinkEmailPayload
-  | PaymentReceiptPayload
   | PromoteMembersPayload;
 
 export type EmailVars =
   | AcceptedIntoCommunityVars
   | ApplyToCommunityVars
   | ApplyToCommunityAdminsVars
-  | ConnectIntegrationsVars
   | CreateEventCoordinatorVars
   | DeleteEventCoordinatorVars
   | DeleteEventGuestsVars
@@ -95,7 +84,6 @@ export type EmailVars =
   | EventRsvpVars
   | InviteMembersVars
   | LoginLinkEmailVars
-  | PaymentReceiptVars
   | PromoteMembersVars;
 
 export interface EmailArgs {

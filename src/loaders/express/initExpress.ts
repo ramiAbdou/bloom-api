@@ -5,8 +5,6 @@ import helmet from 'helmet';
 
 import googleRouter from '@integrations/google/Google.router';
 import hasuraRouter from '@integrations/hasura/Hasura.router';
-import mailchimpRouter from '@integrations/mailchimp/Mailchimp.router';
-import stripeRouter from '@integrations/stripe/Stripe.router';
 import { APP } from '@util/constants';
 import parseBody from './parseBody';
 import refreshTokenIfExpired from './refreshTokenIfExpired';
@@ -33,8 +31,6 @@ const initExpress = (): express.Express => {
 
   app.use('/google', googleRouter);
   app.use('/hasura', hasuraRouter);
-  app.use('/mailchimp', mailchimpRouter);
-  app.use('/stripe', stripeRouter);
 
   return app;
 };
