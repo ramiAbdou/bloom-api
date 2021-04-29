@@ -15,7 +15,6 @@ import {
   CreateEventCoordinatorPayload,
   CreateEventCoordinatorVars
 } from './repo/getCreateEventCoordinatorVars';
-import { CreateEventInviteesPayload } from './repo/getCreateEventInviteesVars';
 import {
   DeleteEventCoordinatorPayload,
   DeleteEventCoordinatorVars
@@ -60,7 +59,6 @@ export type EmailPayload =
   | ApplyToCommunityPayload
   | ApplyToCommunityAdminsPayload
   | CreateEventCoordinatorPayload
-  | CreateEventInviteesPayload
   | DeleteEventCoordinatorPayload
   | DeleteEventGuestsPayload
   | DeleteMembersPayload

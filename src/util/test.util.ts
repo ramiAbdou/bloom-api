@@ -9,7 +9,6 @@ import Application from '@entities/application/Application';
 import Community from '@entities/community/Community';
 import EventAttendee from '@entities/event-attendee/EventAttendee';
 import EventGuest from '@entities/event-guest/EventGuest';
-import EventInvitee from '@entities/event-invitee/EventInvitee';
 import EventWatch from '@entities/event-watch/EventWatch';
 import Event from '@entities/event/Event';
 import MemberRefresh from '@entities/member-refresh/MemberRefresh';
@@ -34,7 +33,6 @@ export const clearAllTableData = async (em: EntityManager): Promise<void> => {
   await em.createQueryBuilder(Community).truncate().execute();
   await em.createQueryBuilder(EventAttendee).truncate().execute();
   await em.createQueryBuilder(EventGuest).truncate().execute();
-  await em.createQueryBuilder(EventInvitee).truncate().execute();
   await em.createQueryBuilder(EventWatch).truncate().execute();
   await em.createQueryBuilder(Event).truncate().execute();
   await em.createQueryBuilder(MemberRefresh).truncate().execute();

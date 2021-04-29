@@ -16,7 +16,6 @@ import { APP } from '@util/constants';
 import Community from '../community/Community';
 import EventAttendee from '../event-attendee/EventAttendee';
 import EventGuest from '../event-guest/EventGuest';
-import EventInvitee from '../event-invitee/EventInvitee';
 import EventWatch from '../event-watch/EventWatch';
 
 export enum EventPrivacy {
@@ -102,10 +101,6 @@ export default class Event extends BaseEntity {
   @Field(() => [EventGuest])
   @OneToMany(() => EventGuest, ({ event }) => event)
   eventGuests = new Collection<EventGuest>(this);
-
-  @Field(() => [EventInvitee])
-  @OneToMany(() => EventInvitee, ({ event }) => event)
-  eventInvitees = new Collection<EventInvitee>(this);
 
   @Field(() => [EventWatch])
   @OneToMany(() => EventWatch, ({ event }) => event)

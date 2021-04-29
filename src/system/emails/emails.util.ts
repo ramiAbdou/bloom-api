@@ -7,7 +7,6 @@ import getAcceptedIntoCommunityVars from './repo/getAcceptedIntoCommunityVars';
 import getApplyToCommunityAdminsVars from './repo/getApplyToCommunityAdminsVars';
 import getApplyToCommunityVars from './repo/getApplyToCommunityVars';
 import getCreateEventCoordinatorVars from './repo/getCreateEventCoordinatorVars';
-import getCreateEventInviteesVars from './repo/getCreateEventInviteesVars';
 import getDeleteEventCoordinatorVars from './repo/getDeleteEventCoordinatorVars';
 import getDeleteEventGuestsVars from './repo/getDeleteEventGuestsVars';
 import getDeleteMembersVars from './repo/getDeleteMembersVars';
@@ -42,9 +41,6 @@ export const getSendGridTemplateId = (emailEvent: EmailEvent): string => {
 
     case EmailEvent.CREATE_EVENT_COORDINATOR:
       return process.env.SENDGRID_CREATE_EVENT_COORDINATOR_TEMPLATE_ID;
-
-    case EmailEvent.CREATE_EVENT_INVITEES:
-      return process.env.SENDGRID_CREATE_EVENT_INVITEES_TEMPLATE_ID;
 
     case EmailEvent.DELETE_EVENT_COORDINATOR:
       return process.env.SENDGRID_DELETE_EVENT_COORDINATOR_TEMPLATE_ID;
@@ -100,9 +96,6 @@ const getEmailVars = (args: EmailArgs): Promise<EmailVars[]> => {
 
     case EmailEvent.CREATE_EVENT_COORDINATOR:
       return getCreateEventCoordinatorVars(emailPayload);
-
-    case EmailEvent.CREATE_EVENT_INVITEES:
-      return getCreateEventInviteesVars(emailPayload);
 
     case EmailEvent.DELETE_EVENT_COORDINATOR:
       return getDeleteEventCoordinatorVars(emailPayload);

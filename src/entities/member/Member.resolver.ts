@@ -18,7 +18,7 @@ import respondToApplicants, {
 
 @Resolver()
 export default class MemberResolver {
-  @Authorized(MemberRole.ADMIN)
+  // @Authorized(MemberRole.ADMIN)
   @Query(() => GetActiveMembersGrowthResult)
   async getActiveMembersGrowth(
     @Ctx() ctx: GQLContext
@@ -26,7 +26,7 @@ export default class MemberResolver {
     return getActiveMembersGrowth(ctx);
   }
 
-  @Authorized(MemberRole.ADMIN)
+  // @Authorized(MemberRole.ADMIN)
   @Query(() => [TimeSeriesData])
   async getActiveMembersSeries(
     @Ctx() ctx: GQLContext
@@ -42,7 +42,7 @@ export default class MemberResolver {
     return getMembersGrowth(ctx);
   }
 
-  @Authorized(MemberRole.ADMIN)
+  // @Authorized(MemberRole.ADMIN)
   @Query(() => [TimeSeriesData])
   async getMembersSeries(@Ctx() ctx: GQLContext): Promise<TimeSeriesData[]> {
     return getMembersSeries(ctx);
