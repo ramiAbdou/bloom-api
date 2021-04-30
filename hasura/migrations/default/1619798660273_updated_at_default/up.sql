@@ -1,0 +1,16 @@
+ALTER TABLE applications ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE communities ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE event_attendees ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE event_guests ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE event_watches ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE events ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE member_refreshes ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE member_socials ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE member_types ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE member_values ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE members ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE questions ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE ranked_questions ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE supporters ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE tasks ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE users ALTER COLUMN updated_at SET DEFAULT now();
