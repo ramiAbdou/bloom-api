@@ -1,1 +1,4 @@
-DROP TABLE IF EXISTS community_integrations, event_invitees, member_integrations, payments;
+DROP TABLE IF EXISTS community_integrations;
+DROP TABLE IF EXISTS event_invitees;
+DROP TABLE IF EXISTS member_integrations;
+DROP TABLE IF EXISTS payments;
