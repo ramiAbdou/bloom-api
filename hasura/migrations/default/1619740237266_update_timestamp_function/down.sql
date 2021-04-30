@@ -1,0 +1,17 @@
+DROP FUNCTION IF EXISTS update_timestamp;
+DROP TRIGGER IF EXISTS update_applications_timestamp on applications;
+DROP TRIGGER IF EXISTS update_communities_timestamp on communities;
+DROP TRIGGER IF EXISTS update_event_attendees_timestamp on event_attendees;
+DROP TRIGGER IF EXISTS update_event_guests_timestamp on event_guests;
+DROP TRIGGER IF EXISTS update_event_watches_timestamp on event_watches;
+DROP TRIGGER IF EXISTS update_events_timestamp on events;
+DROP TRIGGER IF EXISTS update_member_refreshes_timestamp on member_refreshes;
+DROP TRIGGER IF EXISTS update_member_socials_timestamp on member_socials;
+DROP TRIGGER IF EXISTS update_member_types_timestamp on member_types;
+DROP TRIGGER IF EXISTS update_member_values_timestamp on member_values;
+DROP TRIGGER IF EXISTS update_members_timestamp on members;
+DROP TRIGGER IF EXISTS update_questions_timestamp on questions;
+DROP TRIGGER IF EXISTS update_ranked_questions_timestamp on ranked_questions;
+DROP TRIGGER IF EXISTS update_supporters_timestamp on supporters;
+DROP TRIGGER IF EXISTS update_tasks_timestamp on tasks;
+DROP TRIGGER IF EXISTS update_users_timestamp on users;
