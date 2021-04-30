@@ -1,0 +1,18 @@
+DROP EXTENSION IF EXISTS "pgcrypto";
+DROP TRIGGER IF EXISTS applications_gen_id on applications;
+DROP TRIGGER IF EXISTS communities_gen_id on communities;
+DROP TRIGGER IF EXISTS event_attendees_gen_id on event_attendees;
+DROP TRIGGER IF EXISTS event_guests_gen_id on event_guests;
+DROP TRIGGER IF EXISTS event_watches_gen_id on event_watches;
+DROP TRIGGER IF EXISTS events_gen_id on events;
+DROP TRIGGER IF EXISTS member_refreshes_gen_id on member_refreshes;
+DROP TRIGGER IF EXISTS member_socials_gen_id on member_socials;
+DROP TRIGGER IF EXISTS member_types_gen_id on member_types;
+DROP TRIGGER IF EXISTS member_values_gen_id on member_values;
+DROP TRIGGER IF EXISTS members_gen_id on members;
+DROP TRIGGER IF EXISTS questions_gen_id on questions;
+DROP TRIGGER IF EXISTS ranked_questions_gen_id on ranked_questions;
+DROP TRIGGER IF EXISTS supporters_gen_id on supporters;
+DROP TRIGGER IF EXISTS tasks_gen_id on tasks;
+DROP TRIGGER IF EXISTS users_gen_id on users;
+DROP FUNCTION IF EXISTS nanoid;
