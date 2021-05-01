@@ -1,123 +1,7 @@
 table:
   name: events
   schema: public
-object_relationships:
-  - name: community
-    using:
-      foreign_key_constraint_on: community_id
-array_relationships:
-  - name: eventAttendees
-    using:
-      foreign_key_constraint_on:
-        column: event_id
-        table:
-          name: event_attendees
-          schema: public
-  - name: eventGuests
-    using:
-      foreign_key_constraint_on:
-        column: event_id
-        table:
-          name: event_guests
-          schema: public
-  - name: eventWatches
-    using:
-      foreign_key_constraint_on:
-        column: event_id
-        table:
-          name: event_watches
-          schema: public
-insert_permissions:
-  - permission:
-      backend_only: false
-      check: {}
-      columns:
-        - id
-        - created_at
-        - deleted_at
-        - updated_at
-        - description
-        - end_time
-        - google_calendar_event_id
-        - image_url
-        - privacy
-        - recording_url
-        - start_time
-        - summary
-        - title
-        - video_url
-        - community_id
-    role: guest
-select_permissions:
-  - permission:
-      columns:
-        - id
-        - created_at
-        - deleted_at
-        - updated_at
-        - description
-        - end_time
-        - google_calendar_event_id
-        - image_url
-        - privacy
-        - recording_url
-        - start_time
-        - summary
-        - title
-        - video_url
-        - community_id
-      filter: {}
-      allow_aggregations: true
-    role: guest
-update_permissions:
-  - permission:
-      check: {}
-      columns:
-        - id
-        - created_at
-        - deleted_at
-        - updated_at
-        - description
-        - end_time
-        - google_calendar_event_id
-        - image_url
-        - privacy
-        - recording_url
-        - start_time
-        - summary
-        - title
-        - video_url
-        - community_id
-      filter: {}
-    role: guest
-event_triggers:
-  - definition:
-      enable_manual: false
-      insert_one:
-        columns: '*'
-    name: create_event
-    retry_conf:
-      interval_sec: 10
-      num_retries: 0
-      timeout_sec: 60
-    webhook_from_env: HASURA_GRAPHQL_AUTH_HOOK
-  - definition:
-      enable_manual: false
-      update:
-        columns:
-          - deleted_at
-    name: delete_event
-    retry_conf:
-      interval_sec: 10
-      num_retries: 0
-      timeout_sec: 60
-    webhook_from_env: HASURA_GRAPHQL_AUTH_HOOK
 configuration:
-  custom_root_fields:
-    insert_one: createEvent
-    select: events
-    select_by_pk: event
-    update_by_pk: updateEvent
   custom_column_names:
     community_id: communityId
     created_at: createdAt
@@ -129,3 +13,117 @@ configuration:
     start_time: startTime
     updated_at: updatedAt
     video_url: videoUrl
+  custom_root_fields:
+    insert_one: createEvent
+    select: events
+    select_by_pk: event
+    update_by_pk: updateEvent
+object_relationships:
+- name: community
+  using:
+    foreign_key_constraint_on: community_id
+array_relationships:
+- name: eventAttendees
+  using:
+    foreign_key_constraint_on:
+      column: event_id
+      table:
+        name: event_attendees
+        schema: public
+- name: eventGuests
+  using:
+    foreign_key_constraint_on:
+      column: event_id
+      table:
+        name: event_guests
+        schema: public
+- name: eventWatches
+  using:
+    foreign_key_constraint_on:
+      column: event_id
+      table:
+        name: event_watches
+        schema: public
+insert_permissions:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - id
+    - created_at
+    - deleted_at
+    - updated_at
+    - description
+    - end_time
+    - google_calendar_event_id
+    - image_url
+    - privacy
+    - recording_url
+    - start_time
+    - summary
+    - title
+    - video_url
+    - community_id
+  role: guest
+select_permissions:
+- permission:
+    allow_aggregations: true
+    columns:
+    - id
+    - created_at
+    - deleted_at
+    - updated_at
+    - description
+    - end_time
+    - google_calendar_event_id
+    - image_url
+    - privacy
+    - recording_url
+    - start_time
+    - summary
+    - title
+    - video_url
+    - community_id
+    filter: {}
+  role: guest
+update_permissions:
+- permission:
+    check: {}
+    columns:
+    - id
+    - created_at
+    - deleted_at
+    - updated_at
+    - description
+    - end_time
+    - google_calendar_event_id
+    - image_url
+    - privacy
+    - recording_url
+    - start_time
+    - summary
+    - title
+    - video_url
+    - community_id
+    filter: {}
+  role: guest
+event_triggers:
+- definition:
+    enable_manual: false
+  name: create_event
+  retry_conf:
+    interval_sec: 10
+    num_retries: 0
+    timeout_sec: 60
+  webhook_from_env: HASURA_GRAPHQL_AUTH_HOOK
+- definition:
+    enable_manual: false
+    update:
+      columns:
+      - deleted_at
+  name: delete_event
+  retry_conf:
+    interval_sec: 10
+    num_retries: 0
+    timeout_sec: 60
+  webhook_from_env: HASURA_GRAPHQL_AUTH_HOOK

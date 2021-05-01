@@ -2,6 +2,7 @@ table:
   name: tasks
   schema: public
 configuration:
+  custom_column_names: {}
   custom_root_fields:
     insert_one: createTask
     select: tasks

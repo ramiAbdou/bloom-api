@@ -1,37 +1,37 @@
 table:
   name: applications
   schema: public
-object_relationships:
-  - name: community
-    using:
-      foreign_key_constraint_on: community_id
-array_relationships:
-  - name: rankedQuestions
-    using:
-      foreign_key_constraint_on:
-        column: application_id
-        table:
-          name: ranked_questions
-          schema: public
-select_permissions:
-  - permission:
-      columns:
-        - id
-        - created_at
-        - deleted_at
-        - updated_at
-        - description
-        - title
-        - community_id
-      filter: {}
-    role: guest
 configuration:
+  custom_column_names:
+    created_at: createdAt
+    deleted_at: deletedAt
+    updated_at: updatedAt
   custom_root_fields:
     insert_one: createApplication
     select: applications
     select_by_pk: application
     update_by_pk: updateApplication
-  custom_column_names:
-    created_at: createdAt
-    deleted_at: deletedAt
-    updated_at: updatedAt
+object_relationships:
+- name: community
+  using:
+    foreign_key_constraint_on: community_id
+array_relationships:
+- name: rankedQuestions
+  using:
+    foreign_key_constraint_on:
+      column: application_id
+      table:
+        name: ranked_questions
+        schema: public
+select_permissions:
+- permission:
+    columns:
+    - id
+    - created_at
+    - deleted_at
+    - updated_at
+    - description
+    - title
+    - community_id
+    filter: {}
+  role: guest

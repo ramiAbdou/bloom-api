@@ -1,72 +1,59 @@
 table:
   name: users
   schema: public
-
-## ARRAY RELATIONSHIPS
-
-array_relationships:
-  - name: members
-    using:
-      foreign_key_constraint_on:
-        column: user_id
-        table:
-          name: members
-          schema: public
-  - name: supporters
-    using:
-      foreign_key_constraint_on:
-        column: user_id
-        table:
-          name: supporters
-          schema: public
-
-## INSERT PERMSSIONS
-
-insert_permissions:
-  - permission:
-      columns:
-        - created_at
-        - email
-        - id
-        - updated_at
-      check: {}
-    role: guest
-
-## SELECT PERMISSIONS
-
-select_permissions:
-  - permission:
-      columns:
-        - id
-        - created_at
-        - deleted_at
-        - updated_at
-        - email
-        - google_id
-        - refresh_token
-      filter: {}
-    role: guest
-
-## UPDATE PERMISSIONS
-
-update_permissions:
-  - permission:
-      columns:
-        - updated_at
-      filter: {}
-    role: guest
-
-## CONFIGURATION
-
 configuration:
-  custom_root_fields:
-    insert_one: createUser
-    select: users
-    select_by_pk: user
-    update_by_pk: updateUser
   custom_column_names:
     created_at: createdAt
     deleted_at: deletedAt
     google_id: googleId
     refresh_token: refreshToken
     updated_at: updatedAt
+  custom_root_fields:
+    insert: createUsers
+    insert_one: createUser
+    select: users
+    select_by_pk: user
+    update_by_pk: updateUser
+array_relationships:
+- name: members
+  using:
+    foreign_key_constraint_on:
+      column: user_id
+      table:
+        name: members
+        schema: public
+- name: supporters
+  using:
+    foreign_key_constraint_on:
+      column: user_id
+      table:
+        name: supporters
+        schema: public
+insert_permissions:
+- permission:
+    check: {}
+    columns:
+    - created_at
+    - email
+    - id
+    - updated_at
+  role: guest
+select_permissions:
+- permission:
+    columns:
+    - id
+    - created_at
+    - deleted_at
+    - updated_at
+    - email
+    - google_id
+    - refresh_token
+    filter: {}
+  role: guest
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - updated_at
+    filter: {}
+  role: guest

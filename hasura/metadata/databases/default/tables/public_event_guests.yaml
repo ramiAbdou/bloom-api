@@ -1,69 +1,7 @@
 table:
   name: event_guests
   schema: public
-object_relationships:
-  - name: event
-    using:
-      foreign_key_constraint_on: event_id
-  - name: member
-    using:
-      foreign_key_constraint_on: member_id
-  - name: supporter
-    using:
-      foreign_key_constraint_on: supporter_id
-insert_permissions:
-  - permission:
-      backend_only: false
-      check: {}
-      columns:
-        - id
-        - created_at
-        - updated_at
-        - event_id
-        - member_id
-        - supporter_id
-    role: guest
-
-select_permissions:
-  - permission:
-      columns:
-        - id
-        - created_at
-        - deleted_at
-        - updated_at
-        - event_id
-        - member_id
-        - supporter_id
-      filter: {}
-      allow_aggregations: true
-    role: guest
-
-## UPDATE PERMISSIONS
-
-update_permissions:
-  - permission:
-      columns:
-        - updated_at
-      filter: {}
-    role: guest
-
-event_triggers:
-  - definition:
-      enable_manual: false
-      insert_one:
-        columns: '*'
-    name: create_event_guest
-    retry_conf:
-      interval_sec: 10
-      num_retries: 2
-      timeout_sec: 60
-    webhook_from_env: HASURA_GRAPHQL_AUTH_HOOK
 configuration:
-  custom_root_fields:
-    insert_one: createEventGuest
-    select: eventGuests
-    select_by_pk: eventGuest
-    update_by_pk: updateEventGuest
   custom_column_names:
     created_at: createdAt
     deleted_at: deletedAt
@@ -71,3 +9,59 @@ configuration:
     member_id: memberId
     supporter_id: supporterId
     updated_at: updatedAt
+  custom_root_fields:
+    insert_one: createEventGuest
+    select: eventGuests
+    select_by_pk: eventGuest
+    update_by_pk: updateEventGuest
+object_relationships:
+- name: event
+  using:
+    foreign_key_constraint_on: event_id
+- name: member
+  using:
+    foreign_key_constraint_on: member_id
+- name: supporter
+  using:
+    foreign_key_constraint_on: supporter_id
+insert_permissions:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - id
+    - created_at
+    - updated_at
+    - event_id
+    - member_id
+    - supporter_id
+  role: guest
+select_permissions:
+- permission:
+    allow_aggregations: true
+    columns:
+    - id
+    - created_at
+    - deleted_at
+    - updated_at
+    - event_id
+    - member_id
+    - supporter_id
+    filter: {}
+  role: guest
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - updated_at
+    filter: {}
+  role: guest
+event_triggers:
+- definition:
+    enable_manual: false
+  name: create_event_guest
+  retry_conf:
+    interval_sec: 10
+    num_retries: 2
+    timeout_sec: 60
+  webhook_from_env: HASURA_GRAPHQL_AUTH_HOOK

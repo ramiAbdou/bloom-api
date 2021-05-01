@@ -1,153 +1,7 @@
 table:
   name: members
   schema: public
-object_relationships:
-  - name: community
-    using:
-      foreign_key_constraint_on: community_id
-  - name: memberSocials
-    using:
-      manual_configuration:
-        column_mapping:
-          id: member_id
-        insertion_order: null
-        remote_table:
-          name: member_socials
-          schema: public
-  - name: memberType
-    using:
-      foreign_key_constraint_on: member_type_id
-  - name: user
-    using:
-      foreign_key_constraint_on: user_id
-array_relationships:
-  - name: eventAttendees
-    using:
-      foreign_key_constraint_on:
-        column: member_id
-        table:
-          name: event_attendees
-          schema: public
-  - name: eventGuests
-    using:
-      foreign_key_constraint_on:
-        column: member_id
-        table:
-          name: event_guests
-          schema: public
-  - name: eventWatches
-    using:
-      foreign_key_constraint_on:
-        column: member_id
-        table:
-          name: event_watches
-          schema: public
-  - name: memberRefreshes
-    using:
-      foreign_key_constraint_on:
-        column: member_id
-        table:
-          name: member_refreshes
-          schema: public
-  - name: memberValues
-    using:
-      foreign_key_constraint_on:
-        column: member_id
-        table:
-          name: member_values
-          schema: public
-select_permissions:
-  - permission:
-      allow_aggregations: true
-      columns:
-        - bio
-        - role
-        - status
-        - community_id
-        - created_at
-        - deleted_at
-        - email
-        - first_name
-        - id
-        - joined_at
-        - last_name
-        - member_type_id
-        - picture_url
-        - position
-        - updated_at
-        - user_id
-      computed_fields:
-        - fullName
-      filter: {}
-    role: guest
-insert_permissions:
-  - permission:
-      columns:
-        - bio
-        - community_id
-        - created_at
-        - email
-        - first_name
-        - last_name
-        - member_type_id
-        - status
-        - id
-        - updated_at
-      check: {}
-    role: guest
-
-update_permissions:
-  - permission:
-      check: {}
-      columns:
-        - bio
-        - role
-        - status
-        - community_id
-        - created_at
-        - deleted_at
-        - email
-        - first_name
-        - id
-        - joined_at
-        - last_name
-        - member_type_id
-        - picture_url
-        - position
-        - updated_at
-        - user_id
-      filter: {}
-    role: guest
-event_triggers:
-  - definition:
-      enable_manual: false
-      update:
-        columns:
-          - role
-    name: update_member_role
-    retry_conf:
-      interval_sec: 10
-      num_retries: 0
-      timeout_sec: 60
-    webhook_from_env: HASURA_GRAPHQL_AUTH_HOOK
-  - definition:
-      enable_manual: false
-      update:
-        columns:
-          - status
-    name: update_member_status
-    retry_conf:
-      interval_sec: 10
-      num_retries: 0
-      timeout_sec: 60
-    webhook_from_env: HASURA_GRAPHQL_AUTH_HOOK
 configuration:
-  custom_root_fields:
-    insert_one: createMember
-    select: members
-    select_by_pk: member
-    update_by_pk: updateMember
-    update: updateMembers
   custom_column_names:
     community_id: communityId
     created_at: createdAt
@@ -159,10 +13,155 @@ configuration:
     picture_url: pictureUrl
     updated_at: updatedAt
     user_id: userId
-computed_fields:
-  - name: fullName
-    definition:
-      function:
+  custom_root_fields:
+    insert: createMembers
+    insert_one: createMember
+    select: members
+    select_by_pk: member
+    update: updateMembers
+    update_by_pk: updateMember
+object_relationships:
+- name: community
+  using:
+    foreign_key_constraint_on: community_id
+- name: memberSocials
+  using:
+    manual_configuration:
+      column_mapping:
+        id: member_id
+      insertion_order: null
+      remote_table:
+        name: member_socials
         schema: public
-        name: member_full_name
-      table_argument: null
+- name: memberType
+  using:
+    foreign_key_constraint_on: member_type_id
+- name: user
+  using:
+    foreign_key_constraint_on: user_id
+array_relationships:
+- name: eventAttendees
+  using:
+    foreign_key_constraint_on:
+      column: member_id
+      table:
+        name: event_attendees
+        schema: public
+- name: eventGuests
+  using:
+    foreign_key_constraint_on:
+      column: member_id
+      table:
+        name: event_guests
+        schema: public
+- name: eventWatches
+  using:
+    foreign_key_constraint_on:
+      column: member_id
+      table:
+        name: event_watches
+        schema: public
+- name: memberRefreshes
+  using:
+    foreign_key_constraint_on:
+      column: member_id
+      table:
+        name: member_refreshes
+        schema: public
+- name: memberValues
+  using:
+    foreign_key_constraint_on:
+      column: member_id
+      table:
+        name: member_values
+        schema: public
+computed_fields:
+- definition:
+    function:
+      name: member_full_name
+      schema: public
+  name: fullName
+insert_permissions:
+- permission:
+    check: {}
+    columns:
+    - bio
+    - community_id
+    - created_at
+    - email
+    - first_name
+    - last_name
+    - member_type_id
+    - status
+    - id
+    - updated_at
+  role: guest
+select_permissions:
+- permission:
+    allow_aggregations: true
+    columns:
+    - bio
+    - role
+    - status
+    - community_id
+    - created_at
+    - deleted_at
+    - email
+    - first_name
+    - id
+    - joined_at
+    - last_name
+    - member_type_id
+    - picture_url
+    - position
+    - updated_at
+    - user_id
+    computed_fields:
+    - fullName
+    filter: {}
+  role: guest
+update_permissions:
+- permission:
+    check: {}
+    columns:
+    - bio
+    - role
+    - status
+    - community_id
+    - created_at
+    - deleted_at
+    - email
+    - first_name
+    - id
+    - joined_at
+    - last_name
+    - member_type_id
+    - picture_url
+    - position
+    - updated_at
+    - user_id
+    filter: {}
+  role: guest
+event_triggers:
+- definition:
+    enable_manual: false
+    update:
+      columns:
+      - role
+  name: update_member_role
+  retry_conf:
+    interval_sec: 10
+    num_retries: 0
+    timeout_sec: 60
+  webhook_from_env: HASURA_GRAPHQL_AUTH_HOOK
+- definition:
+    enable_manual: false
+    update:
+      columns:
+      - status
+  name: update_member_status
+  retry_conf:
+    interval_sec: 10
+    num_retries: 0
+    timeout_sec: 60
+  webhook_from_env: HASURA_GRAPHQL_AUTH_HOOK

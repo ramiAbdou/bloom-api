@@ -2,6 +2,6 @@ table:
   name: member_refreshes
   schema: public
 object_relationships:
-  - name: member
-    using:
-      foreign_key_constraint_on: member_id
+- name: member
+  using:
+    foreign_key_constraint_on: member_id

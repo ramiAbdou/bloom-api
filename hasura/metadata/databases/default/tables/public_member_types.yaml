@@ -1,48 +1,7 @@
 table:
   name: member_types
   schema: public
-object_relationships:
-  - name: community
-    using:
-      foreign_key_constraint_on: community_id
-  - name: communityById
-    using:
-      manual_configuration:
-        column_mapping:
-          id: default_type_id
-        insertion_order: null
-        remote_table:
-          name: communities
-          schema: public
-array_relationships:
-  - name: members
-    using:
-      foreign_key_constraint_on:
-        column: member_type_id
-        table:
-          name: members
-          schema: public
-select_permissions:
-  - permission:
-      columns:
-        - id
-        - created_at
-        - deleted_at
-        - updated_at
-        - amount
-        - name
-        - recurrence
-        - stripe_price_id
-        - stripe_product_id
-        - community_id
-      filter: {}
-    role: guest
 configuration:
-  custom_root_fields:
-    insert_one: createMemberType
-    select: memberTypes
-    select_by_pk: memberType
-    update_by_pk: updateMemberTypes
   custom_column_names:
     community_id: communityId
     created_at: createdAt
@@ -50,3 +9,44 @@ configuration:
     stripe_price_id: stripePriceId
     stripe_product_id: stripeProductId
     updated_at: updatedAt
+  custom_root_fields:
+    insert_one: createMemberType
+    select: memberTypes
+    select_by_pk: memberType
+    update_by_pk: updateMemberTypes
+object_relationships:
+- name: community
+  using:
+    foreign_key_constraint_on: community_id
+- name: communityById
+  using:
+    manual_configuration:
+      column_mapping:
+        id: default_type_id
+      insertion_order: null
+      remote_table:
+        name: communities
+        schema: public
+array_relationships:
+- name: members
+  using:
+    foreign_key_constraint_on:
+      column: member_type_id
+      table:
+        name: members
+        schema: public
+select_permissions:
+- permission:
+    columns:
+    - id
+    - created_at
+    - deleted_at
+    - updated_at
+    - amount
+    - name
+    - recurrence
+    - stripe_price_id
+    - stripe_product_id
+    - community_id
+    filter: {}
+  role: guest

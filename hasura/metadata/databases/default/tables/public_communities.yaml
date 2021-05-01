@@ -1,87 +1,87 @@
 table:
   name: communities
   schema: public
-object_relationships:
-  - name: application
-    using:
-      manual_configuration:
-        column_mapping:
-          id: community_id
-        insertion_order: null
-        remote_table:
-          name: applications
-          schema: public
-  - name: highlightedQuestion
-    using:
-      foreign_key_constraint_on: highlighted_question_id
-  - name: memberType
-    using:
-      foreign_key_constraint_on: default_type_id
-array_relationships:
-  - name: events
-    using:
-      foreign_key_constraint_on:
-        column: community_id
-        table:
-          name: events
-          schema: public
-  - name: memberTypes
-    using:
-      foreign_key_constraint_on:
-        column: community_id
-        table:
-          name: member_types
-          schema: public
-  - name: members
-    using:
-      foreign_key_constraint_on:
-        column: community_id
-        table:
-          name: members
-          schema: public
-  - name: questions
-    using:
-      foreign_key_constraint_on:
-        column: community_id
-        table:
-          name: questions
-          schema: public
-  - name: supporters
-    using:
-      foreign_key_constraint_on:
-        column: community_id
-        table:
-          name: supporters
-          schema: public
-select_permissions:
-  - permission:
-      columns:
-        - id
-        - created_at
-        - deleted_at
-        - updated_at
-        - logo_url
-        - knowledge_hub_url
-        - name
-        - primary_color
-        - url_name
-        - default_type_id
-        - highlighted_question_id
-      filter: {}
-    role: guest
 configuration:
-  custom_root_fields:
-    insert_one: createCommunity
-    select: communities
-    select_by_pk: community
-    update_by_pk: updateCommunity
   custom_column_names:
     created_at: createdAt
     default_type_id: defaultTypeId
     deleted_at: deletedAt
     highlighted_question_id: highlightedQuestionId
-    logo_url: logoUrl
     knowledge_hub_url: knowledgeHubUrl
+    logo_url: logoUrl
     primary_color: primaryColor
     updated_at: updatedAt
     url_name: urlName
+  custom_root_fields:
+    insert_one: createCommunity
+    select: communities
+    select_by_pk: community
+    update_by_pk: updateCommunity
+object_relationships:
+- name: application
+  using:
+    manual_configuration:
+      column_mapping:
+        id: community_id
+      insertion_order: null
+      remote_table:
+        name: applications
+        schema: public
+- name: highlightedQuestion
+  using:
+    foreign_key_constraint_on: highlighted_question_id
+- name: memberType
+  using:
+    foreign_key_constraint_on: default_type_id
+array_relationships:
+- name: events
+  using:
+    foreign_key_constraint_on:
+      column: community_id
+      table:
+        name: events
+        schema: public
+- name: memberTypes
+  using:
+    foreign_key_constraint_on:
+      column: community_id
+      table:
+        name: member_types
+        schema: public
+- name: members
+  using:
+    foreign_key_constraint_on:
+      column: community_id
+      table:
+        name: members
+        schema: public
+- name: questions
+  using:
+    foreign_key_constraint_on:
+      column: community_id
+      table:
+        name: questions
+        schema: public
+- name: supporters
+  using:
+    foreign_key_constraint_on:
+      column: community_id
+      table:
+        name: supporters
+        schema: public
+select_permissions:
+- permission:
+    columns:
+    - id
+    - created_at
+    - deleted_at
+    - updated_at
+    - logo_url
+    - knowledge_hub_url
+    - name
+    - primary_color
+    - url_name
+    - default_type_id
+    - highlighted_question_id
+    filter: {}
+  role: guest

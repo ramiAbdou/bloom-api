@@ -11,7 +11,7 @@ services:
       HASURA_GRAPHQL_AUTH_HOOK_MODE: 'POST'
       HASURA_GRAPHQL_DATABASE_URL: postgres://ramiabdou:ramiabdou@host.docker.internal:5432/defaultdb
       HASURA_GRAPHQL_DEV_MODE: 'true'
-      HASURA_GRAPHQL_ENABLE_CONSOLE: 'false'
+      HASURA_GRAPHQL_ENABLE_CONSOLE: 'true'
       ## Enables debugging mode. It is recommended to disable in production.
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       HASURA_GRAPHQL_SERVER_PORT: 8000
