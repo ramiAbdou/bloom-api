@@ -37,11 +37,13 @@ const handleGoogleAuth = async (
   const parsedState: ParsedGoogleAuthQueryState = JSON.parse(safeState);
   const { communityId, pathname } = parsedState;
 
-  const googleProfile: oauth2V2.Schema$Userinfoplus = await getGoogleProfileFromToken(
+  const {
+    email,
+    id: googleId,
+    picture: pictureUrl
+  }: oauth2V2.Schema$Userinfoplus = await getGoogleProfileFromToken(
     code as string
   );
-
-  const { email, id: googleId, picture: pictureUrl } = googleProfile;
 
   // Try to update the User's googleId and the Member(s)' profile pictures
   // if they are non-existent.

@@ -1,7 +1,6 @@
 import { Field, ObjectType } from 'type-graphql';
 
 import { GQLContext } from '@util/constants';
-import { ErrorContext, ErrorType } from '@util/constants.errors';
 import { VerifyEvent } from '@util/constants.events';
 import { TokenArgs } from '@util/constants.gql';
 import { decodeToken } from '@util/util';
@@ -54,12 +53,7 @@ const verifyToken = async (
   }
 
   if (event === VerifyEvent.LOG_IN) {
-    const accessToken: string = await refreshToken({ memberId, res, userId });
-
-    if (!accessToken) {
-      res.cookie(ErrorContext.LOGIN_ERROR, ErrorType.TOKEN_EXPIRED);
-      return null;
-    }
+    await refreshToken({ memberId, res, userId });
   }
 
   return verifiedToken;
