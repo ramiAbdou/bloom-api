@@ -46,7 +46,7 @@ const handleGoogleAuth = async (
   // Try to update the User's googleId and the Member(s)' profile pictures
   // if they are non-existent.
   await Promise.all([
-    updateUser({ email, googleId }),
+    updateUser({ email }, { googleId }),
     updatePictureUrl({ email, pictureUrl })
   ]);
 

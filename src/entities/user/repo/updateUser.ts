@@ -1,28 +1,22 @@
+import { EntityData, FilterQuery } from '@mikro-orm/core';
+
 import BloomManager from '@core/db/BloomManager';
 import User from '@entities/user/User';
-import { cleanObject } from '@util/util';
-
-interface UpdateUserArgs {
-  email: string;
-  googleId?: string;
-  refreshToken?: string;
-}
 
 /**
- * Returns the updated User with a googleId attached. If the User already
- * has a googleId attached, just returns the existing User.
+ * Returns the updated User.
  *
- * @param args.email - Email of the User.
- * @param args.googleId - ID of the Google Profile.
- * @param args.refreshToken - Refresh token of the User.
+ * @param args.where - Filter the User.
+ * @param args.data - Data of the User to update.
  */
-const updateUser = async (args: UpdateUserArgs): Promise<User> => {
-  const { email, googleId, refreshToken } = args;
-
+const updateUser = async (
+  where: FilterQuery<User>,
+  data: EntityData<User>
+): Promise<User> => {
   const user: User = await new BloomManager().findOneAndUpdate(
     User,
-    { email },
-    cleanObject({ googleId, refreshToken })
+    where,
+    data
   );
 
   return user;
