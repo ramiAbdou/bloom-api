@@ -79,7 +79,7 @@ export const now = (): string => {
 
 interface SignTokenArgs {
   expires?: boolean;
-  payload: Record<string, any>;
+  payload: Record<string, unknown>;
 }
 
 /**
@@ -88,9 +88,10 @@ interface SignTokenArgs {
  * @param args.expires - Default is true, false if the token shouldn't expire.
  * @param args.payload - Payload to encode in the token.
  */
-export const signToken = (args: SignTokenArgs): string => {
-  const { expires = true, payload } = args;
-
+export const signToken = ({
+  expires = true,
+  payload
+}: SignTokenArgs): string => {
   return jwt.sign(
     payload,
     JWT.SECRET,

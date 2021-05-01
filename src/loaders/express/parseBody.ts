@@ -18,7 +18,7 @@ const parseBody = (
   next: express.NextFunction
 ): void => {
   // Limit the body data size to 10mb so we don't crash the server.
-  bodyParser.urlencoded({ extended: true, limit: '10mb' });
+  bodyParser.urlencoded({ limit: '10mb' });
 
   // List of URLs that require raw body (not parsed as JSON).
   const isWebhookUrl: boolean = ['/stripe/webhook'].includes(req.originalUrl);

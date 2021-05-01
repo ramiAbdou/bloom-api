@@ -2,10 +2,7 @@ import { Args, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
 import { GQLContext } from '@util/constants';
 import { TokenArgs } from '@util/constants.gql';
-import getUserTokens, {
-  GetUserTokensArgs,
-  GetUserTokensResult
-} from './repo/getUserTokens';
+import getUserTokens, { GetUserTokensResult } from './repo/getUserTokens';
 import logout from './repo/logout';
 import sendLoginLink, {
   SendLoginLinkArgs,
@@ -16,11 +13,8 @@ import verifyToken, { VerifiedToken } from './repo/verifyToken';
 @Resolver()
 export default class UserResolver {
   @Query(() => GetUserTokensResult, { nullable: true })
-  async getUserTokens(
-    @Args() args: GetUserTokensArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<GetUserTokensResult> {
-    return getUserTokens(args, ctx);
+  async getUserTokens(@Ctx() ctx: GQLContext): Promise<GetUserTokensResult> {
+    return getUserTokens(ctx);
   }
 
   @Mutation(() => Boolean)

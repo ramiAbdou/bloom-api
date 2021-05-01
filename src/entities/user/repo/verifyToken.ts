@@ -4,7 +4,6 @@ import { GQLContext } from '@util/constants';
 import { VerifyEvent } from '@util/constants.events';
 import { TokenArgs } from '@util/constants.gql';
 import { decodeToken } from '@util/util';
-import createEventAttendeeWithSupporter from '../../event-attendee/repo/createEventAttendeeWithSupporter';
 import refreshToken from './refreshToken';
 
 @ObjectType()
@@ -42,18 +41,18 @@ const verifyToken = async (
   const { res } = ctx;
 
   const verifiedToken: VerifiedToken = decodeToken(token) ?? {};
-  const { event, eventId, memberId, supporterId, userId } = verifiedToken;
+  const { event, userId } = verifiedToken;
 
   // if (event === VerifyEvent.JOIN_EVENT && memberId) {
   //   await createEventAttendeeWithMember({ eventId }, { memberId });
   // }
 
-  if (event === VerifyEvent.JOIN_EVENT && supporterId) {
-    await createEventAttendeeWithSupporter({ eventId, supporterId });
-  }
+  // if (event === VerifyEvent.JOIN_EVENT && supporterId) {
+  //   await createEventAttendeeWithSupporter({ eventId, supporterId });
+  // }
 
   if (event === VerifyEvent.LOG_IN) {
-    await refreshToken({ memberId, res, userId });
+    await refreshToken({ id: userId }, { res });
   }
 
   return verifiedToken;

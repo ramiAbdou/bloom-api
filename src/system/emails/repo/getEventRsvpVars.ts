@@ -2,7 +2,6 @@ import BloomManager from '@core/db/BloomManager';
 import EventGuest from '@entities/event-guest/EventGuest';
 import Event from '@entities/event/Event';
 import Member from '@entities/member/Member';
-import { VerifiedToken } from '@entities/user/repo/verifyToken';
 import { APP } from '@util/constants';
 import { VerifyEvent } from '@util/constants.events';
 import { buildUrl, signToken } from '@util/util';
@@ -43,7 +42,7 @@ const getEventRsvpVars = async (
       eventId,
       memberId: guest.member?.id,
       supporterId: guest.supporter?.id
-    } as VerifiedToken
+    }
   });
 
   const joinUrl: string = buildUrl({

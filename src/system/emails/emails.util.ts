@@ -142,6 +142,9 @@ export const getPersonalizations = async (
 
   const personalizations: FormatPersonalizationData[] = emailVars
     .filter((vars: EmailVars) => {
+      // We only want the emails to send if the APP_ENV is live, or if the
+      // developer is running it locally on their own machine and they are using
+      // their own email.
       return (
         process.env.APP_ENV === 'stage' ||
         process.env.APP_ENV === 'prod' ||

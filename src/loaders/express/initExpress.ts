@@ -15,8 +15,9 @@ import refreshTokenIfExpired from './refreshTokenIfExpired';
  * and requiring CORS credentials.
  */
 const initExpress = (): express.Express => {
-  const app = express();
+  const app: express.Express = express();
 
+  // Test route to ensure that server is up.
   app.get('/test', (_, res) => res.json({ status: 'Up and running!' }));
 
   // ## MIDDLEWARE

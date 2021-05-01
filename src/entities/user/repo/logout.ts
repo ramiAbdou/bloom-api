@@ -5,8 +5,7 @@ import { GQLContext } from '@util/constants';
  *
  * @param ctx.res - Express Response object.
  */
-const logout = (ctx: Pick<GQLContext, 'res'>): boolean => {
-  const { res } = ctx;
+const logout = ({ res }: Pick<GQLContext, 'res'>): boolean => {
   res.clearCookie('accessToken');
   res.clearCookie('refreshToken');
   return true;

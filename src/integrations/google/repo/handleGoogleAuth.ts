@@ -34,8 +34,9 @@ const handleGoogleAuth = async (
   // Query state will store the communityId and pathname in the case that
   // we want to check if the user is a part of a certain community, and we
   // need to redirect to someone pathname.
-  const parsedState: ParsedGoogleAuthQueryState = JSON.parse(safeState);
-  const { communityId, pathname } = parsedState;
+  const { communityId, pathname }: ParsedGoogleAuthQueryState = JSON.parse(
+    safeState
+  );
 
   const {
     email,
@@ -54,9 +55,8 @@ const handleGoogleAuth = async (
 
   const loginError: ErrorType = await getLoginError({ communityId, email });
 
-  if (loginError) {
-    res.cookie(ErrorContext.LOGIN_ERROR, loginError);
-  } else await refreshToken({ email, googleId, res });
+  if (loginError) res.cookie(ErrorContext.LOGIN_ERROR, loginError);
+  else await refreshToken({ googleId }, { res });
 
   return res.redirect(APP.CLIENT_URL + (pathname ?? ''));
 };
