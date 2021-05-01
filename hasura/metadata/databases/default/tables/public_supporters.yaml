@@ -16,38 +16,54 @@ configuration:
     select_by_pk: supporter
     update_by_pk: updateSupporter
 object_relationships:
-- name: community
-  using:
-    foreign_key_constraint_on: community_id
-- name: user
-  using:
-    foreign_key_constraint_on: user_id
+  - name: community
+    using:
+      foreign_key_constraint_on: community_id
+  - name: user
+    using:
+      foreign_key_constraint_on: user_id
 array_relationships:
-- name: eventAttendees
-  using:
-    foreign_key_constraint_on:
-      column: supporter_id
-      table:
-        name: event_attendees
-        schema: public
-- name: eventGuests
-  using:
-    foreign_key_constraint_on:
-      column: supporter_id
-      table:
-        name: event_guests
-        schema: public
+  - name: eventAttendees
+    using:
+      foreign_key_constraint_on:
+        column: supporter_id
+        table:
+          name: event_attendees
+          schema: public
+  - name: eventGuests
+    using:
+      foreign_key_constraint_on:
+        column: supporter_id
+        table:
+          name: event_guests
+          schema: public
+insert_permissions:
+  - permission:
+      check: {}
+      columns:
+        - community_id
+        - email
+        - first_name
+        - last_name
+    role: guest
 select_permissions:
-- permission:
-    columns:
-    - id
-    - created_at
-    - deleted_at
-    - updated_at
-    - email
-    - first_name
-    - last_name
-    - community_id
-    - user_id
-    filter: {}
-  role: guest
+  - permission:
+      columns:
+        - id
+        - created_at
+        - deleted_at
+        - updated_at
+        - email
+        - first_name
+        - last_name
+        - community_id
+        - user_id
+      filter: {}
+    role: guest
+update_permissions:
+  - permission:
+      check: {}
+      columns:
+        - updated_at
+      filter: {}
+    role: guest

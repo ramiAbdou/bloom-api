@@ -11,7 +11,6 @@ import getMembersGrowth, {
   GetMembersGrowthResult
 } from './repo/getMembersGrowth';
 import getMembersSeries from './repo/getMembersSeries';
-import inviteMembers, { InviteMembersArgs } from './repo/inviteMembers';
 import respondToApplicants, {
   RespondToApplicantsArgs
 } from './repo/respondToApplicants';
@@ -46,15 +45,6 @@ export default class MemberResolver {
   @Query(() => [TimeSeriesData])
   async getMembersSeries(@Ctx() ctx: GQLContext): Promise<TimeSeriesData[]> {
     return getMembersSeries(ctx);
-  }
-
-  @Authorized(MemberRole.ADMIN)
-  @Mutation(() => [Member])
-  async inviteMembers(
-    @Args() args: InviteMembersArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<Member[]> {
-    return inviteMembers(args, ctx);
   }
 
   @Authorized(MemberRole.ADMIN)

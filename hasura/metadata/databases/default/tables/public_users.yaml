@@ -15,45 +15,42 @@ configuration:
     select_by_pk: user
     update_by_pk: updateUser
 array_relationships:
-- name: members
-  using:
-    foreign_key_constraint_on:
-      column: user_id
-      table:
-        name: members
-        schema: public
-- name: supporters
-  using:
-    foreign_key_constraint_on:
-      column: user_id
-      table:
-        name: supporters
-        schema: public
+  - name: members
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          name: members
+          schema: public
+  - name: supporters
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          name: supporters
+          schema: public
 insert_permissions:
-- permission:
-    check: {}
-    columns:
-    - created_at
-    - email
-    - id
-    - updated_at
-  role: guest
+  - permission:
+      check: {}
+      columns:
+        - email
+    role: guest
 select_permissions:
-- permission:
-    columns:
-    - id
-    - created_at
-    - deleted_at
-    - updated_at
-    - email
-    - google_id
-    - refresh_token
-    filter: {}
-  role: guest
+  - permission:
+      columns:
+        - id
+        - created_at
+        - deleted_at
+        - updated_at
+        - email
+        - google_id
+        - refresh_token
+      filter: {}
+    role: guest
 update_permissions:
-- permission:
-    check: null
-    columns:
-    - updated_at
-    filter: {}
-  role: guest
+  - permission:
+      check: null
+      columns:
+        - updated_at
+      filter: {}
+    role: guest

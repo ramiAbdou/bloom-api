@@ -10,48 +10,42 @@ configuration:
     updated_at: updatedAt
   custom_root_fields:
     insert_one: createMemberValue
+    insert: createMemberValues
     select: memberValues
     select_by_pk: memberValue
     update_by_pk: updateMemberValue
 object_relationships:
-- name: member
-  using:
-    foreign_key_constraint_on: member_id
-- name: question
-  using:
-    foreign_key_constraint_on: question_id
+  - name: member
+    using:
+      foreign_key_constraint_on: member_id
+  - name: question
+    using:
+      foreign_key_constraint_on: question_id
 insert_permissions:
-- permission:
-    check: {}
-    columns:
-    - created_at
-    - id
-    - question_id
-    - updated_at
-    - value
-  role: guest
+  - permission:
+      check: {}
+      columns:
+        - question_id
+        - value
+    role: guest
 select_permissions:
-- permission:
-    columns:
-    - id
-    - created_at
-    - deleted_at
-    - updated_at
-    - value
-    - member_id
-    - question_id
-    filter: {}
-  role: guest
+  - permission:
+      columns:
+        - id
+        - created_at
+        - deleted_at
+        - updated_at
+        - value
+        - member_id
+        - question_id
+      filter: {}
+    role: guest
 update_permissions:
-- permission:
-    check: {}
-    columns:
-    - id
-    - created_at
-    - deleted_at
-    - updated_at
-    - value
-    - member_id
-    - question_id
-    filter: {}
-  role: guest
+  - permission:
+      check: {}
+      columns:
+        - deleted_at
+        - updated_at
+        - value
+      filter: {}
+    role: guest

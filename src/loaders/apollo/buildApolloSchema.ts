@@ -2,7 +2,6 @@ import { GraphQLSchema } from 'graphql';
 import { buildSchema, ResolverData } from 'type-graphql';
 
 import EventAttendeeResolver from '@entities/event-attendee/EventAttendee.resolver';
-import EventGuestResolver from '@entities/event-guest/EventGuest.resolver';
 import MemberValueResolver from '@entities/member-value/MemberValue.resolver';
 import MemberResolver from '@entities/member/Member.resolver';
 import UserResolver from '@entities/user/User.resolver';
@@ -16,7 +15,6 @@ const buildApolloSchema = async (): Promise<GraphQLSchema> => {
     },
     resolvers: [
       EventAttendeeResolver,
-      EventGuestResolver,
       MemberResolver,
       MemberValueResolver,
       UserResolver
