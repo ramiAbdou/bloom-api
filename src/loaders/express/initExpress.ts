@@ -7,7 +7,6 @@ import googleRouter from '@integrations/google/Google.router';
 import hasuraRouter from '@integrations/hasura/Hasura.router';
 import { APP } from '@util/constants';
 import parseBody from './parseBody';
-import refreshTokenIfExpired from './refreshTokenIfExpired';
 
 /**
  * Returns the Express app after mounting all of the middleware on the
@@ -26,7 +25,6 @@ const initExpress = (): express.Express => {
   app.use(cors({ credentials: true, origin: APP.CLIENT_URL }));
   app.use(cookieParser());
   app.use(helmet()); // Sets various HTTP response headers to prevent exploits.
-  app.use(refreshTokenIfExpired);
 
   // ## 3RD PARTY ROUTERS
 

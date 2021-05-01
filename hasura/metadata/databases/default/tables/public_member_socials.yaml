@@ -16,35 +16,35 @@ configuration:
     select: memberSocials
     update_by_pk: updateMemberSocials
 object_relationships:
-- name: member
-  using:
-    foreign_key_constraint_on: member_id
+  - name: member
+    using:
+      foreign_key_constraint_on: member_id
 select_permissions:
-- permission:
-    columns:
-    - id
-    - created_at
-    - deleted_at
-    - updated_at
-    - facebook_url
-    - instagram_url
-    - linked_in_url
-    - twitter_url
-    - member_id
-    filter: {}
-  role: guest
+  - permission:
+      columns:
+        - id
+        - created_at
+        - deleted_at
+        - updated_at
+        - facebook_url
+        - instagram_url
+        - linked_in_url
+        - twitter_url
+        - member_id
+      filter: {}
+    role: GUEST
 update_permissions:
-- permission:
-    check: {}
-    columns:
-    - id
-    - created_at
-    - deleted_at
-    - updated_at
-    - facebook_url
-    - instagram_url
-    - linked_in_url
-    - twitter_url
-    - member_id
-    filter: {}
-  role: guest
+  - permission:
+      check: {}
+      columns:
+        - id
+        - created_at
+        - deleted_at
+        - updated_at
+        - facebook_url
+        - instagram_url
+        - linked_in_url
+        - twitter_url
+        - member_id
+      filter: {}
+    role: GUEST

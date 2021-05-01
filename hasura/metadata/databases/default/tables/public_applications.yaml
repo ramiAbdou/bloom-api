@@ -12,26 +12,26 @@ configuration:
     select_by_pk: application
     update_by_pk: updateApplication
 object_relationships:
-- name: community
-  using:
-    foreign_key_constraint_on: community_id
+  - name: community
+    using:
+      foreign_key_constraint_on: community_id
 array_relationships:
-- name: rankedQuestions
-  using:
-    foreign_key_constraint_on:
-      column: application_id
-      table:
-        name: ranked_questions
-        schema: public
+  - name: rankedQuestions
+    using:
+      foreign_key_constraint_on:
+        column: application_id
+        table:
+          name: ranked_questions
+          schema: public
 select_permissions:
-- permission:
-    columns:
-    - id
-    - created_at
-    - deleted_at
-    - updated_at
-    - description
-    - title
-    - community_id
-    filter: {}
-  role: guest
+  - permission:
+      columns:
+        - id
+        - created_at
+        - deleted_at
+        - updated_at
+        - description
+        - title
+        - community_id
+      filter: {}
+    role: GUEST

@@ -49,6 +49,7 @@
     "camelcase-keys": "^6.2.2",
     "chai": "^4.2.0",
     "class-validator": "^0.12.2",
+    "cookie": "^0.4.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "csvtojson": "^2.0.10",
@@ -80,6 +81,7 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
+    "@types/cookie": "^0.4.0",
     "@types/dotenv-webpack": "^1.8.0",
     "@types/duplicate-package-checker-webpack-plugin": "^2.1.0",
     "@types/jest": "^26.0.20",

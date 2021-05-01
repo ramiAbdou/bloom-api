@@ -45,7 +45,7 @@ insert_permissions:
         - email
         - first_name
         - last_name
-    role: guest
+    role: GUEST
 select_permissions:
   - permission:
       columns:
@@ -59,11 +59,11 @@ select_permissions:
         - community_id
         - user_id
       filter: {}
-    role: guest
+    role: GUEST
 update_permissions:
   - permission:
       check: {}
       columns:
         - updated_at
       filter: {}
-    role: guest
+    role: GUEST

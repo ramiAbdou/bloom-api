@@ -1,8 +1,8 @@
 import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 
-import { MemberRole } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import { TimeSeriesData } from '@util/constants.gql';
+import { HasuraRole } from '../../integrations/hasura/Hasura.types';
 import EventAttendee from './EventAttendee';
 import createEventAttendeeWithSupporter, {
   CreateEventAttendeeWithSupporterArgs
@@ -18,7 +18,7 @@ export default class EventAttendeeResolver {
     return createEventAttendeeWithSupporter(args);
   }
 
-  @Authorized(MemberRole.ADMIN)
+  @Authorized(HasuraRole.ADMIN)
   @Query(() => [TimeSeriesData])
   async getEventAttendeesSeries(
     @Ctx() ctx: GQLContext

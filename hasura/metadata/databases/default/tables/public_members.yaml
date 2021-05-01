@@ -96,7 +96,7 @@ insert_permissions:
         - status
         - id
         - updated_at
-    role: guest
+    role: GUEST
 select_permissions:
   - permission:
       allow_aggregations: true
@@ -120,7 +120,7 @@ select_permissions:
       computed_fields:
         - fullName
       filter: {}
-    role: guest
+    role: GUEST
 update_permissions:
   - permission:
       check: {}
@@ -142,7 +142,7 @@ update_permissions:
         - updated_at
         - user_id
       filter: {}
-    role: guest
+    role: GUEST
 event_triggers:
   - definition:
       enable_manual: false

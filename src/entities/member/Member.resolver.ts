@@ -1,5 +1,6 @@
-import { Ctx, Query, Resolver } from 'type-graphql';
+import { Authorized, Ctx, Query, Resolver } from 'type-graphql';
 
+import { HasuraRole } from '@integrations/hasura/Hasura.types';
 import { GQLContext } from '@util/constants';
 import { TimeSeriesData } from '@util/constants.gql';
 import getActiveMembersGrowth, {
@@ -13,7 +14,7 @@ import getMembersSeries from './repo/getMembersSeries';
 
 @Resolver()
 export default class MemberResolver {
-  // @Authorized(MemberRole.ADMIN)
+  @Authorized(HasuraRole.ADMIN)
   @Query(() => GetActiveMembersGrowthResult)
   async getActiveMembersGrowth(
     @Ctx() ctx: GQLContext
@@ -21,7 +22,7 @@ export default class MemberResolver {
     return getActiveMembersGrowth(ctx);
   }
 
-  // @Authorized(MemberRole.ADMIN)
+  @Authorized(HasuraRole.ADMIN)
   @Query(() => [TimeSeriesData])
   async getActiveMembersSeries(
     @Ctx() ctx: GQLContext
@@ -29,7 +30,7 @@ export default class MemberResolver {
     return getActiveMembersSeries(ctx);
   }
 
-  // @Authorized(MemberRole.ADMIN)
+  @Authorized(HasuraRole.ADMIN)
   @Query(() => GetMembersGrowthResult)
   async getMembersGrowth(
     @Ctx() ctx: GQLContext
@@ -37,7 +38,7 @@ export default class MemberResolver {
     return getMembersGrowth(ctx);
   }
 
-  // @Authorized(MemberRole.ADMIN)
+  @Authorized(HasuraRole.ADMIN)
   @Query(() => [TimeSeriesData])
   async getMembersSeries(@Ctx() ctx: GQLContext): Promise<TimeSeriesData[]> {
     return getMembersSeries(ctx);

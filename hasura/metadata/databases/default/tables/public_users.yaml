@@ -34,7 +34,7 @@ insert_permissions:
       check: {}
       columns:
         - email
-    role: guest
+    role: GUEST
 select_permissions:
   - permission:
       columns:
@@ -46,11 +46,11 @@ select_permissions:
         - google_id
         - refresh_token
       filter: {}
-    role: guest
+    role: GUEST
 update_permissions:
   - permission:
       check: null
       columns:
         - updated_at
       filter: {}
-    role: guest
+    role: GUEST

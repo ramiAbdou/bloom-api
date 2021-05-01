@@ -24,5 +24,8 @@ export interface HasuraEventPayload {
 }
 
 export enum HasuraRole {
-  GUEST = 'guest'
+  ADMIN = 'ADMIN',
+  OWNER = 'OWNER',
+  MEMBER = 'MEMBER',
+  GUEST = 'GUEST'
 }

@@ -14,40 +14,40 @@ configuration:
     select_by_pk: eventWatch
     update_by_pk: updateEventWatch
 object_relationships:
-- name: event
-  using:
-    foreign_key_constraint_on: event_id
-- name: member
-  using:
-    foreign_key_constraint_on: member_id
+  - name: event
+    using:
+      foreign_key_constraint_on: event_id
+  - name: member
+    using:
+      foreign_key_constraint_on: member_id
 insert_permissions:
-- permission:
-    backend_only: false
-    check: {}
-    columns:
-    - id
-    - created_at
-    - deleted_at
-    - updated_at
-    - event_id
-    - member_id
-  role: guest
+  - permission:
+      backend_only: false
+      check: {}
+      columns:
+        - id
+        - created_at
+        - deleted_at
+        - updated_at
+        - event_id
+        - member_id
+    role: GUEST
 select_permissions:
-- permission:
-    allow_aggregations: true
-    columns:
-    - id
-    - created_at
-    - deleted_at
-    - updated_at
-    - event_id
-    - member_id
-    filter: {}
-  role: guest
+  - permission:
+      allow_aggregations: true
+      columns:
+        - id
+        - created_at
+        - deleted_at
+        - updated_at
+        - event_id
+        - member_id
+      filter: {}
+    role: GUEST
 update_permissions:
-- permission:
-    check: null
-    columns:
-    - updated_at
-    filter: {}
-  role: guest
+  - permission:
+      check: null
+      columns:
+        - updated_at
+      filter: {}
+    role: GUEST

@@ -3,6 +3,7 @@ import { Response } from 'express';
 import path from 'path'; // Before constants.
 
 import sg from '@sendgrid/mail';
+import { HasuraRole } from '../integrations/hasura/Hasura.types';
 
 // Environment configuration must happen before loading the constants file
 // because the constants depend on the environment being configured.
@@ -38,6 +39,7 @@ export type KeyValue = { key: string; value: any };
 
 export type GQLContext = {
   communityId: string;
+  hasuraRole: HasuraRole;
   memberId: string;
   res: Response;
   userId: string;

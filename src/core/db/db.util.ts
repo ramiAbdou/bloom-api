@@ -12,6 +12,17 @@ import db from './db';
 /**
  * Returns the updated entity, if it was found.
  */
+export async function findOne<T, P>(
+  entityName: EntityName<T>,
+  where: FilterQuery<T>
+): Promise<Loaded<T, P>> {
+  const em: EntityManager = db.em?.fork();
+  return em.findOne<T, P>(entityName, where);
+}
+
+/**
+ * Returns the updated entity, if it was found.
+ */
 export async function findOneAndUpdate<T, P>(
   entityName: EntityName<T>,
   where: FilterQuery<T>,

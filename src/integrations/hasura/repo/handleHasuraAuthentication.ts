@@ -1,6 +1,15 @@
+import cookie from 'cookie';
 import express from 'express';
 
+import refreshToken from '@entities/user/repo/refreshToken';
+import { decodeToken, verifyToken } from '@util/util';
 import { HasuraRole } from '../Hasura.types';
+import getHasuraRole from './getHasuraRole';
+
+interface HasuraAuthenticationCookies {
+  accessToken?: string;
+  refreshToken?: string;
+}
 
 /**
  * Returns a 200 response along with JSON that specifies the permissions of the
@@ -13,12 +22,25 @@ const handleHasuraAuthentication = async (
   req: express.Request,
   res: express.Response
 ): Promise<express.Response> => {
-  return res.json({
-    'X-Hasura-Custom': 'hello',
-    'X-Hasura-Is-Owner': 'true',
-    'X-Hasura-Member-Id': '1',
-    'X-Hasura-Role': HasuraRole.GUEST
-  });
+  const {
+    accessToken,
+    refreshToken: rToken
+  }: HasuraAuthenticationCookies = cookie.parse(req.body.headers.Cookie);
+
+  // If there is no accessToken, there is a valid refreshToken, then we should
+  // refresh the accessToken and store it on the req and res objects.
+  const updatedAccessToken: string =
+    accessToken ?? verifyToken(rToken)
+      ? await refreshToken({ refreshToken: rToken }, { req, res })
+      : null;
+
+  const communityId: string = req.body.headers.communityId as string;
+  const userId: string = decodeToken(updatedAccessToken)?.userId as string;
+
+  const hasuraRole: HasuraRole = await getHasuraRole({ communityId, userId });
+  console.log(communityId, userId, hasuraRole);
+
+  return res.json({ 'X-Hasura-Role': HasuraRole.GUEST });
 };
 
 export default handleHasuraAuthentication;

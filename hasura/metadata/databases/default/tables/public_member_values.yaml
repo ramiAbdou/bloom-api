@@ -28,7 +28,7 @@ insert_permissions:
         - member_id
         - question_id
         - value
-    role: guest
+    role: GUEST
 select_permissions:
   - permission:
       columns:
@@ -40,7 +40,7 @@ select_permissions:
         - member_id
         - question_id
       filter: {}
-    role: guest
+    role: GUEST
 update_permissions:
   - permission:
       check: {}
@@ -49,4 +49,4 @@ update_permissions:
         - updated_at
         - value
       filter: {}
-    role: guest
+    role: GUEST
