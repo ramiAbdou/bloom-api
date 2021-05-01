@@ -1,6 +1,5 @@
-import { Args, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { Ctx, Query, Resolver } from 'type-graphql';
 
-import Member, { MemberRole } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import { TimeSeriesData } from '@util/constants.gql';
 import getActiveMembersGrowth, {
@@ -11,9 +10,6 @@ import getMembersGrowth, {
   GetMembersGrowthResult
 } from './repo/getMembersGrowth';
 import getMembersSeries from './repo/getMembersSeries';
-import respondToApplicants, {
-  RespondToApplicantsArgs
-} from './repo/respondToApplicants';
 
 @Resolver()
 export default class MemberResolver {
@@ -45,14 +41,5 @@ export default class MemberResolver {
   @Query(() => [TimeSeriesData])
   async getMembersSeries(@Ctx() ctx: GQLContext): Promise<TimeSeriesData[]> {
     return getMembersSeries(ctx);
-  }
-
-  @Authorized(MemberRole.ADMIN)
-  @Mutation(() => [Member])
-  async respondToApplicants(
-    @Args() args: RespondToApplicantsArgs,
-    @Ctx() ctx: GQLContext
-  ): Promise<Member[]> {
-    return respondToApplicants(args, ctx);
   }
 }

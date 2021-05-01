@@ -1,10 +1,11 @@
 import express from 'express';
 import { oauth2_v2 as oauth2V2 } from 'googleapis';
 
-import updatePictureUrl from '@entities/member/repo/updatePictureUrl';
+import { findAndUpdate, findOneAndUpdate } from '@core/db/db.util';
+import Member from '@entities/member/Member';
 import getLoginError from '@entities/user/repo/getLoginError';
 import refreshToken from '@entities/user/repo/refreshToken';
-import updateUser from '@entities/user/repo/updateUser';
+import User from '@entities/user/User';
 import { APP } from '@util/constants';
 import { ErrorContext, ErrorType } from '@util/constants.errors';
 import getGoogleProfileFromToken from './getGoogleProfileFromToken';
@@ -49,8 +50,8 @@ const handleGoogleAuth = async (
   // Try to update the User's googleId and the Member(s)' profile pictures
   // if they are non-existent.
   await Promise.all([
-    updateUser({ email }, { googleId }),
-    updatePictureUrl({ email, pictureUrl })
+    findOneAndUpdate(User, { email }, { googleId }),
+    findAndUpdate(Member, { email }, { pictureUrl })
   ]);
 
   const loginError: ErrorType = await getLoginError({ communityId, email });

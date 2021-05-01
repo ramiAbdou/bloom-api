@@ -1,6 +1,6 @@
 import { FilterQuery } from '@mikro-orm/core';
 
-import BloomManager from '@core/db/BloomManager';
+import { findAndUpdate } from '@core/db/db.util';
 import { AcceptedIntoCommunityPayload } from '@system/emails/repo/getAcceptedIntoCommunityVars';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { EmailEvent } from '@util/constants.events';
@@ -25,7 +25,7 @@ const acceptInvitations = async (
 
   const queryArgs: FilterQuery<Member> = email ? { email } : { id: memberIds };
 
-  const members: Member[] = await new BloomManager().findAndUpdate(
+  const members: Member[] = await findAndUpdate(
     Member,
     { ...queryArgs, status: MemberStatus.INVITED },
     { status: MemberStatus.ACCEPTED }
