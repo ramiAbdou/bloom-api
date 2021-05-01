@@ -25,6 +25,7 @@ insert_permissions:
   - permission:
       check: {}
       columns:
+        - member_id
         - question_id
         - value
     role: guest

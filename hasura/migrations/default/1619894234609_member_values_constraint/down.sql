@@ -1,0 +1,3 @@
+ALTER TABLE member_values
+DROP CONSTRAINT member_values_member_id_question_id_unique;
+
