@@ -4,7 +4,6 @@
 - '!include public_event_guests.yaml'
 - '!include public_event_watches.yaml'
 - '!include public_events.yaml'
-- '!include public_member_refreshes.yaml'
 - '!include public_member_socials.yaml'
 - '!include public_member_types.yaml'
 - '!include public_member_values.yaml'

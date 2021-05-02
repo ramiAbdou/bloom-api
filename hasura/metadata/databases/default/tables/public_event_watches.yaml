@@ -20,30 +20,73 @@ object_relationships:
   - name: member
     using:
       foreign_key_constraint_on: member_id
+
+## INSERT PERMISSIONS
+
 insert_permissions:
   - permission:
       backend_only: false
       check: {}
       columns:
-        - id
-        - created_at
-        - deleted_at
-        - updated_at
         - event_id
         - member_id
     role: GUEST
+  - permission:
+      backend_only: false
+      check: {}
+      columns:
+        - event_id
+        - member_id
+    role: MEMBER
+  - permission:
+      backend_only: false
+      check: {}
+      columns:
+        - event_id
+        - member_id
+    role: ADMIN
+  - permission:
+      backend_only: false
+      check: {}
+      columns:
+        - event_id
+        - member_id
+    role: OWNER
+
+## SELECT PERMISSIONS
+
 select_permissions:
   - permission:
       allow_aggregations: true
       columns:
         - id
         - created_at
-        - deleted_at
-        - updated_at
-        - event_id
-        - member_id
       filter: {}
     role: GUEST
+  - permission:
+      allow_aggregations: true
+      columns:
+        - id
+        - created_at
+      filter: {}
+    role: MEMBER
+  - permission:
+      allow_aggregations: true
+      columns:
+        - id
+        - created_at
+      filter: {}
+    role: ADMIN
+  - permission:
+      allow_aggregations: true
+      columns:
+        - id
+        - created_at
+      filter: {}
+    role: OWNER
+
+## UPDATE PERMISSIONS
+
 update_permissions:
   - permission:
       check: null
@@ -51,3 +94,21 @@ update_permissions:
         - updated_at
       filter: {}
     role: GUEST
+  - permission:
+      check: null
+      columns:
+        - updated_at
+      filter: {}
+    role: MEMBER
+  - permission:
+      check: null
+      columns:
+        - updated_at
+      filter: {}
+    role: ADMIN
+  - permission:
+      check: null
+      columns:
+        - updated_at
+      filter: {}
+    role: OWNER

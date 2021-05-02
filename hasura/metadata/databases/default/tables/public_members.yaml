@@ -61,13 +61,6 @@ array_relationships:
         table:
           name: event_watches
           schema: public
-  - name: memberRefreshes
-    using:
-      foreign_key_constraint_on:
-        column: member_id
-        table:
-          name: member_refreshes
-          schema: public
   - name: memberValues
     using:
       foreign_key_constraint_on:

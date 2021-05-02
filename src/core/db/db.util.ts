@@ -28,7 +28,7 @@ export async function findOneAndUpdate<T, P>(
   where: FilterQuery<T>,
   data: EntityData<T>
 ): Promise<Loaded<T, P>> {
-  const em: EntityManager = db.em?.fork();
+  const em: EntityManager = db.em.fork();
   const entity: Loaded<T, P> = await em.findOne<T, P>(entityName, where);
 
   // If not found, return null and don't try to update.
@@ -36,7 +36,7 @@ export async function findOneAndUpdate<T, P>(
 
   // Otherwise, wrap the entity and assign the new data.
   const updatedEntity: Loaded<T, P> = wrap(entity).assign(data);
-  await this.em.flush();
+  await em.flush();
   return updatedEntity;
 }
 
@@ -48,7 +48,7 @@ export async function findAndUpdate<T, P>(
   where: FilterQuery<T>,
   data: EntityData<T>
 ): Promise<Loaded<T, P>[]> {
-  const em: EntityManager = db.em?.fork();
+  const em: EntityManager = db.em.fork();
   const entities = await em.find<T, P>(entityName, where);
 
   const updatedEntities: Loaded<T, P>[] = entities.map(
@@ -57,6 +57,6 @@ export async function findAndUpdate<T, P>(
     }
   );
 
-  await this.em.flush();
+  await em.flush();
   return updatedEntities;
 }

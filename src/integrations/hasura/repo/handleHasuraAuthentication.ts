@@ -1,4 +1,3 @@
-import cookie from 'cookie';
 import express from 'express';
 
 import refreshToken from '@entities/user/repo/refreshToken';
@@ -25,7 +24,7 @@ const handleHasuraAuthentication = async (
   const {
     accessToken,
     refreshToken: rToken
-  }: HasuraAuthenticationCookies = cookie.parse(req.body.headers.Cookie);
+  }: HasuraAuthenticationCookies = req.cookies;
 
   // If there is no accessToken, there is a valid refreshToken, then we should
   // refresh the accessToken and store it on the req and res objects.
@@ -34,13 +33,15 @@ const handleHasuraAuthentication = async (
       ? await refreshToken({ refreshToken: rToken }, { req, res })
       : null;
 
-  const communityId: string = req.body.headers.communityId as string;
+  const communityId: string = req.headers.communityId as string;
   const userId: string = decodeToken(updatedAccessToken)?.userId as string;
 
   const hasuraRole: HasuraRole = await getHasuraRole({ communityId, userId });
-  console.log(communityId, userId, hasuraRole);
 
-  return res.json({ 'X-Hasura-Role': HasuraRole.GUEST });
+  return res.json({
+    'X-Access-Token': updatedAccessToken,
+    'X-Hasura-Role': HasuraRole.GUEST
+  });
 };
 
 export default handleHasuraAuthentication;

@@ -23,15 +23,35 @@ array_relationships:
         table:
           name: ranked_questions
           schema: public
+
+## SELECT PERMISSIONS
+
 select_permissions:
   - permission:
       columns:
         - id
-        - created_at
-        - deleted_at
-        - updated_at
         - description
         - title
-        - community_id
       filter: {}
     role: GUEST
+  - permission:
+      columns:
+        - id
+        - description
+        - title
+      filter: {}
+    role: MEMBER
+  - permission:
+      columns:
+        - id
+        - description
+        - title
+      filter: {}
+    role: ADMIN
+  - permission:
+      columns:
+        - id
+        - description
+        - title
+      filter: {}
+    role: OWNER

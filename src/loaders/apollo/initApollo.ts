@@ -5,7 +5,7 @@ import {
 } from 'apollo-server-express';
 import { GraphQLSchema } from 'graphql';
 
-import { GQLContext } from '@util/constants';
+import { GQLContext, JWT } from '@util/constants';
 import { decodeToken } from '@util/util';
 import buildApolloSchema from './buildApolloSchema';
 
@@ -21,13 +21,22 @@ const initApollo = async (): Promise<ApolloServer> => {
   // world. Also handles the request context.
   const config: ApolloServerExpressConfig = {
     context: ({ req, res }: ExpressContext) => {
-      const decodedToken = decodeToken(req.cookies.accessToken);
-      const { communityId, memberId, userId } = decodedToken ?? {};
+      const accessToken: string = req.headers['x-access-token'] as string;
+
+      if (!req.cookies.accessToken && accessToken) {
+        res.cookie('accessToken', accessToken, {
+          httpOnly: true,
+          // * 1000 b/c represented as milliseconds.
+          maxAge: JWT.EXPIRES_IN * 1000,
+          secure:
+            process.env.APP_ENV === 'stage' || process.env.APP_ENV === 'prod'
+        });
+      }
+
+      const userId: string = decodeToken(accessToken)?.userId;
 
       return {
-        communityId,
         hasuraRole: req.headers['x-hasura-role'],
-        memberId,
         res,
         userId
       } as GQLContext;

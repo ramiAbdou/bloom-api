@@ -69,19 +69,46 @@ array_relationships:
         table:
           name: supporters
           schema: public
+
+## SELECT PERMISSIONS
+
 select_permissions:
   - permission:
       columns:
         - id
-        - created_at
-        - deleted_at
-        - updated_at
         - logo_url
-        - knowledge_hub_url
         - name
         - primary_color
         - url_name
-        - default_type_id
-        - highlighted_question_id
       filter: {}
     role: GUEST
+  - permission:
+      columns:
+        - id
+        - highlighted_question_id
+        - logo_url
+        - name
+        - primary_color
+        - url_name
+      filter: {}
+    role: MEMBER
+  - permission:
+      columns:
+        - id
+        - highlighted_question_id
+        - logo_url
+        - name
+        - primary_color
+        - url_name
+      filter: {}
+    role: ADMIN
+  - permission:
+      columns:
+        - id
+        - highlighted_question_id
+        - logo_url
+        - name
+        - primary_color
+        - url_name
+      filter: {}
+    role: OWNER
