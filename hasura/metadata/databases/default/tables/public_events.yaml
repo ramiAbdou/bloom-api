@@ -84,7 +84,9 @@ select_permissions:
       allow_aggregations: true
       columns:
         - id
+        - community_id
         - created_at
+        - deleted_at
         - description
         - end_time
         - image_url
@@ -100,7 +102,9 @@ select_permissions:
       allow_aggregations: true
       columns:
         - id
+        - community_id
         - created_at
+        - deleted_at
         - description
         - end_time
         - image_url
@@ -116,7 +120,9 @@ select_permissions:
       allow_aggregations: true
       columns:
         - id
+        - community_id
         - created_at
+        - deleted_at
         - description
         - end_time
         - image_url
@@ -132,7 +138,9 @@ select_permissions:
       allow_aggregations: true
       columns:
         - id
+        - community_id
         - created_at
+        - deleted_at
         - description
         - end_time
         - image_url

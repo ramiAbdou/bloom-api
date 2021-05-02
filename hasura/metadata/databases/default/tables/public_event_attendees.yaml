@@ -69,6 +69,7 @@ select_permissions:
       columns:
         - created_at
         - id
+        - member_id
       filter: {}
     role: GUEST
   - permission:
@@ -76,6 +77,7 @@ select_permissions:
       columns:
         - created_at
         - id
+        - member_id
       filter: {}
     role: MEMBER
   - permission:
@@ -83,6 +85,7 @@ select_permissions:
       columns:
         - created_at
         - id
+        - member_id
       filter: {}
     role: ADMIN
   - permission:
@@ -90,6 +93,7 @@ select_permissions:
       columns:
         - created_at
         - id
+        - member_id
       filter: {}
     role: OWNER
 

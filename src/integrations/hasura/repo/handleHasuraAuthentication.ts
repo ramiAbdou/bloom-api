@@ -33,13 +33,13 @@ const handleHasuraAuthentication = async (
       ? await refreshToken({ refreshToken: rToken }, { req, res })
       : null;
 
-  const communityId: string = req.headers.communityId as string;
+  const communityId: string = req.headers.communityid as string;
   const userId: string = decodeToken(updatedAccessToken)?.userId as string;
 
   const hasuraRole: HasuraRole = await getHasuraRole({ communityId, userId });
 
   return res.json({
-    'X-Access-Token': updatedAccessToken,
+    'X-Access-Token': updatedAccessToken ?? '',
     'X-Hasura-Role': hasuraRole
   });
 };

@@ -41,6 +41,7 @@ array_relationships:
 select_permissions:
   - permission:
       columns:
+        - community_id
         - id
         - amount
         - name
@@ -49,6 +50,7 @@ select_permissions:
     role: MEMBER
   - permission:
       columns:
+        - community_id
         - id
         - amount
         - name
@@ -57,6 +59,7 @@ select_permissions:
     role: ADMIN
   - permission:
       columns:
+        - community_id
         - id
         - amount
         - name
