@@ -1,6 +1,5 @@
 import { ArgsType, Field, ObjectType } from 'type-graphql';
 
-import { LoginLinkEmailPayload } from '@system/emails/repo/getLoginLinkVars';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { ErrorType } from '@util/constants';
 import { EmailEvent } from '@util/constants.events';
@@ -37,10 +36,10 @@ const sendLoginLink = async ({
   const loginError: ErrorType = await getLoginError({ communityId, email });
   if (loginError) throw new Error(loginError);
 
-  emitEmailEvent(EmailEvent.LOGIN_LINK, {
-    email,
-    redirectUrl
-  } as LoginLinkEmailPayload);
+  emitEmailEvent({
+    emailEvent: EmailEvent.LOGIN_LINK,
+    emailPayload: { email, redirectUrl }
+  });
 
   return { ok: true };
 };

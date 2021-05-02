@@ -1,7 +1,6 @@
 import { Entity, Enum, Property } from '@mikro-orm/core';
 
 import BaseEntity from '@core/db/BaseEntity';
-import { EventReminderPayload } from '@system/emails/repo/getEventReminderVars';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { EmailEvent, TaskEvent } from '@util/constants.events';
 
@@ -28,16 +27,18 @@ export default class Task extends BaseEntity {
   execute(): void {
     switch (this.event) {
       case TaskEvent.EVENT_REMINDER_1_DAY:
-        emitEmailEvent(EmailEvent.EVENT_REMINDER, {
-          eventId: this.payload.eventId
-        } as EventReminderPayload);
+        emitEmailEvent({
+          emailEvent: EmailEvent.EVENT_REMINDER,
+          emailPayload: { eventId: this.payload.eventId }
+        });
 
         break;
 
       case TaskEvent.EVENT_REMINDER_1_HOUR:
-        emitEmailEvent(EmailEvent.EVENT_REMINDER, {
-          eventId: this.payload.eventId
-        } as EventReminderPayload);
+        emitEmailEvent({
+          emailEvent: EmailEvent.EVENT_REMINDER,
+          emailPayload: { eventId: this.payload.eventId }
+        });
 
         break;
 

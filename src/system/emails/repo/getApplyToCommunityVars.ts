@@ -1,7 +1,6 @@
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import Member from '@entities/member/Member';
-import { EmailPayload } from '../emails.types';
 
 export interface ApplyToCommunityPayload {
   communityId?: string;
@@ -20,9 +19,9 @@ export interface ApplyToCommunityVars {
  * @param context.memberId - ID of the Member.
  */
 const getApplyToCommunityVars = async (
-  context: EmailPayload
+  context: ApplyToCommunityPayload
 ): Promise<ApplyToCommunityVars[]> => {
-  const { communityId, memberId } = context as ApplyToCommunityPayload;
+  const { communityId, memberId } = context;
 
   const bm: BloomManager = new BloomManager();
 

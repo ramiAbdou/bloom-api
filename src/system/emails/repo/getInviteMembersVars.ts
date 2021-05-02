@@ -4,7 +4,6 @@ import Member from '@entities/member/Member';
 import { APP } from '@util/constants';
 import { VerifyEvent } from '@util/constants.events';
 import { buildUrl, signToken } from '@util/util';
-import { EmailPayload } from '../emails.types';
 
 export interface InviteMembersPayload {
   communityId: string;
@@ -27,13 +26,9 @@ export interface InviteMembersVars {
  * @param context.memberId - ID of the Member.
  */
 const getInviteMembersVars = async (
-  context: EmailPayload
+  context: InviteMembersPayload
 ): Promise<InviteMembersVars[]> => {
-  const {
-    communityId,
-    coordinatorId,
-    memberIds
-  } = context as InviteMembersPayload;
+  const { communityId, coordinatorId, memberIds } = context;
 
   const bm: BloomManager = new BloomManager();
 

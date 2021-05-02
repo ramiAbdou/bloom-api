@@ -3,19 +3,43 @@ import day from 'dayjs';
 import { EmailEvent } from '@util/constants.events';
 import { splitArrayIntoChunks } from '@util/util';
 import { EmailArgs, EmailVars } from './emails.types';
-import getAcceptedIntoCommunityVars from './repo/getAcceptedIntoCommunityVars';
-import getApplyToCommunityAdminsVars from './repo/getApplyToCommunityAdminsVars';
-import getApplyToCommunityVars from './repo/getApplyToCommunityVars';
-import getCreateEventCoordinatorVars from './repo/getCreateEventCoordinatorVars';
-import getDeleteEventCoordinatorVars from './repo/getDeleteEventCoordinatorVars';
-import getDeleteEventGuestsVars from './repo/getDeleteEventGuestsVars';
-import getDeleteMembersVars from './repo/getDeleteMembersVars';
-import getDemoteMembersVars from './repo/getDemoteMembersVars';
-import getEventReminderVars from './repo/getEventReminderVars';
-import getEventRsvpVars from './repo/getEventRsvpVars';
-import getInviteMembersVars from './repo/getInviteMembersVars';
-import getLoginLinkVars from './repo/getLoginLinkVars';
-import getPromoteMembersVars from './repo/getPromoteMembersVars';
+import getAcceptedIntoCommunityVars, {
+  AcceptedIntoCommunityPayload
+} from './repo/getAcceptedIntoCommunityVars';
+import getApplyToCommunityAdminsVars, {
+  ApplyToCommunityAdminsPayload
+} from './repo/getApplyToCommunityAdminsVars';
+import getApplyToCommunityVars, {
+  ApplyToCommunityPayload
+} from './repo/getApplyToCommunityVars';
+import getCreateEventCoordinatorVars, {
+  CreateEventCoordinatorPayload
+} from './repo/getCreateEventCoordinatorVars';
+import getDeleteEventCoordinatorVars, {
+  DeleteEventCoordinatorPayload
+} from './repo/getDeleteEventCoordinatorVars';
+import getDeleteEventGuestsVars, {
+  DeleteEventGuestsPayload
+} from './repo/getDeleteEventGuestsVars';
+import getDeleteMembersVars, {
+  DeleteMembersPayload
+} from './repo/getDeleteMembersVars';
+import getDemoteMembersVars, {
+  DemoteMembersPayload
+} from './repo/getDemoteMembersVars';
+import getEventReminderVars, {
+  EventReminderPayload
+} from './repo/getEventReminderVars';
+import getEventRsvpVars, { EventRsvpPayload } from './repo/getEventRsvpVars';
+import getInviteMembersVars, {
+  InviteMembersPayload
+} from './repo/getInviteMembersVars';
+import getLoginLinkVars, {
+  LoginLinkEmailPayload
+} from './repo/getLoginLinkVars';
+import getPromoteMembersVars, {
+  PromoteMembersPayload
+} from './repo/getPromoteMembersVars';
 
 export interface FormatPersonalizationData {
   dynamicTemplateData?: Record<string, any>;
@@ -86,43 +110,51 @@ const getEmailVars = (args: EmailArgs): Promise<EmailVars[]> => {
 
   switch (emailEvent) {
     case EmailEvent.ACCEPTED_INTO_COMMUNITY:
-      return getAcceptedIntoCommunityVars(emailPayload);
+      return getAcceptedIntoCommunityVars(
+        emailPayload as AcceptedIntoCommunityPayload
+      );
 
     case EmailEvent.APPLY_TO_COMMUNITY:
-      return getApplyToCommunityVars(emailPayload);
+      return getApplyToCommunityVars(emailPayload as ApplyToCommunityPayload);
 
     case EmailEvent.APPLY_TO_COMMUNITY_ADMINS:
-      return getApplyToCommunityAdminsVars(emailPayload);
+      return getApplyToCommunityAdminsVars(
+        emailPayload as ApplyToCommunityAdminsPayload
+      );
 
     case EmailEvent.CREATE_EVENT_COORDINATOR:
-      return getCreateEventCoordinatorVars(emailPayload);
+      return getCreateEventCoordinatorVars(
+        emailPayload as CreateEventCoordinatorPayload
+      );
 
     case EmailEvent.DELETE_EVENT_COORDINATOR:
-      return getDeleteEventCoordinatorVars(emailPayload);
+      return getDeleteEventCoordinatorVars(
+        emailPayload as DeleteEventCoordinatorPayload
+      );
 
     case EmailEvent.DELETE_EVENT_GUESTS:
-      return getDeleteEventGuestsVars(emailPayload);
+      return getDeleteEventGuestsVars(emailPayload as DeleteEventGuestsPayload);
 
     case EmailEvent.DELETE_MEMBERS:
-      return getDeleteMembersVars(emailPayload);
+      return getDeleteMembersVars(emailPayload as DeleteMembersPayload);
 
     case EmailEvent.DEMOTE_MEMBERS:
-      return getDemoteMembersVars(emailPayload);
+      return getDemoteMembersVars(emailPayload as DemoteMembersPayload);
 
     case EmailEvent.EVENT_REMINDER:
-      return getEventReminderVars(emailPayload);
+      return getEventReminderVars(emailPayload as EventReminderPayload);
 
     case EmailEvent.EVENT_RSVP:
-      return getEventRsvpVars(emailPayload);
+      return getEventRsvpVars(emailPayload as EventRsvpPayload);
 
     case EmailEvent.INVITE_MEMBERS:
-      return getInviteMembersVars(emailPayload);
+      return getInviteMembersVars(emailPayload as InviteMembersPayload);
 
     case EmailEvent.LOGIN_LINK:
-      return getLoginLinkVars(emailPayload);
+      return getLoginLinkVars(emailPayload as LoginLinkEmailPayload);
 
     case EmailEvent.PROMOTE_MEMBERS:
-      return getPromoteMembersVars(emailPayload);
+      return getPromoteMembersVars(emailPayload as PromoteMembersPayload);
 
     default:
       return null;

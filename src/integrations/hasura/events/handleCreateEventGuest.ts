@@ -11,9 +11,9 @@ import { EmailEvent, GoogleEvent } from '@util/constants.events';
 const handleCreateEventGuest = (payload: HasuraEventPayload): boolean => {
   const eventGuest = payload.event.data.new;
 
-  emitEmailEvent(EmailEvent.EVENT_RSVP, {
-    eventId: eventGuest.eventId,
-    guestId: eventGuest.id
+  emitEmailEvent({
+    emailEvent: EmailEvent.EVENT_RSVP,
+    emailPayload: { eventId: eventGuest.eventId, guestId: eventGuest.id }
   });
 
   emitGoogleEvent(GoogleEvent.ADD_CALENDAR_EVENT_ATTENDEE, {

@@ -5,7 +5,6 @@ import Member from '@entities/member/Member';
 import { APP } from '@util/constants';
 import { VerifyEvent } from '@util/constants.events';
 import { buildUrl, signToken } from '@util/util';
-import { EmailPayload } from '../emails.types';
 import { stringifyEmailTimestamp } from '../emails.util';
 
 export interface EventReminderPayload {
@@ -19,9 +18,9 @@ export interface EventReminderVars {
 }
 
 const getEventReminderVars = async (
-  context: EmailPayload
+  context: EventReminderPayload
 ): Promise<EventReminderVars[]> => {
-  const { eventId } = context as EventReminderPayload;
+  const { eventId } = context;
 
   const bm: BloomManager = new BloomManager();
 

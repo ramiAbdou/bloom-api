@@ -12,10 +12,13 @@ import { EmailEvent, GoogleEvent, TaskEvent } from '@util/constants.events';
 const handleCreateEvent = (payload: HasuraEventPayload): boolean => {
   const event = payload.event.data.new;
 
-  emitEmailEvent(EmailEvent.CREATE_EVENT_COORDINATOR, {
-    communityId: event.communityId,
-    coordinatorId: payload.event.sessionVariables.xHasuraMemberId,
-    eventId: event.id
+  emitEmailEvent({
+    emailEvent: EmailEvent.CREATE_EVENT_COORDINATOR,
+    emailPayload: {
+      communityId: event.communityId,
+      coordinatorId: payload.event.sessionVariables.xHasuraMemberId,
+      eventId: event.id
+    }
   });
 
   emitGoogleEvent(GoogleEvent.CREATE_CALENDAR_EVENT, { eventId: event.id });

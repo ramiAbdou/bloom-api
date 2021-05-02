@@ -1,5 +1,5 @@
-import { EmailPayload } from '@system/emails/emails.types';
-import { BusEvent, EmailEvent } from '@util/constants.events';
+import { EmailArgs } from '@system/emails/emails.types';
+import { BusEvent } from '@util/constants.events';
 import eventBus, { EmitEventOptions } from '../eventBus';
 
 /**
@@ -10,12 +10,11 @@ import eventBus, { EmitEventOptions } from '../eventBus';
  * @param options
  */
 const emitEmailEvent = (
-  emailEvent: EmailEvent,
-  emailPayload: EmailPayload,
+  emailArgs: EmailArgs,
   options?: EmitEventOptions
 ): void => {
   setTimeout(() => {
-    eventBus.emit(BusEvent.EMAIL_EVENT, { emailEvent, emailPayload });
+    eventBus.emit(BusEvent.EMAIL_EVENT, emailArgs);
   }, options?.delay ?? 0);
 };
 

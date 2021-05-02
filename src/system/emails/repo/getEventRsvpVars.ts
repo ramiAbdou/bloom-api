@@ -5,7 +5,6 @@ import Member from '@entities/member/Member';
 import { APP } from '@util/constants';
 import { VerifyEvent } from '@util/constants.events';
 import { buildUrl, signToken } from '@util/util';
-import { EmailPayload } from '../emails.types';
 
 export interface EventRsvpPayload {
   eventId: string;
@@ -19,9 +18,9 @@ export interface EventRsvpVars {
 }
 
 const getEventRsvpVars = async (
-  context: EmailPayload
+  context: EventRsvpPayload
 ): Promise<EventRsvpVars[]> => {
-  const { eventId, guestId } = context as EventRsvpPayload;
+  const { eventId, guestId } = context;
 
   const bm: BloomManager = new BloomManager();
 

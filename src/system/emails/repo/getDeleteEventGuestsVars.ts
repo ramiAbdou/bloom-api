@@ -3,7 +3,6 @@ import Community from '@entities/community/Community';
 import EventGuest from '@entities/event-guest/EventGuest';
 import Event from '@entities/event/Event';
 import Member from '@entities/member/Member';
-import { EmailPayload } from '../emails.types';
 import { stringifyEmailTimestamp } from '../emails.util';
 
 export interface DeleteEventGuestsPayload {
@@ -18,9 +17,9 @@ export interface DeleteEventGuestsVars {
 }
 
 const getDeleteEventGuestsVars = async (
-  context: EmailPayload
+  context: DeleteEventGuestsPayload
 ): Promise<DeleteEventGuestsVars[]> => {
-  const { communityId, eventId } = context as DeleteEventGuestsPayload;
+  const { communityId, eventId } = context;
 
   const bm: BloomManager = new BloomManager();
 

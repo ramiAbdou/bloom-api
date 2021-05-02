@@ -12,16 +12,19 @@ const handleDeleteEvent = (payload: HasuraEventPayload): boolean => {
   const event = payload.event.data.old;
 
   // Send email to the admin/coordinator who deleted the event.
-  emitEmailEvent(EmailEvent.DELETE_EVENT_COORDINATOR, {
-    communityId: event.communityId,
-    coordinatorId: payload.event.sessionVariables.xHasuraMemberId,
-    eventId: event.id
+  emitEmailEvent({
+    emailEvent: EmailEvent.DELETE_EVENT_COORDINATOR,
+    emailPayload: {
+      communityId: event.communityId,
+      coordinatorId: payload.event.sessionVariables.xHasuraMemberId,
+      eventId: event.id
+    }
   });
 
   // Send email to all of the people who RSVP'd and were planning to attend.
-  emitEmailEvent(EmailEvent.DELETE_EVENT_GUESTS, {
-    communityId: event.communityId,
-    eventId: event.id
+  emitEmailEvent({
+    emailEvent: EmailEvent.DELETE_EVENT_GUESTS,
+    emailPayload: { communityId: event.communityId, eventId: event.id }
   });
 
   // Delete the Google Calendar event.

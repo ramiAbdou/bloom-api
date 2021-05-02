@@ -4,7 +4,6 @@ import User from '@entities/user/User';
 import { APP } from '@util/constants';
 import { VerifyEvent } from '@util/constants.events';
 import { buildUrl, signToken } from '@util/util';
-import { EmailPayload } from '../emails.types';
 
 export interface LoginLinkEmailPayload {
   email: string;
@@ -17,9 +16,9 @@ export interface LoginLinkEmailVars {
 }
 
 const getLoginLinkVars = async (
-  context: EmailPayload
+  context: LoginLinkEmailPayload
 ): Promise<LoginLinkEmailVars[]> => {
-  const { email, redirectUrl } = context as LoginLinkEmailPayload;
+  const { email, redirectUrl } = context;
 
   const [member, user]: [Member, User] = await Promise.all([
     findOne(Member, { email }),

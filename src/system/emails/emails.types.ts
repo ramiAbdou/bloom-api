@@ -54,21 +54,6 @@ export interface FormatPersonalizationData {
   to: { email: string };
 }
 
-export type EmailPayload =
-  | AcceptedIntoCommunityPayload
-  | ApplyToCommunityPayload
-  | ApplyToCommunityAdminsPayload
-  | CreateEventCoordinatorPayload
-  | DeleteEventCoordinatorPayload
-  | DeleteEventGuestsPayload
-  | DeleteMembersPayload
-  | DemoteMembersPayload
-  | EventReminderPayload
-  | EventRsvpPayload
-  | InviteMembersPayload
-  | LoginLinkEmailPayload
-  | PromoteMembersPayload;
-
 export type EmailVars =
   | AcceptedIntoCommunityVars
   | ApplyToCommunityVars
@@ -84,7 +69,56 @@ export type EmailVars =
   | LoginLinkEmailVars
   | PromoteMembersVars;
 
-export interface EmailArgs {
-  emailPayload: EmailPayload;
-  emailEvent: EmailEvent;
-}
+export type EmailArgs =
+  | {
+      emailEvent: EmailEvent.ACCEPTED_INTO_COMMUNITY;
+      emailPayload: AcceptedIntoCommunityPayload;
+    }
+  | {
+      emailEvent: EmailEvent.APPLY_TO_COMMUNITY;
+      emailPayload: ApplyToCommunityPayload;
+    }
+  | {
+      emailEvent: EmailEvent.APPLY_TO_COMMUNITY_ADMINS;
+      emailPayload: ApplyToCommunityAdminsPayload;
+    }
+  | {
+      emailEvent: EmailEvent.CREATE_EVENT_COORDINATOR;
+      emailPayload: CreateEventCoordinatorPayload;
+    }
+  | {
+      emailEvent: EmailEvent.DELETE_EVENT_COORDINATOR;
+      emailPayload: DeleteEventCoordinatorPayload;
+    }
+  | {
+      emailEvent: EmailEvent.DELETE_EVENT_GUESTS;
+      emailPayload: DeleteEventGuestsPayload;
+    }
+  | {
+      emailEvent: EmailEvent.DELETE_MEMBERS;
+      emailPayload: DeleteMembersPayload;
+    }
+  | {
+      emailEvent: EmailEvent.DEMOTE_MEMBERS;
+      emailPayload: DemoteMembersPayload;
+    }
+  | {
+      emailEvent: EmailEvent.EVENT_REMINDER;
+      emailPayload: EventReminderPayload;
+    }
+  | {
+      emailEvent: EmailEvent.EVENT_RSVP;
+      emailPayload: EventRsvpPayload;
+    }
+  | {
+      emailEvent: EmailEvent.INVITE_MEMBERS;
+      emailPayload: InviteMembersPayload;
+    }
+  | {
+      emailEvent: EmailEvent.LOGIN_LINK;
+      emailPayload: LoginLinkEmailPayload;
+    }
+  | {
+      emailEvent: EmailEvent.PROMOTE_MEMBERS;
+      emailPayload: PromoteMembersPayload;
+    };

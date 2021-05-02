@@ -7,9 +7,9 @@ import {
   getSendGridTemplateId
 } from './emails.util';
 
-interface SendEmailsBatch extends EmailArgs {
+type SendEmailsBatch = EmailArgs & {
   personalizations: FormatPersonalizationData[];
-}
+};
 
 const sendEmailsBatch = async (args: SendEmailsBatch) => {
   const templateId: string = getSendGridTemplateId(args.emailEvent);

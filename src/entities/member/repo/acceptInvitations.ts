@@ -1,7 +1,6 @@
 import { FilterQuery } from '@mikro-orm/core';
 
 import { findAndUpdate } from '@core/db/db.util';
-import { AcceptedIntoCommunityPayload } from '@system/emails/repo/getAcceptedIntoCommunityVars';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
 import { EmailEvent } from '@util/constants.events';
 import Member, { MemberStatus } from '../Member';
@@ -32,10 +31,10 @@ const acceptInvitations = async (
   );
 
   members.forEach((member: Member) => {
-    emitEmailEvent(EmailEvent.ACCEPTED_INTO_COMMUNITY, {
-      communityId: member.community.id,
-      memberIds: [member.id]
-    } as AcceptedIntoCommunityPayload);
+    emitEmailEvent({
+      emailEvent: EmailEvent.ACCEPTED_INTO_COMMUNITY,
+      emailPayload: { communityId: member.community.id, memberId: member.id }
+    });
   });
 
   return members;

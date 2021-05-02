@@ -1,7 +1,6 @@
 import BloomManager from '@core/db/BloomManager';
 import Community from '@entities/community/Community';
 import Member, { MemberRole } from '@entities/member/Member';
-import { EmailPayload } from '../emails.types';
 
 export interface DemoteMembersPayload {
   communityId: string;
@@ -21,9 +20,9 @@ export interface DemoteMembersVars {
  * @param context.memberIds - ID of the Member(s).
  */
 const getDemoteMembersVars = async (
-  context: EmailPayload
+  context: DemoteMembersPayload
 ): Promise<DemoteMembersVars[]> => {
-  const { communityId, memberIds } = context as DemoteMembersPayload;
+  const { communityId, memberIds } = context;
 
   const bm: BloomManager = new BloomManager();
 
