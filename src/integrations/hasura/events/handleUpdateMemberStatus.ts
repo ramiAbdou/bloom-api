@@ -11,7 +11,9 @@ import { EmailEvent } from '@util/constants.events';
  *
  * @param payload - Hasura event payload to process.
  */
-const handleUpdateMemberStatus = (payload: HasuraEventPayload): boolean => {
+const handleUpdateMemberStatus = async (
+  payload: HasuraEventPayload
+): Promise<boolean> => {
   const member = payload.event.data.new;
 
   if (member.status === MemberStatus.ACCEPTED) {

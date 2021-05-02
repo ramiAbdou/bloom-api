@@ -284,7 +284,7 @@ event_triggers:
       timeout_sec: 60
     webhook_from_env: HASURA_GRAPHQL_AUTH_HOOK
   - definition:
-      enable_manual: falset
+      enable_manual: false
       insert:
         columns: '*'
       update:

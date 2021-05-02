@@ -7,7 +7,9 @@ import { HasuraEventPayload } from '@integrations/hasura/Hasura.types';
  *
  * @param payload - Hasura event payload to process.
  */
-const handleUpdateMemberRole = (payload: HasuraEventPayload): boolean => {
+const handleUpdateMemberRole = async (
+  payload: HasuraEventPayload
+): Promise<boolean> => {
   const member = payload.event.data.new;
 
   return true;

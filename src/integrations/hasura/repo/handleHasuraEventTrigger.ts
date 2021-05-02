@@ -24,27 +24,27 @@ const handleHasuraEventTrigger = async (
 
   switch (payload.trigger.name) {
     case HasuraEventTrigger.CREATE_EVENT:
-      handleCreateEvent(payload);
+      await handleCreateEvent(payload);
       break;
 
     case HasuraEventTrigger.CREATE_EVENT_GUEST:
-      handleCreateEventGuest(payload);
+      await handleCreateEventGuest(payload);
       break;
 
     case HasuraEventTrigger.DELETE_EVENT:
-      handleDeleteEvent(payload);
+      await handleDeleteEvent(payload);
       break;
 
     case HasuraEventTrigger.DELETE_MEMBER:
-      handleDeleteMember(payload);
+      await handleDeleteMember(payload);
       break;
 
     case HasuraEventTrigger.UPDATE_MEMBER_ROLE:
-      handleUpdateMemberRole(payload);
+      await handleUpdateMemberRole(payload);
       break;
 
     case HasuraEventTrigger.UPDATE_MEMBER_STATUS:
-      handleUpdateMemberStatus(payload);
+      await handleUpdateMemberStatus(payload);
       break;
 
     default:

@@ -8,7 +8,9 @@ import { EmailEvent, GoogleEvent } from '@util/constants.events';
  *
  * @param payload - Hasura event payload to process.
  */
-const handleCreateEventGuest = (payload: HasuraEventPayload): boolean => {
+const handleCreateEventGuest = async (
+  payload: HasuraEventPayload
+): Promise<boolean> => {
   const eventGuest = payload.event.data.new;
 
   emitEmailEvent({

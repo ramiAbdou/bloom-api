@@ -8,7 +8,9 @@ import { EmailEvent, GoogleEvent } from '@util/constants.events';
  *
  * @param payload - Hasura event payload to process.
  */
-const handleDeleteEvent = (payload: HasuraEventPayload): boolean => {
+const handleDeleteEvent = async (
+  payload: HasuraEventPayload
+): Promise<boolean> => {
   const event = payload.event.data.old;
 
   // Send email to the admin/coordinator who deleted the event.

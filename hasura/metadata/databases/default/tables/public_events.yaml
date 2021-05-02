@@ -52,6 +52,7 @@ insert_permissions:
       backend_only: false
       check: {}
       columns:
+        - community_id
         - description
         - end_time
         - image_url
@@ -60,12 +61,12 @@ insert_permissions:
         - summary
         - title
         - video_url
-        - community_id
     role: ADMIN
   - permission:
       backend_only: false
       check: {}
       columns:
+        - community_id
         - description
         - end_time
         - image_url
@@ -74,7 +75,6 @@ insert_permissions:
         - summary
         - title
         - video_url
-        - community_id
     role: OWNER
 
 ## SELECT PERMISSIONS
