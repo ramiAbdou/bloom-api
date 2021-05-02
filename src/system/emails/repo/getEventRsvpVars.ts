@@ -36,13 +36,7 @@ const getEventRsvpVars = async (
 
   const token: string = signToken({
     expires: false,
-    payload: {
-      communityId: event.community.id,
-      event: VerifyEvent.JOIN_EVENT,
-      eventId,
-      memberId: guest.member?.id,
-      supporterId: guest.supporter?.id
-    }
+    payload: { event: VerifyEvent.JOIN_EVENT, guestId }
   });
 
   const joinUrl: string = buildUrl({

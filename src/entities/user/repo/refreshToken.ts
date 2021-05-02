@@ -8,11 +8,6 @@ import User from '../User';
 
 interface RefreshTokenOptions {
   /**
-   * Express Request object to update the cookies on.
-   */
-  req?: express.Request;
-
-  /**
    * Express Response object to update the cookies on.
    */
   res?: express.Response;
@@ -34,7 +29,7 @@ const refreshToken = async (
   where: FilterQuery<User>,
   options?: RefreshTokenOptions
 ): Promise<string> => {
-  const { req, res, tokenPayload } = options ?? {};
+  const { res, tokenPayload } = options ?? {};
 
   const bm: BloomManager = new BloomManager();
   const user: User = await bm.em.findOne(User, where);
@@ -55,7 +50,6 @@ const refreshToken = async (
 
   // New accessToken to return
   const accessToken: string = signToken({ payload });
-  if (req) req.cookies.accessToken = accessToken;
 
   // If it's the User's first time logging in, then we should create a refresh
   // token for them that does not expire and that we store on the User.
@@ -63,7 +57,6 @@ const refreshToken = async (
     const newRefreshToken: string = signToken({ expires: false, payload });
     user.refreshToken = newRefreshToken;
     await bm.em.flush();
-    if (req) req.cookies.refreshToken = newRefreshToken;
   }
 
   // If an Express Response object is passed in, set the HTTP only cookies.

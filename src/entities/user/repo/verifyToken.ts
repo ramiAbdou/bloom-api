@@ -27,16 +27,17 @@ export class VerifiedToken {
 
 interface HandleJoinEventArgs {
   guestId: string;
+  res: express.Response;
 }
 
-const handleJoinEvent = async ({ guestId }: HandleJoinEventArgs) => {
+const handleJoinEvent = async ({ guestId, res }: HandleJoinEventArgs) => {
   const eventGuest: EventGuest = await findOne(
     EventGuest,
     { id: guestId },
     { populate: ['event'] }
   );
 
-  const { endTime, id: eventId, startTime }: Event = eventGuest.event;
+  const { endTime, id: eventId, startTime, videoUrl }: Event = eventGuest.event;
 
   const tenMinutesBeforeEvent: Dayjs = day
     .utc(startTime)
@@ -58,6 +59,8 @@ const handleJoinEvent = async ({ guestId }: HandleJoinEventArgs) => {
       ? { event: eventId, member: eventGuest.member.id }
       : { event: eventId, supporter: eventGuest.supporter.id }
   );
+
+  return res.redirect(videoUrl);
 };
 
 interface HandleLoginArgs {
@@ -86,7 +89,7 @@ const verifyToken = async (
 
   switch (event) {
     case VerifyEvent.JOIN_EVENT:
-      await handleJoinEvent({ guestId });
+      await handleJoinEvent({ guestId, res });
       break;
 
     case VerifyEvent.LOGIN:
@@ -97,14 +100,6 @@ const verifyToken = async (
       await handleLogin({ res, userId });
       break;
   }
-
-  // if (event === VerifyEvent.JOIN_EVENT && memberId) {
-  //   await createEventAttendeeWithMember({ eventId }, { memberId });
-  // }
-
-  // if (event === VerifyEvent.JOIN_EVENT && supporterId) {
-  //   await createEventAttendeeWithSupporter({ eventId, supporterId });
-  // }
 
   return verifiedToken;
 };
