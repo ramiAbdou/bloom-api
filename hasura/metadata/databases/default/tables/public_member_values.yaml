@@ -21,6 +21,9 @@ object_relationships:
   - name: question
     using:
       foreign_key_constraint_on: question_id
+
+## INSERT PERMISSIONS
+
 insert_permissions:
   - permission:
       check: {}
@@ -28,19 +31,52 @@ insert_permissions:
         - member_id
         - question_id
         - value
-    role: GUEST
+    role: MEMBER
+  - permission:
+      check: {}
+      columns:
+        - member_id
+        - question_id
+        - value
+    role: ADMIN
+  - permission:
+      check: {}
+      columns:
+        - member_id
+        - question_id
+        - value
+    role: OWNER
+
+## SELECT PERMISSIONS
+
 select_permissions:
   - permission:
       columns:
         - id
-        - created_at
-        - deleted_at
-        - updated_at
         - value
         - member_id
         - question_id
       filter: {}
-    role: GUEST
+    role: MEMBER
+  - permission:
+      columns:
+        - id
+        - value
+        - member_id
+        - question_id
+      filter: {}
+    role: ADMIN
+  - permission:
+      columns:
+        - id
+        - value
+        - member_id
+        - question_id
+      filter: {}
+    role: OWNER
+
+## UPDATE PERMISSIONS
+
 update_permissions:
   - permission:
       check: {}
@@ -49,4 +85,20 @@ update_permissions:
         - updated_at
         - value
       filter: {}
-    role: GUEST
+    role: MEMBER
+  - permission:
+      check: {}
+      columns:
+        - deleted_at
+        - updated_at
+        - value
+      filter: {}
+    role: ADMIN
+  - permission:
+      check: {}
+      columns:
+        - deleted_at
+        - updated_at
+        - value
+      filter: {}
+    role: OWNER

@@ -44,38 +44,49 @@ array_relationships:
         table:
           name: event_watches
           schema: public
+
+## INSERT PERMISSIONS
+
 insert_permissions:
   - permission:
       backend_only: false
       check: {}
       columns:
-        - id
-        - created_at
-        - deleted_at
-        - updated_at
         - description
         - end_time
-        - google_calendar_event_id
         - image_url
         - privacy
-        - recording_url
         - start_time
         - summary
         - title
         - video_url
         - community_id
-    role: GUEST
+    role: ADMIN
+  - permission:
+      backend_only: false
+      check: {}
+      columns:
+        - description
+        - end_time
+        - image_url
+        - privacy
+        - start_time
+        - summary
+        - title
+        - video_url
+        - community_id
+    role: OWNER
+
+## SELECT PERMISSIONS
+
 select_permissions:
   - permission:
       allow_aggregations: true
       columns:
         - id
         - created_at
-        - deleted_at
-        - updated_at
         - description
         - end_time
-        - google_calendar_event_id
         - image_url
         - privacy
         - recording_url
@@ -83,30 +94,93 @@ select_permissions:
         - summary
         - title
         - video_url
-        - community_id
       filter: {}
     role: GUEST
+  - permission:
+      allow_aggregations: true
+      columns:
+        - id
+        - created_at
+        - description
+        - end_time
+        - image_url
+        - privacy
+        - recording_url
+        - start_time
+        - summary
+        - title
+        - video_url
+      filter: {}
+    role: MEMBER
+  - permission:
+      allow_aggregations: true
+      columns:
+        - id
+        - created_at
+        - description
+        - end_time
+        - image_url
+        - privacy
+        - recording_url
+        - start_time
+        - summary
+        - title
+        - video_url
+      filter: {}
+    role: ADMIN
+  - permission:
+      allow_aggregations: true
+      columns:
+        - id
+        - created_at
+        - description
+        - end_time
+        - image_url
+        - privacy
+        - recording_url
+        - start_time
+        - summary
+        - title
+        - video_url
+      filter: {}
+    role: OWNER
+
+## UPDATE PERMISSIONS
+
 update_permissions:
   - permission:
       check: {}
       columns:
-        - id
-        - created_at
         - deleted_at
         - updated_at
         - description
-        - end_time
         - google_calendar_event_id
         - image_url
         - privacy
         - recording_url
-        - start_time
         - summary
         - title
         - video_url
-        - community_id
       filter: {}
-    role: GUEST
+    role: ADMIN
+  - permission:
+      check: {}
+      columns:
+        - deleted_at
+        - updated_at
+        - description
+        - google_calendar_event_id
+        - image_url
+        - privacy
+        - recording_url
+        - summary
+        - title
+        - video_url
+      filter: {}
+    role: OWNER
+
+## TRIGGERS
+
 event_triggers:
   - definition:
       enable_manual: false

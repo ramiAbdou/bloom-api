@@ -20,15 +20,31 @@ object_relationships:
   - name: question
     using:
       foreign_key_constraint_on: question_id
+
+## SELECT PERMISSIONS
+
 select_permissions:
   - permission:
       columns:
         - rank
-        - application_id
-        - created_at
-        - deleted_at
         - id
-        - question_id
-        - updated_at
       filter: {}
     role: GUEST
+  - permission:
+      columns:
+        - rank
+        - id
+      filter: {}
+    role: MEMBER
+  - permission:
+      columns:
+        - rank
+        - id
+      filter: {}
+    role: ADMIN
+  - permission:
+      columns:
+        - rank
+        - id
+      filter: {}
+    role: OWNER

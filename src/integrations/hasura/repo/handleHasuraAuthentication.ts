@@ -40,7 +40,7 @@ const handleHasuraAuthentication = async (
 
   return res.json({
     'X-Access-Token': updatedAccessToken,
-    'X-Hasura-Role': HasuraRole.GUEST
+    'X-Hasura-Role': hasuraRole
   });
 };
 

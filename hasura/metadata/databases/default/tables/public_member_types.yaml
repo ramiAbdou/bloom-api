@@ -35,18 +35,31 @@ array_relationships:
         table:
           name: members
           schema: public
+
+## SELECT PERMISSIONS
+
 select_permissions:
   - permission:
       columns:
         - id
-        - created_at
-        - deleted_at
-        - updated_at
         - amount
         - name
         - recurrence
-        - stripe_price_id
-        - stripe_product_id
-        - community_id
       filter: {}
-    role: GUEST
+    role: MEMBER
+  - permission:
+      columns:
+        - id
+        - amount
+        - name
+        - recurrence
+      filter: {}
+    role: ADMIN
+  - permission:
+      columns:
+        - id
+        - amount
+        - name
+        - recurrence
+      filter: {}
+    role: OWNER

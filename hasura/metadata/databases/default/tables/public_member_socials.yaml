@@ -19,32 +19,65 @@ object_relationships:
   - name: member
     using:
       foreign_key_constraint_on: member_id
+
+## SELECT PERMISSIONS
+
 select_permissions:
   - permission:
       columns:
         - id
-        - created_at
-        - deleted_at
-        - updated_at
         - facebook_url
         - instagram_url
         - linked_in_url
         - twitter_url
-        - member_id
       filter: {}
-    role: GUEST
-update_permissions:
+    role: MEMBER
   - permission:
-      check: {}
       columns:
         - id
-        - created_at
-        - deleted_at
-        - updated_at
         - facebook_url
         - instagram_url
         - linked_in_url
         - twitter_url
-        - member_id
       filter: {}
-    role: GUEST
+    role: ADMIN
+  - permission:
+      columns:
+        - id
+        - facebook_url
+        - instagram_url
+        - linked_in_url
+        - twitter_url
+      filter: {}
+    role: OWNER
+
+## UPDATE PERMISSIONS
+
+update_permissions:
+  - permission:
+      columns:
+        - id
+        - facebook_url
+        - instagram_url
+        - linked_in_url
+        - twitter_url
+      filter: {}
+    role: MEMBER
+  - permission:
+      columns:
+        - id
+        - facebook_url
+        - instagram_url
+        - linked_in_url
+        - twitter_url
+      filter: {}
+    role: ADMIN
+  - permission:
+      columns:
+        - id
+        - facebook_url
+        - instagram_url
+        - linked_in_url
+        - twitter_url
+      filter: {}
+    role: OWNER
