@@ -12,7 +12,7 @@ type SendEmailsBatch = EmailArgs & {
 };
 
 const sendEmailsBatch = async (args: SendEmailsBatch) => {
-  const templateId: string = getSendGridTemplateId(args.emailEvent);
+  const templateId: string = getSendGridTemplateId(args.event);
 
   const options: MailDataRequired = {
     from: { email: 'team@onbloom.co', name: 'Bloom' },

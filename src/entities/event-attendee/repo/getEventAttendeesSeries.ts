@@ -1,6 +1,6 @@
 import day from 'dayjs';
 
-import BloomManager from '@core/db/BloomManager';
+import { find } from '@core/db/db.util';
 import EventAttendee from '@entities/event-attendee/EventAttendee';
 import { GQLContext } from '@util/constants';
 import { TimeSeriesData } from '@util/constants.gql';
@@ -23,13 +23,10 @@ const getEventAttendeesSeries = async (
 ): Promise<TimeSeriesData[]> => {
   const { communityId } = ctx;
 
-  const attendees: EventAttendee[] = await new BloomManager().em.find(
-    EventAttendee,
-    {
-      createdAt: { $gt: day.utc().subtract(30, 'd').format() },
-      event: { community: { id: communityId } }
-    }
-  );
+  const attendees: EventAttendee[] = await find(EventAttendee, {
+    createdAt: { $gt: day.utc().subtract(30, 'd').format() },
+    event: { community: { id: communityId } }
+  });
 
   const endOfToday = day.utc().endOf('day');
 

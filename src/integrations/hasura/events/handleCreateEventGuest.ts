@@ -12,13 +12,13 @@ const handleCreateEventGuest = (payload: HasuraEventPayload): boolean => {
   const eventGuest = payload.event.data.new;
 
   emitEmailEvent({
-    emailEvent: EmailEvent.EVENT_RSVP,
-    emailPayload: { eventId: eventGuest.eventId, guestId: eventGuest.id }
+    event: EmailEvent.EVENT_RSVP,
+    payload: { eventId: eventGuest.eventId, guestId: eventGuest.id }
   });
 
-  emitGoogleEvent(GoogleEvent.ADD_CALENDAR_EVENT_ATTENDEE, {
-    eventId: eventGuest.eventId,
-    guestId: eventGuest.id
+  emitGoogleEvent({
+    event: GoogleEvent.ADD_CALENDAR_EVENT_ATTENDEE,
+    payload: { eventId: eventGuest.eventId, guestId: eventGuest.id }
   });
 
   return true;

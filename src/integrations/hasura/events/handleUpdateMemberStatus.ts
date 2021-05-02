@@ -16,11 +16,8 @@ const handleUpdateMemberStatus = (payload: HasuraEventPayload): boolean => {
 
   if (member.status === MemberStatus.ACCEPTED) {
     emitEmailEvent({
-      emailEvent: EmailEvent.ACCEPTED_INTO_COMMUNITY,
-      emailPayload: {
-        communityId: member.communityId,
-        memberId: member.id
-      }
+      event: EmailEvent.ACCEPTED_INTO_COMMUNITY,
+      payload: { communityId: member.communityId, memberId: member.id }
     });
   }
 

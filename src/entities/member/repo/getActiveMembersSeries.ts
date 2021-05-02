@@ -1,7 +1,7 @@
 import day from 'dayjs';
 import { QueryOrder } from '@mikro-orm/core';
 
-import BloomManager from '@core/db/BloomManager';
+import { find } from '@core/db/db.util';
 import Member from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import { TimeSeriesData } from '@util/constants.gql';
@@ -24,7 +24,7 @@ const getActiveMembersSeries = async (
 
   const startOf30DaysAgo = day.utc().subtract(30, 'day').startOf('d');
 
-  const activeMembersThisMonth: Member[] = await new BloomManager().em.find(
+  const activeMembersThisMonth: Member[] = await find(
     Member,
     {
       community: communityId,

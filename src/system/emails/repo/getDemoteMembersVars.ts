@@ -1,4 +1,4 @@
-import BloomManager from '@core/db/BloomManager';
+import { find, findOne } from '@core/db/db.util';
 import Community from '@entities/community/Community';
 import Member, { MemberRole } from '@entities/member/Member';
 
@@ -19,21 +19,18 @@ export interface DemoteMembersVars {
  * @param context.communityId - ID of the Community.
  * @param context.memberIds - ID of the Member(s).
  */
-const getDemoteMembersVars = async (
-  context: DemoteMembersPayload
-): Promise<DemoteMembersVars[]> => {
-  const { communityId, memberIds } = context;
-
-  const bm: BloomManager = new BloomManager();
-
+const getDemoteMembersVars = async ({
+  communityId,
+  memberIds
+}: DemoteMembersPayload): Promise<DemoteMembersVars[]> => {
   const [community, owner, users]: [
     Community,
     Member,
     Member[]
   ] = await Promise.all([
-    bm.em.findOne(Community, { id: communityId }),
-    bm.em.findOne(Member, { community: communityId, role: MemberRole.OWNER }),
-    bm.em.find(Member, { id: memberIds })
+    findOne(Community, { id: communityId }),
+    findOne(Member, { community: communityId, role: MemberRole.OWNER }),
+    find(Member, { id: memberIds })
   ]);
 
   const variables: DemoteMembersVars[] = users.map((member: Member) => {

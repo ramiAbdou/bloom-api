@@ -48,12 +48,12 @@ export interface FormatPersonalizationData {
 
 /**
  * Returns the ID of the SendGrid dynamic template to populate with the
- * proper variables, based on the emailEvent.
+ * proper variables, based on the event.
  *
- * @param emailEvent - Type of EmailEvent.
+ * @param event - Type of EmailEvent.
  */
-export const getSendGridTemplateId = (emailEvent: EmailEvent): string => {
-  switch (emailEvent) {
+export const getSendGridTemplateId = (event: EmailEvent): string => {
+  switch (event) {
     case EmailEvent.ACCEPTED_INTO_COMMUNITY:
       return process.env.SENDGRID_ACCEPTED_INTO_COMMUNITY_TEMPLATE_ID;
 
@@ -106,55 +106,55 @@ export const getSendGridTemplateId = (emailEvent: EmailEvent): string => {
  * @param args.emailEvent - Type of EmailEvent.
  */
 const getEmailVars = (args: EmailArgs): Promise<EmailVars[]> => {
-  const { emailPayload, emailEvent } = args;
+  const { event, payload } = args;
 
-  switch (emailEvent) {
+  switch (event) {
     case EmailEvent.ACCEPTED_INTO_COMMUNITY:
       return getAcceptedIntoCommunityVars(
-        emailPayload as AcceptedIntoCommunityPayload
+        payload as AcceptedIntoCommunityPayload
       );
 
     case EmailEvent.APPLY_TO_COMMUNITY:
-      return getApplyToCommunityVars(emailPayload as ApplyToCommunityPayload);
+      return getApplyToCommunityVars(payload as ApplyToCommunityPayload);
 
     case EmailEvent.APPLY_TO_COMMUNITY_ADMINS:
       return getApplyToCommunityAdminsVars(
-        emailPayload as ApplyToCommunityAdminsPayload
+        payload as ApplyToCommunityAdminsPayload
       );
 
     case EmailEvent.CREATE_EVENT_COORDINATOR:
       return getCreateEventCoordinatorVars(
-        emailPayload as CreateEventCoordinatorPayload
+        payload as CreateEventCoordinatorPayload
       );
 
     case EmailEvent.DELETE_EVENT_COORDINATOR:
       return getDeleteEventCoordinatorVars(
-        emailPayload as DeleteEventCoordinatorPayload
+        payload as DeleteEventCoordinatorPayload
       );
 
     case EmailEvent.DELETE_EVENT_GUESTS:
-      return getDeleteEventGuestsVars(emailPayload as DeleteEventGuestsPayload);
+      return getDeleteEventGuestsVars(payload as DeleteEventGuestsPayload);
 
     case EmailEvent.DELETE_MEMBERS:
-      return getDeleteMembersVars(emailPayload as DeleteMembersPayload);
+      return getDeleteMembersVars(payload as DeleteMembersPayload);
 
     case EmailEvent.DEMOTE_MEMBERS:
-      return getDemoteMembersVars(emailPayload as DemoteMembersPayload);
+      return getDemoteMembersVars(payload as DemoteMembersPayload);
 
     case EmailEvent.EVENT_REMINDER:
-      return getEventReminderVars(emailPayload as EventReminderPayload);
+      return getEventReminderVars(payload as EventReminderPayload);
 
     case EmailEvent.EVENT_RSVP:
-      return getEventRsvpVars(emailPayload as EventRsvpPayload);
+      return getEventRsvpVars(payload as EventRsvpPayload);
 
     case EmailEvent.INVITE_MEMBERS:
-      return getInviteMembersVars(emailPayload as InviteMembersPayload);
+      return getInviteMembersVars(payload as InviteMembersPayload);
 
     case EmailEvent.LOGIN_LINK:
-      return getLoginLinkVars(emailPayload as LoginLinkEmailPayload);
+      return getLoginLinkVars(payload as LoginLinkEmailPayload);
 
     case EmailEvent.PROMOTE_MEMBERS:
-      return getPromoteMembersVars(emailPayload as PromoteMembersPayload);
+      return getPromoteMembersVars(payload as PromoteMembersPayload);
 
     default:
       return null;

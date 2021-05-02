@@ -1,4 +1,4 @@
-import BloomManager from '@core/db/BloomManager';
+import { findOne } from '@core/db/db.util';
 import Community from '@entities/community/Community';
 import Event from '@entities/event/Event';
 import Member from '@entities/member/Member';
@@ -17,29 +17,23 @@ export interface CreateEventCoordinatorVars {
   member: Pick<Member, 'email' | 'firstName'>;
 }
 
-const getCreateEventCoordinatorVars = async (
-  context: CreateEventCoordinatorPayload
-): Promise<CreateEventCoordinatorVars[]> => {
-  const { communityId, coordinatorId, eventId } = context;
-
-  const bm: BloomManager = new BloomManager();
-
+const getCreateEventCoordinatorVars = async ({
+  communityId,
+  coordinatorId,
+  eventId
+}: CreateEventCoordinatorPayload): Promise<CreateEventCoordinatorVars[]> => {
   const [community, event, member]: [
     Community,
     Event,
     Member
   ] = await Promise.all([
-    bm.em.findOne(Community, { id: communityId }),
-    bm.em.findOne(
+    findOne(Community, { id: communityId }),
+    findOne(
       Event,
       { id: eventId },
       { fields: ['endTime', 'privacy', 'startTime', 'summary', 'title'] }
     ),
-    bm.em.findOne(
-      Member,
-      { id: coordinatorId },
-      { fields: ['email', 'firstName'] }
-    )
+    findOne(Member, { id: coordinatorId }, { fields: ['email', 'firstName'] })
   ]);
 
   const partialCommunity: Pick<Community, 'name'> = { name: community.name };

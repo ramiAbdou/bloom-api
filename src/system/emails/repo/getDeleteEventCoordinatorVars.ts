@@ -1,4 +1,4 @@
-import BloomManager from '@core/db/BloomManager';
+import { findOne } from '@core/db/db.util';
 import Community from '@entities/community/Community';
 import Event from '@entities/event/Event';
 import Member from '@entities/member/Member';
@@ -22,21 +22,19 @@ export interface DeleteEventCoordinatorVars {
  * @param context.coordinatorId - ID of the Member (coordinator).
  * @param context.eventId - ID of the Event.
  */
-const getDeleteEventCoordinatorVars = async (
-  context: DeleteEventCoordinatorPayload
-): Promise<DeleteEventCoordinatorVars[]> => {
-  const { communityId, coordinatorId, eventId } = context;
-
-  const bm: BloomManager = new BloomManager();
-
+const getDeleteEventCoordinatorVars = async ({
+  communityId,
+  coordinatorId,
+  eventId
+}: DeleteEventCoordinatorPayload): Promise<DeleteEventCoordinatorVars[]> => {
   const [community, event, member]: [
     Community,
     Event,
     Member
   ] = await Promise.all([
-    bm.em.findOne(Community, { id: communityId }),
-    bm.em.findOne(Event, { id: eventId }, { filters: false }),
-    bm.em.findOne(Member, { id: coordinatorId })
+    findOne(Community, { id: communityId }),
+    findOne(Event, { id: eventId }, { filters: false }),
+    findOne(Member, { id: coordinatorId })
   ]);
 
   const variables: DeleteEventCoordinatorVars[] = [

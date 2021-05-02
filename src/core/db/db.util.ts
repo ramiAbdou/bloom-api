@@ -4,6 +4,7 @@ import {
   EntityName,
   FilterQuery,
   FindOneOptions,
+  FindOptions,
   Loaded,
   wrap
 } from '@mikro-orm/core';
@@ -40,6 +41,18 @@ export async function findOneAndUpdate<T, P>(
   const updatedEntity: Loaded<T, P> = wrap(entity).assign(data);
   await em.flush();
   return updatedEntity;
+}
+
+/**
+ * Returns the updated entities, if it was found.
+ */
+export async function find<T, P>(
+  entityName: EntityName<T>,
+  where: FilterQuery<T>,
+  options?: FindOptions<T, P>
+): Promise<Loaded<T, P>[]> {
+  const em: EntityManager = db.em?.fork();
+  return em.find<T, P>(entityName, where, options);
 }
 
 /**

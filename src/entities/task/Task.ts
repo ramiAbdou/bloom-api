@@ -28,16 +28,16 @@ export default class Task extends BaseEntity {
     switch (this.event) {
       case TaskEvent.EVENT_REMINDER_1_DAY:
         emitEmailEvent({
-          emailEvent: EmailEvent.EVENT_REMINDER,
-          emailPayload: { eventId: this.payload.eventId }
+          event: EmailEvent.EVENT_REMINDER,
+          payload: { eventId: this.payload.eventId }
         });
 
         break;
 
       case TaskEvent.EVENT_REMINDER_1_HOUR:
         emitEmailEvent({
-          emailEvent: EmailEvent.EVENT_REMINDER,
-          emailPayload: { eventId: this.payload.eventId }
+          event: EmailEvent.EVENT_REMINDER,
+          payload: { eventId: this.payload.eventId }
         });
 
         break;

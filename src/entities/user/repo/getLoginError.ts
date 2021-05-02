@@ -1,4 +1,4 @@
-import BloomManager from '@core/db/BloomManager';
+import { findOne } from '@core/db/db.util';
 import Member, { MemberStatus } from '@entities/member/Member';
 import acceptInvitations from '@entities/member/repo/acceptInvitations';
 import { ErrorType } from '@util/constants';
@@ -20,7 +20,7 @@ const getLoginError = async (args: GetLoginErrorArgs): Promise<ErrorType> => {
 
   if (communityId) {
     // Check if the email is a member of this community.
-    const member: Member = await new BloomManager().em.findOne(Member, {
+    const member: Member = await findOne(Member, {
       community: communityId,
       email
     });
@@ -28,7 +28,7 @@ const getLoginError = async (args: GetLoginErrorArgs): Promise<ErrorType> => {
     if (!member) return ErrorType.NOT_MEMBER;
   }
 
-  const user: User = await new BloomManager().em.findOne(User, { email });
+  const user: User = await findOne(User, { email });
 
   if (!user) return ErrorType.USER_NOT_FOUND;
 

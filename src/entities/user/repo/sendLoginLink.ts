@@ -37,8 +37,8 @@ const sendLoginLink = async ({
   if (loginError) throw new Error(loginError);
 
   emitEmailEvent({
-    emailEvent: EmailEvent.LOGIN_LINK,
-    emailPayload: { email, redirectUrl }
+    event: EmailEvent.LOGIN_LINK,
+    payload: { email, redirectUrl }
   });
 
   return { ok: true };

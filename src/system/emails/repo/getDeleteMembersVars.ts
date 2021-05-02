@@ -1,4 +1,4 @@
-import BloomManager from '@core/db/BloomManager';
+import { find, findOne } from '@core/db/db.util';
 import Community from '@entities/community/Community';
 import Member, { MemberRole } from '@entities/member/Member';
 
@@ -19,21 +19,18 @@ export interface DeleteMembersVars {
  * @param context.communityId - ID of the Community.
  * @param context.memberIds - ID of the Member(s).
  */
-const getDeleteMembersVars = async (
-  context: DeleteMembersPayload
-): Promise<DeleteMembersVars[]> => {
-  const { communityId, memberIds } = context;
-
-  const bm: BloomManager = new BloomManager();
-
+const getDeleteMembersVars = async ({
+  communityId,
+  memberIds
+}: DeleteMembersPayload): Promise<DeleteMembersVars[]> => {
   const [community, owner, members]: [
     Community,
     Member,
     Member[]
   ] = await Promise.all([
-    bm.em.findOne(Community, communityId),
-    bm.em.findOne(Member, { community: communityId, role: MemberRole.OWNER }),
-    bm.em.find(Member, memberIds)
+    findOne(Community, communityId),
+    findOne(Member, { community: communityId, role: MemberRole.OWNER }),
+    find(Member, memberIds)
   ]);
 
   const variables: DeleteMembersVars[] = members.map((member: Member) => {

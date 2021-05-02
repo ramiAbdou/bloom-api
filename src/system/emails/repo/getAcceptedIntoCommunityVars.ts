@@ -20,11 +20,10 @@ export interface AcceptedIntoCommunityVars {
  * @param context.communityId - ID of the Community.
  * @param context.memberId - ID of the Member.
  */
-const getAcceptedIntoCommunityVars = async (
-  context: AcceptedIntoCommunityPayload
-): Promise<AcceptedIntoCommunityVars[]> => {
-  const { communityId, memberId } = context;
-
+const getAcceptedIntoCommunityVars = async ({
+  communityId,
+  memberId
+}: AcceptedIntoCommunityPayload): Promise<AcceptedIntoCommunityVars[]> => {
   const [community, member]: [Community, Member] = await Promise.all([
     findOne(Community, { id: communityId }),
     findOne(Member, { id: memberId })

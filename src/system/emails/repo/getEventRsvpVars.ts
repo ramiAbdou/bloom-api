@@ -1,4 +1,4 @@
-import BloomManager from '@core/db/BloomManager';
+import { findOne } from '@core/db/db.util';
 import EventGuest from '@entities/event-guest/EventGuest';
 import Event from '@entities/event/Event';
 import Member from '@entities/member/Member';
@@ -17,20 +17,13 @@ export interface EventRsvpVars {
   member: Pick<Member, 'email' | 'firstName'>;
 }
 
-const getEventRsvpVars = async (
-  context: EventRsvpPayload
-): Promise<EventRsvpVars[]> => {
-  const { eventId, guestId } = context;
-
-  const bm: BloomManager = new BloomManager();
-
+const getEventRsvpVars = async ({
+  eventId,
+  guestId
+}: EventRsvpPayload): Promise<EventRsvpVars[]> => {
   const [event, guest]: [Event, EventGuest] = await Promise.all([
-    bm.em.findOne(Event, { id: eventId }, { populate: ['community'] }),
-    bm.em.findOne(
-      EventGuest,
-      { id: guestId },
-      { populate: ['member', 'supporter'] }
-    )
+    findOne(Event, { id: eventId }, { populate: ['community'] }),
+    findOne(EventGuest, { id: guestId }, { populate: ['member', 'supporter'] })
   ]);
 
   const token: string = signToken({

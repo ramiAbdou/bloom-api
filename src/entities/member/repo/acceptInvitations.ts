@@ -32,8 +32,8 @@ const acceptInvitations = async (
 
   members.forEach((member: Member) => {
     emitEmailEvent({
-      emailEvent: EmailEvent.ACCEPTED_INTO_COMMUNITY,
-      emailPayload: { communityId: member.community.id, memberId: member.id }
+      event: EmailEvent.ACCEPTED_INTO_COMMUNITY,
+      payload: { communityId: member.community.id, memberId: member.id }
     });
   });
 

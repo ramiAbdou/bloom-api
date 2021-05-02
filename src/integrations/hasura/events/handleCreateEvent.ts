@@ -13,15 +13,19 @@ const handleCreateEvent = (payload: HasuraEventPayload): boolean => {
   const event = payload.event.data.new;
 
   emitEmailEvent({
-    emailEvent: EmailEvent.CREATE_EVENT_COORDINATOR,
-    emailPayload: {
+    event: EmailEvent.CREATE_EVENT_COORDINATOR,
+    payload: {
       communityId: event.communityId,
       coordinatorId: payload.event.sessionVariables.xHasuraMemberId,
       eventId: event.id
     }
   });
 
-  emitGoogleEvent(GoogleEvent.CREATE_CALENDAR_EVENT, { eventId: event.id });
+  emitGoogleEvent({
+    event: GoogleEvent.CREATE_CALENDAR_EVENT,
+    payload: { eventId: event.id }
+  });
+
   emitTaskEvent(TaskEvent.EVENT_REMINDER_1_DAY, { eventId: event.id });
   emitTaskEvent(TaskEvent.EVENT_REMINDER_1_HOUR, { eventId: event.id });
 

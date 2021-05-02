@@ -1,4 +1,4 @@
-import BloomManager from '@core/db/BloomManager';
+import { find, findOne } from '@core/db/db.util';
 import Community from '@entities/community/Community';
 import EventGuest from '@entities/event-guest/EventGuest';
 import Event from '@entities/event/Event';
@@ -16,25 +16,18 @@ export interface DeleteEventGuestsVars {
   member: Pick<Member, 'email' | 'firstName'>;
 }
 
-const getDeleteEventGuestsVars = async (
-  context: DeleteEventGuestsPayload
-): Promise<DeleteEventGuestsVars[]> => {
-  const { communityId, eventId } = context;
-
-  const bm: BloomManager = new BloomManager();
-
+const getDeleteEventGuestsVars = async ({
+  communityId,
+  eventId
+}: DeleteEventGuestsPayload): Promise<DeleteEventGuestsVars[]> => {
   const [community, event, guests]: [
     Community,
     Event,
     EventGuest[]
   ] = await Promise.all([
-    bm.em.findOne(Community, { id: communityId }),
-    bm.em.findOne(Event, { id: eventId }, { filters: false }),
-    bm.em.find(
-      EventGuest,
-      { event: eventId },
-      { populate: ['member', 'supporter'] }
-    )
+    findOne(Community, { id: communityId }),
+    findOne(Event, { id: eventId }, { filters: false }),
+    find(EventGuest, { event: eventId }, { populate: ['member', 'supporter'] })
   ]);
 
   const partialCommunity: Pick<Community, 'name'> = { name: community.name };

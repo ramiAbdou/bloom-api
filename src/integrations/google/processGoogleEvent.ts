@@ -8,21 +8,40 @@ import { GoogleEvent } from '@util/constants.events';
 import addGoogleCalendarEventAttendee from './repo/addGoogleCalendarEventAttendee';
 import createGoogleCalendarEvent from './repo/createGoogleCalendarEvent';
 
-export interface GoogleEventArgs {
-  eventId: string;
-  guestId?: string;
-  googleEvent: GoogleEvent;
-}
+export type GoogleEventArgs =
+  | {
+      event: GoogleEvent.ADD_CALENDAR_EVENT_ATTENDEE;
+      payload: { eventId: string; guestId: string };
+    }
+  | {
+      event: GoogleEvent.CREATE_CALENDAR_EVENT;
+      payload: { eventId: string };
+    }
+  | {
+      event: GoogleEvent.DELETE_CALENDAR_EVENT;
+      payload: { eventId: string };
+    }
+  | {
+      event: GoogleEvent.DELETE_CALENDAR_EVENT_ATTENDEE;
+      payload: { eventId: string; guestId: string };
+    }
+  | {
+      event: GoogleEvent.UPDATE_CALENDAR_EVENT;
+      payload: { eventId: string };
+    };
 
 /**
  * Processes the GoogleEvent properly.
  *
  * @param args.eventId - ID of the Event.
  * @param args.guestId - ID of the EventGuest.
- * @param args.googleEvent - Internal Google Event.
+ * @param args.event - Internal Google Event.
  */
-const processGoogleEvent = async (args: GoogleEventArgs): Promise<void> => {
-  const { eventId, guestId, googleEvent } = args;
+const processGoogleEvent = async ({
+  payload,
+  event: googleEvent
+}: GoogleEventArgs): Promise<void> => {
+  const { eventId } = payload;
 
   const bm: BloomManager = new BloomManager();
 
@@ -30,7 +49,7 @@ const processGoogleEvent = async (args: GoogleEventArgs): Promise<void> => {
     bm.em.findOne(Event, { id: eventId }, { filters: false }),
     bm.em.findOne(
       EventGuest,
-      { id: guestId },
+      { id: '' },
       { filters: false, populate: ['member', 'supporter'] }
     )
   ]);

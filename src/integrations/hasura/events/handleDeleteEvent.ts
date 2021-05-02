@@ -13,8 +13,8 @@ const handleDeleteEvent = (payload: HasuraEventPayload): boolean => {
 
   // Send email to the admin/coordinator who deleted the event.
   emitEmailEvent({
-    emailEvent: EmailEvent.DELETE_EVENT_COORDINATOR,
-    emailPayload: {
+    event: EmailEvent.DELETE_EVENT_COORDINATOR,
+    payload: {
       communityId: event.communityId,
       coordinatorId: payload.event.sessionVariables.xHasuraMemberId,
       eventId: event.id
@@ -23,12 +23,15 @@ const handleDeleteEvent = (payload: HasuraEventPayload): boolean => {
 
   // Send email to all of the people who RSVP'd and were planning to attend.
   emitEmailEvent({
-    emailEvent: EmailEvent.DELETE_EVENT_GUESTS,
-    emailPayload: { communityId: event.communityId, eventId: event.id }
+    event: EmailEvent.DELETE_EVENT_GUESTS,
+    payload: { communityId: event.communityId, eventId: event.id }
   });
 
   // Delete the Google Calendar event.
-  emitGoogleEvent(GoogleEvent.DELETE_CALENDAR_EVENT, { eventId: event.id });
+  emitGoogleEvent({
+    event: GoogleEvent.DELETE_CALENDAR_EVENT,
+    payload: { eventId: event.id }
+  });
 
   return true;
 };

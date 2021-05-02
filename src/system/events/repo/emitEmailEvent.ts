@@ -5,8 +5,8 @@ import eventBus, { EmitEventOptions } from '../eventBus';
 /**
  * Emits an EMAIL_EVENT with the given event and payload.
  *
- * @param emailEvent
- * @param emailPayload
+ * @param args.event - EmailEvent to emit.
+ * @param args.payload - Payload to be sent in the email.
  * @param options
  */
 const emitEmailEvent = (

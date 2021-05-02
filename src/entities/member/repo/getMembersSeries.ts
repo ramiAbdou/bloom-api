@@ -1,6 +1,6 @@
 import day from 'dayjs';
 
-import BloomManager from '@core/db/BloomManager';
+import { find } from '@core/db/db.util';
 import Member, { MemberStatus } from '@entities/member/Member';
 import { GQLContext } from '@util/constants';
 import { TimeSeriesData } from '@util/constants.gql';
@@ -23,7 +23,7 @@ const getMembersSeries = async (
 ): Promise<TimeSeriesData[]> => {
   const { communityId } = ctx;
 
-  const members = await new BloomManager().em.find(Member, {
+  const members = await find(Member, {
     community: communityId,
     status: MemberStatus.ACCEPTED
   });

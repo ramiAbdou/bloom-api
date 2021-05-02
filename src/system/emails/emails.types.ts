@@ -71,54 +71,54 @@ export type EmailVars =
 
 export type EmailArgs =
   | {
-      emailEvent: EmailEvent.ACCEPTED_INTO_COMMUNITY;
-      emailPayload: AcceptedIntoCommunityPayload;
+      event: EmailEvent.ACCEPTED_INTO_COMMUNITY;
+      payload: AcceptedIntoCommunityPayload;
     }
   | {
-      emailEvent: EmailEvent.APPLY_TO_COMMUNITY;
-      emailPayload: ApplyToCommunityPayload;
+      event: EmailEvent.APPLY_TO_COMMUNITY;
+      payload: ApplyToCommunityPayload;
     }
   | {
-      emailEvent: EmailEvent.APPLY_TO_COMMUNITY_ADMINS;
-      emailPayload: ApplyToCommunityAdminsPayload;
+      event: EmailEvent.APPLY_TO_COMMUNITY_ADMINS;
+      payload: ApplyToCommunityAdminsPayload;
     }
   | {
-      emailEvent: EmailEvent.CREATE_EVENT_COORDINATOR;
-      emailPayload: CreateEventCoordinatorPayload;
+      event: EmailEvent.CREATE_EVENT_COORDINATOR;
+      payload: CreateEventCoordinatorPayload;
     }
   | {
-      emailEvent: EmailEvent.DELETE_EVENT_COORDINATOR;
-      emailPayload: DeleteEventCoordinatorPayload;
+      event: EmailEvent.DELETE_EVENT_COORDINATOR;
+      payload: DeleteEventCoordinatorPayload;
     }
   | {
-      emailEvent: EmailEvent.DELETE_EVENT_GUESTS;
-      emailPayload: DeleteEventGuestsPayload;
+      event: EmailEvent.DELETE_EVENT_GUESTS;
+      payload: DeleteEventGuestsPayload;
     }
   | {
-      emailEvent: EmailEvent.DELETE_MEMBERS;
-      emailPayload: DeleteMembersPayload;
+      event: EmailEvent.DELETE_MEMBERS;
+      payload: DeleteMembersPayload;
     }
   | {
-      emailEvent: EmailEvent.DEMOTE_MEMBERS;
-      emailPayload: DemoteMembersPayload;
+      event: EmailEvent.DEMOTE_MEMBERS;
+      payload: DemoteMembersPayload;
     }
   | {
-      emailEvent: EmailEvent.EVENT_REMINDER;
-      emailPayload: EventReminderPayload;
+      event: EmailEvent.EVENT_REMINDER;
+      payload: EventReminderPayload;
     }
   | {
-      emailEvent: EmailEvent.EVENT_RSVP;
-      emailPayload: EventRsvpPayload;
+      event: EmailEvent.EVENT_RSVP;
+      payload: EventRsvpPayload;
     }
   | {
-      emailEvent: EmailEvent.INVITE_MEMBERS;
-      emailPayload: InviteMembersPayload;
+      event: EmailEvent.INVITE_MEMBERS;
+      payload: InviteMembersPayload;
     }
   | {
-      emailEvent: EmailEvent.LOGIN_LINK;
-      emailPayload: LoginLinkEmailPayload;
+      event: EmailEvent.LOGIN_LINK;
+      payload: LoginLinkEmailPayload;
     }
   | {
-      emailEvent: EmailEvent.PROMOTE_MEMBERS;
-      emailPayload: PromoteMembersPayload;
+      event: EmailEvent.PROMOTE_MEMBERS;
+      payload: PromoteMembersPayload;
     };

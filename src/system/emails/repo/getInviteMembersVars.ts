@@ -1,4 +1,4 @@
-import BloomManager from '@core/db/BloomManager';
+import { find, findOne } from '@core/db/db.util';
 import Community from '@entities/community/Community';
 import Member from '@entities/member/Member';
 import { APP } from '@util/constants';
@@ -25,21 +25,19 @@ export interface InviteMembersVars {
  * @param context.coordinatorId - ID of the Member (admin).
  * @param context.memberId - ID of the Member.
  */
-const getInviteMembersVars = async (
-  context: InviteMembersPayload
-): Promise<InviteMembersVars[]> => {
-  const { communityId, coordinatorId, memberIds } = context;
-
-  const bm: BloomManager = new BloomManager();
-
+const getInviteMembersVars = async ({
+  communityId,
+  coordinatorId,
+  memberIds
+}: InviteMembersPayload): Promise<InviteMembersVars[]> => {
   const [community, coordinator, members]: [
     Community,
     Member,
     Member[]
   ] = await Promise.all([
-    bm.em.findOne(Community, communityId),
-    bm.em.findOne(Member, coordinatorId),
-    bm.em.find(Member, { id: memberIds })
+    findOne(Community, communityId),
+    findOne(Member, coordinatorId),
+    find(Member, { id: memberIds })
   ]);
 
   const variables: InviteMembersVars[] = members.map((member: Member) => {

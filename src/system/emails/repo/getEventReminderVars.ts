@@ -1,4 +1,4 @@
-import BloomManager from '@core/db/BloomManager';
+import { find, findOne } from '@core/db/db.util';
 import EventGuest from '@entities/event-guest/EventGuest';
 import Event from '@entities/event/Event';
 import Member from '@entities/member/Member';
@@ -17,16 +17,12 @@ export interface EventReminderVars {
   member: Pick<Member, 'email' | 'firstName'>;
 }
 
-const getEventReminderVars = async (
-  context: EventReminderPayload
-): Promise<EventReminderVars[]> => {
-  const { eventId } = context;
-
-  const bm: BloomManager = new BloomManager();
-
+const getEventReminderVars = async ({
+  eventId
+}: EventReminderPayload): Promise<EventReminderVars[]> => {
   const [event, guests]: [Event, EventGuest[]] = await Promise.all([
-    bm.em.findOne(Event, { id: eventId }),
-    bm.em.find(EventGuest, { event: eventId })
+    findOne(Event, { id: eventId }),
+    find(EventGuest, { event: eventId })
   ]);
 
   const variables: EventReminderVars[] = guests.map((guest: EventGuest) => {

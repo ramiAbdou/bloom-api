@@ -1,5 +1,5 @@
 import { GoogleEventArgs } from '@integrations/google/processGoogleEvent';
-import { BusEvent, GoogleEvent } from '@util/constants.events';
+import { BusEvent } from '@util/constants.events';
 import eventBus, { EmitEventOptions } from '../eventBus';
 
 /**
@@ -10,12 +10,11 @@ import eventBus, { EmitEventOptions } from '../eventBus';
  * @param options
  */
 const emitGoogleEvent = (
-  googleEvent: GoogleEvent,
-  args: Omit<GoogleEventArgs, 'googleEvent'>,
+  googleEventArgs: GoogleEventArgs,
   options?: EmitEventOptions
 ): void => {
   setTimeout(() => {
-    eventBus.emit(BusEvent.GOOGLE_EVENT, { ...args, googleEvent });
+    eventBus.emit(BusEvent.GOOGLE_EVENT, googleEventArgs);
   }, options?.delay ?? 0);
 };
 

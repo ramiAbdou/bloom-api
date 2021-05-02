@@ -15,11 +15,10 @@ export interface LoginLinkEmailVars {
   member: Pick<Member, 'email' | 'firstName'>;
 }
 
-const getLoginLinkVars = async (
-  context: LoginLinkEmailPayload
-): Promise<LoginLinkEmailVars[]> => {
-  const { email, redirectUrl } = context;
-
+const getLoginLinkVars = async ({
+  email,
+  redirectUrl
+}: LoginLinkEmailPayload): Promise<LoginLinkEmailVars[]> => {
   const [member, user]: [Member, User] = await Promise.all([
     findOne(Member, { email }),
     findOne(User, { email })

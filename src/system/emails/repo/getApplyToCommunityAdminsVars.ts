@@ -1,4 +1,4 @@
-import BloomManager from '@core/db/BloomManager';
+import { find, findOne } from '@core/db/db.util';
 import Community from '@entities/community/Community';
 import Member from '@entities/member/Member';
 import { APP } from '@util/constants';
@@ -21,21 +21,18 @@ export interface ApplyToCommunityAdminsVars {
  * @param context.applicantId - ID of the Member (status: PENDING).
  * @param context.memberId - ID of the Member.
  */
-const getApplyToCommunityAdminsVars = async (
-  context: ApplyToCommunityAdminsPayload
-): Promise<ApplyToCommunityAdminsVars[]> => {
-  const { applicantId, communityId } = context;
-
-  const bm: BloomManager = new BloomManager();
-
+const getApplyToCommunityAdminsVars = async ({
+  applicantId,
+  communityId
+}: ApplyToCommunityAdminsPayload): Promise<ApplyToCommunityAdminsVars[]> => {
   const [community, admins, applicant]: [
     Community,
     Member[],
     Member
   ] = await Promise.all([
-    bm.em.findOne(Community, { id: communityId }),
-    bm.em.find(Member, { community: communityId, role: { $ne: null } }),
-    bm.em.findOne(Member, { id: applicantId })
+    findOne(Community, { id: communityId }),
+    find(Member, { community: communityId, role: { $ne: null } }),
+    findOne(Member, { id: applicantId })
   ]);
 
   const variables: ApplyToCommunityAdminsVars[] = admins.map(
