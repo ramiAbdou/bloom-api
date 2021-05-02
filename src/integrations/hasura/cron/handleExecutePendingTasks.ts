@@ -7,7 +7,7 @@ import Task from '@entities/task/Task';
  * Executes all of the pending Task(s) stored in the DB, then removes them
  * after execution.
  */
-const handlePendingTasks = async (): Promise<void> => {
+const handleExecutePendingTasks = async (): Promise<void> => {
   const bm = new BloomManager();
 
   // Get all the Tasks with executeAt time that is before the current time
@@ -24,4 +24,4 @@ const handlePendingTasks = async (): Promise<void> => {
   await bm.em.flush();
 };
 
-export default handlePendingTasks;
+export default handleExecutePendingTasks;

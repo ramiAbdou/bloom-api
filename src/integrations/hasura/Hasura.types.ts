@@ -1,8 +1,8 @@
 export enum HasuraCronTrigger {
-  PENDING_TASKS = 'pending_tasks'
+  EXECUTE_PENDING_TASKS = 'execute_pending_tasks'
 }
 
-export enum HasuraEvent {
+export enum HasuraEventTrigger {
   CREATE_EVENT = 'create_event',
   CREATE_EVENT_GUEST = 'create_event_guest',
   DELETE_EVENT = 'delete_event',

@@ -1,13 +1,13 @@
 import camelCaseKeys from 'camelcase-keys';
 import express from 'express';
 
-import { HasuraEvent, HasuraEventPayload } from '../Hasura.types';
-import handleCreateEvent from './handleCreateEvent';
-import handleCreateEventGuest from './handleCreateEventGuest';
-import handleDeleteEvent from './handleDeleteEvent';
-import handleDeleteMember from './handleDeleteMember';
-import handleUpdateMemberRole from './handleUpdateMemberRole';
-import handleUpdateMemberStatus from './handleUpdateMemberStatus';
+import handleCreateEvent from '../events/handleCreateEvent';
+import handleCreateEventGuest from '../events/handleCreateEventGuest';
+import handleDeleteEvent from '../events/handleDeleteEvent';
+import handleDeleteMember from '../events/handleDeleteMember';
+import handleUpdateMemberRole from '../events/handleUpdateMemberRole';
+import handleUpdateMemberStatus from '../events/handleUpdateMemberStatus';
+import { HasuraEventPayload, HasuraEventTrigger } from '../Hasura.types';
 
 /**
  * Returns a 200 response if the Hasura event was handled successfully.
@@ -23,27 +23,27 @@ const handleHasuraEventTrigger = async (
   console.log('hasura event caught', payload.trigger.name);
 
   switch (payload.trigger.name) {
-    case HasuraEvent.CREATE_EVENT:
+    case HasuraEventTrigger.CREATE_EVENT:
       handleCreateEvent(payload);
       break;
 
-    case HasuraEvent.CREATE_EVENT_GUEST:
+    case HasuraEventTrigger.CREATE_EVENT_GUEST:
       handleCreateEventGuest(payload);
       break;
 
-    case HasuraEvent.DELETE_EVENT:
+    case HasuraEventTrigger.DELETE_EVENT:
       handleDeleteEvent(payload);
       break;
 
-    case HasuraEvent.DELETE_MEMBER:
+    case HasuraEventTrigger.DELETE_MEMBER:
       handleDeleteMember(payload);
       break;
 
-    case HasuraEvent.UPDATE_MEMBER_ROLE:
+    case HasuraEventTrigger.UPDATE_MEMBER_ROLE:
       handleUpdateMemberRole(payload);
       break;
 
-    case HasuraEvent.UPDATE_MEMBER_STATUS:
+    case HasuraEventTrigger.UPDATE_MEMBER_STATUS:
       handleUpdateMemberStatus(payload);
       break;
 

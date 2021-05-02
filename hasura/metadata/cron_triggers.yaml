@@ -1,1 +1,5 @@
-[]
+- name: execute_pending_tasks
+  webhook: 'http://host.docker.internal:8080/hasura/cron'
+  schedule: '* * * * *'
+  include_in_metadata: true
+  payload: { event: 'execute_pending_tasks' }
