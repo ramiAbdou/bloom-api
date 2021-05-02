@@ -6,8 +6,7 @@ import Member from '@entities/member/Member';
 import getLoginError from '@entities/user/repo/getLoginError';
 import refreshToken from '@entities/user/repo/refreshToken';
 import User from '@entities/user/User';
-import { APP } from '@util/constants';
-import { ErrorContext, ErrorType } from '@util/constants.errors';
+import { APP, CookieType, ErrorType } from '@util/constants';
 import getGoogleProfileFromToken from './getGoogleProfileFromToken';
 
 interface ParsedGoogleAuthQueryState {
@@ -58,7 +57,7 @@ const handleGoogleAuth = async (
 
   // We have to set the error in the cookie and not throw an error because
   // we have to redirect back to the React application.
-  if (loginError) res.cookie(ErrorContext.LOGIN_ERROR, loginError);
+  if (loginError) res.cookie(CookieType.LOGIN_ERROR, loginError);
   else await refreshToken({ googleId }, { res });
 
   return res.redirect(APP.CLIENT_URL + (pathname ?? ''));

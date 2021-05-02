@@ -2,7 +2,7 @@ import { ArgsType, Field, ObjectType } from 'type-graphql';
 
 import { LoginLinkEmailPayload } from '@system/emails/repo/getLoginLinkVars';
 import emitEmailEvent from '@system/events/repo/emitEmailEvent';
-import { ErrorType } from '@util/constants.errors';
+import { ErrorType } from '@util/constants';
 import { EmailEvent } from '@util/constants.events';
 import getLoginError from './getLoginError';
 

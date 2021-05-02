@@ -25,20 +25,29 @@ export const JWT = {
 };
 
 /**
- * All exported TYPE declaration constants are below.
- * NOTE that if any services have types that are specific to them, they will
- * placed in a .types.ts file living in the same folder as that service,
- * instead of in this globally accessible constants file.
+ * ENUMS
  */
 
-// ## GRAPHQL
+export enum CookieType {
+  LOGIN_ERROR = 'LOGIN_ERROR'
+}
 
-export type GQLContext = {
+export enum ErrorType {
+  APPLICATION_PENDING = 'APPLICATION_PENDING',
+  APPLICATION_REJECTED = 'APPLICATION_REJECTED',
+  EVENT_FINISHED = 'EVENT_FINISHED',
+  EVENT_HASNT_STARTED = 'EVENT_HASNT_STARTED',
+  NO_MEMBER_APPLICATIONS = 'NO_MEMBER_APPLICATIONS',
+  NOT_MEMBER = 'NOT_MEMBER',
+  USER_NOT_FOUND = 'USER_NOT_FOUND'
+}
+
+export interface GQLContext {
   communityId: string;
   hasuraRole: HasuraRole;
   res: Response;
   userId: string;
-};
+}
 
 export interface TestObject<T = any, S = any> {
   before?: () => Promise<any>;

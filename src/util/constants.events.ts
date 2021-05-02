@@ -31,38 +31,9 @@ export enum GoogleEvent {
   UPDATE_CALENDAR_EVENT = 'UPDATE_CALENDAR_EVENT'
 }
 
-export enum MailchimpEvent {
-  ADD_TO_AUDIENCE = 'ADD_TO_AUDIENCE'
-}
-
 export enum TaskEvent {
   EVENT_REMINDER_1_DAY = 'EVENT_REMINDER_1_DAY',
   EVENT_REMINDER_1_HOUR = 'EVENT_REMINDER_1_HOUR'
-}
-
-// ## GRAPHQL EVENTS - Shared between Front-End and Back-End.
-
-export enum MutationEvent {
-  APPLY_TO_COMMUNITY = 'applyToCommunity',
-  CREATE_EVENT_ATTENDEE_WITH_SUPPORTER = 'createEventAttendeeWithSupporter',
-  CREATE_EVENT_GUEST_WITH_SUPPORTER = 'createEventGuestWithSupporter',
-  INVITE_MEMBERS = 'inviteMembers',
-  LOGOUT = 'logout',
-  RESPOND_TO_APPLICANTS = 'respondToApplicants',
-  SEND_LOGIN_LINK = 'sendLoginLink',
-  UPDATE_MAILCHIMP_LIST_ID = 'updateMailchimpListId',
-  UPDATE_MEMBER_VALUES = 'updateMemberValues',
-  VERIFY_TOKEN = 'verifyToken'
-}
-
-export enum QueryEvent {
-  GET_ACTIVE_MEMBERS_GROWTH = 'getActiveMembersGrowth',
-  GET_ACTIVE_MEMBERS_SERIES = 'getActiveMembersSeries',
-  GET_CHANGE_PREVIEW = 'getChangePreview',
-  GET_EVENT_ATTENDEES_SERIES = 'getEventAttendeesSeries',
-  GET_MEMBERS_GROWTH = 'getMembersGrowth',
-  GET_MEMBERS_SERIES = 'getMembersSeries',
-  GET_USER_TOKENS = 'getUserTokens'
 }
 
 export enum VerifyEvent {
