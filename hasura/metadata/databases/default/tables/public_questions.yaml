@@ -48,6 +48,7 @@ array_relationships:
 select_permissions:
   - permission:
       columns:
+        - created_at
         - community_id
         - id
         - category
@@ -62,6 +63,7 @@ select_permissions:
     role: GUEST
   - permission:
       columns:
+        - created_at
         - community_id
         - id
         - category
@@ -76,6 +78,7 @@ select_permissions:
     role: MEMBER
   - permission:
       columns:
+        - created_at
         - community_id
         - id
         - category
@@ -90,6 +93,7 @@ select_permissions:
     role: ADMIN
   - permission:
       columns:
+        - created_at
         - community_id
         - id
         - category

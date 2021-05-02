@@ -1,9 +1,9 @@
-import BloomManager from '@core/db/BloomManager';
+import { findOne } from '@core/db/db.util';
 import Member from '@entities/member/Member';
-import refreshToken from '@entities/user/repo/refreshToken';
+import User from '@entities/user/User';
 import { APP } from '@util/constants';
 import { VerifyEvent } from '@util/constants.events';
-import { buildUrl } from '@util/util';
+import { buildUrl, signToken } from '@util/util';
 import { EmailPayload } from '../emails.types';
 
 export interface LoginLinkEmailPayload {
@@ -21,25 +21,27 @@ const getLoginLinkVars = async (
 ): Promise<LoginLinkEmailVars[]> => {
   const { email, redirectUrl } = context as LoginLinkEmailPayload;
 
+  const [member, user]: [Member, User] = await Promise.all([
+    findOne(Member, { email }),
+    findOne(User, { email })
+  ]);
+
   // Otherwise, run the refresh flow and get the temporary token to store in
   // the login URL.
-  const accessToken: string = await refreshToken(
-    { email },
-    { tokenPayload: { event: VerifyEvent.LOG_IN } }
-  );
+  const loginToken: string = signToken({
+    expires: false,
+    payload: { event: VerifyEvent.LOGIN, userId: user.id }
+  });
 
   const loginUrl: string = buildUrl({
-    params: { token: accessToken },
+    params: { token: loginToken },
     url: APP.CLIENT_URL + (redirectUrl ?? '')
   });
 
-  const member: Member = await new BloomManager().em.findOne(
-    Member,
-    { email },
-    { fields: ['email', 'firstName'] }
-  );
+  const variables: LoginLinkEmailVars[] = [
+    { loginUrl, member: { email: member.email, firstName: member.firstName } }
+  ];
 
-  const variables: LoginLinkEmailVars[] = [{ loginUrl, member }];
   return variables;
 };
 

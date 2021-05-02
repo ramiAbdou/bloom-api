@@ -67,5 +67,5 @@ export enum QueryEvent {
 
 export enum VerifyEvent {
   JOIN_EVENT = 'JOIN_EVENT',
-  LOG_IN = 'LOG_IN'
+  LOGIN = 'LOGIN'
 }

@@ -56,6 +56,8 @@ const handleGoogleAuth = async (
 
   const loginError: ErrorType = await getLoginError({ communityId, email });
 
+  // We have to set the error in the cookie and not throw an error because
+  // we have to redirect back to the React application.
   if (loginError) res.cookie(ErrorContext.LOGIN_ERROR, loginError);
   else await refreshToken({ googleId }, { res });
 

@@ -32,8 +32,10 @@ interface RefreshTokenOptions {
  */
 const refreshToken = async (
   where: FilterQuery<User>,
-  { req, res, tokenPayload }: RefreshTokenOptions
+  options?: RefreshTokenOptions
 ): Promise<string> => {
+  const { req, res, tokenPayload } = options ?? {};
+
   const bm: BloomManager = new BloomManager();
   const user: User = await bm.em.findOne(User, where);
 
@@ -49,10 +51,7 @@ const refreshToken = async (
     return null;
   }
 
-  const payload: Record<string, unknown> = {
-    userId: user.id,
-    ...tokenPayload
-  };
+  const payload: Record<string, unknown> = { ...tokenPayload, userId: user.id };
 
   // New accessToken to return
   const accessToken: string = signToken({ payload });
@@ -69,7 +68,7 @@ const refreshToken = async (
 
   // If an Express Response object is passed in, set the HTTP only cookies.
   if (res) {
-    const options: express.CookieOptions = {
+    const cookieOptions: express.CookieOptions = {
       // Can only access via server, not browser.
       httpOnly: true,
       // Can only access from an HTTPS endpoint, not HTTP.
@@ -77,11 +76,11 @@ const refreshToken = async (
     };
 
     res.cookie('accessToken', accessToken, {
-      ...options,
+      ...cookieOptions,
       maxAge: JWT.EXPIRES_IN * 1000 // * 1000 b/c represented as milliseconds.
     });
 
-    res.cookie('refreshToken', user.refreshToken, options);
+    res.cookie('refreshToken', user.refreshToken, cookieOptions);
   }
 
   return accessToken;

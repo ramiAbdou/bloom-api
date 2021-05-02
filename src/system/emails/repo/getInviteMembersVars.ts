@@ -48,13 +48,13 @@ const getInviteMembersVars = async (
   ]);
 
   const variables: InviteMembersVars[] = members.map((member: Member) => {
-    const token: string = signToken({
+    const loginToken: string = signToken({
       expires: false,
-      payload: { event: VerifyEvent.LOG_IN, memberId: member.id }
+      payload: { event: VerifyEvent.LOGIN, memberId: member.id }
     });
 
     const invitationUrl: string = buildUrl({
-      params: { token },
+      params: { token: loginToken },
       url: `${APP.CLIENT_URL}/${community.urlName}`
     });
 

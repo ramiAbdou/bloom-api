@@ -3,6 +3,7 @@ import {
   EntityManager,
   EntityName,
   FilterQuery,
+  FindOneOptions,
   Loaded,
   wrap
 } from '@mikro-orm/core';
@@ -14,10 +15,11 @@ import db from './db';
  */
 export async function findOne<T, P>(
   entityName: EntityName<T>,
-  where: FilterQuery<T>
+  where: FilterQuery<T>,
+  options?: FindOneOptions<T, P>
 ): Promise<Loaded<T, P>> {
   const em: EntityManager = db.em?.fork();
-  return em.findOne<T, P>(entityName, where);
+  return em.findOne<T, P>(entityName, where, options);
 }
 
 /**
@@ -59,4 +61,17 @@ export async function findAndUpdate<T, P>(
 
   await em.flush();
   return updatedEntities;
+}
+
+/**
+ * Returns the updated entity, if it was found.
+ */
+export async function createAndFlush<T>(
+  entityName: EntityName<T>,
+  data: EntityData<T>
+): Promise<T> {
+  const em: EntityManager = db.em?.fork();
+  const entity: T = em.create(entityName, data);
+  await em.flush();
+  return entity;
 }

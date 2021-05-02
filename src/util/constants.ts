@@ -31,16 +31,11 @@ export const JWT = {
  * instead of in this globally accessible constants file.
  */
 
-export type AuthQueryArgs = { code: string; state?: string };
-
-export type KeyValue = { key: string; value: any };
-
 // ## GRAPHQL
 
 export type GQLContext = {
   communityId: string;
   hasuraRole: HasuraRole;
-  memberId: string;
   res: Response;
   userId: string;
 };

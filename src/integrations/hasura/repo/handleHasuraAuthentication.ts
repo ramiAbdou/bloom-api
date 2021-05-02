@@ -30,12 +30,11 @@ const handleHasuraAuthentication = async (
   // refresh the accessToken and store it on the req and res objects.
   const updatedAccessToken: string =
     accessToken ?? verifyToken(rToken)
-      ? await refreshToken({ refreshToken: rToken }, { req, res })
+      ? await refreshToken({ refreshToken: rToken })
       : null;
 
   const communityId: string = req.headers.communityid as string;
   const userId: string = decodeToken(updatedAccessToken)?.userId as string;
-
   const hasuraRole: HasuraRole = await getHasuraRole({ communityId, userId });
 
   return res.json({

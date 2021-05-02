@@ -140,6 +140,7 @@ select_permissions:
         - email
         - first_name
         - id
+        - joined_at
         - last_name
         - picture_url
         - position
